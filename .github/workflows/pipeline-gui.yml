@@ -1,0 +1,15 @@
+name: Pipeline-gui
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "**.cpp"
+  pull_request:
+    paths:
+      - "**.cpp"
+
+jobs:
+  coding-style:
+    name: Coding-style
+    uses: ./.github/workflows/coding-style.yml
