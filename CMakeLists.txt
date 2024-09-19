@@ -4,4 +4,4 @@ project(R-Type)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_library(ecs STATIC ecs/lib.cpp)
+add_executable(ecs ecs/lib.cpp)
