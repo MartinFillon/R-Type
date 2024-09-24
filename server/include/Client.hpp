@@ -1,0 +1,52 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-PAR-5-1-rtype-edward.lalande
+** File description:
+** Client
+*/
+
+#ifndef CLIENT_HPP_
+    #define CLIENT_HPP_
+
+    #include <asio.hpp>
+    #include <thread>
+    #include <vector>
+    #include <iostream>
+
+    #define DATA_MAX_SIZE 1024
+
+namespace Rtype {
+
+    class Server;
+
+    class Client {
+
+        using Message = std::vector<uint8_t>;
+
+        using Socket = asio::ip::udp::socket;
+        using Endpoint = asio::ip::udp::endpoint;
+
+        public:
+
+            Client(const int id, Server *server, const Endpoint &endpoint, Socket &socket);
+
+            void run();
+            void send(const Message &message);
+            void disconnect();
+
+        private:
+
+            void listenToClient();
+
+            int _id;
+            bool _running;
+
+            Server *_server;
+            Socket& _socket;
+            Endpoint _endpoint;
+
+    };
+
+};
+
+#endif /* !CLIENT_HPP_ */
