@@ -8,6 +8,10 @@
 #ifndef GAME_HPP_
     #define GAME_HPP_
 
+    #define UNUSED __attribute__((unused))
+
+    #include "Packet.hpp"
+
 namespace Rtype {
 
     class Game {
@@ -17,7 +21,7 @@ namespace Rtype {
             Game() = default;
 
             void update() {};
-            void processAction() {};
+            void processAction(UNUSED const int id, UNUSED const Packet &packet) {};
 
     };
 
