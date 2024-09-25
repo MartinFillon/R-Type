@@ -13,6 +13,10 @@ jobs:
     name: Build Project
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+
       - name: Checkout Project
         uses: actions/checkout@v4.1.7
 
