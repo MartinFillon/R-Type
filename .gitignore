@@ -12,3 +12,4 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 _deps/
 compile_commands.json
+r-type_*
