@@ -15,6 +15,7 @@ FetchContent_MakeAvailable(SFML)
 add_library(ecs src/Context.cpp)
 target_link_libraries(ecs PRIVATE sfml-graphics)
 target_compile_features(ecs PRIVATE cxx_std_17)
+target_include_directories(ecs PUBLIC include)
 
 if(WIN32)
     add_custom_command(
