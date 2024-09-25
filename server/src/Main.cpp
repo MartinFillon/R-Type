@@ -9,7 +9,11 @@
 
 int main(int ac, char **av)
 {
-    Rtype::Server server(4242);
+    if (ac != NB_ARGS_REQUIRED) {
+        return ERROR;
+    }
+
+    Rtype::Server server(std::atoi(av[PORT]));
 
     server.start();
 
