@@ -29,7 +29,7 @@ if(WIN32)
     VERBATIM)
 endif()
 
-option(ENABLE_TESTS "Build tests along with the library" ON)
+# option(ENABLE_TESTS "Build tests along with the library" ON)
 
 if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)
