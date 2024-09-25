@@ -12,12 +12,22 @@
 
 namespace ECS {
 
+/**
+ * An image loader that caches images
+ */
 class ImageResolver {
   public:
     ImageResolver(const std::string &);
 
     ~ImageResolver();
 
+    /**
+     * @brief Get the Image content
+     * @param path The path to the image
+     * @param reload If the image should be reloaded (default: false)
+     *
+     * @return The image content
+     */
     std::string getImage(const std::string &, bool = false);
 
   protected:
