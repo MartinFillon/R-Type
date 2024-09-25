@@ -1,10 +1,13 @@
-name: Pipeline-gui
+name: Pipeline
 
 on:
   workflow_dispatch:
   pull_request:
     paths:
       - "**.cpp"
+      - "**.hpp"
+      - "**.h"
+      - "**.c"
 
 jobs:
   coding-style:
