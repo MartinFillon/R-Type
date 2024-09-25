@@ -1,26 +1,29 @@
 /*
 ** EPITECH PROJECT, 2024
-** rtype
+** R-Type
 ** File description:
 ** Context
 */
 
-#pragma once
+#ifndef CONTEXT_HPP_
+    #define CONTEXT_HPP_
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-namespace ECS {
+namespace ecs {
 
-class Context {
-  public:
-    Context(sf::RenderWindow &);
-    ~Context();
+	class Context {
+		public:
+			Context(sf::RenderWindow &);
+			~Context();
 
-    sf::RenderWindow &getRenderWindow();
+		    sf::RenderWindow &getRenderWindow();
 
-  protected:
-  private:
-    sf::RenderWindow &_window;
-};
-} // namespace ECS
+		protected:
+		private:
+			sf::RenderWindow &_window;
+	};
+} // namespace ecs
+
+#endif /* !CONTEXT_HPP_ */

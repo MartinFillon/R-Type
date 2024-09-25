@@ -9,7 +9,7 @@
 
 #include "Context.hpp"
 
-namespace ECS {
+namespace ecs {
 
 Context::Context(sf::RenderWindow &window) : _window(window)
 {
@@ -26,4 +26,4 @@ sf::RenderWindow &Context::getRenderWindow()
     return _window;
 }
 
-} // namespace ECS
+} // namespace ecs
