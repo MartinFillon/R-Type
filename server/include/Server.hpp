@@ -25,6 +25,8 @@
     #define SERVER_START(x) "Server started at port " << x << "..."
     #define SERVER_STOP "Server stoped..."
 
+    #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
+
 namespace Rtype {
 
     class Server {

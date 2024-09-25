@@ -54,6 +54,8 @@ void Rtype::Server::handleMessage(const int id, const Message &message)
 {
     Packet packet(message);
 
+    std::cout << MESSAGE_RECEIVED(id) << std::endl;
+
     _game.processAction(id, packet);
 }
 
