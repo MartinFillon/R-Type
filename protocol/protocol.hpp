@@ -28,9 +28,6 @@ enum Movements {
 };
 
 enum Operations {
-    CONNECTING = 42,
-    CONNECTED = 1,
-    IMAGE,
     OBJECT_POSITION,
     NEW_OBJECT,
     MOVE,
@@ -38,4 +35,4 @@ enum Operations {
     GAME_SPEED,
 };
 
-const std::string MAGIC = "BEER";
+const uint32_t MAGIC = 0x42454552;
