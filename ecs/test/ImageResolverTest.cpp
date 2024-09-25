@@ -13,14 +13,14 @@
 
 Test(ImageResolver, test1)
 {
-    ECS::ImageResolver resolver("./");
+    ecs::ImageResolver resolver("./");
     std::string file = resolver.getImage("README.md");
     cr_assert_strings_neq(file.c_str(), "");
 }
 
 Test(ImageResolver, test2)
 {
-    ECS::ImageResolver resolver("./");
+    ecs::ImageResolver resolver("./");
     std::string file = resolver.getImage("README.md");
 
     cr_assert_strings_eq(resolver._cache.at("README.md").c_str(), file.c_str());
