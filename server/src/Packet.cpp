@@ -7,6 +7,8 @@
 
 #include "Packet.hpp"
 
+#include "protocol.hpp"
+
 Rtype::Packet::Packet(const Message &message): _isValid(false)
 {
     if (message.size() < MESSAGE_MIN_SIZE) {
@@ -15,9 +17,7 @@ Rtype::Packet::Packet(const Message &message): _isValid(false)
 
     _magicNumber = GET_MAGIC_NUMBER(message);
 
-    const uint32_t BEER = 0x42454552;
-
-    if (_magicNumber != BEER) {
+    if (_magicNumber != MAGIC) {
         return;
     }
 
@@ -34,7 +34,7 @@ Rtype::Packet::Packet(const Message &message): _isValid(false)
 
 Rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
 {
-    _magicNumber = 0x42454552;
+    _magicNumber = MAGIC;
 
     if (!isValidOpcode(opcode)) {
         return;
@@ -79,8 +79,11 @@ Rtype::Packet::Message Rtype::Packet::toMessage() const
 
 bool Rtype::Packet::isValidOpcode(uint8_t opcode)
 {
-    // std::vector<uint8_t> validOpcodes = { 0x01, 0x02, ... };
-    // return std::find(validOpcodes.begin(), validOpcodes.end(), opcode) != validOpcodes.end();
+    for (size_t i = OBJECT_POSITION; i != GAME_SPEED; i++) {
+        if (i == opcode) {
+            return true;
+        }
+    }
 
-    return true;
+    return false;
 }
