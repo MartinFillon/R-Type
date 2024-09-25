@@ -13,3 +13,5 @@ CPackSourceConfig.cmake
 _deps/
 compile_commands.json
 r-type_*
+test_ecs
+CTestTestfile.cmake

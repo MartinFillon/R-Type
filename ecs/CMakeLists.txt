@@ -28,3 +28,26 @@ if(WIN32)
       $<TARGET_FILE_DIR:ecs>
     VERBATIM)
 endif()
+
+option(ENABLE_TESTS "Build tests along with the library" ON)
+
+if(ENABLE_TESTS)
+  find_package(Criterion REQUIRED)
+
+  enable_testing()
+  add_executable(test_ecs test/ImageResolverTest.cpp)
+
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+  target_link_libraries(test_ecs ecs ${CRITERION_LIBRARIES})
+
+  # Enable a few warnings
+  if(CMAKE_COMPILER_IS_GNUCC)
+    target_compile_options(test_ecs PRIVATE -Wall -Wextra)
+  endif(CMAKE_COMPILER_IS_GNUCC)
+  if(MSVC)
+    target_compile_options(test_ecs PRIVATE /W4)
+  endif(MSVC)
+
+  add_test(test_ecs test_ecs)
+endif()
