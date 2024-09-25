@@ -6,8 +6,9 @@
 */
 
 #include "Client.hpp"
+#include "Server.hpp"
 
-Rtype::Client::Client(const int id, Server *server, const Endpoint &endpoint, Socket &socket):
+Rtype::Client::Client(const int id, Server &server, const Endpoint &endpoint, Socket &socket):
     _id(id),
     _running(true),
     _server(server),
@@ -17,14 +18,18 @@ Rtype::Client::Client(const int id, Server *server, const Endpoint &endpoint, So
 
 void Rtype::Client::run()
 {
+    std::cout << NEW_CLIENT(_id) << std::endl;
+
     while (_running) {
         listenToClient();
     }
 }
 
-void Rtype::Client::send(const Message &message)
+void Rtype::Client::send(const Packet &packet)
 {
-    _socket.send_to(asio::buffer(message), _endpoint);
+    if (packet.isValid()) {
+        _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    }
 }
 
 void Rtype::Client::disconnect()
@@ -43,11 +48,10 @@ void Rtype::Client::listenToClient()
 
         if (!error && len) {
             Message receivedData(data.begin(), data.begin() + len);
-            //_server->handleMessage(_id, receivedData);
+            _server.handleMessage(_id, receivedData);
         }
 
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         disconnect();
     }
-
 }
