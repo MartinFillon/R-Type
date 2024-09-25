@@ -5,8 +5,9 @@
 ** Context
 */
 
-#include "Context.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
+
+#include "Context.hpp"
 
 namespace ECS {
 
