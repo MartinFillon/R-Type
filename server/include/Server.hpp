@@ -22,6 +22,9 @@
     #define ERROR 84
     #define SUCCESS 0
 
+    #define SERVER_START(x) "Server started at port " << x << "..."
+    #define SERVER_STOP "Server stoped..."
+
 namespace Rtype {
 
     class Server {
@@ -29,7 +32,7 @@ namespace Rtype {
         using Message = std::vector<uint8_t>;
         using Client = std::shared_ptr<Rtype::Client>;
 
-        using Service = asio::io_service;
+        using Context = asio::io_context;
         using Socket = asio::ip::udp::socket;
         using Endpoint = asio::ip::udp::endpoint;
 
@@ -40,7 +43,7 @@ namespace Rtype {
             void start();
             void stop();
 
-            void broadcast(const Message &message);
+            void broadcast(const Packet &packet);
             void handleMessage(const int id, const Message &message);
 
         private:
@@ -48,18 +51,19 @@ namespace Rtype {
             void acceptConnections();
             void processGame();
 
-            void sendToClient(const int id, const Message &message);
+            void sendToClient(const int id, const Packet &packet);
             void removeClient(const int id);
 
             int generateClientId(const Endpoint &endpoint);
 
+            Context _context;
+
             int _port;
-            bool _running = true;
+            bool _running;
 
             Rtype::Game _game;
 
             Socket _socket;
-            Service _service;
 
             std::mutex _mutex;
             std::unordered_map<int, Client> _clients;
