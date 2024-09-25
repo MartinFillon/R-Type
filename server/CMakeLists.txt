@@ -13,4 +13,4 @@ add_executable(r-type_server
     src/Packet.cpp
 )
 
-target_include_directories(r-type_server PUBLIC include)
+target_include_directories(r-type_server PUBLIC include ../protocol)
