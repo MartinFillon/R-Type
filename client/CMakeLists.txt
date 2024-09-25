@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(r-type_client src/main.cpp)
 target_link_libraries(r-type_client sfml-graphics)
-target_link_directories(r-type_client PRIVATE ../ecs)
+target_link_directories(r-type_client PUBLIC ../ecs)
 target_link_libraries(r-type_client ecs)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
@@ -29,8 +29,3 @@ if(WIN32)
       $<TARGET_FILE_DIR:ecs>
     VERBATIM)
 endif()
-
-add_custom_command(
-  TARGET r-type_client
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ..)
