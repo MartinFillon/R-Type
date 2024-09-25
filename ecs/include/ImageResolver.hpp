@@ -10,7 +10,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace ECS {
+namespace ecs {
 
 /**
  * An image loader that caches images
@@ -36,4 +36,4 @@ class ImageResolver {
     std::unordered_map<std::string, std::string> _cache;
 };
 
-} // namespace ECS
+} // namespace ecs

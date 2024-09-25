@@ -10,7 +10,7 @@
 
 #include "ImageResolver.hpp"
 
-namespace ECS {
+namespace ecs {
 
 ImageResolver::ImageResolver(const std::string &path) : _basePath(path) {}
 
@@ -50,4 +50,4 @@ std::string ImageResolver::getImage(const std::string &path, bool reload)
     }
 }
 
-} // namespace ECS
+} // namespace ecs
