@@ -12,7 +12,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_library(ecs src/Context.cpp)
+add_library(ecs src/Context.cpp src/ImageResolver.cpp)
 target_link_libraries(ecs PRIVATE sfml-graphics)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include)
