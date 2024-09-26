@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2024
 ** RtypeBootstrap
 ** File description:
-** Registery
+** Registry
 */
 
-#ifndef REGISTERY_HPP_
-    #define REGISTERY_HPP_
+#ifndef REGISTRY_HPP_
+    #define REGISTRY_HPP_
 
 #include <typeindex>
 #include <unordered_map>
@@ -68,4 +68,4 @@ namespace ecs
     };
 }
 
-#endif /* !REGISTERY_HPP_ */
+#endif /* !REGISTRY_HPP_ */
