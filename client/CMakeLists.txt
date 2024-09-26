@@ -13,6 +13,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SFML)
 
 add_executable(r-type_client src/main.cpp)
+add_compile_options(lX11)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs)
 target_link_libraries(r-type_client ecs)
