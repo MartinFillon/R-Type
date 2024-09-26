@@ -8,7 +8,6 @@
 #ifndef VELOCITY_HPP_
     #define VELOCITY_HPP_
 
-
 namespace ecs {
     namespace component {
         struct Velocity {
