@@ -8,7 +8,7 @@
 #ifndef ISYSTEMS_HPP_
     #define ISYSTEMS_HPP_
 
-#include "Registery.hpp"
+#include "Registry.hpp"
 
 namespace ecs {
     namespace systems {

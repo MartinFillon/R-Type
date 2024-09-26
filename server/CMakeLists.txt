@@ -14,7 +14,8 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(r-type_server src/main.cpp)
 target_link_libraries(r-type_server sfml-graphics)
-target_link_directories(r-type_server PUBLIC ../ecs)
+target_link_directories(r-type_client PUBLIC ../ecs/include)
+target_include_directories(r-type_client PUBLIC ../ecs/include)
 target_link_libraries(r-type_server ecs)
 target_compile_features(r-type_server PRIVATE cxx_std_17)
 
