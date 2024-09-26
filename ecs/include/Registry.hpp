@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** RtypeBootstrap
+** Rtype
 ** File description:
 ** Registry
 */
