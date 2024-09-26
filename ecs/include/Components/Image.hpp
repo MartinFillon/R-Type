@@ -6,7 +6,7 @@
 */
 
 #ifndef IMAGE_HPP_
-#define IMAGE_HPP_
+    #define IMAGE_HPP_
 
     #include <SFML/Graphics/Image.hpp>
     #include <string>

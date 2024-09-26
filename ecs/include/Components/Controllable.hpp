@@ -8,7 +8,6 @@
 #ifndef CONTROLLABLE_HPP_
     #define CONTROLLABLE_HPP_
 
-
 namespace ecs {
     namespace component {
         struct Controllable {
