@@ -16,8 +16,7 @@
 #include "./SparseArray.hpp"
 
 
-namespace ecs
-{
+namespace ecs {
     class Registry {
         public:
             template <class Component>
