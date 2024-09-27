@@ -32,17 +32,14 @@ namespace Rtype {
 
         public:
 
-            Client(const int id, Server &server, const Endpoint &endpoint, Socket &socket);
+            Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
 
-            void run();
             void send(const Packet &packet);
             void disconnect();
 
         private:
 
-            void listenToClient();
-
-            int _id;
+            unsigned int _id;
             bool _running;
 
             Server &_server;
