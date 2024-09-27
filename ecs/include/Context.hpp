@@ -13,6 +13,8 @@
 #include "EntityManager.hpp"
 #include "Registry.hpp"
 
+#define GAME_NAME "R-Type"
+
 namespace ecs {
 
     class Context {
