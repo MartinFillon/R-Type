@@ -9,8 +9,8 @@
 #define PLAYERMOUVEMENTSYSTEM_HPP_
 
 #include <SFML/Window/Keyboard.hpp>
-#include "Components/Controllable.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
