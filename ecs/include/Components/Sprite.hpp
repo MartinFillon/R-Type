@@ -8,12 +8,12 @@
 #ifndef SPRITE_HPP_
     #define SPRITE_HPP_
 
-    #include <SFML/Graphics/Sprite.hpp>
+    #include <string>
 
 namespace ecs {
     namespace component {
-        struct Sprite {
-            sf::Sprite _sprite;
+        struct Sprite  {
+          std::string _pathToSprite;
         };
     };
 };

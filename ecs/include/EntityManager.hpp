@@ -10,6 +10,7 @@
 
     #include <vector>
     #include <exception>
+    #include <string>
     #include "Entity.hpp"
 
     #define ENTITY_MANAGER_ERROR_OUT_OF_RANGE "Out of range"
@@ -18,9 +19,12 @@ namespace ecs {
     class EntityManager {
       public:
 
+        EntityManager() = default;
+
         EntityManager(const std::size_t &id) {
             _entitys.push_back(id);
         }
+
         EntityManager(const Entity &id) {
             _entitys.push_back(id);
         }
@@ -34,11 +38,19 @@ namespace ecs {
             std::string _message;
         };
 
+        void addEntity(const Entity &entity) {
+            _entitys.push_back(entity);
+        }
+
         Entity operator[](const std::size_t &idx) {
             if (idx > _entitys.size()) {
-                throw EntityManagerError(ENTITY_MANAGER_ERROR_OUT_OF_RANGE)
+                throw EntityManagerError(ENTITY_MANAGER_ERROR_OUT_OF_RANGE);
             }
             return _entitys[idx];
+        }
+
+        Entity lastEntity() const {
+          return _entitys[_entitys.size()];
         }
 
       private:

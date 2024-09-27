@@ -6,7 +6,7 @@
 */
 
 #ifndef PLAYERMOUVEMENTSYSTEM_HPP_
-#define PLAYERMOUVEMENTSYSTEM_HPP_
+    #define PLAYERMOUVEMENTSYSTEM_HPP_
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
@@ -17,6 +17,7 @@ namespace ecs {
     namespace systems {
         class PlayerMouvementSystem : public ISystems {
           public:
+
             void operator()(Registry &r) override {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllable = r.get_components<ecs::component::Controllable>();
