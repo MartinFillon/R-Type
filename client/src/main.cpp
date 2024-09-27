@@ -14,7 +14,7 @@ int main(void)
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "ECS SFML Example");
 
-    ecs::Context ctx = ecs::Context(window);
+    ecs::Context ctx = ecs::Context();
 
     while (window.isOpen()) {
         sf::Event event;
