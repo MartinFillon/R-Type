@@ -11,11 +11,11 @@
 #include <SFML/Graphics/Color.hpp>
 
 namespace ecs {
-namespace component {
-struct OutlinedColor {
-    sf::Color _outlinedColor;
-};
-}; // namespace component
+    namespace component {
+        struct OutlinedColor {
+            sf::Color _outlinedColor;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !OUTLINEDCOLOR_HPP_ */

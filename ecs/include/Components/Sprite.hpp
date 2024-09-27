@@ -11,11 +11,11 @@
 #include <string>
 
 namespace ecs {
-namespace component {
-struct Sprite {
-    std::string _pathToSprite;
-};
-}; // namespace component
+    namespace component {
+        struct Sprite {
+            std::string _pathToSprite;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !SPRITE_HPP_ */

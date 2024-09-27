@@ -9,12 +9,12 @@
 #define SIZE_HPP_
 
 namespace ecs {
-namespace component {
-struct Size {
-    double _width;
-    double _height;
-};
-}; // namespace component
+    namespace component {
+        struct Size {
+            double _width;
+            double _height;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !SIZE_HPP_ */

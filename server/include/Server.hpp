@@ -29,45 +29,45 @@
 
 namespace Rtype {
 
-class Server {
+    class Server {
 
-    using Message = std::vector<uint8_t>;
-    using Client = std::shared_ptr<Rtype::Client>;
+        using Message = std::vector<uint8_t>;
+        using Client = std::shared_ptr<Rtype::Client>;
 
-    using Context = asio::io_context;
-    using Socket = asio::ip::udp::socket;
-    using Endpoint = asio::ip::udp::endpoint;
+        using Context = asio::io_context;
+        using Socket = asio::ip::udp::socket;
+        using Endpoint = asio::ip::udp::endpoint;
 
-  public:
-    Server(int port);
+      public:
+        Server(int port);
 
-    void start();
-    void stop();
+        void start();
+        void stop();
 
-    void broadcast(const Packet &packet);
-    void handleMessage(const unsigned int id, const Message &message);
+        void broadcast(const Packet &packet);
+        void handleMessage(const unsigned int id, const Message &message);
 
-  private:
-    void acceptConnections();
-    void processGame();
+      private:
+        void acceptConnections();
+        void processGame();
 
-    void sendToClient(const unsigned int id, const Packet &packet);
-    void removeClient(const unsigned int id);
+        void sendToClient(const unsigned int id, const Packet &packet);
+        void removeClient(const unsigned int id);
 
-    unsigned int generateClientId(const Endpoint &endpoint);
+        unsigned int generateClientId(const Endpoint &endpoint);
 
-    Context _context;
+        Context _context;
 
-    int _port;
-    bool _running;
+        int _port;
+        bool _running;
 
-    Rtype::Game _game;
+        Rtype::Game _game;
 
-    Socket _socket;
+        Socket _socket;
 
-    std::mutex _mutex;
-    std::unordered_map<int, Client> _clients;
-};
+        std::mutex _mutex;
+        std::unordered_map<int, Client> _clients;
+    };
 
 }; // namespace Rtype
 

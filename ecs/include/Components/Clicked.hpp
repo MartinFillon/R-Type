@@ -9,11 +9,11 @@
 #define CLICKED_HPP_
 
 namespace ecs {
-namespace component {
-struct Clicked {
-    bool _value;
-};
-}; // namespace component
+    namespace component {
+        struct Clicked {
+            bool _value;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !CLICKED_HPP_ */

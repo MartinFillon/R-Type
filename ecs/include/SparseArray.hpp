@@ -5,85 +5,85 @@
 #include <vector>
 
 namespace ecs {
-template <typename Component>
-class SparseArray {
-  public:
-    using value_type = std::optional<Component>;
-    using reference_type = value_type &;
-    using const_reference_type = value_type const &;
-    using container = std::vector<value_type>;
-    using size_type = typename container::size_type;
-    using iterator = typename container::iterator;
-    using const_iterator = typename container::const_iterator;
+    template <typename Component>
+    class SparseArray {
+      public:
+        using value_type = std::optional<Component>;
+        using reference_type = value_type &;
+        using const_reference_type = value_type const &;
+        using container = std::vector<value_type>;
+        using size_type = typename container::size_type;
+        using iterator = typename container::iterator;
+        using const_iterator = typename container::const_iterator;
 
-    SparseArray() {}
+        SparseArray() {}
 
-    SparseArray(SparseArray const &other) : _data(other._data) {}
+        SparseArray(SparseArray const &other) : _data(other._data) {}
 
-    SparseArray(SparseArray &&other) noexcept : _data(std::move(other._data)) {}
+        SparseArray(SparseArray &&other) noexcept : _data(std::move(other._data)) {}
 
-    SparseArray &operator=(SparseArray const &other)
-    {
-        if (this != &other) {
-            _data = other._data;
+        SparseArray &operator=(SparseArray const &other)
+        {
+            if (this != &other) {
+                _data = other._data;
+            }
+            return *this;
         }
-        return *this;
-    }
 
-    SparseArray &operator=(SparseArray &&other) noexcept
-    {
-        if (this != &other) {
-            _data = std::move(other._data);
+        SparseArray &operator=(SparseArray &&other) noexcept
+        {
+            if (this != &other) {
+                _data = std::move(other._data);
+            }
+            return *this;
         }
-        return *this;
-    }
 
-    iterator begin()
-    {
-        return _data.begin();
-    }
-
-    const_iterator begin() const
-    {
-        return _data.begin();
-    }
-
-    const_iterator cbegin() const
-    {
-        return _data.cbegin();
-    }
-
-    iterator end()
-    {
-        return _data.end();
-    }
-
-    const_iterator end() const
-    {
-        return _data.end();
-    }
-
-    const_iterator cend() const
-    {
-        return _data.cend();
-    }
-
-    reference_type operator[](size_t idx)
-    {
-        if (idx >= _data.size()) {
-            _data.resize(idx + 1);
+        iterator begin()
+        {
+            return _data.begin();
         }
-        return _data[idx];
-    }
 
-    std::size_t size() const
-    {
-        return _data.size();
-    }
+        const_iterator begin() const
+        {
+            return _data.begin();
+        }
 
-  private:
-    container _data;
-};
+        const_iterator cbegin() const
+        {
+            return _data.cbegin();
+        }
+
+        iterator end()
+        {
+            return _data.end();
+        }
+
+        const_iterator end() const
+        {
+            return _data.end();
+        }
+
+        const_iterator cend() const
+        {
+            return _data.cend();
+        }
+
+        reference_type operator[](size_t idx)
+        {
+            if (idx >= _data.size()) {
+                _data.resize(idx + 1);
+            }
+            return _data[idx];
+        }
+
+        std::size_t size() const
+        {
+            return _data.size();
+        }
+
+      private:
+        container _data;
+    };
 } // namespace ecs
 
 #endif /* !SPARSEARRAY_HPP_ */

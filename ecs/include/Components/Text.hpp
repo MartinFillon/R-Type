@@ -13,12 +13,12 @@
 #include "./Size.hpp"
 
 namespace ecs {
-namespace component {
-struct Text {
-    std::string _string;
-    sf::Text _text;
-};
-}; // namespace component
+    namespace component {
+        struct Text {
+            std::string _string;
+            sf::Text _text;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !TEXT_HPP_ */

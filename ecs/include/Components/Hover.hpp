@@ -9,11 +9,11 @@
 #define HOVER_HPP_
 
 namespace ecs {
-namespace component {
-struct Hover {
-    bool _value;
-};
-}; // namespace component
+    namespace component {
+        struct Hover {
+            bool _value;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !HOVER_HPP_ */

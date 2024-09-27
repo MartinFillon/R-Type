@@ -9,11 +9,11 @@
 #define LIFE_HPP_
 
 namespace ecs {
-namespace component {
-struct Life {
-    double _life;
-};
-}; // namespace component
+    namespace component {
+        struct Life {
+            double _life;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !LIFE_HPP_ */

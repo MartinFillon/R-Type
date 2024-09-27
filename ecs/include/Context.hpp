@@ -15,24 +15,24 @@
 
 namespace ecs {
 
-class Context {
-  public:
-    Context();
-    ~Context();
+    class Context {
+      public:
+        Context();
+        ~Context();
 
-    sf::RenderWindow &getRenderWindow();
+        sf::RenderWindow &getRenderWindow();
 
-    int run();
+        int run();
 
-  protected:
-  private:
-    void setup();
-    void setupPlayer();
-    void setupBackground();
-    sf::RenderWindow _window;
-    EntityManager _entitys;
-    Registry _r;
-};
+      protected:
+      private:
+        void setup();
+        void setupPlayer();
+        void setupBackground();
+        sf::RenderWindow _window;
+        EntityManager _entitys;
+        Registry _r;
+    };
 } // namespace ecs
 
 #endif /* !CONTEXT_HPP_ */

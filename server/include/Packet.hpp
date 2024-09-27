@@ -17,30 +17,30 @@
 
 namespace Rtype {
 
-class Packet {
+    class Packet {
 
-    using Message = std::vector<uint8_t>;
-    using Arguments = std::vector<uint8_t>;
+        using Message = std::vector<uint8_t>;
+        using Arguments = std::vector<uint8_t>;
 
-  public:
-    Packet(const Message &message);
-    Packet(uint8_t opcode, Arguments arguments = {});
+      public:
+        Packet(const Message &message);
+        Packet(uint8_t opcode, Arguments arguments = {});
 
-    bool isValid() const;
-    uint8_t getOpcode() const;
-    Arguments getArguments() const;
+        bool isValid() const;
+        uint8_t getOpcode() const;
+        Arguments getArguments() const;
 
-    Message toMessage() const;
+        Message toMessage() const;
 
-  private:
-    bool isValidOpcode(uint8_t opcode);
+      private:
+        bool isValidOpcode(uint8_t opcode);
 
-    bool _isValid;
+        bool _isValid;
 
-    uint32_t _magicNumber;
-    uint8_t _opcode;
-    Arguments _arguments;
-};
+        uint32_t _magicNumber;
+        uint8_t _opcode;
+        Arguments _arguments;
+    };
 
 }; // namespace Rtype
 

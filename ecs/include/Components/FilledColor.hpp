@@ -11,11 +11,11 @@
 #include <SFML/Graphics/Color.hpp>
 
 namespace ecs {
-namespace component {
-struct FilledColor {
-    sf::Color _color;
-};
-}; // namespace component
+    namespace component {
+        struct FilledColor {
+            sf::Color _color;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !FILLEDCOLOR_HPP_ */

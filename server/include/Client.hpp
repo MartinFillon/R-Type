@@ -24,29 +24,29 @@
 
 namespace Rtype {
 
-class Server;
+    class Server;
 
-class Client {
+    class Client {
 
-    using Message = std::vector<uint8_t>;
+        using Message = std::vector<uint8_t>;
 
-    using Socket = asio::ip::udp::socket;
-    using Endpoint = asio::ip::udp::endpoint;
+        using Socket = asio::ip::udp::socket;
+        using Endpoint = asio::ip::udp::endpoint;
 
-  public:
-    Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
+      public:
+        Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
 
-    void send(const Packet &packet);
-    void disconnect();
+        void send(const Packet &packet);
+        void disconnect();
 
-  private:
-    unsigned int _id;
-    bool _running;
+      private:
+        unsigned int _id;
+        bool _running;
 
-    Server &_server;
-    Socket &_socket;
-    Endpoint _endpoint;
-};
+        Server &_server;
+        Socket &_socket;
+        Endpoint _endpoint;
+    };
 
 }; // namespace Rtype
 

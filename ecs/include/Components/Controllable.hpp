@@ -9,12 +9,12 @@
 #define CONTROLLABLE_HPP_
 
 namespace ecs {
-namespace component {
-struct Controllable {
-    bool _controllable;
-    double _speed;
-};
-}; // namespace component
+    namespace component {
+        struct Controllable {
+            bool _controllable;
+            double _speed;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !CONTROLLABLE_HPP_ */

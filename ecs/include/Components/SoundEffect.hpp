@@ -12,12 +12,12 @@
 #include <string>
 
 namespace ecs {
-namespace component {
-struct SoundEffect {
-    sf::Sound _sound;
-    std::string _pathToSound;
-};
-}; // namespace component
+    namespace component {
+        struct SoundEffect {
+            sf::Sound _sound;
+            std::string _pathToSound;
+        };
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !SOUNDEFFECT_HPP_ */

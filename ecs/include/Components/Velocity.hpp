@@ -9,12 +9,12 @@
 #define VELOCITY_HPP_
 
 namespace ecs {
-namespace component {
-struct Velocity {
-    double _vx;
-    double _vy;
-}
-}; // namespace component
+    namespace component {
+        struct Velocity {
+            double _vx;
+            double _vy;
+        }
+    }; // namespace component
 }; // namespace ecs
 
 #endif /* !VELOCITY_HPP_ */
