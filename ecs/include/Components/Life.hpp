@@ -14,6 +14,6 @@ namespace ecs {
             double _life;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !LIFE_HPP_ */

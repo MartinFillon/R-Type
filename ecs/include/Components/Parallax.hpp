@@ -19,6 +19,6 @@ namespace ecs {
             int _multiplicator;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !PARALAX_HPP_ */

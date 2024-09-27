@@ -14,6 +14,6 @@ namespace ecs {
             double _score;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !SCORE_HPP_ */

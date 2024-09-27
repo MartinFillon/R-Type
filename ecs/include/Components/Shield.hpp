@@ -14,6 +14,6 @@ namespace ecs {
             double _shield;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !SHIELD_HPP_ */

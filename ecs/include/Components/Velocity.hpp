@@ -15,6 +15,6 @@ namespace ecs {
             double _vy;
         }
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !VELOCITY_HPP_ */

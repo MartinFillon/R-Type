@@ -21,6 +21,6 @@ namespace ecs {
             double _rotation;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !ANIMATIONS_HPP_ */

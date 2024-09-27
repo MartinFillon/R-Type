@@ -16,6 +16,6 @@ namespace ecs {
             sf::Color _color;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !FILLEDCOLOR_HPP_ */

@@ -23,6 +23,6 @@ namespace ecs {
             std::string _pathToSprite;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !SPRITE_HPP_ */

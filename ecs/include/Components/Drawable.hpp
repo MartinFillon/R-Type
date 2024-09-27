@@ -14,6 +14,6 @@ namespace ecs {
             bool _drawable;
         };
     }; // namespace component
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !DRAWABLE_HPP_ */
