@@ -28,6 +28,9 @@ enum Movements {
 };
 
 enum Operations {
+    CONNECTING = 42,
+    CONNECTED = 1,
+    IMAGE,
     OBJECT_POSITION,
     NEW_OBJECT,
     MOVE,
