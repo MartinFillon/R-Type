@@ -14,6 +14,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include "Context.hpp"
+#include "Components/Parallax.hpp"
 #include "Entity.hpp"
 #include "ImageResolver.hpp"
 
@@ -24,6 +25,7 @@
 #include "Components/Animations.hpp"
 #include "Components/Size.hpp"
 
+#include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
 
 namespace ecs {
@@ -46,7 +48,7 @@ void Context::setupPlayer()
 
     positions[player.getId()] = ecs::component::Position{100, 100};
     drawables[player.getId()] = ecs::component::Drawable{true};
-    controllable[player.getId()] = ecs::component::Controllable{true, 0.2};
+    controllable[player.getId()] = ecs::component::Controllable{true, 0.9};
     sprite[player.getId()] = ecs::component::Sprite{PLAYER_SPRITE};
     animation[player.getId()] = ecs::component::Animations{sf::Clock(), 35, 20, 0, 0, 0};
     size[player.getId()] = ecs::component::Size{3, 3};
@@ -59,8 +61,8 @@ void Context::setupBackground()
 {
     Entity firstBackground = _r.spawn_entity();
     _entitys.addEntity(firstBackground);
-    Entity secondtBackground = _r.spawn_entity();
-    _entitys.addEntity(secondtBackground);
+    Entity secondBackground = _r.spawn_entity();
+    _entitys.addEntity(secondBackground);
     Entity thirdBackground = _r.spawn_entity();
     _entitys.addEntity(thirdBackground);
     Entity fourthBackground = _r.spawn_entity();
@@ -70,19 +72,52 @@ void Context::setupBackground()
     auto &drawable = _r.register_component<ecs::component::Drawable>();
     auto &sprite = _r.register_component<ecs::component::Sprite>();
     auto &animation = _r.register_component<ecs::component::Animations>();
+    auto &paralax = _r.register_component<ecs::component::Parallax>();
+    auto &size = _r.register_component<ecs::component::Size>();
 
-    
+    paralax[firstBackground.getId()] = ecs::component::Parallax{true, 3, 1};
+    paralax[secondBackground.getId()] = ecs::component::Parallax{true, 3, 1};
+    paralax[thirdBackground.getId()] = ecs::component::Parallax{true, 1, 1};
+    paralax[fourthBackground.getId()] = ecs::component::Parallax{true, 1, 1};
+
+    sprite[firstBackground.getId()] = ecs::component::Sprite{BACKGROUND2_SPRITE};
+    sprite[secondBackground.getId()] = ecs::component::Sprite{BACKGROUND2_SPRITE};
+    sprite[thirdBackground.getId()] = ecs::component::Sprite{BACKGROUND4_SPRITE};
+    sprite[fourthBackground.getId()] = ecs::component::Sprite{BACKGROUND4_SPRITE};
+
+    drawable[firstBackground.getId()] = ecs::component::Drawable{true};
+    drawable[secondBackground.getId()] = ecs::component::Drawable{true};
+    drawable[thirdBackground.getId()] = ecs::component::Drawable{true};
+    drawable[fourthBackground.getId()] = ecs::component::Drawable{true};
+
+    positions[firstBackground.getId()] = ecs::component::Position{1920 * 0, 0};
+    positions[secondBackground.getId()] = ecs::component::Position{1920 * 1, 0};
+    positions[thirdBackground.getId()] = ecs::component::Position{1920 * 0, 0};
+    positions[fourthBackground.getId()] = ecs::component::Position{1920 * 1, 0};
+
+    animation[firstBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0};
+    animation[secondBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0};
+    animation[thirdBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0};
+    animation[fourthBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0};
+
+    size[firstBackground.getId()] = ecs::component::Size{7, 7};
+    size[secondBackground.getId()] = ecs::component::Size{7, 7};
+    size[thirdBackground.getId()] = ecs::component::Size{7, 7};
+    size[fourthBackground.getId()] = ecs::component::Size{7, 7};
+
+    ecs::systems::ParalaxSystem paralaxSystem;
+    _r.add_system(paralaxSystem);
 }
 
 void Context::setup()
 {
-    setupPlayer();
     setupBackground();
+    setupPlayer();
 }
 
 int Context::run()
 {
-    this->setup();
+    setup();
     auto &drawables = _r.get_components<ecs::component::Drawable>();
     auto &sprites = _r.get_components<ecs::component::Sprite>();
     auto &positions = _r.register_component<ecs::component::Position>();
