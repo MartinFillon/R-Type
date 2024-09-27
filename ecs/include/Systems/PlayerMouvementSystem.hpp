@@ -42,6 +42,6 @@ namespace ecs {
             };
         };
     }; // namespace systems
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* PLAYERMOUVEMENTSYSTEM_HPP_ */

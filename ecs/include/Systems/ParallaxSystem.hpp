@@ -40,6 +40,6 @@ namespace ecs {
             }
         };
     }; // namespace systems
-};     // namespace ecs
+}; // namespace ecs
 
 #endif /* !PARALAXSYSTEM_HPP_ */
