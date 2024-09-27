@@ -48,7 +48,7 @@ namespace ecs {
         drawables[player.getId()] = ecs::component::Drawable{true};
         controllable[player.getId()] = ecs::component::Controllable{true, 0.9};
         sprite[player.getId()] = ecs::component::Sprite{PLAYER_SPRITE};
-        animation[player.getId()] = ecs::component::Animations{sf::Clock(), 35, 20, 0, 0, 0};
+        animation[player.getId()] = ecs::component::Animations{sf::Clock(), 33, 20, 65, 0, 0};
         size[player.getId()] = ecs::component::Size{3, 3};
 
         ecs::systems::PlayerMouvementSystem playerMovementSystem;
