@@ -11,6 +11,7 @@ add_executable(r-type_server
     src/Server.cpp
     src/Client.cpp
     src/Packet.cpp
+    src/Game.cpp
 )
 
 target_include_directories(r-type_server PUBLIC include ../protocol)
