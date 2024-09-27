@@ -5,16 +5,23 @@
 ** Context
 */
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <iostream>
 
 #include "Context.hpp"
+#include "Entity.hpp"
+#include "ImageResolver.hpp"
+
 #include "Components/Position.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Animations.hpp"
-#include "Entity.hpp"
+
+#include "Systems/PlayerMouvementSystem.hpp"
 
 namespace ecs {
 
@@ -36,8 +43,9 @@ void Context::setupPlayer()
     positions[player.getId()] = ecs::component::Position{100, 100};
     drawables[player.getId()] = ecs::component::Drawable{true};
     controllable[player.getId()] = ecs::component::Controllable{true, 0.2};
-    sprite[player.getId()] = ecs::component::Sprite{"assets/sprites/r-typesheet42.gif"};
+    sprite[player.getId()] = ecs::component::Sprite{"r-typesheet42.gif"};
     animation[player.getId()] = ecs::component::Animations{35, 20, 0, 0};
+
 }
 
 void Context::setupBackground()
@@ -52,6 +60,12 @@ void Context::setup()
 
 int Context::run()
 {
+    setup();
+    auto &drawables = _r.get_components<ecs::component::Drawable>();
+    auto &sprites = _r.get_components<ecs::component::Sprite>();
+    auto &positions = _r.register_component<ecs::component::Position>();
+    auto &animations = _r.register_component<ecs::component::Animations>();
+
     while (_window.isOpen()) {
         sf::Event event;
         while (_window.pollEvent(event)) {
@@ -59,15 +73,23 @@ int Context::run()
               _window.close();
         }
         _window.clear();
+        std::cout << "aller\n";
         _r.run_systems();
-
-
-/*        if (drawables[entity.getId()]-> _drawable) {
-            auto &pos = positions[entity.getId()];
-            square.setPosition(pos->_x, pos->_y);
-            _window.draw(square);
-        }*/
-
+        std::cout << "terrible\n";
+        for (std::size_t i = 0; i < _entitys.size(); ++i) {
+          if (drawables[i]->_drawable) {
+            sf::Texture texture;
+            if (sprites[i] && animations[i]) {
+              ImageResolver image("assets/sprites/");
+              std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
+              texture.loadFromMemory(pathToImage.c_str(), pathToImage.size(),
+                                     sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height));
+            }
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            _window.draw(sprite);
+          }
+        }
         _window.display();
     }
     return EXIT_SUCCESS;

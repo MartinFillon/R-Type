@@ -9,22 +9,13 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include "Context.hpp"
+#include "Entity.hpp"
+#include "Registry.hpp"
+#include "Systems/PlayerMouvementSystem.hpp"
+#include "Components/Drawable.hpp"
 
 int main(void)
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "ECS SFML Example");
-
-    ecs::Context ctx = ecs::Context(window);
-
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        window.clear();
-
-        window.display();
-    }
-    return 0;
+    ecs::Context ctx;
+    return ctx.run();
 }
