@@ -6,7 +6,7 @@
 */
 
 #ifndef SIZE_HPP_
-    #define SIZE_HPP_
+#define SIZE_HPP_
 
 namespace ecs {
     namespace component {
@@ -14,7 +14,7 @@ namespace ecs {
             double _width;
             double _height;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !SIZE_HPP_ */

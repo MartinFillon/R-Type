@@ -6,7 +6,7 @@
 */
 
 #ifndef VELOCITY_HPP_
-    #define VELOCITY_HPP_
+#define VELOCITY_HPP_
 
 namespace ecs {
     namespace component {
@@ -14,7 +14,7 @@ namespace ecs {
             double _vx;
             double _vy;
         }
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !VELOCITY_HPP_ */

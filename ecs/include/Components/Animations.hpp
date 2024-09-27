@@ -6,7 +6,7 @@
 */
 
 #ifndef ANIMATIONS_HPP_
-    #define ANIMATIONS_HPP_
+#define ANIMATIONS_HPP_
 
 #include <SFML/System/Clock.hpp>
 
@@ -20,7 +20,7 @@ namespace ecs {
             double _y;
             double _rotation;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !ANIMATIONS_HPP_ */

@@ -6,9 +6,9 @@
 */
 
 #ifndef SPRITE_HPP_
-    #define SPRITE_HPP_
+#define SPRITE_HPP_
 
-    #include <string>
+#include <string>
 
     #define PLAYER_SPRITE "r-typesheet42.gif"
 
@@ -19,10 +19,10 @@
 
 namespace ecs {
     namespace component {
-        struct Sprite  {
-          std::string _pathToSprite;
+        struct Sprite {
+            std::string _pathToSprite;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !SPRITE_HPP_ */

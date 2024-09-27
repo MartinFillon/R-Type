@@ -6,35 +6,33 @@
 */
 
 #ifndef CONTEXT_HPP_
-    #define CONTEXT_HPP_
+#define CONTEXT_HPP_
 
-    #include <SFML/Graphics.hpp>
-    #include <SFML/Graphics/RenderWindow.hpp>
-    #include "EntityManager.hpp"
-    #include "Registry.hpp"
-
-    #define GAME_NAME "R-Type"
+#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include "EntityManager.hpp"
+#include "Registry.hpp"
 
 namespace ecs {
 
-	class Context {
-		public:
-			Context();
-			~Context();
+    class Context {
+      public:
+        Context();
+        ~Context();
 
-		    sf::RenderWindow &getRenderWindow();
+        sf::RenderWindow &getRenderWindow();
 
-                    int run();
-		protected:
+        int run();
 
-                private:
-                    void setup();
-                    void setupPlayer();
-                    void setupBackground();
-                    sf::RenderWindow _window;
-                    EntityManager _entitys;
-                    Registry _r;
-	};
+      protected:
+      private:
+        void setup();
+        void setupPlayer();
+        void setupBackground();
+        sf::RenderWindow _window;
+        EntityManager _entitys;
+        Registry _r;
+    };
 } // namespace ecs
 
 #endif /* !CONTEXT_HPP_ */
