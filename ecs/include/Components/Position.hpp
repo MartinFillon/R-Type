@@ -15,6 +15,6 @@ namespace ecs {
             double _y;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !POSITION_HPP_ */

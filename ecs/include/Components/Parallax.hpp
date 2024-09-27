@@ -6,10 +6,10 @@
 */
 
 #ifndef PARALAX_HPP_
-    #define PARALAX_HPP_
+#define PARALAX_HPP_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace ecs {
     namespace component {
@@ -18,7 +18,7 @@ namespace ecs {
             double _speed;
             int _multiplicator;
         };
-    };
-};
+    }; // namespace component
+};     // namespace ecs
 
 #endif /* !PARALAX_HPP_ */

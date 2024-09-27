@@ -10,12 +10,12 @@
 
 #include <string>
 
-    #define PLAYER_SPRITE "r-typesheet42.gif"
+#define PLAYER_SPRITE "r-typesheet42.gif"
 
-    #define BACKGROUND1_SPRITE "Background/background_1.png"
-    #define BACKGROUND2_SPRITE "Background/background_2.png"
-    #define BACKGROUND3_SPRITE "Background/background_3.png"
-    #define BACKGROUND4_SPRITE "Background/background_4.png"
+#define BACKGROUND1_SPRITE "Background/background_1.png"
+#define BACKGROUND2_SPRITE "Background/background_2.png"
+#define BACKGROUND3_SPRITE "Background/background_3.png"
+#define BACKGROUND4_SPRITE "Background/background_4.png"
 
 namespace ecs {
     namespace component {
@@ -23,6 +23,6 @@ namespace ecs {
             std::string _pathToSprite;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !SPRITE_HPP_ */

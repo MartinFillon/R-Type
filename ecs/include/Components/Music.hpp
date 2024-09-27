@@ -18,6 +18,6 @@ namespace ecs {
             std::string _pathToMusic;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !MUSIC_HPP_ */

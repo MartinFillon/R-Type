@@ -17,6 +17,6 @@ namespace ecs {
             virtual void operator()(Registry &) = 0;
         };
     }; // namespace systems
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* ISYSTEMS_HPP_ */

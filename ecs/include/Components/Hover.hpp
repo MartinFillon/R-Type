@@ -14,6 +14,6 @@ namespace ecs {
             bool _value;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !HOVER_HPP_ */

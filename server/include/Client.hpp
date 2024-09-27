@@ -20,7 +20,9 @@
 #define LOGIN 0x42
 #define DATA_MAX_SIZE 1024
 
-#define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
+#define NEW_CLIENT(x) \
+    "New client [" << x << "]" \
+                   << " connected"
 
 namespace Rtype {
 

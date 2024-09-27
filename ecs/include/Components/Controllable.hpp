@@ -15,6 +15,6 @@ namespace ecs {
             double _speed;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !CONTROLLABLE_HPP_ */

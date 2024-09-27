@@ -18,6 +18,6 @@ namespace ecs {
             std::string _pathToSound;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !SOUNDEFFECT_HPP_ */

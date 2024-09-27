@@ -19,6 +19,6 @@ namespace ecs {
             sf::Text _text;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !TEXT_HPP_ */

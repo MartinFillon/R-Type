@@ -16,6 +16,6 @@ namespace ecs {
             sf::Color _outlinedColor;
         };
     }; // namespace component
-}; // namespace ecs
+};     // namespace ecs
 
 #endif /* !OUTLINEDCOLOR_HPP_ */
