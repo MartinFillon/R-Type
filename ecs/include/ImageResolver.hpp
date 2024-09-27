@@ -10,6 +10,8 @@
 #include <string>
 #include <unordered_map>
 
+#define PATH_TO_ASSETS "assets/sprites/"
+
 namespace ecs {
 
 /**
