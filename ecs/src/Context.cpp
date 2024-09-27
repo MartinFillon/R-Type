@@ -30,7 +30,7 @@
 
 namespace ecs {
 
-Context::Context(): _window(sf::VideoMode(1920, 1080), GAME_NAME), _entitys()
+Context::Context() : _window(sf::VideoMode(1920, 1080), GAME_NAME), _entitys()
 {
 }
 
@@ -127,41 +127,40 @@ int Context::run()
     while (_window.isOpen()) {
         sf::Event event;
         while (_window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-              _window.close();
+            if (event.type == sf::Event::Closed) {
+                _window.close();
+            }
         }
         _window.clear();
         _r.run_systems();
 
         for (std::size_t i = 0; i < _entitys.size(); ++i) {
-          if (drawables[i]->_drawable) {
-            sf::Texture texture;
-            if (sprites[i] && animations[i]) {
-              ImageResolver image(PATH_TO_ASSETS);
-              std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-              texture.loadFromMemory(pathToImage.c_str(), pathToImage.size(),
-                                     sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height));
+            if (drawables[i]->_drawable) {
+                sf::Texture texture;
+                if (sprites[i] && animations[i]) {
+                    ImageResolver image(PATH_TO_ASSETS);
+                    std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
+                    texture.loadFromMemory(pathToImage.c_str(), pathToImage.size(),
+                                 sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height));
+                }
+                sf::Sprite sprite;
+                sprite.setPosition(positions[i]->_x, positions[i]->_y);
+                sprite.setScale(size[i]->_width, size[i]->_height);
+                sprite.setTexture(texture);
+                _window.draw(sprite);
             }
-            sf::Sprite sprite;
-            sprite.setPosition(positions[i]->_x, positions[i]->_y);
-            sprite.setScale(size[i]->_width, size[i]->_height);
-            sprite.setTexture(texture);
-            _window.draw(sprite);
-          }
         }
         _window.display();
     }
     return EXIT_SUCCESS;
 }
 
-Context::~Context()
-{
-    return;
+Context::~Context() {
+  return;
 }
 
-sf::RenderWindow &Context::getRenderWindow()
-{
-    return _window;
+sf::RenderWindow &Context::getRenderWindow() {
+  return _window;
 }
 
 } // namespace ecs
