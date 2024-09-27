@@ -60,8 +60,6 @@ namespace Rtype {
 
             Context _context;
 
-            Context _context;
-
             int _port;
             bool _running;
 
