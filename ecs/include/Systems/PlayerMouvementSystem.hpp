@@ -8,6 +8,8 @@
 #ifndef PLAYERMOUVEMENTSYSTEM_HPP_
     #define PLAYERMOUVEMENTSYSTEM_HPP_
 
+#include <SFML/Window/Keyboard.hpp>
+
 #include "ISystems.hpp"
 #include "Registry.hpp"
 #include "Components/Position.hpp"
@@ -18,7 +20,7 @@ namespace ecs {
         class PlayerMouvementSystem : public ISystems {
           public:
 
-            void operator()(Registry &r) override {
+            void operator()(Registry &r) {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllable = r.get_components<ecs::component::Controllable>();
                 for (std::size_t i = 0; i < positions.size(); ++i) {
