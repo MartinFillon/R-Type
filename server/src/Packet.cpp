@@ -17,7 +17,7 @@ Rtype::Packet::Packet(const Message &message): _isValid(false)
 
     _magicNumber = GET_MAGIC_NUMBER(message);
 
-    if (_magicNumber != MAGIC) {
+    if (_magicNumber != protocol::MAGIC) {
         return;
     }
 
@@ -34,7 +34,7 @@ Rtype::Packet::Packet(const Message &message): _isValid(false)
 
 Rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
 {
-    _magicNumber = MAGIC;
+    _magicNumber = protocol::MAGIC;
 
     if (!isValidOpcode(opcode)) {
         return;
@@ -79,7 +79,7 @@ Rtype::Packet::Message Rtype::Packet::toMessage() const
 
 bool Rtype::Packet::isValidOpcode(uint8_t opcode)
 {
-    for (size_t i = OBJECT_POSITION; i != GAME_SPEED; i++) {
+    for (size_t i = protocol::OBJECT_POSITION; i != protocol::GAME_SPEED; i++) {
         if (i == opcode) {
             return true;
         }
