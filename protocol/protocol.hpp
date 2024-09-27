@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace protocol {
+
 enum ObjectTypes {
     PLAYER_SELF,
     PLAYER_1,
@@ -46,3 +48,5 @@ enum Operations {
 };
 
 const std::string MAGIC = "BEER";
+
+}; // namespace protocol
