@@ -49,6 +49,10 @@ namespace ecs {
             return _entitys[idx];
         }
 
+        std::size_t size() const {
+          return _entitys.size();
+        }
+
         Entity lastEntity() const {
           return _entitys[_entitys.size()];
         }

@@ -12,9 +12,9 @@
 #include <unordered_map>
 #include <functional>
 #include <any>
+#include <iostream>
 #include "./Entity.hpp"
 #include "./SparseArray.hpp"
-
 
 namespace ecs {
     class Registry {
