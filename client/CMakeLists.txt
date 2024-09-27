@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.27)
-project(R-Type-Client LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
@@ -13,7 +12,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SFML)
 
 add_executable(r-type_client src/main.cpp)
-add_compile_options(lX11)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
 target_include_directories(r-type_client PUBLIC ../ecs/include)
@@ -30,4 +28,8 @@ if(WIN32)
       ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll
       $<TARGET_FILE_DIR:ecs>
     VERBATIM)
+endif()
+
+if(UNIX)
+  add_compile_options(lX11)
 endif()
