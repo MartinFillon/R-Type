@@ -24,7 +24,9 @@ namespace Rtype {
       public:
         Game() = default;
 
-        void update() {};
+        void update() {
+
+        };
         void processAction(const unsigned int id, const Packet &packet);
     };
 
