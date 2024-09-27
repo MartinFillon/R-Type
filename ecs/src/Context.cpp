@@ -5,11 +5,13 @@
 ** Context
 */
 
+#include <iostream>
+#include <functional>
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <iostream>
 
 #include "Context.hpp"
 #include "Entity.hpp"
@@ -47,9 +49,7 @@ void Context::setupPlayer()
     animation[player.getId()] = ecs::component::Animations{35, 20, 0, 0};
 
     ecs::systems::PlayerMouvementSystem playerMovementSystem;
-    _r.add_system([&playerMovementSystem](ecs::Registry &r) {playerMovementSystem(r);});
-    std::cout << "system added\n";
-
+    _r.add_system(playerMovementSystem);
 }
 
 void Context::setupBackground()
@@ -64,7 +64,7 @@ void Context::setup()
 
 int Context::run()
 {
-    setup();
+    this->setup();
     auto &drawables = _r.get_components<ecs::component::Drawable>();
     auto &sprites = _r.get_components<ecs::component::Sprite>();
     auto &positions = _r.register_component<ecs::component::Position>();
@@ -77,9 +77,8 @@ int Context::run()
               _window.close();
         }
         _window.clear();
-        std::cout << "aller\n";
         _r.run_systems();
-        std::cout << "terrible\n";
+
         for (std::size_t i = 0; i < _entitys.size(); ++i) {
           if (drawables[i]->_drawable) {
             sf::Texture texture;
@@ -90,6 +89,7 @@ int Context::run()
                                      sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height));
             }
             sf::Sprite sprite;
+            sprite.setPosition(positions[i]->_x, positions[i]->_y);
             sprite.setTexture(texture);
             _window.draw(sprite);
           }

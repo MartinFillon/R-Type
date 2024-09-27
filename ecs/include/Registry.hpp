@@ -56,9 +56,7 @@ namespace ecs {
 
             void run_systems() {
                 for (auto &system: _systems) {
-                  std::cout << "1\n";
                     system(*this);
-                    std::cout << "sheh\n";
                 }
             }
 
