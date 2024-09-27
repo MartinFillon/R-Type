@@ -12,6 +12,7 @@
     #include <SFML/Graphics/RenderWindow.hpp>
     #include "EntityManager.hpp"
     #include "Registry.hpp"
+  
 namespace ecs {
 
 	class Context {
@@ -32,6 +33,6 @@ namespace ecs {
                     EntityManager _entitys;
                     Registry _r;
 	};
-} // namespace ecs
+}
 
 #endif /* !CONTEXT_HPP_ */

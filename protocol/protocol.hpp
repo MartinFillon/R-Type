@@ -47,6 +47,6 @@ enum Operations {
     OBJECT_INFORMATIONS
 };
 
-const std::string MAGIC = "BEER";
+const uint32_t MAGIC = 0x42454552;
 
 }; // namespace protocol
