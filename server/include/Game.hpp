@@ -10,6 +10,11 @@
 
     #define UNUSED __attribute__((unused))
 
+    #define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
+    #define VALID_PACKET(x) "Valid packet from client [" << x << "]"
+
+    #include <iostream>
+
     #include "Packet.hpp"
 
 namespace Rtype {
@@ -21,7 +26,7 @@ namespace Rtype {
             Game() = default;
 
             void update() {};
-            void processAction(UNUSED const int id, UNUSED const Packet &packet) {};
+            void processAction(const unsigned int id, const Packet &packet);
 
     };
 
