@@ -5,7 +5,8 @@
 ** ImageResolver
 */
 
-#pragma once
+#ifndef IMAGERESOLVER_HPP_
+#define IMAGERESOLVER_HPP_
 
 #include <string>
 #include <unordered_map>
@@ -37,3 +38,5 @@ class ImageResolver {
 };
 
 } // namespace ecs
+
+#endif // IMAGERESOLVER_HPP_

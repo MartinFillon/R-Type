@@ -5,8 +5,8 @@
 ** Context
 */
 
-#include <iostream>
 #include <functional>
+#include <iostream>
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -17,19 +17,17 @@
 #include "Entity.hpp"
 #include "ImageResolver.hpp"
 
-#include "Components/Position.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Sprite.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Position.hpp"
+#include "Components/Sprite.hpp"
 
 #include "Systems/PlayerMouvementSystem.hpp"
 
 namespace ecs {
 
-Context::Context(): _window(sf::VideoMode(1920, 1080), "R-Type"), _entitys()
-{
-}
+Context::Context() : _window(sf::VideoMode(1920, 1080), "R-Type"), _entitys() {}
 
 void Context::setupPlayer()
 {
@@ -52,9 +50,7 @@ void Context::setupPlayer()
     _r.add_system(playerMovementSystem);
 }
 
-void Context::setupBackground()
-{
-}
+void Context::setupBackground() {}
 
 void Context::setup()
 {
@@ -74,25 +70,28 @@ int Context::run()
         sf::Event event;
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-              _window.close();
+                _window.close();
         }
         _window.clear();
         _r.run_systems();
 
         for (std::size_t i = 0; i < _entitys.size(); ++i) {
-          if (drawables[i]->_drawable) {
-            sf::Texture texture;
-            if (sprites[i] && animations[i]) {
-              ImageResolver image("assets/sprites/");
-              std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-              texture.loadFromMemory(pathToImage.c_str(), pathToImage.size(),
-                                     sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height));
+            if (drawables[i]->_drawable) {
+                sf::Texture texture;
+                if (sprites[i] && animations[i]) {
+                    ImageResolver image("assets/sprites/");
+                    std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
+                    texture.loadFromMemory(
+                        pathToImage.c_str(),
+                        pathToImage.size(),
+                        sf::IntRect(animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height)
+                    );
+                }
+                sf::Sprite sprite;
+                sprite.setPosition(positions[i]->_x, positions[i]->_y);
+                sprite.setTexture(texture);
+                _window.draw(sprite);
             }
-            sf::Sprite sprite;
-            sprite.setPosition(positions[i]->_x, positions[i]->_y);
-            sprite.setTexture(texture);
-            _window.draw(sprite);
-          }
         }
         _window.display();
     }

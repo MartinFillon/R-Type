@@ -9,7 +9,7 @@
 
 #include "protocol.hpp"
 
-Rtype::Packet::Packet(const Message &message): _isValid(false)
+Rtype::Packet::Packet(const Message &message) : _isValid(false)
 {
     if (message.size() < MESSAGE_MIN_SIZE) {
         return;

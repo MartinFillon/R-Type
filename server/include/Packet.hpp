@@ -6,46 +6,42 @@
 */
 
 #ifndef PACKET_HPP_
-    #define PACKET_HPP_
+#define PACKET_HPP_
 
-    #include <vector>
-    #include <memory>
+#include <memory>
+#include <vector>
 
-    #define MESSAGE_OPCODE 4
-    #define MESSAGE_MIN_SIZE 5
-    #define GET_MAGIC_NUMBER(x) (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3]
+#define MESSAGE_OPCODE 4
+#define MESSAGE_MIN_SIZE 5
+#define GET_MAGIC_NUMBER(x) (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3]
 
 namespace Rtype {
 
-    class Packet {
+class Packet {
 
-        using Message = std::vector<uint8_t>;
-        using Arguments = std::vector<uint8_t>;
+    using Message = std::vector<uint8_t>;
+    using Arguments = std::vector<uint8_t>;
 
-        public:
+  public:
+    Packet(const Message &message);
+    Packet(uint8_t opcode, Arguments arguments = {});
 
-            Packet(const Message &message);
-            Packet(uint8_t opcode, Arguments arguments = {});
+    bool isValid() const;
+    uint8_t getOpcode() const;
+    Arguments getArguments() const;
 
-            bool isValid() const;
-            uint8_t getOpcode() const;
-            Arguments getArguments() const;
+    Message toMessage() const;
 
-            Message toMessage() const;
+  private:
+    bool isValidOpcode(uint8_t opcode);
 
-        private:
+    bool _isValid;
 
-            bool isValidOpcode(uint8_t opcode);
-
-            bool _isValid;
-
-            uint32_t _magicNumber;
-            uint8_t _opcode;
-            Arguments _arguments;
-
-
-    };
-
+    uint32_t _magicNumber;
+    uint8_t _opcode;
+    Arguments _arguments;
 };
+
+}; // namespace Rtype
 
 #endif /* !PACKET_HPP_ */

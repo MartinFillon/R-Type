@@ -8,49 +8,46 @@
 #ifndef CLIENT_HPP_
 #define CLIENT_HPP_
 
-    #include <asio.hpp>
-    #include <iostream>
-    #include <thread>
-    #include <vector>
+#include <asio.hpp>
+#include <iostream>
+#include <thread>
+#include <vector>
 
-    #include "Packet.hpp"
+#include "Packet.hpp"
 
-    #include "Packet.hpp"
+#include "Packet.hpp"
 
-    #define LOGIN 0x42
-    #define DATA_MAX_SIZE 1024
+#define LOGIN 0x42
+#define DATA_MAX_SIZE 1024
 
-    #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
+#define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
 
 namespace Rtype {
 
-    class Server;
+class Server;
 
-        class Client {
+class Client {
 
-            using Message = std::vector<uint8_t>;
+    using Message = std::vector<uint8_t>;
 
-            using Socket = asio::ip::udp::socket;
-            using Endpoint = asio::ip::udp::endpoint;
+    using Socket = asio::ip::udp::socket;
+    using Endpoint = asio::ip::udp::endpoint;
 
-        public:
+  public:
+    Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
 
-            Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
+    void send(const Packet &packet);
+    void disconnect();
 
-            void send(const Packet &packet);
-            void disconnect();
+  private:
+    unsigned int _id;
+    bool _running;
 
-        private:
+    Server &_server;
+    Socket &_socket;
+    Endpoint _endpoint;
+};
 
-            unsigned int _id;
-            bool _running;
-
-            Server &_server;
-            Socket &_socket;
-            Endpoint _endpoint;
-
-        };
-
-    };
+}; // namespace Rtype
 
 #endif /* !CLIENT_HPP_ */

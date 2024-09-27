@@ -5,30 +5,12 @@ on:
   workflow_call:
 
 jobs:
-  checkout:
+  format-check:
+    name: Formatting Check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repo
-        id: checkout
-        uses: actions/checkout@v4
-
-  check_coding_style:
-    needs: checkout
-    name: "check for coding style errors from binary"
-    runs-on: ubuntu-latest
-    container: ghcr.io/epitech/coding-style-checker:latest
-    steps:
-      - run: |
-          check.sh $(pwd) $(pwd)
-          cat coding-style-reports.log | while read LINE; do
-            TYPE=$(echo $LINE | cut -d ':' -f 3 | tr -d ' ')
-            FILE=$(echo $LINE | cut -d ':' -f 1)
-            AT=$(echo $LINE | cut -d ':' -f 2)
-            CODE=$(echo $LINE | cut -d ':' -f 4)
-            BANANA=$(echo "$TYPE coding style error: $FILE#L$AT")
-            echo "::error file=$FILE,line=$AT,title=$TYPE coding style error::$CODE"
-          done
-          if [[ "$(cat coding-style-reports.log)" != "" ]]
-          then
-            exit 1
-          fi
+      - uses: actions/checkout@v4
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.13.0
+        with:
+          clang-format-version: "18"

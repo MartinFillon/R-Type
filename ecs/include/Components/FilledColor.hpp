@@ -6,17 +6,16 @@
 */
 
 #ifndef FILLEDCOLOR_HPP_
-    #define FILLEDCOLOR_HPP_
+#define FILLEDCOLOR_HPP_
 
-    #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 namespace ecs {
-    namespace component {
-        struct FilledColor {
-            sf::Color _color;
-        };
-    };
+namespace component {
+struct FilledColor {
+    sf::Color _color;
 };
-
+}; // namespace component
+}; // namespace ecs
 
 #endif /* !FILLEDCOLOR_HPP_ */

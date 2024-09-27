@@ -6,16 +6,16 @@
 */
 
 #ifndef SPRITE_HPP_
-    #define SPRITE_HPP_
+#define SPRITE_HPP_
 
-    #include <string>
+#include <string>
 
 namespace ecs {
-    namespace component {
-        struct Sprite  {
-          std::string _pathToSprite;
-        };
-    };
+namespace component {
+struct Sprite {
+    std::string _pathToSprite;
 };
+}; // namespace component
+}; // namespace ecs
 
 #endif /* !SPRITE_HPP_ */

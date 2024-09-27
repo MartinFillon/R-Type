@@ -7,12 +7,11 @@
 
 #include "Server.hpp"
 
-Rtype::Server::Server(int port): 
-    _context(),
-    _port(port),
-    _running(true),
-    _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
-{};
+Rtype::Server::Server(int port)
+    : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
+{
+    return;
+};
 
 void Rtype::Server::start()
 {
@@ -83,7 +82,6 @@ void Rtype::Server::acceptConnections()
             _clients[id].get()->send(Packet(0));
 
             handleMessage(id, message);
-
         }
 
         if (error && _clients.find(id) != _clients.end()) {
