@@ -89,7 +89,6 @@ void Rtype::Server::acceptConnections()
         if (error && _clients.find(id) != _clients.end()) {
             _clients[id].get()->disconnect();
         }
-
     }
 }
 
