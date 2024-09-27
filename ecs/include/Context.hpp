@@ -31,6 +31,7 @@ namespace ecs {
         void setup();
         void setupPlayer();
         void setupBackground();
+        void setupWeapon();
         sf::RenderWindow _window;
         EntityManager _entitys;
         Registry _r;
