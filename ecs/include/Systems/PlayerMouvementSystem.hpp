@@ -15,12 +15,13 @@
 #include "Components/Position.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
-//35
+
 namespace ecs {
     namespace systems {
         class PlayerMouvementSystem : public ISystems {
           public:
-            void operator()(Registry &r) {
+            void operator()(Registry &r)
+            {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllable = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
