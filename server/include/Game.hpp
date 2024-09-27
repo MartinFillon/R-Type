@@ -6,30 +6,28 @@
 */
 
 #ifndef GAME_HPP_
-    #define GAME_HPP_
+#define GAME_HPP_
 
-    #define UNUSED __attribute__((unused))
+#define UNUSED __attribute__((unused))
 
-    #define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
-    #define VALID_PACKET(x) "Valid packet from client [" << x << "]"
+#define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
+#define VALID_PACKET(x) "Valid packet from client [" << x << "]"
 
-    #include <iostream>
+#include <iostream>
 
-    #include "Packet.hpp"
+#include "Packet.hpp"
 
 namespace Rtype {
 
     class Game {
 
-        public:
+      public:
+        Game() = default;
 
-            Game() = default;
-
-            void update() {};
-            void processAction(const unsigned int id, const Packet &packet);
-
+        void update() {};
+        void processAction(const unsigned int id, const Packet &packet);
     };
 
-};
+}; // namespace Rtype
 
 #endif /* !GAME_HPP_ */

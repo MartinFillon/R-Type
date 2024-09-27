@@ -2,7 +2,6 @@ IndentWidth: 4
 
 ColumnLimit: 120
 
-
 # function names
 AlignAfterOpenBracket: BlockIndent
 AllowAllArgumentsOnNextLine: true
@@ -55,7 +54,7 @@ ExperimentalAutoDetectBinPacking: false
 AllowAllParametersOfDeclarationOnNextLine: false
 
 # namespaces
-NamespaceIndentation: None
+NamespaceIndentation: All
 
 # switch cases
 IndentCaseLabels: true

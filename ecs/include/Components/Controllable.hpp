@@ -6,7 +6,7 @@
 */
 
 #ifndef CONTROLLABLE_HPP_
-    #define CONTROLLABLE_HPP_
+#define CONTROLLABLE_HPP_
 
 namespace ecs {
     namespace component {
@@ -14,7 +14,7 @@ namespace ecs {
             bool _controllable;
             double _speed;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !CONTROLLABLE_HPP_ */

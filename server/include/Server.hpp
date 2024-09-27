@@ -6,26 +6,26 @@
 */
 
 #ifndef SERVER_HPP_
-    #define SERVER_HPP_
+#define SERVER_HPP_
 
-    #include <mutex>
-    #include <vector>
-    #include <asio.hpp>
-    #include <unordered_map>
+#include <asio.hpp>
+#include <mutex>
+#include <vector>
+#include <unordered_map>
 
-    #include "Game.hpp"
-    #include "Client.hpp"
+#include "Client.hpp"
+#include "Game.hpp"
 
-    #define PORT 1
-    #define NB_ARGS_REQUIRED 2
+#define PORT 1
+#define NB_ARGS_REQUIRED 2
 
-    #define ERROR 84
-    #define SUCCESS 0
+#define ERROR 84
+#define SUCCESS 0
 
-    #define SERVER_START(x) "Server started at port " << x << "..."
-    #define SERVER_STOP "Server stoped..."
+#define SERVER_START(x) "Server started at port " << x << "..."
+#define SERVER_STOP "Server stoped..."
 
-    #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
+#define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
 
 namespace Rtype {
 
@@ -38,40 +38,37 @@ namespace Rtype {
         using Socket = asio::ip::udp::socket;
         using Endpoint = asio::ip::udp::endpoint;
 
-        public:
+      public:
+        Server(int port);
 
-            Server(int port);
+        void start();
+        void stop();
 
-            void start();
-            void stop();
+        void broadcast(const Packet &packet);
+        void handleMessage(const unsigned int id, const Message &message);
 
-            void broadcast(const Packet &packet);
-            void handleMessage(const unsigned int id, const Message &message);
+      private:
+        void acceptConnections();
+        void processGame();
 
-        private:
+        void sendToClient(const unsigned int id, const Packet &packet);
+        void removeClient(const unsigned int id);
 
-            void acceptConnections();
-            void processGame();
+        unsigned int generateClientId(const Endpoint &endpoint);
 
-            void sendToClient(const unsigned int id, const Packet &packet);
-            void removeClient(const unsigned int id);
+        Context _context;
 
-            unsigned int generateClientId(const Endpoint &endpoint);
+        int _port;
+        bool _running;
 
-            Context _context;
+        Rtype::Game _game;
 
-            int _port;
-            bool _running;
+        Socket _socket;
 
-            Rtype::Game _game;
-
-            Socket _socket;
-
-            std::mutex _mutex;
-            std::unordered_map<int, Client> _clients;
-
+        std::mutex _mutex;
+        std::unordered_map<int, Client> _clients;
     };
 
-};
+}; // namespace Rtype
 
 #endif /* !SERVER_HPP_ */

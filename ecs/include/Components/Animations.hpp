@@ -6,7 +6,7 @@
 */
 
 #ifndef ANIMATIONS_HPP_
-    #define ANIMATIONS_HPP_
+#define ANIMATIONS_HPP_
 
 namespace ecs {
     namespace component {
@@ -16,7 +16,7 @@ namespace ecs {
             double _x;
             double _y;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !ANIMATIONS_HPP_ */

@@ -6,11 +6,11 @@
 */
 
 #ifndef TEXT_HPP_
-    #define TEXT_HPP_
+#define TEXT_HPP_
 
-    #include <SFML/Graphics/Text.hpp>
-    #include <string>
-    #include "./Size.hpp"
+#include <SFML/Graphics/Text.hpp>
+#include <string>
+#include "./Size.hpp"
 
 namespace ecs {
     namespace component {
@@ -18,7 +18,7 @@ namespace ecs {
             std::string _string;
             sf::Text _text;
         };
-    };
-};
+    }; // namespace component
+}; // namespace ecs
 
 #endif /* !TEXT_HPP_ */
