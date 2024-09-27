@@ -46,6 +46,10 @@ void Context::setupPlayer()
     sprite[player.getId()] = ecs::component::Sprite{"r-typesheet42.gif"};
     animation[player.getId()] = ecs::component::Animations{35, 20, 0, 0};
 
+    ecs::systems::PlayerMouvementSystem playerMovementSystem;
+    _r.add_system([&playerMovementSystem](ecs::Registry &r) {playerMovementSystem(r);});
+    std::cout << "system added\n";
+
 }
 
 void Context::setupBackground()
