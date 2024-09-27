@@ -50,7 +50,7 @@ void Rtype::Server::broadcast(const Packet &packet)
     }
 }
 
-void Rtype::Server::handleMessage(const int id, const Message &message)
+void Rtype::Server::handleMessage(const unsigned int id, const Message &message)
 {
     Packet packet(message);
 
@@ -66,21 +66,30 @@ void Rtype::Server::acceptConnections()
         Endpoint endpoint;
         asio::error_code error;
 
-        Message data(DATA_MAX_SIZE);
+        Message message(DATA_MAX_SIZE);
 
-        size_t len = _socket.receive_from(asio::buffer(data), endpoint, 0, error);
+        std::lock_guard<std::mutex> lock(_mutex);
+
+        size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
+
+        unsigned int id = generateClientId(endpoint);
 
         if (!error && len) {
 
-            std::lock_guard<std::mutex> lock(_mutex);
-
-            int id = generateClientId(endpoint);
-
             if (_clients.find(id) == _clients.end()) {
                 _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
-                std::thread(&Rtype::Client::run, _clients[id]).detach();
             }
+
+            _clients[id].get()->send(Packet(0));
+
+            handleMessage(id, message);
+
         }
+
+        if (error && _clients.find(id) != _clients.end()) {
+            _clients[id].get()->disconnect();
+        }
+
     }
 }
 
@@ -91,7 +100,7 @@ void Rtype::Server::processGame()
     }
 }
 
-void Rtype::Server::sendToClient(const int id, const Packet &packet)
+void Rtype::Server::sendToClient(const unsigned int id, const Packet &packet)
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -104,16 +113,18 @@ void Rtype::Server::sendToClient(const int id, const Packet &packet)
     }
 }
 
-void Rtype::Server::removeClient(const int id)
+void Rtype::Server::removeClient(const unsigned int id)
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
     _clients.erase(id);
 }
 
-int Rtype::Server::generateClientId(const Endpoint &endpoint)
+unsigned int Rtype::Server::generateClientId(const Endpoint &endpoint)
 {
     std::hash<std::string> hashFunction;
 
-    return static_cast<int>(hashFunction(endpoint.address().to_string() + std::to_string(endpoint.port())));
+    std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
+
+    return static_cast<unsigned int>(hashFunction(id));
 }

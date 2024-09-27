@@ -46,17 +46,17 @@ namespace Rtype {
             void stop();
 
             void broadcast(const Packet &packet);
-            void handleMessage(const int id, const Message &message);
+            void handleMessage(const unsigned int id, const Message &message);
 
         private:
 
             void acceptConnections();
             void processGame();
 
-            void sendToClient(const int id, const Packet &packet);
-            void removeClient(const int id);
+            void sendToClient(const unsigned int id, const Packet &packet);
+            void removeClient(const unsigned int id);
 
-            int generateClientId(const Endpoint &endpoint);
+            unsigned int generateClientId(const Endpoint &endpoint);
 
             Context _context;
 
