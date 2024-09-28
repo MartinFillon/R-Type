@@ -25,9 +25,9 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 
+#include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/GunFireSystem.hpp"
 
 namespace ecs {
 
@@ -55,7 +55,8 @@ namespace ecs {
         drawables[player.getId()] = ecs::component::Drawable{true};
         controllable[player.getId()] = ecs::component::Controllable{true, 0.9};
         sprite[player.getId()] = ecs::component::Sprite{PLAYER_SPRITE};
-        animation[player.getId()] = ecs::component::Animations{sf::Clock(), 33, 20, 65, 0, 0, ecs::component::Object::Player};
+        animation[player.getId()] =
+            ecs::component::Animations{sf::Clock(), 33, 20, 65, 0, 0, ecs::component::Object::Player};
         size[player.getId()] = ecs::component::Size{3, 3};
 
         ecs::systems::PlayerMouvementSystem playerMovementSystem;
@@ -100,10 +101,14 @@ namespace ecs {
         positions[thirdBackground.getId()] = ecs::component::Position{1920 * 0, 0};
         positions[fourthBackground.getId()] = ecs::component::Position{1920 * 1, 0};
 
-        animation[firstBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
-        animation[secondBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
-        animation[thirdBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
-        animation[fourthBackground.getId()] = ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
+        animation[firstBackground.getId()] =
+            ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
+        animation[secondBackground.getId()] =
+            ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
+        animation[thirdBackground.getId()] =
+            ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
+        animation[fourthBackground.getId()] =
+            ecs::component::Animations{sf::Clock(), 1920, 1080, 0, 0, 0, ecs::component::Object::Background};
 
         size[firstBackground.getId()] = ecs::component::Size{7, 7};
         size[secondBackground.getId()] = ecs::component::Size{7, 7};

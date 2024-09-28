@@ -13,8 +13,8 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "EntityManager.hpp"
 #include "Entity.hpp"
+#include "EntityManager.hpp"
 #include "SparseArray.hpp"
 
 namespace ecs {
