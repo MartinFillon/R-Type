@@ -31,26 +31,10 @@
 
 namespace ecs {
 
-    Context::Context() : _window(sf::VideoMode(1920, 1080), GAME_NAME), _entitys() {}
+    Context::Context() : _window(sf::VideoMode(1920, 1080), GAME_NAME) {}
 
     void Context::setupWeapon()
     {
-        Entity weapon = _r.spawn_entity();
-        _entitys.addEntity(weapon);
-        auto &positions = _r.register_component<ecs::component::Position>();
-        auto &drawables = _r.register_component<ecs::component::Drawable>();
-        auto &controllable = _r.register_component<ecs::component::Controllable>();
-        auto &sprite = _r.register_component<ecs::component::Sprite>();
-        auto &animation = _r.register_component<ecs::component::Animations>();
-        auto &size = _r.register_component<ecs::component::Size>();
-
-        positions[weapon.getId()] = ecs::component::Position{100, 100};
-        drawables[weapon.getId()] = ecs::component::Drawable{false};
-        controllable[weapon.getId()] = ecs::component::Controllable{true, 1.3};
-        sprite[weapon.getId()] = ecs::component::Sprite{WEAPON_SPRITE};
-        animation[weapon.getId()] = ecs::component::Animations{sf::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon};
-        size[weapon.getId()] = ecs::component::Size{3, 3};
-
         ecs::systems::GunFireSystem gunSystem;
         _r.add_system(gunSystem);
     }
@@ -58,7 +42,7 @@ namespace ecs {
     void Context::setupPlayer()
     {
         Entity player = _r.spawn_entity();
-        _entitys.addEntity(player);
+        _r._entitys.addEntity(player);
 
         auto &positions = _r.register_component<ecs::component::Position>();
         auto &drawables = _r.register_component<ecs::component::Drawable>();
@@ -81,25 +65,25 @@ namespace ecs {
     void Context::setupBackground()
     {
         Entity firstBackground = _r.spawn_entity();
-        _entitys.addEntity(firstBackground);
+        _r._entitys.addEntity(firstBackground);
         Entity secondBackground = _r.spawn_entity();
-        _entitys.addEntity(secondBackground);
+        _r._entitys.addEntity(secondBackground);
         Entity thirdBackground = _r.spawn_entity();
-        _entitys.addEntity(thirdBackground);
+        _r._entitys.addEntity(thirdBackground);
         Entity fourthBackground = _r.spawn_entity();
-        _entitys.addEntity(fourthBackground);
+        _r._entitys.addEntity(fourthBackground);
 
         auto &positions = _r.register_component<ecs::component::Position>();
         auto &drawable = _r.register_component<ecs::component::Drawable>();
         auto &sprite = _r.register_component<ecs::component::Sprite>();
         auto &animation = _r.register_component<ecs::component::Animations>();
-        auto &paralax = _r.register_component<ecs::component::Parallax>();
+        auto &parallax = _r.register_component<ecs::component::Parallax>();
         auto &size = _r.register_component<ecs::component::Size>();
 
-        paralax[firstBackground.getId()] = ecs::component::Parallax{true, 3, 1};
-        paralax[secondBackground.getId()] = ecs::component::Parallax{true, 3, 1};
-        paralax[thirdBackground.getId()] = ecs::component::Parallax{true, 1, 1};
-        paralax[fourthBackground.getId()] = ecs::component::Parallax{true, 1, 1};
+        parallax[firstBackground.getId()] = ecs::component::Parallax{true, 3, 1};
+        parallax[secondBackground.getId()] = ecs::component::Parallax{true, 3, 1};
+        parallax[thirdBackground.getId()] = ecs::component::Parallax{true, 1, 1};
+        parallax[fourthBackground.getId()] = ecs::component::Parallax{true, 1, 1};
 
         sprite[firstBackground.getId()] = ecs::component::Sprite{BACKGROUND2_SPRITE};
         sprite[secondBackground.getId()] = ecs::component::Sprite{BACKGROUND2_SPRITE};
@@ -126,8 +110,8 @@ namespace ecs {
         size[thirdBackground.getId()] = ecs::component::Size{7, 7};
         size[fourthBackground.getId()] = ecs::component::Size{7, 7};
 
-        ecs::systems::ParalaxSystem paralaxSystem;
-        _r.add_system(paralaxSystem);
+        ecs::systems::ParalaxSystem parallaxSystem;
+        _r.add_system(parallaxSystem);
     }
 
     void Context::setup()
@@ -156,7 +140,7 @@ namespace ecs {
             _window.clear();
             _r.run_systems();
 
-            for (std::size_t i = 0; i < _entitys.size(); ++i) {
+            for (std::size_t i = 0; i < _r._entitys.size(); ++i) {
                 if (drawables[i]->_drawable) {
                     sf::Texture texture;
                     if (sprites[i] && animations[i]) {

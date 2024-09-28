@@ -13,8 +13,9 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "./Entity.hpp"
-#include "./SparseArray.hpp"
+#include "EntityManager.hpp"
+#include "Entity.hpp"
+#include "SparseArray.hpp"
 
 namespace ecs {
     class Registry {
@@ -67,6 +68,8 @@ namespace ecs {
                 system(*this);
             }
         }
+
+        EntityManager _entitys;
 
       private:
         std::vector<std::function<void(Registry &)>> _systems;
