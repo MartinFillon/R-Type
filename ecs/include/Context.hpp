@@ -10,7 +10,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "EntityManager.hpp"
 #include "Registry.hpp"
 
 #define GAME_NAME "R-Type"
@@ -31,8 +30,8 @@ namespace ecs {
         void setup();
         void setupPlayer();
         void setupBackground();
+        void setupWeapon();
         sf::RenderWindow _window;
-        EntityManager _entitys;
         Registry _r;
     };
 } // namespace ecs

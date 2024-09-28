@@ -12,6 +12,8 @@
 
 namespace ecs {
     namespace component {
+        enum Object { Background, Player, Weapon };
+
         struct Animations {
             sf::Clock _clock;
             double _width;
@@ -19,6 +21,7 @@ namespace ecs {
             double _x;
             double _y;
             double _rotation;
+            Object _object;
         };
     }; // namespace component
 }; // namespace ecs

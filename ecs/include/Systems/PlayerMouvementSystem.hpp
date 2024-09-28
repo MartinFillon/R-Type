@@ -9,9 +9,15 @@
 #define PLAYERMOUVEMENTSYSTEM_HPP_
 
 #include <SFML/Window/Keyboard.hpp>
+
+#include "GunFireSystem.hpp"
+
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
+
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -26,7 +32,7 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
-                    if (positions[i] && controllable[i]) {
+                    if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             positions[i]->_y -= controllable[i]->_speed;
                             if (animations[i]->_clock.getElapsedTime().asSeconds() > 0.5 && animations[i]->_x < 135) {
