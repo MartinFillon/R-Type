@@ -25,12 +25,12 @@ namespace ecs {
 
         int run();
 
-      protected:
       private:
         void setup();
         void setupPlayer();
         void setupBackground();
         void setupWeapon();
+        void setupBasicEnnemies();
         sf::RenderWindow _window;
         Registry _r;
     };

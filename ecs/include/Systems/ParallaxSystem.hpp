@@ -27,7 +27,8 @@ namespace ecs {
                 auto &animation = r.get_components<ecs::component::Animations>();
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
-                    if (positions[i] && paralax[i]) {
+                    if (positions[i] && paralax[i] && animation[i] &&
+                        animation[i]->_object == ecs::component::Object::Background) {
                         if (animation[i]->_clock.getElapsedTime().asMicroseconds() > 0.1) {
                             if (positions[i]->_x <= -1920) {
                                 positions[i]->_x = 1920 * paralax[i]->_multiplicator;

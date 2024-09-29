@@ -28,6 +28,7 @@
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
+#include "Systems/basicRandomEnnemiesSystem.hpp"
 
 namespace ecs {
 
@@ -37,6 +38,12 @@ namespace ecs {
     {
         ecs::systems::GunFireSystem gunSystem;
         _r.add_system(gunSystem);
+    }
+
+    void Context::setupBasicEnnemies()
+    {
+        ecs::systems::BasicRandomEnnemiesSystem basicEnnemies;
+        _r.add_system(basicEnnemies);
     }
 
     void Context::setupPlayer()
@@ -124,6 +131,7 @@ namespace ecs {
         setupBackground();
         setupPlayer();
         setupWeapon();
+        setupBasicEnnemies();
     }
 
     int Context::run()
