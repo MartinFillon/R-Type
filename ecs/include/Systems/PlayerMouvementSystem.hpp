@@ -37,14 +37,16 @@ namespace ecs {
                     if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             positions[i]->_y -= controllable[i]->_speed;
-                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animations[i]->_x < 135) {
+                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animations[i]->_x < 135) {
                                 animations[i]->_x += 35;
                                 animations[i]->_clock.restart();
                             }
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                             positions[i]->_y += controllable[i]->_speed;
-                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animations[i]->_x > 0) {
+                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animations[i]->_x > 0) {
                                 animations[i]->_x -= 35;
                                 animations[i]->_clock.restart();
                             }
@@ -60,6 +62,6 @@ namespace ecs {
             };
         };
     }; // namespace systems
-}; // namespace ecs
+} // namespace ecs
 
 #endif /* PLAYERMOUVEMENTSYSTEM_HPP_ */

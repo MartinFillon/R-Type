@@ -17,22 +17,22 @@
 namespace ecs {
 
     class Context {
-        public:
-            Context();
-            ~Context();
+      public:
+        Context();
+        ~Context();
 
-            sf::RenderWindow &getRenderWindow();
+        sf::RenderWindow &getRenderWindow();
 
-            int run();
+        int run();
 
-        private:
-            void setup();
-            void setupPlayer();
-            void setupBackground();
-            void setupWeapon();
-            void setupBasicEnnemies();
-            sf::RenderWindow _window;
-            Registry _r;
+      private:
+        void setup();
+        void setupPlayer();
+        void setupBackground();
+        void setupWeapon();
+        void setupBasicEnnemies();
+        sf::RenderWindow _window;
+        Registry _r;
     };
 } // namespace ecs
 
