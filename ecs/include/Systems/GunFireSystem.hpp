@@ -1,6 +1,8 @@
 #ifndef GUNFIRESYSTEM_HPP_
 #define GUNFIRESYSTEM_HPP_
 
+#define PROJECTILE_SPEED 0.1
+
 #include <SFML/Window/Keyboard.hpp>
 
 #include "Components/Animations.hpp"
@@ -54,6 +56,7 @@ namespace ecs {
                         break;
                     }
                 }
+
                 bool isKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
 
                 if (isKeyPressed && !wasKeyPressed) {
@@ -67,7 +70,7 @@ namespace ecs {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;
                         }
-                        if (animations[i]->_clock.getElapsedTime().asSeconds() > 0.5 && animations[i]->_x < 30) {
+                        if (animations[i]->_clock.getElapsedTime().asSeconds() > PROJECTILE_SPEED && animations[i]->_x < 30) {
                             animations[i]->_x += 18;
                             animations[i]->_clock.restart();
                         }
