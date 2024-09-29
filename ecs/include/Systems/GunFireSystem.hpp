@@ -70,7 +70,8 @@ namespace ecs {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;
                         }
-                        if (animations[i]->_clock.getElapsedTime().asSeconds() > PROJECTILE_SPEED && animations[i]->_x < 30) {
+                        if (animations[i]->_clock.getElapsedTime().asSeconds() > PROJECTILE_SPEED &&
+                            animations[i]->_x < 30) {
                             animations[i]->_x += 18;
                             animations[i]->_clock.restart();
                         }
