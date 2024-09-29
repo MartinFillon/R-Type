@@ -12,6 +12,10 @@
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
 
+#ifdef _WIN32
+    #include <array>
+#endif
+
 #include <cmath>
 #include <random>
 
