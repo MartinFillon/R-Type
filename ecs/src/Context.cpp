@@ -29,10 +29,17 @@
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
 #include "Systems/basicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
 
 namespace ecs {
 
     Context::Context() : _window(sf::VideoMode(1920, 1080), GAME_NAME) {}
+
+    void Context::setupCollision()
+    {
+        ecs::systems::CollisionsSystem collisionsSystem;
+        _r.add_system(collisionsSystem);
+    }
 
     void Context::setupWeapon()
     {
@@ -132,49 +139,56 @@ namespace ecs {
         setupPlayer();
         setupWeapon();
         setupBasicEnnemies();
+        setupCollision();
     }
 
     int Context::run()
     {
-        setup();
-        auto &drawables = _r.get_components<ecs::component::Drawable>();
-        auto &sprites = _r.get_components<ecs::component::Sprite>();
-        auto &positions = _r.register_component<ecs::component::Position>();
-        auto &animations = _r.register_component<ecs::component::Animations>();
-        auto &size = _r.register_component<ecs::component::Size>();
+        try {
+            setup();
+            auto &drawables = _r.get_components<ecs::component::Drawable>();
+            auto &sprites = _r.get_components<ecs::component::Sprite>();
+            auto &positions = _r.register_component<ecs::component::Position>();
+            auto &animations = _r.register_component<ecs::component::Animations>();
+            auto &size = _r.register_component<ecs::component::Size>();
 
-        while (_window.isOpen()) {
-            sf::Event event;
-            while (_window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    _window.close();
-                }
-            }
-            _window.clear();
-            _r.run_systems();
-
-            for (std::size_t i = 0; i < _r._entitys.size(); ++i) {
-                if (drawables[i]->_drawable) {
-                    sf::Texture texture;
-                    if (sprites[i] && animations[i]) {
-                        ImageResolver image(PATH_TO_ASSETS);
-                        std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-                        texture.loadFromMemory(
-                            pathToImage.c_str(),
-                            pathToImage.size(),
-                            sf::IntRect(
-                                animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height
-                            )
-                        );
+            while (_window.isOpen()) {
+                sf::Event event;
+                while (_window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed) {
+                        _window.close();
                     }
-                    sf::Sprite sprite;
-                    sprite.setPosition(positions[i]->_x, positions[i]->_y);
-                    sprite.setScale(size[i]->_width, size[i]->_height);
-                    sprite.setTexture(texture);
-                    _window.draw(sprite);
                 }
+                _window.clear();
+                _r.run_systems();
+
+                for (std::size_t i = 0; i < animations.size(); ++i) {
+                    if (drawables[i] && drawables[i]->_drawable == true) {
+                        sf::Texture texture;
+                        if (sprites[i] && animations[i]) {
+                            ImageResolver image(PATH_TO_ASSETS);
+                            std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
+                            if (!texture.loadFromMemory(
+                                    pathToImage.c_str(),
+                                    pathToImage.size(),
+                                    sf::IntRect(
+                                        animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height
+                                    )
+                                )) {
+                                throw ecs::Context::ContextException(UNABLE_TO_LOAD_TEXTURE(pathToImage)).what();
+                            }
+                        }
+                        sf::Sprite sprite;
+                        sprite.setPosition(positions[i]->_x, positions[i]->_y);
+                        sprite.setScale(size[i]->_width, size[i]->_height);
+                        sprite.setTexture(texture);
+                        _window.draw(sprite);
+                    }
+                }
+                _window.display();
             }
-            _window.display();
+        } catch (const ecs::Context::ContextException &e) {
+            std::cerr << e.what();
         }
         return EXIT_SUCCESS;
     }

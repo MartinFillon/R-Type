@@ -35,7 +35,10 @@ namespace ecs {
             EntityManagerError(std::string message) : _message(message) {}
 
             ~EntityManagerError() = default;
-            const char *what() const noexcept;
+            const char *what() const noexcept
+            {
+                return _message.c_str();
+            }
 
           private:
             std::string _message;
@@ -52,6 +55,16 @@ namespace ecs {
                 throw EntityManagerError(ENTITY_MANAGER_ERROR_OUT_OF_RANGE);
             }
             return _entitys[idx];
+        }
+
+        void erase(const std::size_t &id)
+        {
+            for (std::size_t i = 0; i < _entitys.size(); ++i) {
+                if (_entitys[i].getId() == id) {
+                    _entitys.erase(_entitys.begin(), _entitys.begin() + i);
+                    break;
+                }
+            }
         }
 
         std::size_t size() const
