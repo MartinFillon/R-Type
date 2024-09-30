@@ -8,13 +8,13 @@
 #include <SFML/System/Clock.hpp>
 #include <fstream>
 #include <functional>
-#include <iostream>
 #include <memory>
 
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
@@ -143,7 +143,12 @@ namespace ecs {
 
     void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node) {}
 
-    void ComponentFactory::createControllableComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createControllableComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &controllable_array = _r->register_if_not_exist<component::Controllable>();
+
+        controllable_array[e.getId()] = component::Controllable{node["controllable"], node["speed"]};
+    }
 
     void ComponentFactory::createFilledColorComponent(const Entity e, const nlohmann::json &node) {}
 

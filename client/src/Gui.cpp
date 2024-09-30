@@ -19,9 +19,9 @@ namespace rtype {
     {
         _factory = ecs::ComponentFactory(_r);
         setupBackground();
-        // setupPlayer();
-        // setupWeapon();
-        // setupBasicEnnemies();
+        setupPlayer();
+        setupWeapon();
+        setupBasicEnnemies();
     }
 
     Gui::~Gui() {}
@@ -40,23 +40,9 @@ namespace rtype {
 
     void Gui::setupPlayer()
     {
-        ecs::Entity player = _r->spawn_entity();
-        _r->_entitys.addEntity(player);
+        _factory.createEntity("config/player.json");
 
-        auto &positions = _r->register_component<ecs::component::Position>();
-        auto &drawables = _r->register_component<ecs::component::Drawable>();
-        auto &controllable = _r->register_component<ecs::component::Controllable>();
-        auto &sprite = _r->register_component<ecs::component::Sprite>();
-        auto &animation = _r->register_component<ecs::component::Animations>();
-        auto &size = _r->register_component<ecs::component::Size>();
-
-        positions[player.getId()] = ecs::component::Position{100, 100};
-        drawables[player.getId()] = ecs::component::Drawable{true};
-        controllable[player.getId()] = ecs::component::Controllable{true, 0.9};
-        sprite[player.getId()] = ecs::component::Sprite{PLAYER_SPRITE};
-        animation[player.getId()] =
-            ecs::component::Animations{sf::Clock(), 33, 20, 65, 0, 0, ecs::component::Object::Player};
-        size[player.getId()] = ecs::component::Size{3, 3};
+        std::cout << "Player created" << std::endl;
 
         ecs::systems::PlayerMouvementSystem playerMovementSystem;
         _r->add_system(playerMovementSystem);
