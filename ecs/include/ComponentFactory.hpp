@@ -5,9 +5,9 @@
 ** ComponentFactory
 */
 
-#pragma once
+#ifndef COMPONENTFACTORY_HPP_
+#define COMPONENTFACTORY_HPP_
 
-#include <any>
 #include <functional>
 #include <memory>
 #include <string>
@@ -51,3 +51,5 @@ namespace ecs {
     };
 
 } // namespace ecs
+
+#endif /* !COMPONENTFACTORY_HPP_ */

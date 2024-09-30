@@ -5,6 +5,7 @@
 ** ComponentFactory
 */
 
+#include <SFML/System/Clock.hpp>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -15,6 +16,7 @@
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
@@ -92,7 +94,8 @@ namespace ecs {
     {
         auto animations_array = _r->register_if_not_exist<component::Animations>();
 
-        animations_array[e.getId()] = component::Animations{node["width"], node["height"], node["x"], node["y"]};
+        animations_array[e.getId()] =
+            component::Animations{sf::Clock(), node["width"], node["height"], node["x"], node["y"]};
         std::cout << "Animations component created with width: " << animations_array[e.getId()]->_width
                   << " height: " << animations_array[e.getId()]->_height
                   << " Starting at texture postition x: " << animations_array[e.getId()]->_x
@@ -101,7 +104,7 @@ namespace ecs {
 
     void ComponentFactory::createParallaxComponent(const Entity e, const nlohmann::json &node)
     {
-        // auto parallax_array = _r->register_if_not_exist<component::Parallax>();
+        auto parallax_array = _r->register_if_not_exist<component::Parallax>();
     }
 
     void ComponentFactory::createSizeComponent(const Entity e, const nlohmann::json &node)
