@@ -8,9 +8,6 @@
 #ifndef PARALAX_HPP_
 #define PARALAX_HPP_
 
-#include <string>
-#include <vector>
-
 namespace ecs {
     namespace component {
         struct Parallax {

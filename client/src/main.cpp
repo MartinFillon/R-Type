@@ -5,10 +5,11 @@
 ** main
 */
 
-#include "Context.hpp"
+#include "Gui.hpp"
 
 int main(void)
 {
-    ecs::Context ctx;
-    return ctx.run();
+    rtype::Gui gui;
+
+    return gui.run();
 }
