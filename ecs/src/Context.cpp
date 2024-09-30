@@ -17,6 +17,7 @@
 #include "Context.hpp"
 #include "Entity.hpp"
 #include "ImageResolver.hpp"
+#include "ZipperIterator.hpp"
 
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
@@ -153,26 +154,22 @@ namespace ecs {
             _window.clear();
             _r.run_systems();
 
-            for (std::size_t i = 0; i < _r._entitys.size(); ++i) {
-                if (drawables[i]->_drawable) {
-                    sf::Texture texture;
-                    if (sprites[i] && animations[i]) {
-                        ImageResolver image(PATH_TO_ASSETS);
-                        std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-                        texture.loadFromMemory(
-                            pathToImage.c_str(),
-                            pathToImage.size(),
-                            sf::IntRect(
-                                animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height
-                            )
-                        );
-                    }
-                    sf::Sprite sprite;
-                    sprite.setPosition(positions[i]->_x, positions[i]->_y);
-                    sprite.setScale(size[i]->_width, size[i]->_height);
-                    sprite.setTexture(texture);
-                    _window.draw(sprite);
-                }
+            for (auto &&[draws, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                sf::Texture texture;
+                ImageResolver image(PATH_TO_ASSETS);
+                std::string pathToImage = image.getImage(spri->_pathToSprite);
+                texture.loadFromMemory(
+                    pathToImage.c_str(),
+                    pathToImage.size(),
+                    sf::IntRect(
+                        anim->_x, anim->_y, anim->_width, anim->_height
+                    )
+                );
+                sf::Sprite sprite;
+                sprite.setPosition(pos->_x, pos->_y);
+                sprite.setScale(si->_width, si->_height);
+                sprite.setTexture(texture);
+                _window.draw(sprite);
             }
             _window.display();
         }
