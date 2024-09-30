@@ -26,9 +26,9 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 
-#include "ZipperIterator.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -80,7 +80,7 @@ namespace ecs {
                 int nbOfEnnemies = 0;
                 auto &animations = r.get_components<ecs::component::Animations>();
 
-                for (auto &&[anim] :  ecs::custom_zip(animations)) {
+                for (auto &&[anim] : ecs::custom_zip(animations)) {
                     if (anim->_object == ecs::component::Object::Ennemies) {
                         nbOfEnnemies += 1;
                     }

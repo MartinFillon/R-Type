@@ -78,16 +78,15 @@ namespace rtype {
             _window.clear();
             _r->run_systems();
 
-            for (auto &&[draws, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+            for (auto &&[draws, anim, spri, si, pos] :
+                 ecs::custom_zip(drawables, animations, sprites, size, positions)) {
                 sf::Texture texture;
                 ecs::ImageResolver image(PATH_TO_ASSETS);
                 std::string pathToImage = image.getImage(spri->_pathToSprite);
                 texture.loadFromMemory(
                     pathToImage.c_str(),
                     pathToImage.size(),
-                    sf::IntRect(
-                        anim->_x, anim->_y, anim->_width, anim->_height
-                    )
+                    sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height)
                 );
                 sf::Sprite sprite;
                 sprite.setPosition(pos->_x, pos->_y);

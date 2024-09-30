@@ -20,32 +20,35 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 
-#include "ZipperIterator.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
         class PlayerMouvementSystem : public ISystems {
-        public:
+          public:
             void operator()(Registry &r)
             {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllables = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
 
-                for (auto &&[position, controllable, animation] : ecs::custom_zip(positions, controllables, animations)) {
+                for (auto &&[position, controllable, animation] :
+                     ecs::custom_zip(positions, controllables, animations)) {
                     if (animation->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             position->_y -= controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x < 135) {
+                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animation->_x < 135) {
                                 animation->_x += 35;
                                 animation->_clock.restart();
                             }
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                             position->_y += controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x > 0) {
+                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animation->_x > 0) {
                                 animation->_x -= 35;
                                 animation->_clock.restart();
                             }
