@@ -66,6 +66,9 @@ namespace ecs {
                 wasKeyPressed = isKeyPressed;
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
+                    if (drawable[i] && !drawable[i]->_drawable) {
+                        continue;
+                    }
                     if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Weapon) {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;

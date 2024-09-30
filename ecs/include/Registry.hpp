@@ -16,6 +16,7 @@
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "SparseArray.hpp"
+#include <iostream>
 
 namespace ecs {
     class Registry {
@@ -54,6 +55,24 @@ namespace ecs {
                 }
                 idx += 1;
             }
+        }
+
+        void erase(const std::size_t &entityIdx)
+        {
+            for (auto &componentArray : _componentsArrays) {
+                try {
+                    auto sparseArrayBase = std::any_cast<SparseArray<std::any>>(&componentArray.second);
+
+                    if (componentArray.second.has_value()) {
+                        std::cout << "go erase: " << entityIdx << "\n";
+                        sparseArrayBase->erase(entityIdx);
+                    }
+                    std::cout << "finish\n";
+                } catch (const std::bad_any_cast &e) {
+                    std::cerr << e.what() << " on: " << componentArray.first.name() << std::endl;
+                }
+            }
+            _entitys.erase(entityIdx);
         }
 
         template <typename Function>

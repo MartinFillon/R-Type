@@ -29,10 +29,8 @@ namespace ecs {
                 auto &parallax = r.get_components<ecs::component::Parallax>();
                 auto &size = r.get_components<ecs::component::Size>();
 
-                std::vector<std::size_t> entitiesToErase;
-
                 for (std::size_t i = 0; i < position.size(); ++i) {
-                    if (!position[i] || !animation[i]) {
+                    if (!position[i] || !animation[i] || (drawable[i] && !drawable[i]->_drawable)) {
                         continue;
                     }
 
@@ -40,47 +38,36 @@ namespace ecs {
                         continue;
                     }
 
-                    if (animation[i]->_object == ecs::component::Object::Player) {
-                        std::cout << "player x: " << position[i]->_x << " y: " << position[i]->_y << "\n";
-                    }
-
-                    if ((position[i]->_x > 2000 || position[i]->_x < 0) ||
-                        (position[i]->_y > 1080 || position[i]->_y < 0)) {
-                        std::cout << "rm: " << i << "\n";
-                        drawable[i]->_drawable = false;
-                        entitiesToErase.push_back(i);
+                    if ((position[i]->_x > 2000 || position[i]->_x < -100) ||
+                        (position[i]->_y > 1080 || position[i]->_y < -100)) {
+                        _entitiesToErase.push_back(i);
                         continue;
                     }
 
                     for (std::size_t j = i + 1; j < position.size(); ++j) {
-                        if (!position[j] || i == j) {
+                        if (!position[j] || i == j || animation[i]->_object == animation[j]->_object) {
                             continue;
                         }
 
-                        if (position[i]->_x == position[j]->_x && position[i]->_y == position[j]->_y) {
-                            std::cout << "collision on " << i << " and " << j << "\n";
-                            drawable[i]->_drawable = false;
-                            drawable[j]->_drawable = false;
-                            entitiesToErase.push_back(i);
-                            entitiesToErase.push_back(j);
+                        if ((position[i]->_x + animation[i]->_width>= position[j]->_x &&
+                             position[i]->_x <= position[j]->_x + animation[j]->_width) &&
+                            (position[i]->_y + animation[i]->_height >= position[j]->_y &&
+                             position[i]->_y <= position[j]->_y + animation[j]->_height)) {
+                            _entitiesToErase.push_back(i);
+                            _entitiesToErase.push_back(j);
                             break;
                         }
                     }
                 }
 
-                /*std::sort(entitiesToErase.begin(), entitiesToErase.end(), std::greater<>());
-                for (std::size_t idx : entitiesToErase) {
+                for (std::size_t idx : _entitiesToErase) {
                     if (idx < position.size()) {
-                        position.erase(idx);
-                        drawable.erase(idx);
-                        sprite.erase(idx);
-                        animation.erase(idx);
-                        parallax.erase(idx);
-                        size.erase(idx);
-                        r._entitys.erase(idx);
+                        r.erase(idx);
                     }
-                }*/
+                }
             }
+              private:
+                std::vector<std::size_t> _entitiesToErase;
         };
     }; // namespace systems
 }; // namespace ecs

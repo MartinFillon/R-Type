@@ -34,7 +34,8 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
-                    if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Player) {
+                    if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Player &&
+                        animations[i]->_clock.getElapsedTime().asSeconds() > 0.00001) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             positions[i]->_y -= controllable[i]->_speed;
                             if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&

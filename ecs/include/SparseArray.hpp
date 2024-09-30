@@ -1,6 +1,7 @@
 #ifndef SPARSEARRAY_HPP_
 #define SPARSEARRAY_HPP_
 
+#include <iostream>
 #include <optional>
 #include <vector>
 
@@ -40,7 +41,10 @@ namespace ecs {
 
         void erase(const std::size_t &idx)
         {
-            _data.erase(_data.begin(), _data.begin() + idx);
+            if (idx < _data.size()) {
+                std::cout << "idx: " << idx << " && size: " << _data.size() << "\n";
+                _data.erase(_data.begin(), _data.begin() + idx);
+            }
         }
 
         iterator begin()

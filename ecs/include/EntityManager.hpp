@@ -62,8 +62,9 @@ namespace ecs {
             for (std::size_t i = 0; i < _entitys.size(); ++i) {
                 if (_entitys[i].getId() == id) {
                     _entitys.erase(_entitys.begin(), _entitys.begin() + i);
-                    break;
+                    continue;
                 }
+                _entitys[i] = i + 1;
             }
         }
 

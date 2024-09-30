@@ -8,11 +8,12 @@
 #ifndef PARALAXSYSTEM_HPP_
 #define PARALAXSYSTEM_HPP_
 
+#define BACKGROUND_SPEED 0.01
+
 #include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
-#include "Components/Sprite.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -28,14 +29,13 @@ namespace ecs {
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
                     if (positions[i] && paralax[i] && animation[i] &&
-                        animation[i]->_object == ecs::component::Object::Background) {
-                        if (animation[i]->_clock.getElapsedTime().asMicroseconds() > 0.1) {
-                            if (positions[i]->_x <= -1920) {
-                                positions[i]->_x = 1920 * paralax[i]->_multiplicator;
-                            }
-                            animation[i]->_clock.restart();
-                            positions[i]->_x -= paralax[i]->_speed;
+                        animation[i]->_object == ecs::component::Object::Background &&
+                        animation[i]->_clock.getElapsedTime().asMicroseconds() > BACKGROUND_SPEED) {
+                        if (positions[i]->_x <= -1920) {
+                            positions[i]->_x = 1920 * paralax[i]->_multiplicator;
                         }
+                        animation[i]->_clock.restart();
+                        positions[i]->_x -= paralax[i]->_speed;
                     }
                 }
             }
