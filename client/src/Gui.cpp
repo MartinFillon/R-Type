@@ -97,8 +97,6 @@ namespace rtype {
                     if (sprites[i] && animations[i]) {
                         ecs::ImageResolver image(PATH_TO_ASSETS);
                         std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-                        std::cout << "Animation: " << animations[i]->_x << " " << animations[i]->_y << " "
-                                  << animations[i]->_width << " " << animations[i]->_height << std::endl;
                         texture.loadFromMemory(
                             pathToImage.c_str(),
                             pathToImage.size(),

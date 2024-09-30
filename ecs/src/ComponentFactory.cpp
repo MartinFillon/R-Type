@@ -127,12 +127,14 @@ namespace ecs {
 
     void ComponentFactory::createParallaxComponent(const Entity e, const nlohmann::json &node)
     {
-        auto parallax_array = _r->register_if_not_exist<component::Parallax>();
+        auto &parallax_array = _r->register_if_not_exist<component::Parallax>();
+
+        parallax_array[e.getId()] = component::Parallax{node["active"], node["speed"], node["multiplier"]};
     }
 
     void ComponentFactory::createSizeComponent(const Entity e, const nlohmann::json &node)
     {
-        auto size_array = _r->register_if_not_exist<component::Size>();
+        auto &size_array = _r->register_if_not_exist<component::Size>();
 
         size_array[e.getId()] = component::Size{node["width"], node["height"]};
     }
