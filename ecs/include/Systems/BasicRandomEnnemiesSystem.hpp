@@ -83,7 +83,6 @@ namespace ecs {
 
                 if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES && mean == VALUE_SPAWN_ENNEMIES) {
                     createNewEnnemies(r);
-                    std::cout << "nb ennemies: " << nbOfBasicEnnemies(r) << "\n";
                 }
 
                 auto &animations = r.get_components<ecs::component::Animations>();
@@ -91,6 +90,9 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
 
                 for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
+                    if (!anim || !pos || !ctrl) {
+                        continue;
+                    }
                     if (anim->_object == ecs::component::Object::Ennemies) {
                         if (anim->_x <= 0 && anim->_x != 224) {
                             anim->_x = 224;

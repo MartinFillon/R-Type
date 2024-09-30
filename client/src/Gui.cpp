@@ -89,9 +89,15 @@ namespace rtype {
 
             for (auto &&[draws, anim, spri, si, pos] :
                  ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                if (!draws || !anim || !spri || !si || !pos) {
+                    continue;
+                }
                 sf::Texture texture;
                 ecs::ImageResolver image(PATH_TO_ASSETS);
                 std::string pathToImage = image.getImage(spri->_pathToSprite);
+                if (pathToImage.empty()) {
+                    continue;
+                }
                 texture.loadFromMemory(
                     pathToImage.c_str(),
                     pathToImage.size(),

@@ -1,7 +1,6 @@
 #ifndef SPARSEARRAY_HPP_
 #define SPARSEARRAY_HPP_
 
-#include <iostream>
 #include <optional>
 #include <vector>
 
@@ -43,7 +42,6 @@ namespace ecs {
         {
             if (idx < _data.size()) {
                 _data[idx].reset();
-                // _data.erase(_data.begin(), _data.begin() + idx);
             }
         }
 

@@ -10,7 +10,6 @@
 
 #include <SFML/Graphics/Text.hpp>
 #include <string>
-#include "./Size.hpp"
 
 namespace ecs {
     namespace component {
