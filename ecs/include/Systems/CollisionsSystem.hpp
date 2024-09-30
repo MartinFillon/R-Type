@@ -11,11 +11,11 @@
 #define BLANK_SPRITE_SPACE 50
 
 #include "Components/Animations.hpp"
-#include "Components/Position.hpp"
-#include "Components/Parallax.hpp"
-#include "Components/Sprite.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Position.hpp"
 #include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
@@ -51,7 +51,7 @@ namespace ecs {
                             continue;
                         }
 
-                        if ((position[i]->_x + animation[i]->_width>= position[j]->_x &&
+                        if ((position[i]->_x + animation[i]->_width >= position[j]->_x &&
                              position[i]->_x <= position[j]->_x + animation[j]->_width) &&
                             (position[i]->_y + animation[i]->_height >= position[j]->_y &&
                              position[i]->_y <= position[j]->_y + animation[j]->_height + BLANK_SPRITE_SPACE)) {
@@ -68,8 +68,9 @@ namespace ecs {
                     }
                 }
             }
-              private:
-                std::vector<std::size_t> _entitiesToErase;
+
+          private:
+            std::vector<std::size_t> _entitiesToErase;
         };
     }; // namespace systems
 }; // namespace ecs

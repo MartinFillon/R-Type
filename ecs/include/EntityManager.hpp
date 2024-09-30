@@ -35,6 +35,7 @@ namespace ecs {
             EntityManagerError(std::string message) : _message(message) {}
 
             ~EntityManagerError() = default;
+
             const char *what() const noexcept
             {
                 return _message.c_str();

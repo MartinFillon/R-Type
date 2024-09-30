@@ -12,7 +12,7 @@
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/basicRandomEnnemiesSystem.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
 
 namespace rtype {
     Gui::Gui() : ecs::Context()

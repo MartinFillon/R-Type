@@ -33,7 +33,6 @@ namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
-
             void createNewEnnemies(Registry &r)
             {
 
@@ -95,13 +94,13 @@ namespace ecs {
                             animations[i]->_x = 224;
                             animations[i]->_clock.restart();
                         }
-                        if (animations[i]->_x > 0 && animations[i]->_clock.getElapsedTime().asSeconds() > BASIC_ENNEMIES_ANIMATON_SPEED) {
+                        if (animations[i]->_x > 0 &&
+                            animations[i]->_clock.getElapsedTime().asSeconds() > BASIC_ENNEMIES_ANIMATON_SPEED) {
                             animations[i]->_x -= animations[i]->_width;
                             animations[i]->_clock.restart();
                         }
                         if (animations[i]->_clock.getElapsedTime().asMicroseconds() > BASIC_ENNEMIES_SPEED) {
                             positions[i]->_x -= controllable[i]->_speed;
-                            
                         }
                     }
                 }

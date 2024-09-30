@@ -13,15 +13,15 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "Components/Animations.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "SparseArray.hpp"
-#include "Components/Position.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Sprite.hpp"
-#include "Components/Animations.hpp"
-#include "Components/Parallax.hpp"
-#include "Components/Size.hpp"
 
 namespace ecs {
     class Registry {
