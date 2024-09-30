@@ -47,7 +47,6 @@ namespace ecs {
         template<std::size_t... I>
         auto mul_args_helper(std::index_sequence<I...>)
         {
-
             return std::tuple<std::add_lvalue_reference_t<decltype(std::get<I>(_arrays)[_pos])>...> {
                 std::get<I>(_arrays)[_pos]...
             };
