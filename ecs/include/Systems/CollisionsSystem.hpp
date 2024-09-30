@@ -8,6 +8,8 @@
 #ifndef COLLISIONSSYSTEM_HPP_
 #define COLLISIONSSYSTEM_HPP_
 
+#define BLANK_SPRITE_SPACE 50
+
 #include "Components/Animations.hpp"
 #include "Components/Position.hpp"
 #include "Components/Parallax.hpp"
@@ -52,7 +54,7 @@ namespace ecs {
                         if ((position[i]->_x + animation[i]->_width>= position[j]->_x &&
                              position[i]->_x <= position[j]->_x + animation[j]->_width) &&
                             (position[i]->_y + animation[i]->_height >= position[j]->_y &&
-                             position[i]->_y <= position[j]->_y + animation[j]->_height)) {
+                             position[i]->_y <= position[j]->_y + animation[j]->_height + BLANK_SPRITE_SPACE)) {
                             _entitiesToErase.push_back(i);
                             _entitiesToErase.push_back(j);
                             break;

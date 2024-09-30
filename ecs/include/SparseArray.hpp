@@ -42,8 +42,8 @@ namespace ecs {
         void erase(const std::size_t &idx)
         {
             if (idx < _data.size()) {
-                std::cout << "idx: " << idx << " && size: " << _data.size() << "\n";
-                _data.erase(_data.begin(), _data.begin() + idx);
+                _data[idx].reset();
+                // _data.erase(_data.begin(), _data.begin() + idx);
             }
         }
 

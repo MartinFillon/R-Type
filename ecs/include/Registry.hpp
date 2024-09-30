@@ -16,7 +16,12 @@
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "SparseArray.hpp"
-#include <iostream>
+#include "Components/Position.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Animations.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Size.hpp"
 
 namespace ecs {
     class Registry {
@@ -59,19 +64,19 @@ namespace ecs {
 
         void erase(const std::size_t &entityIdx)
         {
-            for (auto &componentArray : _componentsArrays) {
-                try {
-                    auto sparseArrayBase = std::any_cast<SparseArray<std::any>>(&componentArray.second);
+            auto &positions = register_component<ecs::component::Position>();
+            auto &drawable = register_component<ecs::component::Drawable>();
+            auto &sprite = register_component<ecs::component::Sprite>();
+            auto &animation = register_component<ecs::component::Animations>();
+            auto &parallax = register_component<ecs::component::Parallax>();
+            auto &size = register_component<ecs::component::Size>();
 
-                    if (componentArray.second.has_value()) {
-                        std::cout << "go erase: " << entityIdx << "\n";
-                        sparseArrayBase->erase(entityIdx);
-                    }
-                    std::cout << "finish\n";
-                } catch (const std::bad_any_cast &e) {
-                    std::cerr << e.what() << " on: " << componentArray.first.name() << std::endl;
-                }
-            }
+            positions.erase(entityIdx);
+            drawable.erase(entityIdx);
+            sprite.erase(entityIdx);
+            animation.erase(entityIdx);
+            parallax.erase(entityIdx);
+            size.erase(entityIdx);
             _entitys.erase(entityIdx);
         }
 

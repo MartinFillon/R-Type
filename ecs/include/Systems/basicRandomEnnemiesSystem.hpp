@@ -81,7 +81,6 @@ namespace ecs {
                 std::uniform_int_distribution<int> uniform_dist(0, 100);
                 int mean = uniform_dist(randomEngine);
 
-                std::cout << "number of enemies: " << nbOfBasicEnnemies(r) << "\n";
                 if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES && mean == VALUE_SPAWN_ENNEMIES) {
                     createNewEnnemies(r);
                 }
