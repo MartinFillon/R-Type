@@ -8,6 +8,7 @@
 #ifndef GUI_HPP_
 #define GUI_HPP_
 
+#include "ComponentFactory.hpp"
 #include "Context.hpp"
 
 namespace rtype {
@@ -24,6 +25,7 @@ namespace rtype {
         void setupBackground();
         void setupWeapon();
         void setupBasicEnnemies();
+        ecs::ComponentFactory _factory;
     };
 } // namespace rtype
 

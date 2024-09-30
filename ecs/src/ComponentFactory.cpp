@@ -23,6 +23,8 @@
 #include "Registry.hpp"
 
 namespace ecs {
+    ComponentFactory::ComponentFactory() {}
+
     ComponentFactory::ComponentFactory(std::shared_ptr<Registry> &r) : _r(r)
     {
         functions["position"] = [this](const Entity e, const nlohmann::json &node) {
@@ -71,6 +73,7 @@ namespace ecs {
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = _r->spawn_entity();
+        _r->_entitys.addEntity(e);
 
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
@@ -84,31 +87,42 @@ namespace ecs {
 
     void ComponentFactory::createPositionComponent(const Entity e, const nlohmann::json &node)
     {
-        auto pos_array = _r->register_if_not_exist<component::Position>();
+        auto &pos_array = _r->register_if_not_exist<component::Position>();
 
         pos_array[e.getId()] = component::Position{node["x"], node["y"]};
     }
 
     void ComponentFactory::createDrawableComponent(const Entity e, const nlohmann::json &node)
     {
-        auto drawable_array = _r->register_if_not_exist<component::Drawable>();
+        auto &drawable_array = _r->register_if_not_exist<component::Drawable>();
 
         drawable_array[e.getId()] = component::Drawable{node};
     }
 
     void ComponentFactory::createSpriteComponent(const Entity e, const nlohmann::json &node)
     {
-        auto sprite_array = _r->register_if_not_exist<component::Sprite>();
+        auto &sprite_array = _r->register_if_not_exist<component::Sprite>();
 
         sprite_array[e.getId()] = component::Sprite{node};
     }
 
     void ComponentFactory::createAnimationsComponent(const Entity e, const nlohmann::json &node)
     {
-        auto animations_array = _r->register_if_not_exist<component::Animations>();
+        auto &animations_array = _r->register_if_not_exist<component::Animations>();
 
-        animations_array[e.getId()] =
-            component::Animations{sf::Clock(), node["width"], node["height"], node["x"], node["y"]};
+        component::Object type = component::Background;
+        if (node["type"] == "player")
+            type = component::Player;
+        else if (node["type"] == "weapon")
+            type = component::Weapon;
+        else if (node["type"] == "ennemies")
+            type = component::Ennemies;
+        else if (node["type"] == "background")
+            type = component::Background;
+
+        animations_array[e.getId()] = component::Animations{
+            sf::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
+        };
     }
 
     void ComponentFactory::createParallaxComponent(const Entity e, const nlohmann::json &node)

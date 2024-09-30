@@ -21,6 +21,7 @@ namespace ecs {
     class ComponentFactory {
       public:
         ComponentFactory(std::shared_ptr<Registry> &registry);
+        ComponentFactory();
         ~ComponentFactory();
 
         void createEntity(const std::string &file);

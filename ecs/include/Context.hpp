@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <memory>
 #include "Registry.hpp"
 
 #define GAME_NAME "R-Type"
@@ -26,7 +27,7 @@ namespace ecs {
 
       protected:
         sf::RenderWindow _window;
-        Registry _r;
+        std::shared_ptr<Registry> _r;
     };
 } // namespace ecs
 
