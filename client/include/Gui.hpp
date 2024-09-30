@@ -25,6 +25,7 @@ namespace rtype {
         void setupBackground();
         void setupWeapon();
         void setupBasicEnnemies();
+        void setupCollisons();
         ecs::ComponentFactory _factory;
     };
 } // namespace rtype

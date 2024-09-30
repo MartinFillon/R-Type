@@ -9,11 +9,9 @@
 #define COMPONENTFACTORY_HPP_
 
 #include <functional>
-#include <memory>
 #include <string>
-
-#include "Entity.hpp"
 #include "Registry.hpp"
+#include "Entity.hpp"
 #include <nlohmann/json_fwd.hpp>
 #include <unordered_map>
 

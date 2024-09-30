@@ -12,10 +12,7 @@
 
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
-#include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
@@ -26,10 +23,7 @@ namespace ecs {
             {
                 auto &position = r.get_components<ecs::component::Position>();
                 auto &drawable = r.get_components<ecs::component::Drawable>();
-                auto &sprite = r.get_components<ecs::component::Sprite>();
                 auto &animation = r.get_components<ecs::component::Animations>();
-                auto &parallax = r.get_components<ecs::component::Parallax>();
-                auto &size = r.get_components<ecs::component::Size>();
 
                 for (std::size_t i = 0; i < position.size(); ++i) {
                     if (!position[i] || !animation[i] || (drawable[i] && !drawable[i]->_drawable)) {

@@ -16,6 +16,7 @@
 #include "Components/Position.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -27,15 +28,15 @@ namespace ecs {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &animation = r.get_components<ecs::component::Animations>();
 
-                for (std::size_t i = 0; i < positions.size(); ++i) {
-                    if (positions[i] && paralax[i] && animation[i] &&
-                        animation[i]->_object == ecs::component::Object::Background &&
-                        animation[i]->_clock.getElapsedTime().asMicroseconds() > BACKGROUND_SPEED) {
-                        if (positions[i]->_x <= -1920) {
-                            positions[i]->_x = 1920 * paralax[i]->_multiplicator;
+                for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
+                    if (anim->_object == ecs::component::Object::Background) {
+                        if (anim->_clock.getElapsedTime().asMicroseconds() > 0.1) {
+                            if (pos->_x <= -1920) {
+                                pos->_x = 1920 * para->_multiplicator;
+                            }
+                            anim->_clock.restart();
+                            pos->_x -= para->_speed;
                         }
-                        animation[i]->_clock.restart();
-                        positions[i]->_x -= paralax[i]->_speed;
                     }
                 }
             }

@@ -12,16 +12,13 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
-#include "GunFireSystem.hpp"
-
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -30,37 +27,37 @@ namespace ecs {
             void operator()(Registry &r)
             {
                 auto &positions = r.get_components<ecs::component::Position>();
-                auto &controllable = r.get_components<ecs::component::Controllable>();
+                auto &controllables = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
 
-                for (std::size_t i = 0; i < positions.size(); ++i) {
-                    if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Player &&
-                        animations[i]->_clock.getElapsedTime().asSeconds() > 0.00001) {
+                for (auto &&[position, controllable, animation] :
+                     ecs::custom_zip(positions, controllables, animations)) {
+                    if (animation->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-                            positions[i]->_y -= controllable[i]->_speed;
-                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
-                                animations[i]->_x < 135) {
-                                animations[i]->_x += 35;
-                                animations[i]->_clock.restart();
+                            position->_y -= controllable->_speed;
+                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animation->_x < 135) {
+                                animation->_x += 35;
+                                animation->_clock.restart();
                             }
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                            positions[i]->_y += controllable[i]->_speed;
-                            if (animations[i]->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
-                                animations[i]->_x > 0) {
-                                animations[i]->_x -= 35;
-                                animations[i]->_clock.restart();
+                            position->_y += controllable->_speed;
+                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                                animation->_x > 0) {
+                                animation->_x -= 35;
+                                animation->_clock.restart();
                             }
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                            positions[i]->_x -= controllable[i]->_speed;
+                            position->_x -= controllable->_speed;
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                            positions[i]->_x += controllable[i]->_speed;
+                            position->_x += controllable->_speed;
                         }
                     }
                 }
-            };
+            }
         };
     }; // namespace systems
 } // namespace ecs
