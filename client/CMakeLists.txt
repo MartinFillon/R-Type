@@ -11,10 +11,10 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(r-type_client src/main.cpp)
+add_executable(r-type_client src/main.cpp src/Gui.cpp)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
-target_include_directories(r-type_client PUBLIC ../ecs/include)
+target_include_directories(r-type_client PUBLIC ../ecs/include include)
 target_link_libraries(r-type_client ecs)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 

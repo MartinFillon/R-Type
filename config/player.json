@@ -1,0 +1,35 @@
+{
+  "name": "player",
+  "active": [
+    "position",
+    "drawable",
+    "controllable",
+    "sprite",
+    "animations",
+    "size"
+  ],
+  "components": {
+    "position": {
+        "x": 100,
+        "y": 100
+    },
+    "drawable": true,
+    "controllable": {
+        "controllable": true,
+        "speed": 0.9
+    },
+    "sprite": "r-typesheet42.gif",
+    "animations": {
+        "width": 33,
+        "height": 20,
+        "x": 65,
+        "y": 0,
+        "rotation": 0,
+        "type": "player"
+    },
+    "size": {
+        "width": 3,
+        "height": 3
+    }
+  }
+}
