@@ -15,7 +15,6 @@
 #define GAME_NAME "R-Type"
 
 namespace ecs {
-
     class Context {
       public:
         Context();
@@ -23,14 +22,9 @@ namespace ecs {
 
         sf::RenderWindow &getRenderWindow();
 
-        int run();
+        virtual int run() = 0;
 
-      private:
-        void setup();
-        void setupPlayer();
-        void setupBackground();
-        void setupWeapon();
-        void setupBasicEnnemies();
+      protected:
         sf::RenderWindow _window;
         Registry _r;
     };

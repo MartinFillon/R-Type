@@ -39,6 +39,28 @@ namespace ecs {
             createParallaxComponent(e, node);
         };
         functions["size"] = [this](const Entity e, const nlohmann::json &node) { createSizeComponent(e, node); };
+
+        functions["text"] = [this](const Entity e, const nlohmann::json &node) { createTextComponent(e, node); };
+        functions["clicked"] = [this](const Entity e, const nlohmann::json &node) { createClickedComponent(e, node); };
+        functions["controllable"] = [this](const Entity e, const nlohmann::json &node) {
+            createControllableComponent(e, node);
+        };
+        functions["filledColor"] = [this](const Entity e, const nlohmann::json &node) {
+            createFilledColorComponent(e, node);
+        };
+        functions["hover"] = [this](const Entity e, const nlohmann::json &node) { createHoverComponent(e, node); };
+        functions["music"] = [this](const Entity e, const nlohmann::json &node) { createMusicComponent(e, node); };
+        functions["outlinedColor"] = [this](const Entity e, const nlohmann::json &node) {
+            createOutlinedColorComponent(e, node);
+        };
+        functions["score"] = [this](const Entity e, const nlohmann::json &node) { createScoreComponent(e, node); };
+        functions["shield"] = [this](const Entity e, const nlohmann::json &node) { createShieldComponent(e, node); };
+        functions["soundEffect"] = [this](const Entity e, const nlohmann::json &node) {
+            createSoundEffectComponent(e, node);
+        };
+        functions["velocity"] = [this](const Entity e, const nlohmann::json &node) {
+            createVelocityComponent(e, node);
+        };
     }
 
     ComponentFactory::~ComponentFactory() {}
@@ -48,16 +70,11 @@ namespace ecs {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
-        std::cout << "Creating entity: " << config["name"] << std::endl;
         Entity e = _r->spawn_entity();
 
-        std::cout << "Creating components..." << std::endl;
         for (auto &c : config["active"]) {
-            std::cout << "Creating component: " << c << std::endl;
-            std::cout << "Creating component: " << config["components"][c] << std::endl;
             createComponent(e, c, config["components"][c]);
         }
-        // std::cout << components.Type() << std::endl;
     }
 
     void ComponentFactory::createComponent(const Entity e, const std::string &name, const nlohmann::json &node)
@@ -70,8 +87,6 @@ namespace ecs {
         auto pos_array = _r->register_if_not_exist<component::Position>();
 
         pos_array[e.getId()] = component::Position{node["x"], node["y"]};
-        std::cout << "Position component created with x: " << pos_array[e.getId()]->_x
-                  << " y: " << pos_array[e.getId()]->_y << std::endl;
     }
 
     void ComponentFactory::createDrawableComponent(const Entity e, const nlohmann::json &node)
@@ -79,7 +94,6 @@ namespace ecs {
         auto drawable_array = _r->register_if_not_exist<component::Drawable>();
 
         drawable_array[e.getId()] = component::Drawable{node};
-        std::cout << "Drawable component created with texture: " << drawable_array[e.getId()]->_drawable << std::endl;
     }
 
     void ComponentFactory::createSpriteComponent(const Entity e, const nlohmann::json &node)
@@ -87,7 +101,6 @@ namespace ecs {
         auto sprite_array = _r->register_if_not_exist<component::Sprite>();
 
         sprite_array[e.getId()] = component::Sprite{node};
-        std::cout << "Sprite component created with texture: " << sprite_array[e.getId()]->_pathToSprite << std::endl;
     }
 
     void ComponentFactory::createAnimationsComponent(const Entity e, const nlohmann::json &node)
@@ -96,10 +109,6 @@ namespace ecs {
 
         animations_array[e.getId()] =
             component::Animations{sf::Clock(), node["width"], node["height"], node["x"], node["y"]};
-        std::cout << "Animations component created with width: " << animations_array[e.getId()]->_width
-                  << " height: " << animations_array[e.getId()]->_height
-                  << " Starting at texture postition x: " << animations_array[e.getId()]->_x
-                  << " y: " << animations_array[e.getId()]->_y << std::endl;
     }
 
     void ComponentFactory::createParallaxComponent(const Entity e, const nlohmann::json &node)
@@ -112,7 +121,27 @@ namespace ecs {
         auto size_array = _r->register_if_not_exist<component::Size>();
 
         size_array[e.getId()] = component::Size{node["width"], node["height"]};
-        std::cout << "Size component created with width: " << size_array[e.getId()]->_width
-                  << " height: " << size_array[e.getId()]->_height << std::endl;
     }
+
+    void ComponentFactory::createTextComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createControllableComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createFilledColorComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createMusicComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createOutlinedColorComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createShieldComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createSoundEffectComponent(const Entity e, const nlohmann::json &node) {}
+
+    void ComponentFactory::createVelocityComponent(const Entity e, const nlohmann::json &node) {}
 } // namespace ecs

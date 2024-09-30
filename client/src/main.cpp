@@ -5,19 +5,11 @@
 ** main
 */
 
-#include <memory>
-#include "ComponentFactory.hpp"
-#include "Context.hpp"
-#include "Registry.hpp"
+#include "Gui.hpp"
 
 int main(void)
 {
-    // ecs::Context ctx;
-    // return ctx.run();
+    rtype::Gui gui;
 
-    std::shared_ptr<ecs::Registry> r = std::make_shared<ecs::Registry>();
-    ecs::ComponentFactory cf(r);
-
-    cf.createEntity("config/background.json");
-    return 0;
+    return gui.run();
 }
