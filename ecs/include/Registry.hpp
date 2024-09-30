@@ -38,6 +38,16 @@ namespace ecs {
             );
         }
 
+        template <class Component>
+        SparseArray<Component> &register_if_not_exist()
+        {
+            auto type = std::type_index(typeid(SparseArray<Component>));
+            if (_componentsArrays.find(type) == _componentsArrays.end()) {
+                return register_component<Component>();
+            }
+            return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
+        }
+
         Entity spawn_entity()
         {
             return Entity(_entityCount++);
