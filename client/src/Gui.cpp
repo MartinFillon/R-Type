@@ -94,20 +94,23 @@ namespace rtype {
             for (std::size_t i = 0; i < _r->_entitys.size(); ++i) {
                 if (drawables[i]->_drawable) {
                     sf::Texture texture;
+                    if (sprites[i] && animations[i]) {
+                        ecs::ImageResolver image(PATH_TO_ASSETS);
+                        std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
+                        std::cout << "Animation: " << animations[i]->_x << " " << animations[i]->_y << " "
+                                  << animations[i]->_width << " " << animations[i]->_height << std::endl;
+                        texture.loadFromMemory(
+                            pathToImage.c_str(),
+                            pathToImage.size(),
+                            sf::IntRect(
+                                animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height
+                            )
+                        );
+                    }
                     sf::Sprite sprite;
                     sprite.setPosition(positions[i]->_x, positions[i]->_y);
                     sprite.setScale(size[i]->_width, size[i]->_height);
-                    if (sprites[i] && animations[i]) {
-                        ecs::ImageResolver image(PATH_TO_ASSETS);
-                        std::cerr << "Path to sprite: " << sprites[i]->_pathToSprite << std::endl;
-                        std::string pathToImage = image.getImage(sprites[i]->_pathToSprite);
-                        texture.loadFromMemory(pathToImage.c_str(), pathToImage.size());
-                        // texture.loadFromFile(PATH_TO_ASSETS + sprites[i]->_pathToSprite);
-                        sprite.setTexture(texture);
-                        sprite.setTextureRect(sf::IntRect(
-                            animations[i]->_x, animations[i]->_y, animations[i]->_width, animations[i]->_height
-                        ));
-                    }
+                    sprite.setTexture(texture);
                     _window.draw(sprite);
                 }
             }

@@ -22,7 +22,7 @@ add_library(ecs src/Context.cpp src/ImageResolver.cpp src/ComponentFactory.cpp)
 target_link_libraries(ecs PRIVATE sfml-graphics)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include)
-target_link_libraries(ecs PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
 
 if(WIN32)
   add_custom_command(
