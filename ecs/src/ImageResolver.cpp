@@ -37,7 +37,7 @@ namespace ecs {
     std::string ImageResolver::getImage(const std::string &path, bool reload)
     {
         if (reload) {
-            _cache[path] = readFile(path);
+            _cache[path] = readFile(_basePath + path);
             return _cache.at(path);
         }
         try {

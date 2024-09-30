@@ -1,0 +1,29 @@
+{
+  "name": "background_3",
+  "active": ["position", "drawable", "sprite", "animations", "parallax", "size"],
+  "components": {
+    "position": {
+      "x": 0,
+      "y": 0
+    },
+    "drawable": true,
+    "sprite": "Background/background_4.png",
+    "animations": {
+      "width": 1920,
+      "height": 1080,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "type": "background"
+    },
+    "parallax": {
+      "active": true,
+      "speed": 1,
+      "multiplier": 1
+    },
+    "size": {
+      "width": 7,
+      "height": 7
+    }
+  }
+}
