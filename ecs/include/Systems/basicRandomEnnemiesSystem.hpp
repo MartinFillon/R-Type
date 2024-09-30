@@ -28,6 +28,7 @@
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -79,8 +80,8 @@ namespace ecs {
                 int nbOfEnnemies = 0;
                 auto &animations = r.get_components<ecs::component::Animations>();
 
-                for (std::size_t i = 0; i < animations.size(); ++i) {
-                    if (animations[i] && animations[i]->_object == ecs::component::Object::Ennemies) {
+                for (auto &&[anim] : ecs::custom_zip(animations)) {
+                    if (anim->_object == ecs::component::Object::Ennemies) {
                         nbOfEnnemies += 1;
                     }
                 }
@@ -104,17 +105,17 @@ namespace ecs {
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllable = r.get_components<ecs::component::Controllable>();
 
-                for (std::size_t i = 0; i < animations.size(); ++i) {
-                    if (animations[i] && animations[i]->_object == ecs::component::Object::Ennemies) {
-                        if (animations[i]->_x <= 0 && animations[i]->_x != 224) {
-                            animations[i]->_x = 224;
-                            animations[i]->_clock.restart();
+                for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
+                    if (anim->_object == ecs::component::Object::Ennemies) {
+                        if (anim->_x <= 0 && anim->_x != 224) {
+                            anim->_x = 224;
+                            anim->_clock.restart();
                         }
-                        if (animations[i]->_x > 0 && animations[i]->_clock.getElapsedTime().asSeconds() > 0.3) {
-                            animations[i]->_x -= animations[i]->_width;
-                            animations[i]->_clock.restart();
+                        if (anim->_x > 0 && anim->_clock.getElapsedTime().asSeconds() > 0.3) {
+                            anim->_x -= anim->_width;
+                            anim->_clock.restart();
                         }
-                        positions[i]->_x -= controllable[i]->_speed;
+                        pos->_x -= ctrl->_speed;
                     }
                 }
             }
