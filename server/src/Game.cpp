@@ -7,14 +7,11 @@
 
 #include "Game.hpp"
 
-#include "protocol.hpp"
+Rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()) {}
 
-void Rtype::Game::processAction(const unsigned int id, const Packet &packet)
+void Rtype::Game::update() {}
+
+void Rtype::Game::handleLeaving(const unsigned int id)
 {
-    if (!packet.isValid()) {
-        std::cout << INVALID_PACKET(id) << std::endl;
-        return;
-    }
-
-    std::cout << VALID_PACKET(id) << std::endl;
+    _r->_entities.erase(id);
 }

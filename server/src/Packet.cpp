@@ -7,6 +7,7 @@
 
 #include "Packet.hpp"
 
+#include <iostream>
 #include "protocol.hpp"
 
 Rtype::Packet::Packet(const Message &message) : _isValid(false)
