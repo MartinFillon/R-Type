@@ -74,7 +74,7 @@ namespace ecs {
             animation.erase(entityIdx);
             parallax.erase(entityIdx);
             size.erase(entityIdx);
-            _entitys.erase(entityIdx);
+            _entities.erase(entityIdx);
         }
 
         template <typename Function>
@@ -90,7 +90,7 @@ namespace ecs {
             }
         }
 
-        EntityManager _entitys;
+        EntityManager _entities;
 
       private:
         std::vector<std::function<void(Registry &)>> _systems;

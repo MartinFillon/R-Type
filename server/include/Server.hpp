@@ -15,6 +15,8 @@
 
 #include "Client.hpp"
 #include "Game.hpp"
+#include "IContext.hpp"
+#include "protocol.hpp"
 
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
@@ -22,6 +24,7 @@
 #define ERROR 84
 #define SUCCESS 0
 
+#define SERVER_MISSING_PORT "Server cannot start: server port not specified"
 #define SERVER_START(x) "Server started at port " << x << "..."
 #define SERVER_STOP "Server stoped..."
 
@@ -29,7 +32,7 @@
 
 namespace Rtype {
 
-    class Server {
+    class Server : ecs::IContext {
 
         using Message = std::vector<uint8_t>;
         using Client = std::shared_ptr<Rtype::Client>;
@@ -41,11 +44,14 @@ namespace Rtype {
       public:
         Server(int port);
 
+        int run();
         void start();
         void stop();
 
         void broadcast(const Packet &packet);
         void handleMessage(const unsigned int id, const Message &message);
+
+        std::vector<uint8_t> getBitshiftedData(const unsigned int data);
 
       private:
         void acceptConnections();
@@ -55,6 +61,9 @@ namespace Rtype {
         void removeClient(const unsigned int id);
 
         unsigned int generateClientId(const Endpoint &endpoint);
+
+        void processAction(const unsigned int id, const Packet &packet);
+        void handleEvents(const unsigned int id, const Packet &packet);
 
         Context _context;
 

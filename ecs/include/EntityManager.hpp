@@ -22,12 +22,12 @@ namespace ecs {
 
         EntityManager(const std::size_t &id)
         {
-            _entitys.push_back(id);
+            _entities.push_back(id);
         }
 
         EntityManager(const Entity &id)
         {
-            _entitys.push_back(id);
+            _entities.push_back(id);
         }
 
         class EntityManagerError : std::exception {
@@ -47,32 +47,32 @@ namespace ecs {
 
         void addEntity(const Entity &entity)
         {
-            _entitys.push_back(entity);
+            _entities.push_back(entity);
         }
 
         Entity operator[](const std::size_t &idx)
         {
-            if (idx > _entitys.size()) {
+            if (idx > _entities.size()) {
                 throw EntityManagerError(ENTITY_MANAGER_ERROR_OUT_OF_RANGE);
                 return Entity(0);
             }
-            return _entitys[idx];
+            return _entities[idx];
         }
 
         void erase(const std::size_t &id)
         {
-            for (std::size_t i = 0; i < _entitys.size(); ++i) {
-                if (_entitys[i].getId() == id) {
-                    _entitys.erase(_entitys.begin(), _entitys.begin() + i);
+            for (std::size_t i = 0; i < _entities.size(); ++i) {
+                if (_entities[i].getId() == id) {
+                    _entities.erase(_entities.begin(), _entities.begin() + i);
                     continue;
                 }
-                _entitys[i] = i + 1;
+                _entities[i] = i + 1;
             }
         }
 
         std::size_t size() const
         {
-            return _entitys.size();
+            return _entities.size();
         }
 
         Entity lastEntity() const
@@ -81,7 +81,7 @@ namespace ecs {
         }
 
       private:
-        std::vector<Entity> _entitys;
+        std::vector<Entity> _entities;
     };
 }; // namespace ecs
 
