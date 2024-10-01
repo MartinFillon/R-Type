@@ -13,6 +13,12 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "Components/Animations.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "SparseArray.hpp"
@@ -64,6 +70,24 @@ namespace ecs {
                 }
                 idx += 1;
             }
+        }
+
+        void erase(const std::size_t &entityIdx)
+        {
+            auto &positions = register_component<ecs::component::Position>();
+            auto &drawable = register_component<ecs::component::Drawable>();
+            auto &sprite = register_component<ecs::component::Sprite>();
+            auto &animation = register_component<ecs::component::Animations>();
+            auto &parallax = register_component<ecs::component::Parallax>();
+            auto &size = register_component<ecs::component::Size>();
+
+            positions.erase(entityIdx);
+            drawable.erase(entityIdx);
+            sprite.erase(entityIdx);
+            animation.erase(entityIdx);
+            parallax.erase(entityIdx);
+            size.erase(entityIdx);
+            _entitys.erase(entityIdx);
         }
 
         template <typename Function>

@@ -20,6 +20,12 @@ namespace ecs {
             return _id;
         }
 
+        std::size_t operator=(const std::size_t &id)
+        {
+            _id = id;
+            return id;
+        }
+
         bool operator==(const Entity &other) const
         {
             return _id == other._id;
