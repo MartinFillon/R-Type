@@ -9,23 +9,36 @@
 #include <iostream>
 
 #include "ImageResolver.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/basicRandomEnnemiesSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-    Gui::Gui() : ecs::Context()
+    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>())
     {
         _factory = ecs::ComponentFactory(_r);
         setupBackground();
         setupPlayer();
         setupWeapon();
         setupBasicEnnemies();
+        setupCollisons();
     }
 
     Gui::~Gui() {}
+
+    sf::RenderWindow &Gui::getRenderWindow()
+    {
+        return _window;
+    }
+
+    void Gui::setupCollisons()
+    {
+        ecs::systems::CollisionsSystem collisions;
+        _r->add_system(collisions);
+    }
 
     void Gui::setupWeapon()
     {
@@ -80,9 +93,15 @@ namespace rtype {
 
             for (auto &&[draws, anim, spri, si, pos] :
                  ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                if (!draws || !anim || !spri || !si || !pos) {
+                    continue;
+                }
                 sf::Texture texture;
                 ecs::ImageResolver image(PATH_TO_ASSETS);
                 std::string pathToImage = image.getImage(spri->_pathToSprite);
+                if (pathToImage.empty()) {
+                    continue;
+                }
                 texture.loadFromMemory(
                     pathToImage.c_str(),
                     pathToImage.size(),

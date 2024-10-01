@@ -1,0 +1,36 @@
+{
+    "name": "player",
+    "active": [
+      "position",
+      "drawable",
+      "controllable",
+      "sprite",
+      "animations",
+      "size"
+    ],
+    "components": {
+      "position": {
+          "x": 0.0,
+          "y": 0.0
+      },
+      "drawable": true,
+      "controllable": {
+          "controllable": true,
+          "speed": 2.5
+      },
+      "sprite": "r-typesheet5.gif",
+      "animations": {
+          "width": 32,
+          "height": 35,
+          "x": 224,
+          "y": 0,
+          "rotation": 0,
+          "type": "ennemies"
+      },
+      "size": {
+          "width": 2.8,
+          "height": 2.8
+      }
+    }
+  }
+  
