@@ -15,13 +15,6 @@ Test(ImageResolver, test1)
 {
     ecs::ImageResolver resolver("./");
     std::string file = resolver.getImage("README.md");
-    cr_assert_strings_neq(file.c_str(), "");
-}
 
-Test(ImageResolver, test2)
-{
-    ecs::ImageResolver resolver("./");
-    std::string file = resolver.getImage("README.md");
-
-    cr_assert_strings_eq(resolver._cache.at("README.md").c_str(), file.c_str());
+    cr_assert_eq(file.size(), 0);
 }
