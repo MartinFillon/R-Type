@@ -9,14 +9,8 @@
 #define ZIPPER_ITERATOR_HPP_
 
 #include <algorithm>
-#include <cassert>
-#include <iterator>
-#include <optional>
 #include <tuple>
-#include <typeindex>
 #include <utility>
-#include <vector>
-#include "SparseArray.hpp"
 
 namespace ecs {
 
@@ -25,6 +19,11 @@ namespace ecs {
 
       public:
         iterator(std::tuple<Arrays &...> arrays, size_t pos) : _arrays(arrays), _pos(pos) {}
+
+        bool operator==(const iterator &other) const
+        {
+            return _pos == other._pos;
+        }
 
         bool operator!=(const iterator &other) const
         {

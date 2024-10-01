@@ -47,7 +47,7 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &drawable = r.get_components<ecs::component::Drawable>();
-                ecs::component::Position playerPos;
+                ecs::component::Position playerPos = {0.0, 0.0};
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
                     if (animations[i] && animations[i]->_object == ecs::component::Object::Player) {
@@ -55,6 +55,10 @@ namespace ecs {
                         playerPos._y = positions[i]->_y + 10;
                         break;
                     }
+                }
+
+                if (playerPos._x == 0.0 && playerPos._y == 0.0) {
+                    return;
                 }
 
                 bool isKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
@@ -66,6 +70,9 @@ namespace ecs {
                 wasKeyPressed = isKeyPressed;
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
+                    if (drawable[i] && !drawable[i]->_drawable) {
+                        continue;
+                    }
                     if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Weapon) {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;

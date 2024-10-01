@@ -9,10 +9,11 @@
 #include <iostream>
 
 #include "ImageResolver.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/basicRandomEnnemiesSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace rtype {
@@ -23,6 +24,7 @@ namespace rtype {
         setupPlayer();
         setupWeapon();
         setupBasicEnnemies();
+        setupCollisons();
     }
 
     Gui::~Gui() {}
@@ -30,6 +32,12 @@ namespace rtype {
     sf::RenderWindow &Gui::getRenderWindow()
     {
         return _window;
+    }
+
+    void Gui::setupCollisons()
+    {
+        ecs::systems::CollisionsSystem collisions;
+        _r->add_system(collisions);
     }
 
     void Gui::setupWeapon()
@@ -85,9 +93,15 @@ namespace rtype {
 
             for (auto &&[draws, anim, spri, si, pos] :
                  ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                if (!draws || !anim || !spri || !si || !pos) {
+                    continue;
+                }
                 sf::Texture texture;
                 ecs::ImageResolver image(PATH_TO_ASSETS);
                 std::string pathToImage = image.getImage(spri->_pathToSprite);
+                if (pathToImage.empty()) {
+                    continue;
+                }
                 texture.loadFromMemory(
                     pathToImage.c_str(),
                     pathToImage.size(),

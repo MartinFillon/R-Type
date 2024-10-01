@@ -8,11 +8,12 @@
 #ifndef PARALAXSYSTEM_HPP_
 #define PARALAXSYSTEM_HPP_
 
+#define BACKGROUND_SPEED 0.01
+
 #include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
-#include "Components/Sprite.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"

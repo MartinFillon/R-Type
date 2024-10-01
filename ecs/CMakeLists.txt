@@ -42,7 +42,7 @@ if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)
 
   enable_testing()
-  add_executable(test_ecs test/ImageResolverTest.cpp)
+  add_executable(test_ecs test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
 
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 

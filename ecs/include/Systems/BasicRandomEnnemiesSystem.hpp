@@ -8,15 +8,15 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
-#define RANDOM_POS_ARR_SIZE 7
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
+#define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
+#define BASIC_ENNEMIES_SPEED 0.001
 
 #ifdef _WIN32
     #include <array>
 #endif
 
-#include <cmath>
 #include <random>
 
 #include "Components/Animations.hpp"
@@ -34,29 +34,13 @@ namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
-            std::array<std::pair<double, bool>, RANDOM_POS_ARR_SIZE> _positions{
-                std::make_pair<double, bool>(100, true),
-                std::make_pair<double, bool>(145, true),
-                std::make_pair<double, bool>(190, true),
-                std::make_pair<double, bool>(235, true),
-                std::make_pair<double, bool>(280, true),
-                std::make_pair<double, bool>(325, true),
-                std::make_pair<double, bool>(370, true)
-            };
-
             void createNewEnnemies(Registry &r)
             {
 
                 std::random_device randomPosition;
                 std::default_random_engine randomEngine(randomPosition());
-                std::uniform_int_distribution<int> uniform_dist(0, RANDOM_POS_ARR_SIZE);
-                int randomPosY = uniform_dist(randomEngine);
-
-                if (!_positions[randomPosY].second) {
-                    createNewEnnemies(r);
-                } else {
-                    _positions[randomPosY].second = false;
-                }
+                std::uniform_int_distribution<int> uniform_dist(100, 400);
+                double randomPosY = uniform_dist(randomEngine);
 
                 Entity newEnnemies = r.spawn_entity();
                 r._entitys.addEntity(newEnnemies);
@@ -66,7 +50,7 @@ namespace ecs {
                 auto &sprites = r.get_components<ecs::component::Sprite>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
-                positions[newEnnemies.getId()] = ecs::component::Position{1944, _positions[randomPosY].first};
+                positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, 2.5};
                 sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
@@ -80,8 +64,8 @@ namespace ecs {
                 int nbOfEnnemies = 0;
                 auto &animations = r.get_components<ecs::component::Animations>();
 
-                for (auto &&[anim] : ecs::custom_zip(animations)) {
-                    if (anim->_object == ecs::component::Object::Ennemies) {
+                for (std::size_t i = 0; i < animations.size(); ++i) {
+                    if (animations[i] && animations[i]->_object == ecs::component::Object::Ennemies) {
                         nbOfEnnemies += 1;
                     }
                 }
@@ -106,6 +90,9 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
 
                 for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
+                    if (!anim || !pos || !ctrl) {
+                        continue;
+                    }
                     if (anim->_object == ecs::component::Object::Ennemies) {
                         if (anim->_x <= 0 && anim->_x != 224) {
                             anim->_x = 224;

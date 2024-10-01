@@ -34,6 +34,7 @@ namespace rtype {
 
         std::shared_ptr<ecs::Registry> _r;
         sf::RenderWindow _window;
+        void setupCollisons();
         ecs::ComponentFactory _factory;
     };
 } // namespace rtype

@@ -38,6 +38,13 @@ namespace ecs {
             return *this;
         }
 
+        void erase(const std::size_t &idx)
+        {
+            if (idx < _data.size()) {
+                _data[idx].reset();
+            }
+        }
+
         iterator begin()
         {
             return _data.begin();
