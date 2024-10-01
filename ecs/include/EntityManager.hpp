@@ -77,7 +77,7 @@ namespace ecs {
 
         Entity lastEntity() const
         {
-            return _entitys[_entitys.size() - 1];
+            return _entities[_entities.size() - 1];
         }
 
       private:
