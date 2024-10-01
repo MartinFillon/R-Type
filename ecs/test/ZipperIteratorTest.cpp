@@ -90,3 +90,65 @@ Test(custom_zip, empty_arrays)
 
     cr_assert(it == end);
 }
+
+Test(custom_zip, different_types_in_tuples)
+{
+    std::vector<int> vec1 = {1, 2, 3};
+    std::vector<double> vec2 = {1.1, 2.2, 3.3};
+    std::vector<std::string> vec3 = {"one", "two", "three"};
+
+    ecs::custom_zip zip(vec1, vec2, vec3);
+
+    auto it = zip.begin();
+    auto end = zip.end();
+
+    int expected_int = 1;
+    double expected_double = 1.1;
+    std::vector<std::string> expected_str = {"one", "two", "three"};
+    int index = 0;
+
+    for (; it != end; ++it, ++index) {
+        auto val1 = std::get<0>(*it);
+        auto val2 = std::get<1>(*it);
+        auto val3 = std::get<2>(*it);
+
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
+        cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
+        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Expected %s, but got %s", expected_str[index].c_str(), val3.c_str());
+
+        expected_double += 1.1;
+    }
+    cr_assert_eq(expected_int, 4);
+}
+
+
+Test(custom_zip, missing_element_in_one_array)
+{
+    std::vector<int> vec1 = {1, 2, 3};
+    std::vector<double> vec2 = {1.1, 2.2};
+    std::vector<std::string> vec3 = {"one", "two", "three"};
+
+    ecs::custom_zip zip(vec1, vec2, vec3);
+
+    auto it = zip.begin();
+    auto end = zip.end();
+
+    int expected_int = 1;
+    double expected_double = 1.1;
+    std::vector<std::string> expected_str = {"one", "two"};
+    int index = 0;
+
+    for (; it != end; ++it, ++index) {
+        auto val1 = std::get<0>(*it);
+        auto val2 = std::get<1>(*it);
+        auto val3 = std::get<2>(*it);
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
+        cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
+        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Expected %s, but got %s", expected_str[index].c_str(), val3.c_str());
+
+        expected_double += 1.1;
+    }
+
+    cr_assert_eq(index, 2);
+    cr_assert_eq(expected_int, 3);
+}
