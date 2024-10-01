@@ -23,10 +23,10 @@ namespace Rtype {
     class Game {
 
       public:
-        Game() = default;
+        Game();
 
         void update();
-        void processAction(const unsigned int id, const Packet &packet);
+        void handleLeaving();
 
       private:
         std::shared_ptr<ecs::Registry> _r;

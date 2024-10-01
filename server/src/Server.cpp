@@ -62,7 +62,7 @@ void Rtype::Server::handleMessage(const unsigned int id, const Message &message)
 
     std::cout << MESSAGE_RECEIVED(id) << std::endl;
 
-    _game.processAction(id, packet);
+    processAction(id, packet);
 }
 
 void Rtype::Server::acceptConnections()
@@ -131,4 +131,53 @@ unsigned int Rtype::Server::generateClientId(const Endpoint &endpoint)
     std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
 
     return static_cast<unsigned int>(hashFunction(id));
+}
+
+std::vector<uint8_t> Rtype::Server::getBitshiftedData(const unsigned int data)
+{
+    std::vector<uint8_t> bytes;
+
+    bytes[0] = (data >> 24) & 0xFF;
+    bytes[1] = (data >> 16) & 0xFF;
+    bytes[2] = (data >> 8) & 0xFF;
+    bytes[3] = data & 0xFF;
+
+    return bytes;
+}
+
+void Rtype::Server::processAction(const unsigned int id, const Packet &packet)
+{
+    if (!packet.isValid()) {
+        std::cout << INVALID_PACKET(id) << std::endl;
+        return;
+    }
+
+    const int8_t optCode = packet.getOpcode();
+
+    if (optCode == protocol::EVENT) {
+        std::cout << "EVT\n";
+        // missing events ids and arguments in Notion protocol
+    }
+    if (optCode == protocol::LEAVING) {
+        std::cout << "LEAV\n";
+        Rtype::Packet brPacket(protocol::LEFT, getBitshiftedData(id));
+
+        removeClient(id);
+        _game.handleLeaving();
+        broadcast(brPacket);
+    }
+    if (optCode == protocol::READY) {
+        std::cout << "READ\n";
+        // who asked and who cares??
+    }
+    if (optCode == protocol::PING) {
+        std::cout << "PONG\n";
+        Rtype::Packet clPacket(protocol::PING);
+
+        sendToClient(id, clPacket);
+    }
+
+    std::cout << packet.toMessage().data() << std::endl;
+
+    std::cout << VALID_PACKET(id) << std::endl;
 }

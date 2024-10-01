@@ -32,8 +32,7 @@ namespace protocol {
     enum Operations {
         OBJECT_POSITION = 1,
         NEW_OBJECT = 2,
-        MOVE,
-        SHOOT,
+        EVENT = 3,
         GAME_SPEED = 4,
         OBJECT_REMOVED = 5,
         NEW_PLAYER = 6,

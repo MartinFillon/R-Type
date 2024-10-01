@@ -16,6 +16,7 @@
 #include "Client.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
+#include "protocol.hpp"
 
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
@@ -50,6 +51,8 @@ namespace Rtype {
         void broadcast(const Packet &packet);
         void handleMessage(const unsigned int id, const Message &message);
 
+        std::vector<uint8_t> getBitshiftedData(const unsigned int data);
+
       private:
         void acceptConnections();
         void processGame();
@@ -58,6 +61,8 @@ namespace Rtype {
         void removeClient(const unsigned int id);
 
         unsigned int generateClientId(const Endpoint &endpoint);
+
+        void processAction(const unsigned int id, const Packet &packet);
 
         Context _context;
 
