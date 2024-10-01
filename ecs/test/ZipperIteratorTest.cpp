@@ -5,11 +5,11 @@
 ** r type proj
 */
 
-#include <criterion/assert.h>
-#include <criterion/criterion.h>
+#include <algorithm>
 #include <tuple>
 #include <vector>
-#include <algorithm>
+#include <criterion/assert.h>
+#include <criterion/criterion.h>
 
 #define private public
 #include "ZipperIterator.hpp"
@@ -24,7 +24,7 @@ Test(custom_zip, iterates_over_single_array)
 
     for (; it != end; ++it) {
         auto val = std::get<0>(*it);
-        cr_assert_eq(val, expected++, "Expected %d, but got %d", expected-1, val);
+        cr_assert_eq(val, expected++, "Expected %d, but got %d", expected - 1, val);
     }
 
     cr_assert_eq(expected, 6);
@@ -45,8 +45,8 @@ Test(custom_zip, iterates_over_multiple_arrays)
         auto val1 = std::get<0>(*it);
         auto val2 = std::get<1>(*it);
 
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
-        cr_assert_eq(val2, expected_char++, "Expected %c, but got %c", expected_char-1, val2);
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
+        cr_assert_eq(val2, expected_char++, "Expected %c, but got %c", expected_char - 1, val2);
     }
 
     cr_assert_eq(expected_int, 6);
@@ -70,8 +70,8 @@ Test(custom_zip, stops_at_minimum_size)
         auto val1 = std::get<0>(*it);
         auto val2 = std::get<1>(*it);
 
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
-        cr_assert_eq(val2, expected_char++, "Expected %c, but got %c", expected_char-1, val2);
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
+        cr_assert_eq(val2, expected_char++, "Expected %c, but got %c", expected_char - 1, val2);
         count++;
     }
 
@@ -112,15 +112,20 @@ Test(custom_zip, different_types_in_tuples)
         auto val2 = std::get<1>(*it);
         auto val3 = std::get<2>(*it);
 
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
         cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
-        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Expected %s, but got %s", expected_str[index].c_str(), val3.c_str());
+        cr_assert_str_eq(
+            val3.c_str(),
+            expected_str[index].c_str(),
+            "Expected %s, but got %s",
+            expected_str[index].c_str(),
+            val3.c_str()
+        );
 
         expected_double += 1.1;
     }
     cr_assert_eq(expected_int, 4);
 }
-
 
 Test(custom_zip, missing_element_in_one_array)
 {
@@ -142,9 +147,15 @@ Test(custom_zip, missing_element_in_one_array)
         auto val1 = std::get<0>(*it);
         auto val2 = std::get<1>(*it);
         auto val3 = std::get<2>(*it);
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int-1, val1);
+        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
         cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
-        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Expected %s, but got %s", expected_str[index].c_str(), val3.c_str());
+        cr_assert_str_eq(
+            val3.c_str(),
+            expected_str[index].c_str(),
+            "Expected %s, but got %s",
+            expected_str[index].c_str(),
+            val3.c_str()
+        );
 
         expected_double += 1.1;
     }
