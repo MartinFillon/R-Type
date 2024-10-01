@@ -15,6 +15,7 @@
 
 #include "Client.hpp"
 #include "Game.hpp"
+#include "IContext.hpp"
 
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
@@ -22,6 +23,7 @@
 #define ERROR 84
 #define SUCCESS 0
 
+#define SERVER_MISSING_PORT "Server cannot start: server port not specified"
 #define SERVER_START(x) "Server started at port " << x << "..."
 #define SERVER_STOP "Server stoped..."
 
@@ -29,7 +31,7 @@
 
 namespace Rtype {
 
-    class Server {
+    class Server : ecs::IContext {
 
         using Message = std::vector<uint8_t>;
         using Client = std::shared_ptr<Rtype::Client>;
@@ -41,6 +43,7 @@ namespace Rtype {
       public:
         Server(int port);
 
+        int run();
         void start();
         void stop();
 

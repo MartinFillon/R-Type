@@ -13,6 +13,13 @@ Rtype::Server::Server(int port)
     return;
 };
 
+int Rtype::Server::run()
+{
+    this->start();
+
+    return EXIT_SUCCESS;
+}
+
 void Rtype::Server::start()
 {
     std::cout << SERVER_START(_port) << std::endl;

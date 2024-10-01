@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 add_executable(r-type_server src/Main.cpp src/Server.cpp src/Client.cpp
                              src/Packet.cpp src/Game.cpp)
 
-target_include_directories(r-type_server PUBLIC include ../protocol)
+target_include_directories(r-type_server PUBLIC include ../protocol ../ecs/include)
 
 include(FetchContent)
 
