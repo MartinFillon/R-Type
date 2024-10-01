@@ -54,6 +54,7 @@ namespace ecs {
         {
             if (idx > _entitys.size()) {
                 throw EntityManagerError(ENTITY_MANAGER_ERROR_OUT_OF_RANGE);
+                return Entity(0);
             }
             return _entitys[idx];
         }
@@ -76,7 +77,7 @@ namespace ecs {
 
         Entity lastEntity() const
         {
-            return _entitys[_entitys.size()];
+            return _entitys[_entitys.size() - 1];
         }
 
       private:
