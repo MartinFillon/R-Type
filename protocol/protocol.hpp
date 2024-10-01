@@ -31,20 +31,20 @@ namespace protocol {
 
     enum Operations {
         OBJECT_POSITION = 1,
-        NEW_OBJECT,
+        NEW_OBJECT = 2,
         MOVE,
         SHOOT,
-        GAME_SPEED,
-        OBJECT_REMOVED,
-        NEW_PLAYER,
-        PLAYER_CRASHED,
-        LEAVING,
-        PLAYER_LEFT,
-        WELCOME,
-        REFUSED,
-        READY,
-        PING,
-        OBJECT_INFORMATIONS
+        GAME_SPEED = 4,
+        OBJECT_REMOVED = 5,
+        NEW_PLAYER = 6,
+        PLAYER_CRASHED = 7,
+        LEAVING = 8,
+        PLAYER_LEFT = 9,
+        WELCOME = 10,
+        REFUSED = 11,
+        READY = 12,
+        PING = 13,
+        OBJECT_INFORMATIONS = 14
     };
 
     const uint32_t MAGIC = 0x42454552;
