@@ -24,6 +24,7 @@ namespace ecs {
         {
             return _pos == other._pos;
         }
+
         bool operator!=(const iterator &other) const
         {
             return _pos != other._pos;
