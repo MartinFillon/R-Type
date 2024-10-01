@@ -163,7 +163,7 @@ void Rtype::Server::processAction(const unsigned int id, const Packet &packet)
         Rtype::Packet brPacket(protocol::LEFT, getBitshiftedData(id));
 
         removeClient(id);
-        _game.handleLeaving();
+        _game.handleLeaving(id);
         broadcast(brPacket);
     }
     if (optCode == protocol::READY) {

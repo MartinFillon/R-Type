@@ -26,7 +26,7 @@ namespace Rtype {
         Game();
 
         void update();
-        void handleLeaving();
+        void handleLeaving(const unsigned int id);
 
       private:
         std::shared_ptr<ecs::Registry> _r;

@@ -15,6 +15,7 @@ void Rtype::Game::update()
 {
 }
 
-void Rtype::Game::handleLeaving()
+void Rtype::Game::handleLeaving(const unsigned int id)
 {
+    _r->_entitys.erase(id);
 }
