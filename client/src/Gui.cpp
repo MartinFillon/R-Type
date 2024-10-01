@@ -16,7 +16,7 @@
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-    Gui::Gui() : ecs::Context()
+    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>())
     {
         _factory = ecs::ComponentFactory(_r);
         setupBackground();
@@ -26,6 +26,11 @@ namespace rtype {
     }
 
     Gui::~Gui() {}
+
+    sf::RenderWindow &Gui::getRenderWindow()
+    {
+        return _window;
+    }
 
     void Gui::setupWeapon()
     {
