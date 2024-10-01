@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "Packet.hpp"
+#include "Registry.hpp"
 
 namespace Rtype {
 
@@ -26,6 +27,9 @@ namespace Rtype {
 
         void update();
         void processAction(const unsigned int id, const Packet &packet);
+
+      private:
+        std::shared_ptr<ecs::Registry> _r;
     };
 
 }; // namespace Rtype
