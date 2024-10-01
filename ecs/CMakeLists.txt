@@ -36,13 +36,13 @@ if(WIN32)
     VERBATIM)
 endif()
 
-option(ENABLE_TESTS "Build tests along with the library" ON)
+# option(ENABLE_TESTS "Build tests along with the library" ON)
 
 if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)
 
   enable_testing()
-  add_executable(test_ecs test/EntityTest.cpp test/EntityManagerTest.cpp test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
+  add_executable(test_ecs test/SparseArrayTest.cpp test/RegistryTest.cpp test/EntityTest.cpp test/EntityManagerTest.cpp test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
 
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
