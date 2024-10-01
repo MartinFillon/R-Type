@@ -63,6 +63,7 @@ namespace Rtype {
         unsigned int generateClientId(const Endpoint &endpoint);
 
         void processAction(const unsigned int id, const Packet &packet);
+        void handleEvents(const unsigned int id, const Packet &packet);
 
         Context _context;
 

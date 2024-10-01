@@ -156,7 +156,7 @@ void Rtype::Server::processAction(const unsigned int id, const Packet &packet)
 
     if (optCode == protocol::EVENT) {
         std::cout << "EVT\n";
-        // missing events ids and arguments in Notion protocol
+        handleEvents(id, packet);
     }
     if (optCode == protocol::LEAVING) {
         std::cout << "LEAV\n";
@@ -180,4 +180,9 @@ void Rtype::Server::processAction(const unsigned int id, const Packet &packet)
     std::cout << packet.toMessage().data() << std::endl;
 
     std::cout << VALID_PACKET(id) << std::endl;
+}
+
+void Rtype::Server::handleEvents(const unsigned int id, const Packet &packet)
+{
+    // missing events ids and arguments in Notion protocol
 }
