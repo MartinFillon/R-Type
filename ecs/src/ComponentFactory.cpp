@@ -73,7 +73,7 @@ namespace ecs {
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = _r->spawn_entity();
-        _r->_entitys.addEntity(e);
+        _r->_entities.addEntity(e);
 
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);

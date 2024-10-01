@@ -43,7 +43,7 @@ namespace ecs {
                 double randomPosY = uniform_dist(randomEngine);
 
                 Entity newEnnemies = r.spawn_entity();
-                r._entitys.addEntity(newEnnemies);
+                r._entities.addEntity(newEnnemies);
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &drawables = r.get_components<ecs::component::Drawable>();
                 auto &controllable = r.get_components<ecs::component::Controllable>();
