@@ -15,3 +15,4 @@ compile_commands.json
 r-type_*
 test_ecs
 CTestTestfile.cmake
+*.puml

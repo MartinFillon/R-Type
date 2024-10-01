@@ -13,7 +13,7 @@ namespace ecs {
         struct Velocity {
             double _vx;
             double _vy;
-        }
+        };
     }; // namespace component
 }; // namespace ecs
 

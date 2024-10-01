@@ -9,14 +9,8 @@
 #define ZIPPER_ITERATOR_HPP_
 
 #include <algorithm>
-#include <cassert>
-#include <iterator>
-#include <optional>
 #include <tuple>
-#include <typeindex>
 #include <utility>
-#include <vector>
-#include "SparseArray.hpp"
 
 namespace ecs {
 

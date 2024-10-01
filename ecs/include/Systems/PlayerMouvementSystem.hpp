@@ -12,13 +12,9 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
-#include "GunFireSystem.hpp"
-
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
