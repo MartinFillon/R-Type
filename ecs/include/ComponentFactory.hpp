@@ -10,8 +10,8 @@
 
 #include <functional>
 #include <string>
-#include "Registry.hpp"
 #include "Entity.hpp"
+#include "Registry.hpp"
 #include <nlohmann/json_fwd.hpp>
 #include <unordered_map>
 

@@ -10,11 +10,10 @@
 
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
-#include "Systems/CollisionsSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace rtype {
