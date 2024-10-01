@@ -18,3 +18,6 @@ void Rtype::Game::processAction(const unsigned int id, const Packet &packet)
 
     std::cout << VALID_PACKET(id) << std::endl;
 }
+
+void Rtype::Game::update()
+{}
