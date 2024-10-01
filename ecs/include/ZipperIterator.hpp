@@ -20,6 +20,11 @@ namespace ecs {
       public:
         iterator(std::tuple<Arrays &...> arrays, size_t pos) : _arrays(arrays), _pos(pos) {}
 
+        bool operator==(const iterator &other) const
+        {
+            return _pos == other._pos;
+        }
+
         bool operator!=(const iterator &other) const
         {
             return _pos != other._pos;
