@@ -16,3 +16,5 @@ r-type_*
 test_ecs
 CTestTestfile.cmake
 *.puml
+*.log
+.ignore/
