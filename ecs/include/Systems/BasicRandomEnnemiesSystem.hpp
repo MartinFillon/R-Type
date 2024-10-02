@@ -41,7 +41,7 @@ namespace ecs {
                 std::random_device randomPosition;
                 std::default_random_engine randomEngine(randomPosition());
                 std::uniform_int_distribution<int> uniform_dist(100, 400);
-                double randomPosY = uniform_dist(randomEngine);
+                int randomPosY = uniform_dist(randomEngine);
 
                 Entity newEnnemies = r.spawn_entity();
                 r._entities.addEntity(newEnnemies);

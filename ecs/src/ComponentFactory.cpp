@@ -166,7 +166,7 @@ namespace ecs {
     {
         auto &text_array = _r->register_if_not_exist<component::Text>();
 
-        text_array[e.getId()] = component::Text{node["string"], sf::Text()};
+        text_array[e.getId()] = component::Text{node["string"]};
     }
 
     void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node)
@@ -187,7 +187,7 @@ namespace ecs {
     {
         auto &filled_color_array = _r->register_if_not_exist<component::FilledColor>();
 
-        filled_color_array[e.getId()] = component::FilledColor{sf::Color(node["r"], node["g"], node["b"], node["a"])};
+        filled_color_array[e.getId()] = component::FilledColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node)
@@ -204,7 +204,7 @@ namespace ecs {
         auto &outlined_color_array = _r->register_if_not_exist<component::OutlinedColor>();
 
         outlined_color_array[e.getId()] =
-            component::OutlinedColor{sf::Color(node["r"], node["g"], node["b"], node["a"])};
+            component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node)
