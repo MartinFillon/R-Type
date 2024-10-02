@@ -63,6 +63,7 @@ namespace Rtype {
         file.append(std::to_string(id));
         file.append(".json");
 
+        std::cerr << file << std::endl;
         ecs::Entity e = _cf.createEntity(file);
 
         _players[id] = e.getId();
