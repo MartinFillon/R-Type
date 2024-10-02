@@ -22,20 +22,31 @@ namespace rtype {
         ~Gui();
 
         int run() override;
+        void launchMenu();
+
 
       protected:
       private:
         sf::RenderWindow &getRenderWindow();
 
+        void setupGame();
         void setupPlayer();
         void setupBackground();
         void setupWeapon();
         void setupBasicEnnemies();
-
         std::shared_ptr<ecs::Registry> _r;
         sf::RenderWindow _window;
         void setupCollisons();
         ecs::ComponentFactory _factory;
+
+        // Menu part
+
+        sf::Font _font;
+        sf::Text _menuText[3];
+        bool _isLogin;
+        bool _isQuitPress;
+        bool _isMenuOpen;
+
     };
 } // namespace rtype
 
