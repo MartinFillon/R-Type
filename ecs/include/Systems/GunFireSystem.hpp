@@ -47,7 +47,7 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &drawable = r.get_components<ecs::component::Drawable>();
-                ecs::component::Position playerPos = {0.0, 0.0};
+                ecs::component::Position playerPos = {0, 0};
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
                     if (animations[i] && animations[i]->_object == ecs::component::Object::Player) {

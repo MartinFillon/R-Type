@@ -18,7 +18,6 @@ namespace Rtype {
         for (int i = 1; i < 5; i++) {
             _playerIds[i] = std::nullopt;
         }
-        return;
     };
 
     int Server::run()

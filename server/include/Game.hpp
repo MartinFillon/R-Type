@@ -42,6 +42,8 @@ namespace Rtype {
         ecs::ComponentFactory _cf;
         std::unordered_map<unsigned int, ecs::Entity> _players;
         std::queue<Packet> _packetsToSend;
+
+        void preparePosition(const std::optional<ecs::component::Position> &p, int i);
     };
 
 }; // namespace Rtype
