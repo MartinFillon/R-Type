@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "Clock.hpp"
+#include "ComponentFactory.hpp"
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
@@ -21,7 +22,7 @@ namespace rtype {
     Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
         _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
     {
-        _factory = ecs::ComponentFactory(_r);
+        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
         setupBackground();
         setupPlayer();
         setupWeapon();

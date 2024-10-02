@@ -11,8 +11,8 @@
 namespace ecs {
     namespace component {
         struct Position {
-            double _x;
-            double _y;
+            int _x;
+            int _y;
         };
     }; // namespace component
 }; // namespace ecs

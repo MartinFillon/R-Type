@@ -6,183 +6,211 @@
 */
 
 #include "Server.hpp"
+#include <cstdint>
+#include <optional>
+#include <queue>
 
-Rtype::Server::Server(int port)
-    : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
-{
-    return;
-};
+namespace Rtype {
 
-int Rtype::Server::run()
-{
-    this->start();
+    Server::Server(int port)
+        : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
+    {
+        for (int i = 1; i < 5; i++) {
+            _playerIds[i] = std::nullopt;
+        }
+    };
 
-    return EXIT_SUCCESS;
-}
+    int Server::run()
+    {
+        this->start();
 
-void Rtype::Server::start()
-{
-    std::cout << SERVER_START(_port) << std::endl;
-
-    std::thread context([&]() { _context.run(); });
-
-    std::thread acceptConnections(&Rtype::Server::acceptConnections, this);
-    std::thread processGame(&Rtype::Server::processGame, this);
-
-    context.detach();
-
-    acceptConnections.join();
-    processGame.join();
-}
-
-void Rtype::Server::stop()
-{
-    _running = false;
-    _socket.close();
-
-    std::cout << SERVER_STOP << std::endl;
-}
-
-void Rtype::Server::broadcast(const Packet &packet)
-{
-    std::lock_guard<std::mutex> lock(_mutex);
-
-    if (!packet.isValid()) {
-        return;
+        return EXIT_SUCCESS;
     }
 
-    for (const auto &client : _clients) {
-        sendToClient(client.first, packet);
+    void Server::start()
+    {
+        std::cout << SERVER_START(_port) << std::endl;
+
+        std::thread context([&]() { _context.run(); });
+
+        std::thread acceptConnections(&Server::acceptConnections, this);
+        std::thread processGame(&Server::processGame, this);
+
+        context.detach();
+
+        acceptConnections.join();
+        processGame.join();
     }
-}
 
-void Rtype::Server::handleMessage(const unsigned int id, const Message &message)
-{
-    Packet packet(message);
+    void Server::stop()
+    {
+        _running = false;
+        _socket.close();
 
-    std::cout << MESSAGE_RECEIVED(id) << std::endl;
+        std::cout << SERVER_STOP << std::endl;
+    }
 
-    processAction(id, packet);
-}
-
-void Rtype::Server::acceptConnections()
-{
-    while (_running) {
-
-        Endpoint endpoint;
-        asio::error_code error;
-
-        Message message(DATA_MAX_SIZE);
-
+    void Server::broadcast(const Packet &packet)
+    {
         std::lock_guard<std::mutex> lock(_mutex);
 
-        size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
+        if (!packet.isValid()) {
+            return;
+        }
 
-        unsigned int id = generateClientId(endpoint);
+        for (const auto &client : _clients) {
+            sendToClient(client.first, packet);
+        }
+    }
 
-        if (!error && len) {
+    void Server::handleMessage(const unsigned int id, const Message &message)
+    {
+        Packet packet(message);
 
-            if (_clients.find(id) == _clients.end()) {
-                _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
+        std::cout << MESSAGE_RECEIVED(id) << std::endl;
+
+        processAction(id, packet);
+    }
+
+    int Server::placeInPlayers(void)
+    {
+        for (int i = 1; i < 5; i++) {
+            if (_playerIds[i] == std::nullopt) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    void Server::acceptConnections()
+    {
+        while (_running) {
+
+            Endpoint endpoint;
+            asio::error_code error;
+
+            Message message(DATA_MAX_SIZE);
+
+            std::lock_guard<std::mutex> lock(_mutex);
+
+            size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
+
+            unsigned int id = generateClientId(endpoint);
+            int place = placeInPlayers();
+
+            if (!error && len && place != -1) {
+
+                if (_clients.find(id) == _clients.end()) {
+                    _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
+                }
+
+                _playerIds[place] = id;
+
+                _game.createPlayer(id);
+                _clients[id].get()->send(Packet(10, {static_cast<uint8_t>(id)}));
+
+                handleMessage(id, message);
             }
 
-            _clients[id].get()->send(Packet(0));
-
-            handleMessage(id, message);
-        }
-
-        if (error && _clients.find(id) != _clients.end()) {
-            _clients[id].get()->disconnect();
+            if (error && _clients.find(id) != _clients.end()) {
+                _clients[id].get()->disconnect();
+            }
         }
     }
-}
 
-void Rtype::Server::processGame()
-{
-    while (_running) {
-        _game.update();
-    }
-}
-
-void Rtype::Server::sendToClient(const unsigned int id, const Packet &packet)
-{
-    std::lock_guard<std::mutex> lock(_mutex);
-
-    if (!packet.isValid()) {
-        return;
+    void Server::processGame()
+    {
+        while (_running) {
+            _game.update();
+            std::queue<Packet> packets = _game.getPacketsToSend();
+            while (!packets.empty()) {
+                broadcast(packets.front());
+                packets.pop();
+            }
+        }
     }
 
-    if (_clients.find(id) != _clients.end()) {
-        _clients[id]->send(packet);
-    }
-}
+    void Server::sendToClient(const unsigned int id, const Packet &packet)
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
 
-void Rtype::Server::removeClient(const unsigned int id)
-{
-    std::lock_guard<std::mutex> lock(_mutex);
+        if (!packet.isValid()) {
+            return;
+        }
 
-    _clients.erase(id);
-}
-
-unsigned int Rtype::Server::generateClientId(const Endpoint &endpoint)
-{
-    std::hash<std::string> hashFunction;
-
-    std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
-
-    return static_cast<unsigned int>(hashFunction(id));
-}
-
-std::vector<uint8_t> Rtype::Server::getBitshiftedData(const unsigned int data)
-{
-    std::vector<uint8_t> bytes;
-
-    bytes[0] = (data >> 24) & 0xFF;
-    bytes[1] = (data >> 16) & 0xFF;
-    bytes[2] = (data >> 8) & 0xFF;
-    bytes[3] = data & 0xFF;
-
-    return bytes;
-}
-
-void Rtype::Server::processAction(const unsigned int id, const Packet &packet)
-{
-    if (!packet.isValid()) {
-        std::cout << INVALID_PACKET(id) << std::endl;
-        return;
+        if (_clients.find(id) != _clients.end()) {
+            _clients[id]->send(packet);
+        }
     }
 
-    const int8_t optCode = packet.getOpcode();
+    void Server::removeClient(const unsigned int id)
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
 
-    if (optCode == protocol::EVENT) {
-        std::cout << "EVT\n";
-        handleEvents(id, packet);
-    }
-    if (optCode == protocol::LEAVING) {
-        std::cout << "LEAV\n";
-        Rtype::Packet brPacket(protocol::LEFT, getBitshiftedData(id));
-
-        removeClient(id);
-        _game.handleLeaving(id);
-        broadcast(brPacket);
-    }
-    if (optCode == protocol::READY) {
-        std::cout << "READ\n";
-        // who asked and who cares??
-    }
-    if (optCode == protocol::PING) {
-        std::cout << "PONG\n";
-        Rtype::Packet clPacket(protocol::PING);
-
-        sendToClient(id, clPacket);
+        _clients.erase(id);
     }
 
-    std::cout << packet.toMessage().data() << std::endl;
+    unsigned int Server::generateClientId(const Endpoint &endpoint)
+    {
+        std::hash<std::string> hashFunction;
 
-    std::cout << VALID_PACKET(id) << std::endl;
-}
+        std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
 
-void Rtype::Server::handleEvents(const unsigned int id, const Packet &packet)
-{
-    // missing events ids and arguments in Notion protocol
-}
+        return static_cast<unsigned int>(hashFunction(id));
+    }
+
+    std::vector<uint8_t> Server::getBitshiftedData(const unsigned int data)
+    {
+        std::vector<uint8_t> bytes;
+
+        bytes[0] = (data >> 24) & 0xFF;
+        bytes[1] = (data >> 16) & 0xFF;
+        bytes[2] = (data >> 8) & 0xFF;
+        bytes[3] = data & 0xFF;
+
+        return bytes;
+    }
+
+    void Server::processAction(const unsigned int id, const Packet &packet)
+    {
+        if (!packet.isValid()) {
+            std::cout << INVALID_PACKET(id) << std::endl;
+            return;
+        }
+
+        const int8_t optCode = packet.getOpcode();
+
+        if (optCode == protocol::EVENT) {
+            std::cout << "EVT\n";
+            handleEvents(id, packet);
+        }
+        if (optCode == protocol::LEAVING) {
+            std::cout << "LEAV\n";
+            Packet brPacket(protocol::LEFT, getBitshiftedData(id));
+
+            removeClient(id);
+            _game.handleLeaving(id);
+            broadcast(brPacket);
+        }
+        if (optCode == protocol::READY) {
+            std::cout << "READ\n";
+            // who asked and who cares??
+        }
+        if (optCode == protocol::PING) {
+            std::cout << "PONG\n";
+            Packet clPacket(protocol::PING);
+
+            sendToClient(id, clPacket);
+        }
+
+        std::cout << packet.toMessage().data() << std::endl;
+
+        std::cout << VALID_PACKET(id) << std::endl;
+    }
+
+    void Server::handleEvents(const unsigned int id, const Packet &packet)
+    {
+        // missing events ids and arguments in Notion protocol
+    }
+} // namespace Rtype
