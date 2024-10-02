@@ -99,16 +99,16 @@ namespace Rtype {
             unsigned int id = generateClientId(endpoint);
             int place = placeInPlayers();
 
+            std::cerr << error << " " << len << " " << place << std::endl;
             if (!error && len && place != -1) {
 
                 if (_clients.find(id) == _clients.end()) {
                     _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
+                    _playerIds[place] = id;
+
+                    _game.createPlayer(place);
+                    _clients[id].get()->send(Packet(10, {static_cast<uint8_t>(id)}));
                 }
-
-                _playerIds[place] = id;
-
-                _game.createPlayer(id);
-                _clients[id].get()->send(Packet(10, {static_cast<uint8_t>(id)}));
 
                 handleMessage(id, message);
             }
