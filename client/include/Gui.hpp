@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
+#include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
@@ -33,6 +34,8 @@ namespace rtype {
         void setupBasicEnnemies();
 
         std::shared_ptr<ecs::Registry> _r;
+        ecs::Clock _drawClock;
+        ecs::Clock _systemClock;
         sf::RenderWindow _window;
         void setupCollisons();
         ecs::ComponentFactory _factory;

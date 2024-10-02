@@ -8,6 +8,7 @@
 #include "Gui.hpp"
 #include <iostream>
 
+#include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
@@ -18,7 +19,8 @@
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>())
+    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
+        _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
     {
         _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
         setupBackground();
@@ -81,6 +83,7 @@ namespace rtype {
         auto &positions = _r->register_component<ecs::component::Position>();
         auto &animations = _r->register_component<ecs::component::Animations>();
         auto &size = _r->register_component<ecs::component::Size>();
+        int testTick(20);
 
         while (_window.isOpen()) {
             sf::Event event;
@@ -89,30 +92,37 @@ namespace rtype {
                     _window.close();
                 }
             }
-            _window.clear();
-            _r->run_systems();
 
-            for (auto &&[draws, anim, spri, si, pos] :
-                 ecs::custom_zip(drawables, animations, sprites, size, positions)) {
-                if (!draws || !anim || !spri || !si || !pos) {
-                    continue;
+            if (_systemClock.getSeconds() > (1 / 5)) {
+                _r->run_systems();
+                _systemClock.restart();
+            }
+
+            if (_drawClock.getSeconds() > (1 / 60)) {
+                _window.clear();
+                for (auto &&[draws, anim, spri, si, pos] :
+                    ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                    if (!draws || !anim || !spri || !si || !pos) {
+                        continue;
+                    }
+                    sf::Texture texture;
+                    ecs::ImageResolver image(PATH_TO_ASSETS);
+                    std::string pathToImage = image.getImage(spri->_pathToSprite);
+                    if (pathToImage.empty()) {
+                        continue;
+                    }
+                    texture.loadFromMemory(
+                        pathToImage.c_str(),
+                        pathToImage.size(),
+                        sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height)
+                    );
+                    sf::Sprite sprite;
+                    sprite.setPosition(pos->_x, pos->_y);
+                    sprite.setScale(si->_width, si->_height);
+                    sprite.setTexture(texture);
+                    _window.draw(sprite);
                 }
-                sf::Texture texture;
-                ecs::ImageResolver image(PATH_TO_ASSETS);
-                std::string pathToImage = image.getImage(spri->_pathToSprite);
-                if (pathToImage.empty()) {
-                    continue;
-                }
-                texture.loadFromMemory(
-                    pathToImage.c_str(),
-                    pathToImage.size(),
-                    sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height)
-                );
-                sf::Sprite sprite;
-                sprite.setPosition(pos->_x, pos->_y);
-                sprite.setScale(si->_width, si->_height);
-                sprite.setTexture(texture);
-                _window.draw(sprite);
+                _drawClock.restart();
             }
             _window.display();
         }

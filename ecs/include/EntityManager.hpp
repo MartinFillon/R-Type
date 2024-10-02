@@ -66,7 +66,6 @@ namespace ecs {
                     _entities.erase(_entities.begin(), _entities.begin() + i);
                     continue;
                 }
-                _entities[i] = i + 1;
             }
         }
 
