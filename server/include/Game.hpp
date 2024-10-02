@@ -40,7 +40,7 @@ namespace Rtype {
       private:
         std::shared_ptr<ecs::Registry> _r;
         ecs::ComponentFactory _cf;
-        std::unordered_map<unsigned int, ecs::Entity> _players;
+        std::unordered_map<int, int> _players;
         std::queue<Packet> _packetsToSend;
 
         void preparePosition(const std::optional<ecs::component::Position> &p, int i);

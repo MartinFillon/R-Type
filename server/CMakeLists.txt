@@ -24,6 +24,7 @@ FetchContent_Declare(
 set(ASIO_CMAKE_ASIO_TAG asio-1-12-2)
 FetchContent_MakeAvailable(asio-cmake)
 
+target_link_libraries(r-type_server PRIVATE ecs)
 target_link_libraries(r-type_server PRIVATE asio)
 target_link_libraries(r-type_server PUBLIC sfml-graphics)
 

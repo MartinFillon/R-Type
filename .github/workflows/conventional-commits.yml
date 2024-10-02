@@ -1,6 +1,11 @@
 name: "conventional-commits"
 
-on: [workflow_dispatch, workflow_call, push]
+on:
+  workflow_dispatch:
+  workflow_run:
+  push:
+    branches:
+      - master
 
 jobs:
   build:

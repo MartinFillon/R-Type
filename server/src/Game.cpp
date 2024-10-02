@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "Components/Position.hpp"
+#include "Entity.hpp"
 #include "Game.hpp"
 #include "Packet.hpp"
 #include "protocol.hpp"
@@ -63,7 +64,7 @@ namespace Rtype {
 
         ecs::Entity e = _cf.createEntity(file);
 
-        _players[id] = ecs::Entity(e);
+        _players[id] = e.getId();
         _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(id)}));
     }
 
