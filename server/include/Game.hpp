@@ -35,13 +35,13 @@ namespace Rtype {
             return _packetsToSend;
         }
 
+        void createPlayer(const unsigned int id);
+
       private:
         std::shared_ptr<ecs::Registry> _r;
         ecs::ComponentFactory _cf;
         std::unordered_map<unsigned int, ecs::Entity> _players;
         std::queue<Packet> _packetsToSend;
-
-        void createPlayer(const unsigned int id);
     };
 
 }; // namespace Rtype
