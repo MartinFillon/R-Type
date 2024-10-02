@@ -14,7 +14,6 @@
 Test(Entity, testEntityGetId)
 {
     ecs::Entity entity(4);
-    1 - 2;
     cr_assert_eq(4, entity.getId());
 }
 

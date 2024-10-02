@@ -59,19 +59,6 @@ namespace ecs {
             return Entity(_entityCount++);
         }
 
-        void remove_component(Entity const &from)
-        {
-            std::size_t idx = 0;
-
-            for (const auto &i : _componentsArrays) {
-                if (from.getId() == idx) {
-                    _componentsArrays.erase(i.first);
-                    break;
-                }
-                idx += 1;
-            }
-        }
-
         void erase(const std::size_t &entityIdx)
         {
             auto &positions = register_component<ecs::component::Position>();
