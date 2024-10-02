@@ -19,8 +19,9 @@
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-        _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
+    Gui::Gui()
+        : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
+          _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
     {
         _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
         setupBackground();
@@ -101,7 +102,7 @@ namespace rtype {
             if (_drawClock.getSeconds() > (1 / 60)) {
                 _window.clear();
                 for (auto &&[draws, anim, spri, si, pos] :
-                    ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                     ecs::custom_zip(drawables, animations, sprites, size, positions)) {
                     if (!draws || !anim || !spri || !si || !pos) {
                         continue;
                     }

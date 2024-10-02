@@ -88,7 +88,7 @@ namespace ecs {
 
         void run_systems()
         {
-            for (auto &system: _systems) {
+            for (auto &system : _systems) {
                 system(*this);
             }
         }

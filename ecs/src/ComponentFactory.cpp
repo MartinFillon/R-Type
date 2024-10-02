@@ -12,8 +12,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "ComponentFactory.hpp"
 #include "Clock.hpp"
+#include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Clicked.hpp"
 #include "Components/Controllable.hpp"
@@ -28,9 +28,9 @@
 #include "Components/Shield.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
-#include "Entity.hpp"
 #include "Components/Text.hpp"
 #include "Components/Velocity.hpp"
+#include "Entity.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
@@ -42,7 +42,7 @@ namespace ecs {
             createPositionComponent(e, node);
         };
 
-        if (mode == Mode::Server) {
+        if (mode == Mode::Client) {
             functions["drawable"] = [this](const Entity e, const nlohmann::json &node) {
                 createDrawableComponent(e, node);
             };
@@ -203,8 +203,7 @@ namespace ecs {
     {
         auto &outlined_color_array = _r->register_if_not_exist<component::OutlinedColor>();
 
-        outlined_color_array[e.getId()] =
-            component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
+        outlined_color_array[e.getId()] = component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node)
