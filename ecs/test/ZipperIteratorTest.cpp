@@ -97,34 +97,22 @@ Test(custom_zip, different_types_in_tuples)
     std::vector<double> vec2 = {1.1, 2.2, 3.3};
     std::vector<std::string> vec3 = {"one", "two", "three"};
 
-    ecs::custom_zip zip(vec1, vec2, vec3);
-
-    auto it = zip.begin();
-    auto end = zip.end();
-
-    int expected_int = 1;
-    double expected_double = 1.1;
+    std::vector<int> expected_int = {1, 2, 3};
+    std::vector<double> expected_double = {1.1, 2.2, 3.3};
     std::vector<std::string> expected_str = {"one", "two", "three"};
-    int index = 0;
 
-    for (; it != end; ++it, ++index) {
-        auto val1 = std::get<0>(*it);
-        auto val2 = std::get<1>(*it);
-        auto val3 = std::get<2>(*it);
+    size_t index = 0;
 
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
-        cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
-        cr_assert_str_eq(
-            val3.c_str(),
-            expected_str[index].c_str(),
-            "Expected %s, but got %s",
-            expected_str[index].c_str(),
-            val3.c_str()
-        );
+    for (auto &&[val1, val2, val3] : ecs::custom_zip(vec1, vec2, vec3)) {
+        cr_assert_eq(val1, expected_int[index], "Incorrect int value at index %zu", index);
+        cr_assert_float_eq(val2, expected_double[index], 1e-6, "Incorrect double value at index %zu", index);
+        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Incorrect string value at index %zu", index);
 
-        expected_double += 1.1;
+
+        index++;
     }
-    cr_assert_eq(expected_int, 4);
+
+    cr_assert_eq(index, 3, "The loop should run 3 times, but ran %zu times", index);
 }
 
 Test(custom_zip, missing_element_in_one_array)
@@ -133,33 +121,20 @@ Test(custom_zip, missing_element_in_one_array)
     std::vector<double> vec2 = {1.1, 2.2};
     std::vector<std::string> vec3 = {"one", "two", "three"};
 
-    ecs::custom_zip zip(vec1, vec2, vec3);
-
-    auto it = zip.begin();
-    auto end = zip.end();
-
-    int expected_int = 1;
-    double expected_double = 1.1;
+    std::vector<int> expected_int = {1, 2};
+    std::vector<double> expected_double = {1.1, 2.2};
     std::vector<std::string> expected_str = {"one", "two"};
-    int index = 0;
 
-    for (; it != end; ++it, ++index) {
-        auto val1 = std::get<0>(*it);
-        auto val2 = std::get<1>(*it);
-        auto val3 = std::get<2>(*it);
-        cr_assert_eq(val1, expected_int++, "Expected %d, but got %d", expected_int - 1, val1);
-        cr_assert_float_eq(val2, expected_double, 1e-9, "Expected %.1f, but got %.1f", expected_double, val2);
-        cr_assert_str_eq(
-            val3.c_str(),
-            expected_str[index].c_str(),
-            "Expected %s, but got %s",
-            expected_str[index].c_str(),
-            val3.c_str()
-        );
+    size_t index = 0;
 
-        expected_double += 1.1;
+    for (auto &&[val1, val2, val3] : ecs::custom_zip(vec1, vec2, vec3)) {
+        cr_assert_eq(val1, expected_int[index], "Incorrect int value at index %zu", index);
+        cr_assert_float_eq(val2, expected_double[index], 1e-6, "Incorrect double value at index %zu", index);
+        cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Incorrect string value at index %zu", index);
+
+
+        index++;
     }
 
-    cr_assert_eq(index, 2);
-    cr_assert_eq(expected_int, 3);
+    cr_assert_eq(index, 2, "The loop should run 2 times, but ran %zu times", index);
 }
