@@ -65,6 +65,8 @@ namespace Rtype {
         void processAction(const unsigned int id, const Packet &packet);
         void handleEvents(const unsigned int id, const Packet &packet);
 
+        int placeInPlayers(void);
+
         Context _context;
 
         int _port;
@@ -76,6 +78,7 @@ namespace Rtype {
 
         std::mutex _mutex;
         std::unordered_map<int, Client> _clients;
+        std::unordered_map<int, std::optional<int>> _playerIds;
     };
 
 }; // namespace Rtype

@@ -27,6 +27,7 @@
 #include "Components/Shield.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
+#include "Entity.hpp"
 #include "Components/Text.hpp"
 #include "Components/Velocity.hpp"
 #include "Registry.hpp"
@@ -86,7 +87,7 @@ namespace ecs {
 
     ComponentFactory::~ComponentFactory() {}
 
-    void ComponentFactory::createEntity(const std::string &file)
+    Entity ComponentFactory::createEntity(const std::string &file)
     {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
@@ -97,6 +98,7 @@ namespace ecs {
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
         }
+        return e;
     }
 
     void ComponentFactory::createComponent(const Entity e, const std::string &name, const nlohmann::json &node)
