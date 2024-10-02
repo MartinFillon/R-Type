@@ -3,7 +3,7 @@
 
 #include "Clock.hpp"
 #define PROJECTILE_SPEED_ANIMATION 0.1
-#define PROJECTILE_SPEED 2.5
+#define PROJECTILE_SPEED 3
 
 #include <SFML/Window/Keyboard.hpp>
 

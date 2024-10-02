@@ -31,6 +31,7 @@ namespace ecs {
         std::shared_ptr<Registry> _r;
 
         void createPositionComponent(const Entity e, const nlohmann::json &node);
+        void createDestroyableComponent(const Entity e, const nlohmann::json &node);
         void createSpriteComponent(const Entity e, const nlohmann::json &node);
         void createAnimationsComponent(const Entity e, const nlohmann::json &node);
         void createParallaxComponent(const Entity e, const nlohmann::json &node);

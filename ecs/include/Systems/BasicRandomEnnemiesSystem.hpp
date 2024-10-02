@@ -9,6 +9,8 @@
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
 #include "Clock.hpp"
+#include "Components/Destroyable.hpp"
+
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
 #define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
@@ -51,6 +53,7 @@ namespace ecs {
                 auto &sprites = r.get_components<ecs::component::Sprite>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
+                auto &destroyable = r.get_components<ecs::component::Destroyable>();
                 positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
@@ -58,6 +61,7 @@ namespace ecs {
                 animations[newEnnemies.getId()] =
                     ecs::component::Animations{ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies};
                 sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
+                destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
             }
 
             int nbOfBasicEnnemies(Registry &r)

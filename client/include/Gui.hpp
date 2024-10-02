@@ -32,12 +32,13 @@ namespace rtype {
         void setupBackground();
         void setupWeapon();
         void setupBasicEnnemies();
+        void setupCollisons();
+        void setupDestroy();
 
         std::shared_ptr<ecs::Registry> _r;
         ecs::Clock _drawClock;
         ecs::Clock _systemClock;
         sf::RenderWindow _window;
-        void setupCollisons();
         ecs::ComponentFactory _factory;
     };
 } // namespace rtype
