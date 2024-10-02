@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "ComponentFactory.hpp"
 #include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
@@ -18,7 +19,7 @@
 
 namespace Rtype {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r) {}
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Server) {}
 
     void Game::preparePosition(const std::optional<ecs::component::Position> &p, int idx)
     {
