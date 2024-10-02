@@ -13,6 +13,7 @@
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.hpp"
+#include "Clock.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
@@ -121,7 +122,7 @@ namespace ecs {
             type = component::Background;
 
         animations_array[e.getId()] = component::Animations{
-            sf::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
+            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
         };
     }
 

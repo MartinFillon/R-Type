@@ -44,7 +44,7 @@ Test(Registry, EraseEntity)
 
     cr_assert_eq(positions[e1.getId()]->_x, 10);
 
-    r.erase(e1.getId());
+    r.erase(0);
 
     cr_assert_eq(positions[1]->_x, 30);
 }

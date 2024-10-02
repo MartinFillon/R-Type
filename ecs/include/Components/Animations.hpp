@@ -9,13 +9,14 @@
 #define ANIMATIONS_HPP_
 
 #include <SFML/System/Clock.hpp>
+#include "Clock.hpp"
 
 namespace ecs {
     namespace component {
         enum Object { Background, Player, Weapon, Ennemies };
 
         struct Animations {
-            sf::Clock _clock;
+            ecs::Clock _clock;
             double _width;
             double _height;
             double _x;
