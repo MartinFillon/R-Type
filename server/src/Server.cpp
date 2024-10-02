@@ -6,6 +6,7 @@
 */
 
 #include "Server.hpp"
+#include <queue>
 
 Rtype::Server::Server(int port)
     : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
@@ -101,6 +102,11 @@ void Rtype::Server::processGame()
 {
     while (_running) {
         _game.update();
+        std::queue<Packet> packets = _game.getPacketsToSend();
+        while (!packets.empty()) {
+            broadcast(packets.front());
+            packets.pop();
+        }
     }
 }
 
