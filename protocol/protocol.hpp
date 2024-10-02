@@ -22,7 +22,7 @@ namespace protocol {
         FOREGROUND,
     };
 
-    enum Movements {
+    enum Direction {
         UP,
         RIGHT,
         DOWN,
@@ -47,5 +47,7 @@ namespace protocol {
     };
 
     const uint32_t MAGIC = 0x42454552;
+
+    enum Events { Move = 1, Shoot };
 
 }; // namespace protocol

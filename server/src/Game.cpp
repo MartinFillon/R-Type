@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "ComponentFactory.hpp"
+#include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
@@ -67,6 +68,34 @@ namespace Rtype {
 
         _players[id] = e.getId();
         _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(id)}));
+    }
+
+    void Game::movePlayer(const int id, const int dir)
+    {
+        const int eid = _players[id];
+        auto &position = _r->register_component<ecs::component::Position>()[id];
+        auto &controllable = _r->register_component<ecs::component::Controllable>()[id];
+
+        if (dir == protocol::Direction::UP) {
+            position->_y -= controllable->_speed;
+            // if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x < 135) {
+            //     animation->_x += 35;
+            //     animation->_clock.restart();
+            // }
+        }
+        if (dir == protocol::Direction::DOWN) {
+            position->_y += controllable->_speed;
+            // if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x > 0) {
+            //     animation->_x -= 35;
+            //     animation->_clock.restart();
+            // }
+        }
+        if (dir == protocol::Direction::LEFT) {
+            position->_x -= controllable->_speed;
+        }
+        if (dir == protocol::Direction::RIGHT) {
+            position->_x += controllable->_speed;
+        }
     }
 
 } // namespace Rtype

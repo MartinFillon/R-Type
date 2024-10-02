@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <optional>
 #include <queue>
+#include "protocol.hpp"
 
 namespace Rtype {
 
@@ -211,6 +212,20 @@ namespace Rtype {
 
     void Server::handleEvents(const unsigned int id, const Packet &packet)
     {
-        // missing events ids and arguments in Notion protocol
+        uint8_t event = packet.getArguments()[0];
+        int playerId = -1;
+
+        for (int i = 1; i < 5; i++) {
+            if (_playerIds[i] == id) {
+                playerId = i;
+                break;
+            }
+        }
+
+        if (event == protocol::Move) {
+            const uint8_t dir = packet.getArguments()[1];
+
+            _game.movePlayer(playerId, dir);
+        }
     }
 } // namespace Rtype
