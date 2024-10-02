@@ -19,7 +19,7 @@
 namespace rtype {
     Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>())
     {
-        _factory = ecs::ComponentFactory(_r);
+        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
         setupBackground();
         setupPlayer();
         setupWeapon();
