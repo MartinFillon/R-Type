@@ -18,7 +18,8 @@
 namespace ecs {
     class ComponentFactory {
       public:
-        ComponentFactory(std::shared_ptr<Registry> &registry);
+        enum class Mode { Server, Client };
+        ComponentFactory(std::shared_ptr<Registry> &registry, Mode mode);
         ComponentFactory();
         ~ComponentFactory();
 
@@ -46,6 +47,7 @@ namespace ecs {
         void createSizeComponent(const Entity e, const nlohmann::json &node);
         void createSoundEffectComponent(const Entity e, const nlohmann::json &node);
         void createVelocityComponent(const Entity e, const nlohmann::json &node);
+        void createLifeComponent(const Entity e, const nlohmann::json &node);
         std::unordered_map<std::string, std::function<void(const Entity, const nlohmann::json)>> functions;
     };
 
