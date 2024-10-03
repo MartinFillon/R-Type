@@ -24,13 +24,14 @@ namespace rtype {
 
         int run() override;
         void launchMenu();
+        void setupGame();
+        void setupMenu();
 
 
       protected:
       private:
         sf::RenderWindow &getRenderWindow();
 
-        void setupGame();
         void setupPlayer();
         void setupBackground();
         void setupWeapon();

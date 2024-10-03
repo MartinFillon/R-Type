@@ -23,12 +23,7 @@ namespace rtype {
         : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
           _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
     {
-        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
-        setupBackground();
-        setupPlayer();
-        setupWeapon();
-        setupBasicEnnemies();
-        setupCollisons();
+        setupMenu();
     }
 
     Gui::~Gui() {}
@@ -77,8 +72,70 @@ namespace rtype {
         _r->add_system(parallaxSystem);
     }
 
+    void Gui::setupGame()
+    {
+        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
+        setupBackground();
+        setupPlayer();
+        setupWeapon();
+        setupBasicEnnemies();
+        setupCollisons();
+    }
+
+    void Gui::setupMenu()
+    {
+        _font.loadFromFile("assets/fonts/ARCADE_I.ttf");
+        _menuText[0].setFont(_font);
+        _menuText[0].setString("Play");
+        _menuText[0].setPosition(800, 300);
+        _menuText[1].setFont(_font);
+        _menuText[1].setString("Options");
+        _menuText[1].setPosition(800, 400);
+        _menuText[2].setFont(_font);
+        _menuText[2].setString("Quit");
+        _menuText[2].setPosition(800, 500);
+    }
+
+    void Gui::launchMenu()
+    {
+        while (_isMenuOpen && _window.isOpen()) {
+            sf::Event event;
+            while (_window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    _window.close();
+                }
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+                    for (int i = 0; i < 3; i++) {
+                        if (_menuText[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                            switch (i) {
+                                case 0:
+                                    _isMenuOpen = false;
+                                    setupGame();
+                                    break;
+                                case 1:
+                                    break;
+                                case 2:
+                                    _window.close();
+                                    _isQuitPress = true;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            _window.clear();
+            _r->run_systems();
+            for (int i = 0; i < 3; i++) {
+                _window.draw(_menuText[i]);
+            }
+            _window.display();
+        }
+    }
+
     int Gui::run()
     {
+        launchMenu();
         auto &drawables = _r->get_components<ecs::component::Drawable>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
         auto &positions = _r->register_component<ecs::component::Position>();
