@@ -38,7 +38,7 @@ namespace Rtype {
             y >>= 8;
         }
 
-        _packetsToSend.push(Packet(protocol::OBJECT_POSITION, args));
+        _packetsToSend.push(Packet(protocol::Operations::OBJECT_POSITION, args));
     }
 
     void Game::update()
@@ -68,7 +68,7 @@ namespace Rtype {
         ecs::Entity e = _cf.createEntity(file);
 
         _players_entities_ids[player_place] = e.getId();
-        _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
+        _packetsToSend.push(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
     }
 
     void Game::movePlayer(const int player_place, const int dir)
