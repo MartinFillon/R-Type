@@ -16,6 +16,7 @@
 
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
@@ -70,7 +71,9 @@ namespace ecs {
             auto &parallax = register_component<ecs::component::Parallax>();
             auto &size = register_component<ecs::component::Size>();
             auto &controllable = register_component<ecs::component::Controllable>();
+            auto &destroyable = register_component<ecs::component::Destroyable>();
 
+            destroyable.erase(entityIdx);
             positions.erase(entityIdx);
             drawable.erase(entityIdx);
             sprite.erase(entityIdx);

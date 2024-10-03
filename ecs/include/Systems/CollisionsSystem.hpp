@@ -40,7 +40,11 @@ namespace ecs {
                     if ((position[i]->_x > 2000 || position[i]->_x < -300) ||
                         (position[i]->_y > 1080 || position[i]->_y < -300)) {
                             destroyable[i]->_destroyable = true;
-                            animation[i]->_object = ecs::component::Object::InDestroy;
+                            if (animation[i]->_object == ecs::component::Object::Weapon) {
+                                r.erase(i);
+                            } else {
+                               animation[i]->_object = ecs::component::Object::InDestroy;
+                            }
                             continue;
                     }
 
@@ -52,7 +56,11 @@ namespace ecs {
                         if ((position[j]->_x > 2000 || position[j]->_x < -300) ||
                             (position[j]->_y > 1080 || position[j]->_y < -300)) {
                                 destroyable[j]->_destroyable = true;
-                                animation[j]->_object = ecs::component::Object::InDestroy;
+                                if (animation[j]->_object == ecs::component::Object::Weapon) {
+                                    r.erase(j);
+                                } else {
+                                   animation[j]->_object = ecs::component::Object::InDestroy;
+                                }
                                 continue;
                         }
 
@@ -61,10 +69,18 @@ namespace ecs {
                             (position[i]->_y + animation[i]->_height >= position[j]->_y &&
                              position[i]->_y <= position[j]->_y + animation[j]->_height + BLANK_SPRITE_SPACE)) {
                                 destroyable[i]->_destroyable = true;
-                                animation[i]->_object = ecs::component::Object::InDestroy;
+                                if (animation[i]->_object == ecs::component::Object::Weapon) {
+                                    r.erase(i);
+                                } else {
+                                   animation[i]->_object = ecs::component::Object::InDestroy;
+                                }
                                 destroyable[j]->_destroyable = true;
-                                animation[j]->_object = ecs::component::Object::InDestroy;
-                                break;
+                                if (animation[j]->_object == ecs::component::Object::Weapon) {
+                                    r.erase(j);
+                                } else {
+                                   animation[j]->_object = ecs::component::Object::InDestroy;
+                                }
+                                continue;
                         }
                     }
                 }

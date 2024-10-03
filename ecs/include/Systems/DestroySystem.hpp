@@ -9,7 +9,7 @@
 #define DESTROYSYSTEM_HPP_
 
 #define DESTROY_SPRITE "r-typesheet-explosion.gif"
-#define DESTROY_ANIMATION 0.08
+#define DESTROY_ANIMATION 0.01
 
 #include "Components/Animations.hpp"
 #include "Components/Destroyable.hpp"
@@ -35,10 +35,6 @@ namespace ecs {
                             continue;
                         }
 
-                        if (anim->_object != ecs::component::Object::InDestroy) {
-                            continue;
-                        }
-
                         if (sprite->_pathToSprite != DESTROY_SPRITE) {
                             sprite->_pathToSprite = DESTROY_SPRITE;
                             anim->_x = 0;
@@ -51,7 +47,6 @@ namespace ecs {
 
                         if (anim->_x > 315) {
                             r.erase(idx);
-                            destroy->_destroyable = false;
                         }
 
                         if (anim->_clock.getSeconds() > DESTROY_ANIMATION) {
