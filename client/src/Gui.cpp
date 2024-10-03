@@ -84,33 +84,38 @@ namespace rtype {
 
     void Gui::setupMenu()
     {
-        _fontTitle.loadFromFile("assets/fonts/ARCADE_I.ttf");
-        _fontText.loadFromFile("assets/fonts/OpenSans-Semibold.ttf");
+        _fontTitle.loadFromFile(TITLE_FONT);
+        _fontText.loadFromFile(TEXT_FONT);
 
-        _menutitle[0].setFont(_fontTitle);
-        _menutitle[0].setString("Play");
-        _menutitle[0].setPosition(800, 400);
-        _menutitle[1].setFont(_fontText);
-        _menutitle[1].setString("Enter IP Adress !");
-        _menutitle[1].setPosition(800, 460);
-        _menutitle[1].setCharacterSize(17);
-        _menutitle[2].setFont(_fontTitle);
-        _menutitle[2].setString("Options");
-        _menutitle[2].setPosition(800, 550);
-        _menutitle[3].setFont(_fontTitle);
-        _menutitle[3].setString("R-Type by MR.PET");
-        _menutitle[3].setPosition(450, 200);
-        _menutitle[3].setCharacterSize(70);
-        _menutitle[4].setFont(_fontTitle);
-        _menutitle[4].setString("Quit");
-        _menutitle[4].setPosition(800, 625);
-
-        _ipRect = sf::RectangleShape(sf::Vector2f(300.f, 30.f));
+        _ipRect = sf::RectangleShape(sf::Vector2f(RECT_SIZE_Y, RECT_SIZE_X));
         _ipRect.setFillColor(sf::Color::White);
-        _ipRect.setPosition(800, 495);
+        _ipRect.setPosition(LEFT_MARGE, IP_RECT_POS_X);
+
+        _menutitle[0].setString(BUTTON_PLAY);
+        _menutitle[0].setFont(_fontTitle);
+        _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
+
+        _menutitle[1].setString(BUTTON_IP);
+        _menutitle[1].setFont(_fontText);
+        _menutitle[1].setPosition(LEFT_MARGE, IP_POS_X);
+        _menutitle[1].setCharacterSize(FONT_SIZE_IP);
+
+        _menutitle[2].setString(BUTTON_OPTIONS);
+        _menutitle[2].setFont(_fontTitle);
+        _menutitle[2].setPosition(LEFT_MARGE, OPTIONS_POS_X);
+
+        _menutitle[3].setString(MENU_TITLE);
+        _menutitle[3].setFont(_fontTitle);
+        _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
+        _menutitle[3].setCharacterSize(70);
+
+        _menutitle[4].setString(BUTTON_QUIT);
+        _menutitle[4].setFont(_fontTitle);
+        _menutitle[4].setPosition(LEFT_MARGE, QUIT_POS_X);
+
         _menuDisplayInput.setFont(_fontText);
-        _menuDisplayInput.setPosition(800, 500);
-        _menuDisplayInput.setCharacterSize(15);
+        _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
+        _menuDisplayInput.setCharacterSize(FONT_SIZE_INPUT);
         _menuDisplayInput.setFillColor(sf::Color::Black);
     }
 
