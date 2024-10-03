@@ -12,8 +12,7 @@
 namespace protocol {
 
     enum ObjectTypes {
-        OBJECT0,
-        PLAYER_1,
+        PLAYER_1 = 1,
         PLAYER_2,
         PLAYER_3,
         PLAYER_4,
@@ -24,15 +23,14 @@ namespace protocol {
     };
 
     enum Direction {
-        UP,
+        UP = 0,
         RIGHT,
         DOWN,
         LEFT,
     };
 
     enum Operations {
-        OPERATION0,
-        OBJECT_POSITION,
+        OBJECT_POSITION = 1,
         NEW_OBJECT,
         EVENT,
         GAME_SPEED,
@@ -50,6 +48,9 @@ namespace protocol {
 
     const uint32_t MAGIC = 0x42454552;
 
-    enum Events { Move = 1, Shoot };
+    enum Events {
+        Move = 1,
+        Shoot,
+    };
 
 }; // namespace protocol
