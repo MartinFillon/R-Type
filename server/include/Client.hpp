@@ -21,6 +21,7 @@
 #define DATA_MAX_SIZE 1024
 
 #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
+#define CLIENT_LEFT(x) "Client [" << x << "]" << " disconnected"
 
 namespace Rtype {
 
@@ -34,7 +35,7 @@ namespace Rtype {
         using Endpoint = asio::ip::udp::endpoint;
 
       public:
-        Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
+        Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket);
 
         void send(const Packet &packet);
         void disconnect();
