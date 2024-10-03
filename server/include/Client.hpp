@@ -21,6 +21,7 @@
 #define DATA_MAX_SIZE 1024
 
 #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
+#define CLIENT_LEFT(x) "Client [" << x << "]" << " disconnected"
 
 namespace Rtype {
 

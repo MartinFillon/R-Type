@@ -23,5 +23,6 @@ void Rtype::Client::send(const Packet &packet)
 
 void Rtype::Client::disconnect()
 {
+    std::cout << CLIENT_LEFT(_id) << std::endl;
     _running = false;
 }
