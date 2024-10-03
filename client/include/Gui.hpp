@@ -45,8 +45,14 @@ namespace rtype {
 
         // Menu part
 
-        sf::Font _font;
+        sf::Font _fontTitle;
+        sf::Font _fontText;
         sf::Text _menuText[3];
+        sf::Text _menuDisplayInput;
+
+        std::string _menuClientInput;
+        char _inputChar;
+
         bool _isLogin;
         bool _isQuitPress;
         bool _isMenuOpen;

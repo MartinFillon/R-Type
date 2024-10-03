@@ -21,7 +21,7 @@
 namespace rtype {
     Gui::Gui()
         : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false)
+          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false), _menuClientInput("")
     {
         setupMenu();
     }
@@ -84,16 +84,22 @@ namespace rtype {
 
     void Gui::setupMenu()
     {
-        _font.loadFromFile("assets/fonts/ARCADE_I.ttf");
-        _menuText[0].setFont(_font);
+        _fontTitle.loadFromFile("assets/fonts/ARCADE_I.ttf");
+        _fontText.loadFromFile("assets/fonts/OpenSans-Semibold.ttf");
+
+        _menuText[0].setFont(_fontTitle);
         _menuText[0].setString("Play");
         _menuText[0].setPosition(800, 300);
-        _menuText[1].setFont(_font);
+        _menuText[1].setFont(_fontTitle);
         _menuText[1].setString("Options");
         _menuText[1].setPosition(800, 400);
-        _menuText[2].setFont(_font);
+        _menuText[2].setFont(_fontTitle);
         _menuText[2].setString("Quit");
         _menuText[2].setPosition(800, 500);
+        _menuDisplayInput.setFont(_fontText);
+        _menuDisplayInput.setPosition(800, 600);
+        _menuDisplayInput.setCharacterSize(15);
+        _menuDisplayInput.setFillColor(sf::Color::White);
     }
 
     void Gui::launchMenu()
@@ -103,6 +109,19 @@ namespace rtype {
             while (_window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
                     _window.close();
+                    _isQuitPress = true;
+                    break;
+                }
+                if (event.type == sf::Event::TextEntered) {
+                    if (event.text.unicode < 128) {
+                        _inputChar = static_cast<char>(event.text.unicode);
+                        if (_inputChar == 8 && !_menuClientInput.empty()) {
+                            _menuClientInput.pop_back();
+                        } else if (_inputChar > 31 && _inputChar < 127) {
+                            _menuClientInput += _inputChar;
+                        }
+                        _menuDisplayInput.setString(_menuClientInput);
+                    }
                 }
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
@@ -129,6 +148,7 @@ namespace rtype {
             for (int i = 0; i < 3; i++) {
                 _window.draw(_menuText[i]);
             }
+            _window.draw(_menuDisplayInput);
             _window.display();
         }
     }
