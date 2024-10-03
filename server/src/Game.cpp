@@ -70,7 +70,7 @@ namespace Rtype {
         _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(id)}));
     }
 
-    void Game::movePlayer(const int id, const int dir)
+    const std::optional<ecs::component::Position> Game::movePlayer(const int id, const int dir)
     {
         const int eid = _players[id];
         auto &position = _r->register_component<ecs::component::Position>()[id];
@@ -96,6 +96,8 @@ namespace Rtype {
         if (dir == protocol::Direction::RIGHT) {
             position->_x += controllable->_speed;
         }
+
+        return position;
     }
 
 } // namespace Rtype

@@ -51,7 +51,7 @@ namespace Rtype {
         void broadcast(const Packet &packet);
         void handleMessage(const unsigned int id, const Message &message);
 
-        std::vector<uint8_t> getBitshiftedData(const unsigned int data);
+        std::vector<uint8_t> getBitshiftedData(const int length, const unsigned int data);
 
       private:
         void acceptConnections();

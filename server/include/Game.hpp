@@ -36,7 +36,7 @@ namespace Rtype {
         }
 
         void createPlayer(const unsigned int id);
-        void movePlayer(const int id, const int dir);
+        const std::optional<ecs::component::Position> movePlayer(const int id, const int dir);
 
       private:
         std::shared_ptr<ecs::Registry> _r;

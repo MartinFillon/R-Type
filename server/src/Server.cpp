@@ -161,16 +161,21 @@ namespace Rtype {
         return static_cast<unsigned int>(hashFunction(id));
     }
 
-    std::vector<uint8_t> Server::getBitshiftedData(const unsigned int data)
+    std::vector<uint8_t> Server::getBitshiftedData(const int length, const unsigned int data)
     {
         std::vector<uint8_t> bytes;
 
-        bytes[0] = (data >> 24) & 0xFF;
-        bytes[1] = (data >> 16) & 0xFF;
-        bytes[2] = (data >> 8) & 0xFF;
-        bytes[3] = data & 0xFF;
+        for (int index = 0; index < length; index++)
+            bytes[index] = (data >> (length - (index + 1))) & 0xFF;
 
         return bytes;
+    }
+
+    std::vector<uint8_t> concatVectors(std::vector<uint8_t> vec1, std::vector<uint8_t> vec2)
+    {
+        vec1.insert(vec1.end(), vec2.begin(), vec2.end());
+
+        return vec1;
     }
 
     void Server::processAction(const unsigned int id, const Packet &packet)
@@ -185,24 +190,28 @@ namespace Rtype {
         if (optCode == protocol::EVENT) {
             std::cout << "EVT\n";
             handleEvents(id, packet);
+            return;
         }
         if (optCode == protocol::LEAVING) {
             std::cout << "LEAV\n";
-            Packet brPacket(protocol::LEFT, getBitshiftedData(id));
+            const Packet brPacket(protocol::LEFT, getBitshiftedData(4, id));
 
             removeClient(id);
             _game.handleLeaving(id);
             broadcast(brPacket);
+            return;
         }
         if (optCode == protocol::READY) {
             std::cout << "READ\n";
             // who asked and who cares??
+            return;
         }
         if (optCode == protocol::PING) {
             std::cout << "PONG\n";
-            Packet clPacket(protocol::PING);
+            const Packet clPacket(protocol::PING);
 
             sendToClient(id, clPacket);
+            return;
         }
 
         std::cout << packet.toMessage().data() << std::endl;
@@ -224,8 +233,17 @@ namespace Rtype {
 
         if (event == protocol::Move) {
             const uint8_t dir = packet.getArguments()[1];
+            const std::optional<ecs::component::Position> playerPos = _game.movePlayer(playerId, dir).value();
 
-            _game.movePlayer(playerId, dir);
+            std::vector<uint8_t> data =
+                concatVectors(getBitshiftedData(4, playerId), getBitshiftedData(4, playerPos->_x));
+            data = concatVectors(data, getBitshiftedData(4, playerPos->_y));
+
+            const Packet brPacket(protocol::OBJECT_POSITION, data);
+
+            broadcast(brPacket);
+
+            return;
         }
     }
 } // namespace Rtype
