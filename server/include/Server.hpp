@@ -30,6 +30,8 @@
 
 #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
 
+#define MAX_PLAYER_PLACES 4
+
 namespace Rtype {
 
     class Server : ecs::IContext {
@@ -78,7 +80,8 @@ namespace Rtype {
 
         std::mutex _mutex;
         std::unordered_map<int, Client> _clients;
-        /// @brief std::unordered_map containing the 4 player client_id for the 4 player places
+        /// @brief std::unordered_map containing the MAX_PLAYER_PLACES player client_id for the MAX_PLAYER_PLACES
+        /// player places
         std::unordered_map<int, std::optional<int>> _players_clients_ids;
     };
 

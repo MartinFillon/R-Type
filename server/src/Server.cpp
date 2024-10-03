@@ -16,7 +16,7 @@ namespace Rtype {
     Server::Server(int port)
         : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
     {
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i <= MAX_PLAYER_PLACES; i++) {
             _players_clients_ids[i] = std::nullopt;
         }
     };
@@ -75,9 +75,9 @@ namespace Rtype {
 
     int Server::placeInPlayers(void)
     {
-        for (int i = 1; i < 5; i++) {
-            if (_players_clients_ids[i] == std::nullopt) {
-                return i;
+        for (int player_place = 1; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            if (_players_clients_ids[player_place] == std::nullopt) {
+                return player_place;
             }
         }
 
@@ -196,8 +196,13 @@ namespace Rtype {
             std::cout << "LEAV\n";
             const Packet brPacket(protocol::LEFT, getBitshiftedData(4, client_id));
 
+            for (int player_place = 0; player_place <= MAX_PLAYER_PLACES; player_place++)
+                if (_players_clients_ids[player_place] == client_id) {
+                    _game.handleLeaving(player_place);
+                    _players_clients_ids[player_place] = std::nullopt;
+                }
+
             removeClient(client_id);
-            _game.handleLeaving(client_id);
             broadcast(brPacket);
             return;
         }
@@ -222,26 +227,19 @@ namespace Rtype {
     void Server::handleEvents(const unsigned int client_id, const Packet &packet)
     {
         uint8_t event = packet.getArguments()[0];
-        int player_client_id = -1;
+        int player_place = -1;
 
-        for (int i = 1; i < 5; i++) {
-            if (_players_clients_ids[i] == client_id) {
-                player_client_id = i;
+        for (int player_place = 1; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            if (_players_clients_ids[player_place] == client_id) {
+                player_place = player_place;
                 break;
             }
         }
 
         if (event == protocol::Move) {
             const uint8_t dir = packet.getArguments()[1];
-            const std::optional<ecs::component::Position> player_pos = _game.movePlayer(player_client_id, dir).value();
 
-            std::vector<uint8_t> data =
-                concatVectors(getBitshiftedData(4, player_client_id), getBitshiftedData(4, player_pos->_x));
-            data = concatVectors(data, getBitshiftedData(4, player_pos->_y));
-
-            const Packet brPacket(protocol::OBJECT_POSITION, data);
-
-            broadcast(brPacket);
+            _game.movePlayer(player_place, dir);
 
             return;
         }
