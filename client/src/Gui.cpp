@@ -144,6 +144,8 @@ namespace rtype {
                     }
                     if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         _isWritting = true;
+                        _ipRect.setOutlineThickness(3.5);
+                        _ipRect.setOutlineColor(sf::Color::Blue);
                     } else {
                         _isWritting = false;
                     }
