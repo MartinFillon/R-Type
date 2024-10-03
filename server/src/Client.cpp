@@ -16,6 +16,7 @@ Rtype::Client::Client(const unsigned int id, Server &server, const Endpoint &end
 
 void Rtype::Client::send(const Packet &packet)
 {
+    std::cerr << "Sending packet to client [" << _id << "]" << packet.isValid() << std::endl;
     if (packet.isValid()) {
         _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
     }

@@ -8,10 +8,11 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
+#include "Clock.hpp"
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
 #define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
-#define BASIC_ENNEMIES_SPEED 0.001
+#define BASIC_ENNEMIES_SPEED 1.8
 
 #ifdef _WIN32
     #include <array>
@@ -40,7 +41,7 @@ namespace ecs {
                 std::random_device randomPosition;
                 std::default_random_engine randomEngine(randomPosition());
                 std::uniform_int_distribution<int> uniform_dist(100, 400);
-                double randomPosY = uniform_dist(randomEngine);
+                int randomPosY = uniform_dist(randomEngine);
 
                 Entity newEnnemies = r.spawn_entity();
                 r._entities.addEntity(newEnnemies);
@@ -52,10 +53,10 @@ namespace ecs {
                 auto &sizes = r.get_components<ecs::component::Size>();
                 positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
-                controllable[newEnnemies.getId()] = ecs::component::Controllable{false, 2.5};
+                controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
                 sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
                 animations[newEnnemies.getId()] =
-                    ecs::component::Animations{sf::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies};
+                    ecs::component::Animations{ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies};
                 sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
             }
 
@@ -75,13 +76,7 @@ namespace ecs {
 
             void operator()(Registry &r)
             {
-                std::random_device isEnemmyCanSpawn;
-
-                std::default_random_engine randomEngine(isEnemmyCanSpawn());
-                std::uniform_int_distribution<int> uniform_dist(0, 100);
-                int mean = uniform_dist(randomEngine);
-
-                if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES && mean == VALUE_SPAWN_ENNEMIES) {
+                if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
                     createNewEnnemies(r);
                 }
 
@@ -96,13 +91,14 @@ namespace ecs {
                     if (anim->_object == ecs::component::Object::Ennemies) {
                         if (anim->_x <= 0 && anim->_x != 224) {
                             anim->_x = 224;
-                            anim->_clock.restart();
                         }
-                        if (anim->_x > 0 && anim->_clock.getElapsedTime().asSeconds() > 0.3) {
+                        if (anim->_x > 0 && anim->_clock.getSeconds() > 0.3) {
                             anim->_x -= anim->_width;
                             anim->_clock.restart();
                         }
-                        pos->_x -= ctrl->_speed;
+                        if (anim->_clock.getMiliSeconds() > 0.3) {
+                            pos->_x -= ctrl->_speed;
+                        }
                     }
                 }
             }

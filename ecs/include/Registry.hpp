@@ -11,9 +11,11 @@
 #include <any>
 #include <functional>
 #include <typeindex>
+#include <vector>
 #include <unordered_map>
 
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
@@ -67,6 +69,7 @@ namespace ecs {
             auto &animation = register_component<ecs::component::Animations>();
             auto &parallax = register_component<ecs::component::Parallax>();
             auto &size = register_component<ecs::component::Size>();
+            auto &controllable = register_component<ecs::component::Controllable>();
 
             positions.erase(entityIdx);
             drawable.erase(entityIdx);
@@ -74,7 +77,7 @@ namespace ecs {
             animation.erase(entityIdx);
             parallax.erase(entityIdx);
             size.erase(entityIdx);
-            _entities.erase(entityIdx);
+            controllable.erase(entityIdx);
         }
 
         template <typename Function>

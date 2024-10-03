@@ -26,16 +26,23 @@ namespace ecs {
           public:
             void operator()(Registry &r)
             {
+
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllables = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
+
+                auto &drawable = r.register_component<ecs::component::Drawable>();
+                auto &sprite = r.register_component<ecs::component::Sprite>();
+                auto &parallax = r.register_component<ecs::component::Parallax>();
+                auto &size = r.register_component<ecs::component::Size>();
+
 
                 for (auto &&[position, controllable, animation] :
                      ecs::custom_zip(positions, controllables, animations)) {
                     if (animation->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             position->_y -= controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                            if (animation->_clock.getSeconds() > PLAYER_MOVE_ANIMATION &&
                                 animation->_x < 135) {
                                 animation->_x += 35;
                                 animation->_clock.restart();
@@ -43,7 +50,7 @@ namespace ecs {
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                             position->_y += controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
+                            if (animation->_clock.getSeconds() > PLAYER_MOVE_ANIMATION &&
                                 animation->_x > 0) {
                                 animation->_x -= 35;
                                 animation->_clock.restart();

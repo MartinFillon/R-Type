@@ -9,14 +9,6 @@ target_include_directories(r-type_server PUBLIC include ../protocol
 include(FetchContent)
 
 FetchContent_Declare(
-  SFML
-  GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 2.6.x
-  GIT_SHALLOW ON
-  EXCLUDE_FROM_ALL SYSTEM)
-FetchContent_MakeAvailable(SFML)
-
-FetchContent_Declare(
   asio-cmake
   GIT_REPOSITORY https://github.com/kingsamchen/asio-cmake.git
   GIT_TAG origin/master)
@@ -26,7 +18,6 @@ FetchContent_MakeAvailable(asio-cmake)
 
 target_link_libraries(r-type_server PRIVATE ecs)
 target_link_libraries(r-type_server PRIVATE asio)
-target_link_libraries(r-type_server PUBLIC sfml-graphics)
 
 if(WIN32)
   add_custom_command(
