@@ -165,7 +165,6 @@ namespace rtype {
 
             }
             _window.clear();
-            _r->run_systems();
             for (int i = 0; i < 5; i++) {
                 _window.draw(_menutitle[i]);
             }
