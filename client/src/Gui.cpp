@@ -21,7 +21,7 @@
 namespace rtype {
     Gui::Gui()
         : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-          _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
+          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false)
     {
         setupMenu();
     }
@@ -136,6 +136,9 @@ namespace rtype {
     int Gui::run()
     {
         launchMenu();
+
+        if (_isQuitPress) { return EXIT_SUCCESS; }
+
         auto &drawables = _r->get_components<ecs::component::Drawable>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
         auto &positions = _r->register_component<ecs::component::Position>();
