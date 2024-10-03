@@ -20,8 +20,9 @@
 
 namespace rtype {
     Gui::Gui()
-        : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false)
+        : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
+        _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0),
+        _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
     {
         setupMenu();
     }
@@ -84,6 +85,14 @@ namespace rtype {
 
     void Gui::setupMenu()
     {
+        _backgroundTexture.loadFromFile(BG_PATH);
+        _backgroundTexture.setRepeated(true);
+        _backgroundSprite.setTexture(_backgroundTexture);
+        _backgroundSprite.setPosition(0, 0);
+        _bgScaleX = static_cast<float>(_window.getSize().x) / _backgroundTexture.getSize().x;
+        _bgScaleY = static_cast<float>(_window.getSize().y) / _backgroundTexture.getSize().y;
+        _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
+
         _fontTitle.loadFromFile(TITLE_FONT);
         _fontText.loadFromFile(TEXT_FONT);
 
@@ -121,6 +130,20 @@ namespace rtype {
 
     void Gui::launchMenu()
     {
+        sf::Shader parallaxShader;
+        if (!parallaxShader.loadFromMemory(
+            "uniform float offset;"
+
+            "void main() {"
+            "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
+            "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+            "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
+            "    gl_FrontColor = gl_Color;"
+            "}", sf::Shader::Vertex)) {
+            return;
+        }
+        sf::Clock clock;
+
         while (_isMenuOpen && _window.isOpen()) {
             sf::Event event;
             while (_window.pollEvent(event)) {
@@ -155,8 +178,8 @@ namespace rtype {
                         _isWritting = false;
                         _ipRect.setOutlineThickness(0);
                     }
-
                 }
+
                 if (_isWritting && event.type == sf::Event::TextEntered) {
                     if (event.text.unicode < 128) {
                         _inputChar = static_cast<char>(event.text.unicode);
@@ -168,22 +191,29 @@ namespace rtype {
                         _menuDisplayInput.setString(_menuClientInput);
                     }
                 }
+
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_menuClientInput.empty()) {
                     setupGame();
                     _isMenuOpen = false;
                     break;
                 }
-
             }
+
+            _bgOffset += clock.restart().asSeconds() / PARA_SPEED;
+            parallaxShader.setUniform(OFFSET, _bgOffset);
             _window.clear();
+            _window.draw(_backgroundSprite, &parallaxShader);
+
             for (int i = 0; i < 5; i++) {
                 _window.draw(_menutitle[i]);
             }
+
             _window.draw(_ipRect);
             _window.draw(_menuDisplayInput);
             _window.display();
         }
     }
+
 
     int Gui::run()
     {

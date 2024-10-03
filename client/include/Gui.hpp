@@ -29,6 +29,9 @@
 #define FONT_SIZE_INPUT 15
 #define RECT_SIZE_X 30
 #define RECT_SIZE_Y 300
+#define OFFSET "offset"
+#define PARA_SPEED 10.f
+#define BG_PATH "assets/sprites/Background/background_2.png"
 
 
 #include <SFML/Graphics.hpp>
@@ -87,6 +90,14 @@ namespace rtype {
         bool _isLogin;
         bool _isQuitPress;
         bool _isMenuOpen;
+
+        // background
+
+        sf::Texture _backgroundTexture;
+        sf::Sprite _backgroundSprite;
+        float _bgScaleX;
+        float _bgScaleY;
+        float _bgOffset;
 
     };
 } // namespace rtype
