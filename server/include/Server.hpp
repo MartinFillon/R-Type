@@ -30,6 +30,7 @@
 
 #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
 
+#define FIRST_PLAYER_PLACE 1
 #define MAX_PLAYER_PLACES 4
 
 namespace Rtype {

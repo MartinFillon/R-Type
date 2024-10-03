@@ -16,8 +16,8 @@ namespace Rtype {
     Server::Server(int port)
         : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
     {
-        for (int i = 1; i <= MAX_PLAYER_PLACES; i++) {
-            _players_clients_ids[i] = std::nullopt;
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            _players_clients_ids[player_place] = std::nullopt;
         }
     };
 
@@ -75,7 +75,7 @@ namespace Rtype {
 
     int Server::placeInPlayers(void)
     {
-        for (int player_place = 1; player_place <= MAX_PLAYER_PLACES; player_place++) {
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
             if (_players_clients_ids[player_place] == std::nullopt) {
                 return player_place;
             }
@@ -196,7 +196,7 @@ namespace Rtype {
             std::cout << "LEAV\n";
             const Packet brPacket(protocol::LEFT, getBitshiftedData(4, client_id));
 
-            for (int player_place = 0; player_place <= MAX_PLAYER_PLACES; player_place++)
+            for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++)
                 if (_players_clients_ids[player_place] == client_id) {
                     _game.handleLeaving(player_place);
                     _players_clients_ids[player_place] = std::nullopt;
@@ -229,7 +229,7 @@ namespace Rtype {
         uint8_t event = packet.getArguments()[0];
         int player_place = -1;
 
-        for (int player_place = 1; player_place <= MAX_PLAYER_PLACES; player_place++) {
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
             if (_players_clients_ids[player_place] == client_id) {
                 player_place = player_place;
                 break;
