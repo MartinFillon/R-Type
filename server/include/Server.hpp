@@ -16,7 +16,6 @@
 #include "Client.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
-#include "protocol.hpp"
 
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
@@ -69,7 +68,7 @@ namespace Rtype {
         void handleEvents(const unsigned int id, const Packet &packet);
 
         int placeInPlayers(void);
-        int Server::getPlayerPlace(int client_id);
+        int getPlayerPlace(int client_id);
 
         Context _context;
 
