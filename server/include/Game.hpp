@@ -28,20 +28,21 @@ namespace Rtype {
         Game();
 
         void update();
-        void handleLeaving(const unsigned int id);
+        void handleLeaving(const unsigned int client_id);
 
         std::queue<Packet> &getPacketsToSend()
         {
             return _packetsToSend;
         }
 
-        void createPlayer(const unsigned int id);
-        const std::optional<ecs::component::Position> movePlayer(const int id, const int dir);
+        void createPlayer(const unsigned int player_place);
+        const std::optional<ecs::component::Position> movePlayer(const int player_client_id, const int dir);
 
       private:
         std::shared_ptr<ecs::Registry> _r;
         ecs::ComponentFactory _cf;
-        std::unordered_map<int, int> _players;
+        /// @brief std::unordered_map containing the 4 player_entity_id for the 4 player places
+        std::unordered_map<int, int> _players_entities_ids;
         std::queue<Packet> _packetsToSend;
 
         void preparePosition(const std::optional<ecs::component::Position> &p, int i);

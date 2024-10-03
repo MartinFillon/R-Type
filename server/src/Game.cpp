@@ -52,30 +52,30 @@ namespace Rtype {
         }
     }
 
-    void Game::handleLeaving(const unsigned int id)
+    void Game::handleLeaving(const unsigned int client_id)
     {
-        _r->_entities.erase(id);
+        _r->_entities.erase(client_id);
     }
 
-    void Game::createPlayer(const unsigned int id)
+    void Game::createPlayer(const unsigned int player_place)
     {
         std::string file = "config/player";
 
-        file.append(std::to_string(id));
+        file.append(std::to_string(player_place));
         file.append(".json");
 
         std::cerr << file << std::endl;
         ecs::Entity e = _cf.createEntity(file);
 
-        _players[id] = e.getId();
-        _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(id)}));
+        _players_entities_ids[player_place] = e.getId();
+        _packetsToSend.push(Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
     }
 
-    const std::optional<ecs::component::Position> Game::movePlayer(const int id, const int dir)
+    const std::optional<ecs::component::Position> Game::movePlayer(const int player_client_id, const int dir)
     {
-        const int eid = _players[id];
-        auto &position = _r->register_component<ecs::component::Position>()[id];
-        auto &controllable = _r->register_component<ecs::component::Controllable>()[id];
+        const int player_entity_id = _players_entities_ids[player_client_id];
+        auto &position = _r->register_component<ecs::component::Position>()[player_entity_id];
+        auto &controllable = _r->register_component<ecs::component::Controllable>()[player_entity_id];
 
         if (dir == protocol::Direction::UP) {
             position->_y -= controllable->_speed;

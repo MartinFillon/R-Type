@@ -57,8 +57,8 @@ namespace Rtype {
         void acceptConnections();
         void processGame();
 
-        void sendToClient(const unsigned int id, const Packet &packet);
-        void removeClient(const unsigned int id);
+        void sendToClient(const unsigned int client_id, const Packet &packet);
+        void removeClient(const unsigned int client_id);
 
         unsigned int generateClientId(const Endpoint &endpoint);
 
@@ -78,7 +78,8 @@ namespace Rtype {
 
         std::mutex _mutex;
         std::unordered_map<int, Client> _clients;
-        std::unordered_map<int, std::optional<int>> _playerIds;
+        /// @brief std::unordered_map containing the 4 player client_id for the 4 player places
+        std::unordered_map<int, std::optional<int>> _players_clients_ids;
     };
 
 }; // namespace Rtype

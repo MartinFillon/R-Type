@@ -35,7 +35,7 @@ namespace Rtype {
         using Endpoint = asio::ip::udp::endpoint;
 
       public:
-        Client(const unsigned int id, Server &server, const Endpoint &endpoint, Socket &socket);
+        Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket);
 
         void send(const Packet &packet);
         void disconnect();
