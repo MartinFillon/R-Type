@@ -107,7 +107,7 @@ namespace rtype {
         _menutitle[3].setString(MENU_TITLE);
         _menutitle[3].setFont(_fontTitle);
         _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
-        _menutitle[3].setCharacterSize(70);
+        _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
 
         _menutitle[4].setString(BUTTON_QUIT);
         _menutitle[4].setFont(_fontTitle);

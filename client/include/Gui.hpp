@@ -66,7 +66,9 @@ namespace rtype {
         void setupCollisons();
         ecs::ComponentFactory _factory;
 
-        // Menu part
+        // Menu part //
+
+        // text part
 
         sf::Font _fontTitle;
         sf::Font _fontText;
@@ -75,12 +77,12 @@ namespace rtype {
         // Log part
 
 		sf::RectangleShape _ipRect;
-
         sf::Text _menuDisplayInput;
         std::string _menuClientInput;
         char _inputChar;
 
         // menu or ?
+
         bool _isWritting;
         bool _isLogin;
         bool _isQuitPress;
