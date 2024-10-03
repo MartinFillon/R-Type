@@ -21,7 +21,7 @@
 namespace rtype {
     Gui::Gui()
         : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false), _menuClientInput("")
+          _drawClock(ecs::Clock()), _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false)
     {
         setupMenu();
     }
@@ -124,17 +124,6 @@ namespace rtype {
                     _isQuitPress = true;
                     break;
                 }
-                if (event.type == sf::Event::TextEntered) {
-                    if (event.text.unicode < 128) {
-                        _inputChar = static_cast<char>(event.text.unicode);
-                        if (_inputChar == 8 && !_menuClientInput.empty()) {
-                            _menuClientInput.pop_back();
-                        } else if (_inputChar > 31 && _inputChar < 127) {
-                            _menuClientInput += _inputChar;
-                        }
-                        _menuDisplayInput.setString(_menuClientInput);
-                    }
-                }
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
                     for (int i = 0; i < 3; i++) {
@@ -153,7 +142,25 @@ namespace rtype {
                             }
                         }
                     }
+                    if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        _isWritting = true;
+                    } else {
+                        _isWritting = false;
+                    }
+
                 }
+                if (_isWritting && event.type == sf::Event::TextEntered) {
+                    if (event.text.unicode < 128) {
+                        _inputChar = static_cast<char>(event.text.unicode);
+                        if (_inputChar == 8 && !_menuClientInput.empty()) {
+                            _menuClientInput.pop_back();
+                        } else if (_inputChar > 31 && _inputChar < 127) {
+                            _menuClientInput += _inputChar;
+                        }
+                        _menuDisplayInput.setString(_menuClientInput);
+                    }
+                }
+
             }
             _window.clear();
             _r->run_systems();

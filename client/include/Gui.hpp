@@ -58,7 +58,7 @@ namespace rtype {
         char _inputChar;
 
         // menu or ?
-
+        bool _isWritting;
         bool _isLogin;
         bool _isQuitPress;
         bool _isMenuOpen;
