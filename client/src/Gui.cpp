@@ -19,23 +19,16 @@
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-
-    Gui::Gui() : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
-        _isLogin(false), _isMenuOpen(true), _isQuitPress(false)
+    Gui::Gui()
+        : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME), _r(std::make_shared<ecs::Registry>()),
+          _drawClock(ecs::Clock()), _systemClock(ecs::Clock())
     {
-        _font.loadFromFile("assets/fonts/ARCADE_I.ttf");
-
-        _menuText[0].setFont(_font);
-        _menuText[0].setString("Play");
-        _menuText[0].setPosition(800, 300);
-
-        _menuText[1].setFont(_font);
-        _menuText[1].setString("Options");
-        _menuText[1].setPosition(800, 400);
-
-        _menuText[2].setFont(_font);
-        _menuText[2].setString("Quit");
-        _menuText[2].setPosition(800, 500);
+        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
+        setupBackground();
+        setupPlayer();
+        setupWeapon();
+        setupBasicEnnemies();
+        setupCollisons();
     }
 
     Gui::~Gui() {}
@@ -84,62 +77,8 @@ namespace rtype {
         _r->add_system(parallaxSystem);
     }
 
-    void Gui::setupGame()
-    {
-        setupBackground();
-        setupPlayer();
-        setupWeapon();
-        setupBasicEnnemies();
-        setupCollisons();
-        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
-    }
-
-
-    void Gui::launchMenu()
-    {
-        while (_isMenuOpen && _window.isOpen()) {
-            sf::Event event;
-            while (_window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    _window.close();
-                }
-                if (event.type == sf::Event::MouseButtonPressed) {
-                    sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
-                    for (int i = 0; i < 3; i++) {
-                        if (_menuText[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                            switch (i) {
-                                case 0:
-                                    _isMenuOpen = false;
-                                    setupGame();
-                                    break;
-                                case 1:
-                                    break;
-                                case 2:
-                                    _window.close();
-                                    _isQuitPress = true;
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            _window.clear();
-            for (int i = 0; i < 3; i++) {
-                _window.draw(_menuText[i]);
-            }
-            _window.display();
-        }
-    }
-
-
     int Gui::run()
     {
-        launchMenu();
-        if (_isQuitPress) {
-            std::exit(0);
-        }
-
         auto &drawables = _r->get_components<ecs::component::Drawable>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
         auto &positions = _r->register_component<ecs::component::Position>();
@@ -147,19 +86,23 @@ namespace rtype {
         auto &size = _r->register_component<ecs::component::Size>();
         int testTick(20);
 
-            while (_window.isOpen()) {
-                sf::Event event;
-                while (_window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed) {
-                        _window.close();
-                    }
+        while (_window.isOpen()) {
+            sf::Event event;
+            while (_window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    _window.close();
                 }
+            }
 
-                _window.clear();
+            if (_systemClock.getSeconds() > (1 / 5)) {
                 _r->run_systems();
+                _systemClock.restart();
+            }
 
+            if (_drawClock.getSeconds() > (1 / 60)) {
+                _window.clear();
                 for (auto &&[draws, anim, spri, si, pos] :
-                    ecs::custom_zip(drawables, animations, sprites, size, positions)) {
+                     ecs::custom_zip(drawables, animations, sprites, size, positions)) {
                     if (!draws || !anim || !spri || !si || !pos) {
                         continue;
                     }
@@ -180,9 +123,10 @@ namespace rtype {
                     sprite.setTexture(texture);
                     _window.draw(sprite);
                 }
-
-                _window.display();
+                _drawClock.restart();
             }
+            _window.display();
+        }
         return EXIT_SUCCESS;
     }
 
