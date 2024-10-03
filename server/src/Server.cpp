@@ -187,14 +187,14 @@ namespace Rtype {
 
         const int8_t optCode = packet.getOpcode();
 
-        if (optCode == protocol::EVENT) {
+        if (optCode == protocol::Operations::EVENT) {
             std::cout << "EVT\n";
             handleEvents(client_id, packet);
             return;
         }
-        if (optCode == protocol::LEAVING) {
+        if (optCode == protocol::Operations::LEAVING) {
             std::cout << "LEAV\n";
-            const Packet brPacket(protocol::LEFT, getBitshiftedData(4, client_id));
+            const Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
 
             for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++)
                 if (_players_clients_ids[player_place] == client_id) {
@@ -206,14 +206,14 @@ namespace Rtype {
             broadcast(brPacket);
             return;
         }
-        if (optCode == protocol::READY) {
+        if (optCode == protocol::Operations::READY) {
             std::cout << "READ\n";
             // who asked and who cares??
             return;
         }
-        if (optCode == protocol::PING) {
+        if (optCode == protocol::Operations::PING) {
             std::cout << "PONG\n";
-            const Packet clPacket(protocol::PING);
+            const Packet clPacket(protocol::Operations::PING);
 
             sendToClient(client_id, clPacket);
             return;
@@ -236,11 +236,14 @@ namespace Rtype {
             }
         }
 
-        if (event == protocol::Move) {
+        if (event == protocol::Events::Move) {
             const uint8_t dir = packet.getArguments()[1];
 
             _game.movePlayer(player_place, dir);
 
+            return;
+        }
+        if (event == protocol::Events::Shoot) {
             return;
         }
     }
