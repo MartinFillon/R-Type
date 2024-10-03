@@ -87,23 +87,31 @@ namespace rtype {
         _fontTitle.loadFromFile("assets/fonts/ARCADE_I.ttf");
         _fontText.loadFromFile("assets/fonts/OpenSans-Semibold.ttf");
 
-        _menuText[0].setFont(_fontTitle);
-        _menuText[0].setString("Play");
-        _menuText[0].setPosition(800, 300);
-        _menuText[1].setFont(_fontTitle);
-        _menuText[1].setString("Options");
-        _menuText[1].setPosition(800, 500);
-        _menuText[2].setFont(_fontTitle);
-        _menuText[2].setString("Quit");
-        _menuText[2].setPosition(800, 600);
+        _menutitle[0].setFont(_fontTitle);
+        _menutitle[0].setString("Play");
+        _menutitle[0].setPosition(800, 400);
+        _menutitle[1].setFont(_fontText);
+        _menutitle[1].setString("Enter IP Adress !");
+        _menutitle[1].setPosition(800, 460);
+        _menutitle[1].setCharacterSize(17);
+        _menutitle[2].setFont(_fontTitle);
+        _menutitle[2].setString("Options");
+        _menutitle[2].setPosition(800, 550);
+        _menutitle[3].setFont(_fontTitle);
+        _menutitle[3].setString("R-Type by MR.PET");
+        _menutitle[3].setPosition(450, 200);
+        _menutitle[3].setCharacterSize(70);
+        _menutitle[4].setFont(_fontTitle);
+        _menutitle[4].setString("Quit");
+        _menutitle[4].setPosition(800, 625);
 
-        _ipRect = sf::RectangleShape(sf::Vector2f(120.f, 50.f));
+        _ipRect = sf::RectangleShape(sf::Vector2f(300.f, 30.f));
         _ipRect.setFillColor(sf::Color::White);
-        _ipRect.setPosition(800, 400);
+        _ipRect.setPosition(800, 495);
         _menuDisplayInput.setFont(_fontText);
-        _menuDisplayInput.setPosition(800, 400);
+        _menuDisplayInput.setPosition(800, 500);
         _menuDisplayInput.setCharacterSize(15);
-        _menuDisplayInput.setFillColor(sf::Color::Red);
+        _menuDisplayInput.setFillColor(sf::Color::Black);
     }
 
     void Gui::launchMenu()
@@ -130,7 +138,7 @@ namespace rtype {
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
                     for (int i = 0; i < 3; i++) {
-                        if (_menuText[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        if (_menutitle[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                             switch (i) {
                                 case 0:
                                     _isMenuOpen = false;
@@ -149,8 +157,8 @@ namespace rtype {
             }
             _window.clear();
             _r->run_systems();
-            for (int i = 0; i < 3; i++) {
-                _window.draw(_menuText[i]);
+            for (int i = 0; i < 5; i++) {
+                _window.draw(_menutitle[i]);
             }
             _window.draw(_ipRect);
             _window.draw(_menuDisplayInput);

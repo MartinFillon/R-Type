@@ -47,7 +47,7 @@ namespace rtype {
 
         sf::Font _fontTitle;
         sf::Font _fontText;
-        sf::Text _menuText[3];
+        sf::Text _menutitle[5];
 
         // Log part
 
