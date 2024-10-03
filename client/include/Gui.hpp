@@ -48,10 +48,16 @@ namespace rtype {
         sf::Font _fontTitle;
         sf::Font _fontText;
         sf::Text _menuText[3];
-        sf::Text _menuDisplayInput;
 
+        // Log part
+
+		sf::RectangleShape _ipRect;
+
+        sf::Text _menuDisplayInput;
         std::string _menuClientInput;
         char _inputChar;
+
+        // menu or ?
 
         bool _isLogin;
         bool _isQuitPress;

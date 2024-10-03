@@ -92,14 +92,18 @@ namespace rtype {
         _menuText[0].setPosition(800, 300);
         _menuText[1].setFont(_fontTitle);
         _menuText[1].setString("Options");
-        _menuText[1].setPosition(800, 400);
+        _menuText[1].setPosition(800, 500);
         _menuText[2].setFont(_fontTitle);
         _menuText[2].setString("Quit");
-        _menuText[2].setPosition(800, 500);
+        _menuText[2].setPosition(800, 600);
+
+        _ipRect = sf::RectangleShape(sf::Vector2f(120.f, 50.f));
+        _ipRect.setFillColor(sf::Color::White);
+        _ipRect.setPosition(800, 400);
         _menuDisplayInput.setFont(_fontText);
-        _menuDisplayInput.setPosition(800, 600);
+        _menuDisplayInput.setPosition(800, 400);
         _menuDisplayInput.setCharacterSize(15);
-        _menuDisplayInput.setFillColor(sf::Color::White);
+        _menuDisplayInput.setFillColor(sf::Color::Red);
     }
 
     void Gui::launchMenu()
@@ -148,6 +152,7 @@ namespace rtype {
             for (int i = 0; i < 3; i++) {
                 _window.draw(_menuText[i]);
             }
+            _window.draw(_ipRect);
             _window.draw(_menuDisplayInput);
             _window.display();
         }
