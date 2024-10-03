@@ -8,6 +8,8 @@
 #include "Gui.hpp"
 #include <iostream>
 
+#include "Clock.hpp"
+#include "ComponentFactory.hpp"
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
@@ -143,6 +145,7 @@ namespace rtype {
         auto &positions = _r->register_component<ecs::component::Position>();
         auto &animations = _r->register_component<ecs::component::Animations>();
         auto &size = _r->register_component<ecs::component::Size>();
+        int testTick(20);
 
             while (_window.isOpen()) {
                 sf::Event event;

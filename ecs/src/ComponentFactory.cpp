@@ -12,6 +12,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Clicked.hpp"
@@ -29,6 +30,7 @@
 #include "Components/Sprite.hpp"
 #include "Components/Text.hpp"
 #include "Components/Velocity.hpp"
+#include "Entity.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
@@ -40,7 +42,7 @@ namespace ecs {
             createPositionComponent(e, node);
         };
 
-        if (mode == Mode::Server) {
+        if (mode == Mode::Client) {
             functions["drawable"] = [this](const Entity e, const nlohmann::json &node) {
                 createDrawableComponent(e, node);
             };
@@ -86,7 +88,7 @@ namespace ecs {
 
     ComponentFactory::~ComponentFactory() {}
 
-    void ComponentFactory::createEntity(const std::string &file)
+    Entity ComponentFactory::createEntity(const std::string &file)
     {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
@@ -97,6 +99,7 @@ namespace ecs {
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
         }
+        return e;
     }
 
     void ComponentFactory::createComponent(const Entity e, const std::string &name, const nlohmann::json &node)
@@ -141,7 +144,7 @@ namespace ecs {
             type = component::Background;
 
         animations_array[e.getId()] = component::Animations{
-            sf::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
+            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
         };
     }
 
@@ -163,7 +166,7 @@ namespace ecs {
     {
         auto &text_array = _r->register_if_not_exist<component::Text>();
 
-        text_array[e.getId()] = component::Text{node["string"], sf::Text()};
+        text_array[e.getId()] = component::Text{node["string"]};
     }
 
     void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node)
@@ -184,7 +187,7 @@ namespace ecs {
     {
         auto &filled_color_array = _r->register_if_not_exist<component::FilledColor>();
 
-        filled_color_array[e.getId()] = component::FilledColor{sf::Color(node["r"], node["g"], node["b"], node["a"])};
+        filled_color_array[e.getId()] = component::FilledColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node)
@@ -200,8 +203,7 @@ namespace ecs {
     {
         auto &outlined_color_array = _r->register_if_not_exist<component::OutlinedColor>();
 
-        outlined_color_array[e.getId()] =
-            component::OutlinedColor{sf::Color(node["r"], node["g"], node["b"], node["a"])};
+        outlined_color_array[e.getId()] = component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node)

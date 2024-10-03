@@ -23,7 +23,7 @@ namespace ecs {
         ComponentFactory();
         ~ComponentFactory();
 
-        void createEntity(const std::string &file);
+        Entity createEntity(const std::string &file);
         void createComponent(const Entity e, const std::string &component, const nlohmann::json &node);
 
       protected:
