@@ -8,11 +8,15 @@
 #include "Gui.hpp"
 #include <iostream>
 
+#define FRAMERATE (int)(1 / 60)
+#define REFRESH_SYSTEMS (int)(1 / 5)
+
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
+#include "Systems/DestroySystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
@@ -24,6 +28,13 @@ namespace rtype {
         _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0),
         _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
     {
+        _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
+        setupBackground();
+        setupPlayer();
+        setupWeapon();
+        setupBasicEnnemies();
+        setupCollisons();
+        setupDestroy();
         setupMenu();
     }
 
@@ -32,6 +43,12 @@ namespace rtype {
     sf::RenderWindow &Gui::getRenderWindow()
     {
         return _window;
+    }
+
+    void Gui::setupDestroy()
+    {
+        ecs::systems::DestroySystem destroySystem;
+        _r->add_system(destroySystem);
     }
 
     void Gui::setupCollisons()
@@ -236,12 +253,12 @@ namespace rtype {
                 }
             }
 
-            if (_systemClock.getSeconds() > (1 / 5)) {
+            if (_systemClock.getSeconds() > REFRESH_SYSTEMS) {
                 _r->run_systems();
                 _systemClock.restart();
             }
 
-            if (_drawClock.getSeconds() > (1 / 60)) {
+            if (_drawClock.getSeconds() > FRAMERATE) {
                 _window.clear();
                 for (auto &&[draws, anim, spri, si, pos] :
                      ecs::custom_zip(drawables, animations, sprites, size, positions)) {

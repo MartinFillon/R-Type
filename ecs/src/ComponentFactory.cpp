@@ -17,6 +17,7 @@
 #include "Components/Animations.hpp"
 #include "Components/Clicked.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/FilledColor.hpp"
 #include "Components/Hover.hpp"
@@ -43,6 +44,9 @@ namespace ecs {
         };
 
         if (mode == Mode::Client) {
+            functions["destroyable"] = [this](const Entity e, const nlohmann::json &node) {
+                createDestroyableComponent(e, node);
+            };
             functions["drawable"] = [this](const Entity e, const nlohmann::json &node) {
                 createDrawableComponent(e, node);
             };
@@ -127,6 +131,13 @@ namespace ecs {
         auto &sprite_array = _r->register_if_not_exist<component::Sprite>();
 
         sprite_array[e.getId()] = component::Sprite{node};
+    }
+
+    void ComponentFactory::createDestroyableComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &destroyable_array = _r->register_if_not_exist<component::Destroyable>();
+
+        destroyable_array[e.getId()] = component::Destroyable{node};
     }
 
     void ComponentFactory::createAnimationsComponent(const Entity e, const nlohmann::json &node)

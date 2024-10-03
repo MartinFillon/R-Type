@@ -29,7 +29,7 @@ namespace ecs {
                 auto &animation = r.get_components<ecs::component::Animations>();
 
                 for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
-                    if (anim->_object == ecs::component::Object::Background) {
+                    if (anim->_object == ecs::component::Object::Background && anim->_clock.getSeconds() > (int)(1 / 60)) {
                         if (pos->_x <= -1920) {
                             pos->_x = 1920 * para->_multiplicator;
                         }

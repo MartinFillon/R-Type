@@ -6,13 +6,15 @@
     "controllable",
     "sprite",
     "animations",
-    "size"
+    "size",
+    "destroyable"
   ],
   "components": {
     "position": {
         "x": 100,
         "y": 100
     },
+    "destroyable": false,
     "drawable": true,
     "controllable": {
         "controllable": true,
