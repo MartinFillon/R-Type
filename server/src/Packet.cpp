@@ -80,7 +80,7 @@ Rtype::Packet::Message Rtype::Packet::toMessage() const
 
 bool Rtype::Packet::isValidOpcode(uint8_t opcode)
 {
-    for (size_t i = protocol::OBJECT_POSITION; i != protocol::OBJECT_INFORMATIONS; i++) {
+    for (size_t i = protocol::Operations::OBJECT_POSITION; i != protocol::Operations::OBJECT_INFORMATIONS; i++) {
         if (i == opcode) {
             return true;
         }

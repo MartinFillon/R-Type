@@ -9,14 +9,15 @@
 #include <cstdint>
 #include <optional>
 #include <queue>
+#include "protocol.hpp"
 
 namespace Rtype {
 
     Server::Server(int port)
         : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
     {
-        for (int i = 1; i < 5; i++) {
-            _playerIds[i] = std::nullopt;
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            _players_clients_ids[player_place] = std::nullopt;
         }
     };
 
@@ -63,22 +64,31 @@ namespace Rtype {
         }
     }
 
-    void Server::handleMessage(const unsigned int id, const Message &message)
+    void Server::handleMessage(const unsigned int client_id, const Message &message)
     {
         Packet packet(message);
 
-        std::cout << MESSAGE_RECEIVED(id) << std::endl;
+        std::cout << MESSAGE_RECEIVED(client_id) << std::endl;
 
-        processAction(id, packet);
+        processAction(client_id, packet);
     }
 
     int Server::placeInPlayers(void)
     {
-        for (int i = 1; i < 5; i++) {
-            if (_playerIds[i] == std::nullopt) {
-                return i;
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            if (_players_clients_ids[player_place] == std::nullopt) {
+                return player_place;
             }
         }
+
+        return -1;
+    }
+
+    int Server::getPlayerPlace(int client_id)
+    {
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++)
+            if (_players_clients_ids[player_place] == client_id)
+                return player_place;
 
         return -1;
     }
@@ -96,25 +106,25 @@ namespace Rtype {
 
             size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
 
-            unsigned int id = generateClientId(endpoint);
-            int place = placeInPlayers();
+            unsigned int client_id = generateClientId(endpoint);
+            int player_place = placeInPlayers();
 
-            std::cerr << error << " " << len << " " << place << std::endl;
-            if (!error && len && place != -1) {
+            std::cerr << error << " " << len << " " << player_place << std::endl;
+            if (!error && len && player_place != -1) {
 
-                if (_clients.find(id) == _clients.end()) {
-                    _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
-                    _playerIds[place] = id;
+                if (_clients.find(client_id) == _clients.end()) {
+                    _clients[client_id] = std::make_shared<Rtype::Client>(client_id, *this, endpoint, _socket);
+                    _players_clients_ids[player_place] = client_id;
 
-                    _game.createPlayer(place);
-                    _clients[id].get()->send(Packet(10, {static_cast<uint8_t>(id)}));
+                    _game.createPlayer(player_place);
+                    _clients[client_id].get()->send(Packet(10, {static_cast<uint8_t>(client_id)}));
                 }
 
-                handleMessage(id, message);
+                handleMessage(client_id, message);
             }
 
-            if (error && _clients.find(id) != _clients.end()) {
-                _clients[id].get()->disconnect();
+            if (error && _clients.find(client_id) != _clients.end()) {
+                _clients[client_id].get()->disconnect();
             }
         }
     }
@@ -131,7 +141,7 @@ namespace Rtype {
         }
     }
 
-    void Server::sendToClient(const unsigned int id, const Packet &packet)
+    void Server::sendToClient(const unsigned int client_id, const Packet &packet)
     {
         std::lock_guard<std::mutex> lock(_mutex);
 
@@ -139,16 +149,16 @@ namespace Rtype {
             return;
         }
 
-        if (_clients.find(id) != _clients.end()) {
-            _clients[id]->send(packet);
+        if (_clients.find(client_id) != _clients.end()) {
+            _clients[client_id]->send(packet);
         }
     }
 
-    void Server::removeClient(const unsigned int id)
+    void Server::removeClient(const unsigned int client_id)
     {
         std::lock_guard<std::mutex> lock(_mutex);
 
-        _clients.erase(id);
+        _clients.erase(client_id);
     }
 
     unsigned int Server::generateClientId(const Endpoint &endpoint)
@@ -160,57 +170,95 @@ namespace Rtype {
         return static_cast<unsigned int>(hashFunction(id));
     }
 
-    std::vector<uint8_t> Server::getBitshiftedData(const unsigned int data)
+    std::vector<uint8_t> Server::getBitshiftedData(const int length, const unsigned int data)
     {
         std::vector<uint8_t> bytes;
 
-        bytes[0] = (data >> 24) & 0xFF;
-        bytes[1] = (data >> 16) & 0xFF;
-        bytes[2] = (data >> 8) & 0xFF;
-        bytes[3] = data & 0xFF;
+        for (int index = 0; index < length; index++)
+            bytes[index] = (data >> (length - (index + 1))) & 0xFF;
 
         return bytes;
     }
 
-    void Server::processAction(const unsigned int id, const Packet &packet)
+    std::vector<uint8_t> concatVectors(std::vector<uint8_t> vec1, std::vector<uint8_t> vec2)
+    {
+        vec1.insert(vec1.end(), vec2.begin(), vec2.end());
+
+        return vec1;
+    }
+
+    void Server::processAction(const unsigned int client_id, const Packet &packet)
     {
         if (!packet.isValid()) {
-            std::cout << INVALID_PACKET(id) << std::endl;
+            std::cout << INVALID_PACKET(client_id) << std::endl;
             return;
         }
 
         const int8_t optCode = packet.getOpcode();
 
-        if (optCode == protocol::EVENT) {
+        if (optCode == protocol::Operations::EVENT) {
             std::cout << "EVT\n";
-            handleEvents(id, packet);
+            handleEvents(client_id, packet);
+            return;
         }
-        if (optCode == protocol::LEAVING) {
+        if (optCode == protocol::Operations::LEAVING) {
             std::cout << "LEAV\n";
-            Packet brPacket(protocol::LEFT, getBitshiftedData(id));
+            const Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
+            const int player_place = getPlayerPlace(client_id);
 
-            removeClient(id);
-            _game.handleLeaving(id);
+            if (player_place > 0) {
+                _game.handleLeaving(player_place);
+                _players_clients_ids[player_place] = std::nullopt;
+            }
+
+            removeClient(client_id);
             broadcast(brPacket);
+            return;
         }
-        if (optCode == protocol::READY) {
+        if (optCode == protocol::Operations::READY) {
             std::cout << "READ\n";
             // who asked and who cares??
+            return;
         }
-        if (optCode == protocol::PING) {
+        if (optCode == protocol::Operations::PING) {
             std::cout << "PONG\n";
-            Packet clPacket(protocol::PING);
+            const Packet clPacket(protocol::Operations::PING);
 
-            sendToClient(id, clPacket);
+            sendToClient(client_id, clPacket);
+            return;
         }
 
         std::cout << packet.toMessage().data() << std::endl;
 
-        std::cout << VALID_PACKET(id) << std::endl;
+        std::cout << VALID_PACKET(client_id) << std::endl;
     }
 
-    void Server::handleEvents(const unsigned int id, const Packet &packet)
+    void Server::handleEvents(const unsigned int client_id, const Packet &packet)
     {
-        // missing events ids and arguments in Notion protocol
+        uint8_t event = packet.getArguments()[0];
+        int player_place = -1;
+
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            if (_players_clients_ids[player_place] == client_id) {
+                player_place = player_place;
+                break;
+            }
+        }
+
+        if (event == protocol::Events::Move) {
+            const uint8_t dir = packet.getArguments()[1];
+
+            _game.movePlayer(player_place, dir);
+
+            return;
+        }
+        if (event == protocol::Events::Shoot) {
+            const int player_place = getPlayerPlace(client_id);
+
+            if (player_place > 0)
+                _game.makePlayerShoot(player_place);
+
+            return;
+        }
     }
 } // namespace Rtype
