@@ -99,4 +99,21 @@ namespace Rtype {
         }
     }
 
+    void Game::makePlayerShoot(int player_place)
+    {
+        std::string file = "config/projectile";
+
+        file.append(".json");
+
+        std::cerr << file << std::endl;
+        ecs::Entity e = _cf.createEntity(file);
+        auto &positions = _r->get_components<ecs::component::Position>();
+
+        positions[e.getId()] = positions[_players_entities_ids[player_place]];
+        _packetsToSend.push(Packet(
+            protocol::Operations::NEW_OBJECT,
+            {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+        ));
+    }
+
 } // namespace Rtype

@@ -37,6 +37,7 @@ namespace Rtype {
 
         void createPlayer(const unsigned int player_place);
         void movePlayer(const int player_place, const int dir);
+        void makePlayerShoot(const int player_place);
 
       private:
         std::shared_ptr<ecs::Registry> _r;

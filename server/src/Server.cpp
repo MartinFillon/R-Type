@@ -84,6 +84,15 @@ namespace Rtype {
         return -1;
     }
 
+    int Server::getPlayerPlace(int client_id)
+    {
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++)
+            if (_players_clients_ids[player_place] == client_id)
+                return player_place;
+
+        return -1;
+    }
+
     void Server::acceptConnections()
     {
         while (_running) {
@@ -195,12 +204,12 @@ namespace Rtype {
         if (optCode == protocol::Operations::LEAVING) {
             std::cout << "LEAV\n";
             const Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
+            const int player_place = getPlayerPlace(client_id);
 
-            for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++)
-                if (_players_clients_ids[player_place] == client_id) {
-                    _game.handleLeaving(player_place);
-                    _players_clients_ids[player_place] = std::nullopt;
-                }
+            if (player_place > 0) {
+                _game.handleLeaving(player_place);
+                _players_clients_ids[player_place] = std::nullopt;
+            }
 
             removeClient(client_id);
             broadcast(brPacket);
@@ -244,6 +253,11 @@ namespace Rtype {
             return;
         }
         if (event == protocol::Events::Shoot) {
+            const int player_place = getPlayerPlace(client_id);
+
+            if (player_place > 0)
+                _game.makePlayerShoot(player_place);
+
             return;
         }
     }

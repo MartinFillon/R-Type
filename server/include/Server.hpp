@@ -69,6 +69,7 @@ namespace Rtype {
         void handleEvents(const unsigned int id, const Packet &packet);
 
         int placeInPlayers(void);
+        int Server::getPlayerPlace(int client_id);
 
         Context _context;
 
