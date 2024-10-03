@@ -148,6 +148,7 @@ namespace rtype {
                         _ipRect.setOutlineColor(sf::Color::Blue);
                     } else {
                         _isWritting = false;
+                        _ipRect.setOutlineThickness(0);
                     }
 
                 }
@@ -161,6 +162,11 @@ namespace rtype {
                         }
                         _menuDisplayInput.setString(_menuClientInput);
                     }
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_menuClientInput.empty()) {
+                    setupGame();
+                    _isMenuOpen = false;
+                    break;
                 }
 
             }
