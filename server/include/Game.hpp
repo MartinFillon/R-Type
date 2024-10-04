@@ -16,18 +16,20 @@
 #include <iostream>
 
 #include "Packet.hpp"
+#include "Registry.hpp"
 
 namespace Rtype {
 
     class Game {
 
       public:
-        Game() = default;
+        Game();
 
-        void update() {
+        void update();
+        void handleLeaving(const unsigned int id);
 
-        };
-        void processAction(const unsigned int id, const Packet &packet);
+      private:
+        std::shared_ptr<ecs::Registry> _r;
     };
 
 }; // namespace Rtype

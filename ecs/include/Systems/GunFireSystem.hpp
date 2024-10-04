@@ -24,7 +24,7 @@ namespace ecs {
             void createNewProjectile(Registry &r, const ecs::component::Position &playerPos)
             {
                 Entity newProjectile = r.spawn_entity();
-                r._entitys.addEntity(newProjectile);
+                r._entities.addEntity(newProjectile);
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &drawables = r.get_components<ecs::component::Drawable>();
                 auto &controllables = r.get_components<ecs::component::Controllable>();
