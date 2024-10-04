@@ -38,71 +38,87 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 #include "Clock.hpp"
-#include "ComponentFactory.hpp"
+#include "Network.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
+#include "ComponentFactory.hpp"
+
+#define HOST 1
+#define PORT 2
+#define NB_ARGS 3
+#define SUCCESS 0
+#define ERROR 84
 
 namespace rtype {
+
     class Gui : ecs::IContext {
-      public:
-        Gui();
-        ~Gui();
 
-        int run() override;
-        void launchMenu();
-        void setupGame();
-        void setupMenu();
+        public:
 
+            Gui(const std::string &host, const std::string &port);
 
-      protected:
-      private:
-        sf::RenderWindow &getRenderWindow();
+            void launchMenu();
+            void setupGame();
+            void setupMenu();
 
-        void setupPlayer();
-        void setupBackground();
-        void setupWeapon();
-        void setupBasicEnnemies();
-        void setupCollisons();
-        void setupDestroy();
+            void start();
 
-        std::shared_ptr<ecs::Registry> _r;
-        ecs::Clock _drawClock;
-        ecs::Clock _systemClock;
-        sf::RenderWindow _window;
-        ecs::ComponentFactory _factory;
+            int run() override;
 
-        // Menu part //
+            std::shared_ptr<ecs::Registry> &getRegistry() {
+                return _r;
+            };
 
-        // text part
+        private:
 
-        sf::Font _fontTitle;
-        sf::Font _fontText;
-        sf::Text _menutitle[5];
+            Network _network;
 
-        // Log part
+            void setupWeapon();
+            void setupPlayer();
+            void setupCollisons();
+            void setupBackground();
+            void setupBasicEnnemies();
+            void setupDestroy();
 
-		    sf::RectangleShape _ipRect;
-        sf::Text _menuDisplayInput;
-        std::string _menuClientInput;
-        char _inputChar;
+            sf::RenderWindow _window;
+            std::shared_ptr<ecs::Registry> _r;
+            ecs::Clock _drawClock;
+            ecs::Clock _systemClock;
+            ecs::ComponentFactory _factory;
 
-        // menu or ?
+            // Menu part //
 
-        bool _isWritting;
-        bool _isLogin;
-        bool _isQuitPress;
-        bool _isMenuOpen;
+            // text part
 
-        // background
+            sf::Font _fontTitle;
+            sf::Font _fontText;
+            sf::Text _menutitle[5];
 
-        sf::Clock _menuClock;
-        sf::Texture _backgroundTexture;
-        sf::Sprite _backgroundSprite;
-        float _bgScaleX;
-        float _bgScaleY;
-        float _bgOffset;
+            // Log part
+
+            sf::RectangleShape _ipRect;
+            sf::Text _menuDisplayInput;
+            std::string _menuClientInput;
+            char _inputChar;
+
+            // menu or ?
+
+            bool _isWritting;
+            bool _isLogin;
+            bool _isQuitPress;
+            bool _isMenuOpen;
+
+            // background
+
+            sf::Clock _menuClock;
+            sf::Texture _backgroundTexture;
+            sf::Sprite _backgroundSprite;
+            float _bgScaleX;
+            float _bgScaleY;
+            float _bgOffset;
 
     };
-} // namespace rtype
+
+};
 
 #endif /* !GUI_HPP_ */

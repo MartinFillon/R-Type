@@ -109,7 +109,6 @@ namespace Rtype {
             unsigned int client_id = generateClientId(endpoint);
             int player_place = placeInPlayers();
 
-            std::cerr << error << " " << len << " " << player_place << std::endl;
             if (!error && len && player_place != -1) {
 
                 if (_clients.find(client_id) == _clients.end()) {
@@ -245,14 +244,14 @@ namespace Rtype {
             }
         }
 
-        if (event == protocol::Events::Move) {
+        if (event == protocol::Events::MOVE) {
             const uint8_t dir = packet.getArguments()[1];
 
             _game.movePlayer(player_place, dir);
 
             return;
         }
-        if (event == protocol::Events::Shoot) {
+        if (event == protocol::Events::SHOOT) {
             const int player_place = getPlayerPlace(client_id);
 
             if (player_place > 0)
