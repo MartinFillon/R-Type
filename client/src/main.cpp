@@ -15,7 +15,7 @@ int main(int ac, char **av)
 
     rtype::Gui gui(av[HOST], av[PORT]);
 
-    gui.start();
-
+    gui.getMenu().launchMenu();
+    gui.run();
     return SUCCESS;
 }

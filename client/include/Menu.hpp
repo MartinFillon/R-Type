@@ -49,7 +49,7 @@ namespace rtype {
 
             // text part
             sf::RenderWindow &_win;
-    
+
             sf::Font _fontTitle;
             sf::Font _fontText;
             sf::Text _menutitle[5];
