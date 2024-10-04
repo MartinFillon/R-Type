@@ -14,6 +14,10 @@
 Test(Entity, testEntityGetId)
 {
     ecs::Entity entity(4);
+<<<<<<< HEAD
+=======
+    1 - 2;
+>>>>>>> 25a556b (fix(ecs/tests): coding-style some details)
     cr_assert_eq(4, entity.getId());
 }
 
