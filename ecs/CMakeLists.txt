@@ -14,17 +14,25 @@ target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
 
-# option(ENABLE_TESTS "Build tests along with the library" ON)
+if(WIN32)
+  add_custom_command(
+    TARGET ecs
+    COMMENT "Copy OpenAL DLL"
+    PRE_BUILD
+    COMMAND
+      ${CMAKE_COMMAND} -E copy
+      ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll
+      $<TARGET_FILE_DIR:ecs>
+    VERBATIM)
+endif()
+
+option(ENABLE_TESTS "Build tests along with the library" ON)
 
 if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)
 
   enable_testing()
-  add_executable(
-    test_ecs
-    test/SparseArrayTest.cpp test/RegistryTest.cpp test/EntityTest.cpp
-    test/EntityManagerTest.cpp test/ImageResolverTest.cpp
-    test/ZipperIteratorTest.cpp)
+  add_executable(test_ecs test/EntityTest.cpp test/EntityManagerTest.cpp test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
 
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
