@@ -25,18 +25,18 @@ void rtype::Network::run()
 
     context.detach();
 
-    Packet packet(protocol::Operations::READY, {}); // Ready message to server
+    Packet ready_packet(protocol::Operations::READY, {}); // Ready message to server
 
-    send(packet);
+    send(ready_packet);
 
     while (running) {
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
-
         size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+        Packet received_packet(message);
 
-        std::cout << "Packet recu du server!" << std::endl;
+        std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
     }
 }
 
