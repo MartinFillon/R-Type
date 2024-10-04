@@ -13,7 +13,7 @@
 
 namespace ecs {
     namespace component {
-        enum Object { Background, Player, Weapon, Ennemies, InDestroy };
+        enum Object { Background, Player, Weapon, Ennemies, InDestroy, Milespates };
 
         struct Animations {
             ecs::Clock _clock;
