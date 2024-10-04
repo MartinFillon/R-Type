@@ -7,9 +7,15 @@
 
 #include "Gui.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {
-    rtype::Gui gui;
+    if (ac != NB_ARGS) {
+        return ERROR;
+    }
 
-    return gui.run();
+    rtype::Gui gui(av[HOST], av[PORT]);
+
+    gui.start();
+
+    return SUCCESS;
 }
