@@ -7,23 +7,23 @@
 
 #include <iostream>
 
-#include "Gui.hpp"
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
+#include "Gui.hpp"
 #include "ImageResolver.hpp"
-#include "ZipperIterator.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
-#include "Systems/CollisionsSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "ZipperIterator.hpp"
 
 namespace rtype {
 
     Gui::Gui(const std::string &host, const std::string &port)
         : ecs::IContext(), _network(host, port), _window(sf::VideoMode(1920, 1080), GAME_NAME),
-        _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0),
-        _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
+          _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0), _systemClock(ecs::Clock()),
+          _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
     {
         _network.setRegistry(_r);
         setupMenu();
@@ -32,10 +32,10 @@ namespace rtype {
     void Gui::start()
     {
         std::thread handleNetwork(&rtype::Network::run, std::ref(_network));
-        //std::thread handleGame(&rtype::Gui::run, this);
+        // std::thread handleGame(&rtype::Gui::run, this);
 
         handleNetwork.join();
-        //handleGame.join();
+        // handleGame.join();
     }
 
     void Gui::setupWeapon()
@@ -129,14 +129,16 @@ namespace rtype {
     {
         sf::Shader parallaxShader;
         if (!parallaxShader.loadFromMemory(
-            "uniform float offset;"
+                "uniform float offset;"
 
-            "void main() {"
-            "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
-            "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-            "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
-            "    gl_FrontColor = gl_Color;"
-            "}", sf::Shader::Vertex)) {
+                "void main() {"
+                "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
+                "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
+                "    gl_FrontColor = gl_Color;"
+                "}",
+                sf::Shader::Vertex
+            )) {
             return;
         }
         sf::Clock clock;
@@ -211,12 +213,13 @@ namespace rtype {
         }
     }
 
-
     int Gui::run()
     {
         launchMenu();
 
-        if (_isQuitPress) { return EXIT_SUCCESS; }
+        if (_isQuitPress) {
+            return EXIT_SUCCESS;
+        }
 
         auto &drawables = _r->get_components<ecs::component::Drawable>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
