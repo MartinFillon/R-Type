@@ -79,7 +79,7 @@ rtype::Packet::Message rtype::Packet::toMessage() const
 
 bool rtype::Packet::isValidOpcode(uint8_t opcode)
 {
-    for (size_t i = protocol::OBJECT_POSITION; i != protocol::GAME_SPEED; i++) {
+    for (size_t i = protocol::Operations::OPERATIONS_FIRST + 1; i < protocol::Operations::OPERATIONS_LENGTH; i++) {
         if (i == opcode) {
             return true;
         }

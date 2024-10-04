@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Network.hpp"
+#include "protocol.hpp"
 
 rtype::Network::Network(const std::string &host, const std::string &port):
     _context(),
@@ -26,9 +27,9 @@ void rtype::Network::run()
 
     context.detach();
 
-    Packet packet(12); // Ready message to server //
+    Packet packet(protocol::Operations::READY, {}); // Ready message to server
 
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(packet);
 
     while (running) {
 
@@ -45,6 +46,7 @@ void rtype::Network::run()
 void rtype::Network::send(const Packet &packet)
 {
     if (!packet.isValid()) {
+        std::cerr << "Packet is not valid" << std::endl;
         return;
     }
 
@@ -55,22 +57,14 @@ void rtype::Network::send(const Message &message)
 {
     Packet packet(message);
 
-    if (!packet.isValid()) {
-        return;
-    }
-
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(packet);
 }
 
 void rtype::Network::send(const uint8_t opcode, const Arguments &arguments)
 {
     Packet packet(opcode, arguments);
 
-    if (!packet.isValid()) {
-        return;
-    }
-
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(packet);
 }
 
 void rtype::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)
