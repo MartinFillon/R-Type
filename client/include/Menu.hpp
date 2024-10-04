@@ -43,7 +43,7 @@ namespace rtype {
             Menu(sf::RenderWindow &window);
             ~Menu() = default;
             void setupMenu();
-            void launchMenu();
+            std::string launchMenu();
 
         private:
 

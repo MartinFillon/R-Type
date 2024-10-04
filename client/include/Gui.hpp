@@ -30,9 +30,10 @@ namespace rtype {
 
         public:
 
-            Gui(const std::string &host, const std::string &port);
+            Gui();
 
             void setupGame();
+            void setupNetwork(const std::string server_ip, const std::string server_port);
 
             void start();
 

@@ -20,12 +20,18 @@
 
 namespace rtype {
 
-    Gui::Gui(const std::string &host, const std::string &port)
-        : ecs::IContext(), _network(host, port), _window(sf::VideoMode(1920, 1080), GAME_NAME),
+    Gui::Gui()
+        : ecs::IContext(), _network(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
           _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _menu(_window)
     {
         _menu.setupMenu();
         _network.setRegistry(_r);
+    }
+
+    void Gui::setupNetwork(const std::string server_ip, const std::string server_port)
+    {
+        _network.setup(server_ip, server_port);
+        start();
     }
 
     void Gui::start()

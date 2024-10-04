@@ -7,10 +7,7 @@
 
 #include "Menu.hpp"
 
-rtype::Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
-{
-
-}
+rtype::Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true) {}
 
 void rtype::Menu::setupMenu()
 {
@@ -57,7 +54,7 @@ void rtype::Menu::setupMenu()
     _menuDisplayInput.setFillColor(sf::Color::Black);
 }
 
-void rtype::Menu::launchMenu()
+std::string rtype::Menu::launchMenu()
 {
     sf::Shader parallaxShader;
     if (!parallaxShader.loadFromMemory(
@@ -70,7 +67,7 @@ void rtype::Menu::launchMenu()
             "}",
             sf::Shader::Vertex
         )) {
-        return;
+        return "";
     }
     while (_isMenuOpen && _win.isOpen()) {
         sf::Event event;
@@ -87,7 +84,7 @@ void rtype::Menu::launchMenu()
                         switch (i) {
                             case 0:
                                 _isMenuOpen = false;
-                                break;
+                                return _menuClientInput;
                             case 1:
                                 break;
                             case 2:
@@ -138,4 +135,6 @@ void rtype::Menu::launchMenu()
         _win.draw(_menuDisplayInput);
         _win.display();
     }
+
+    return "";
 }
