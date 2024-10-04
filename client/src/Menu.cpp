@@ -136,5 +136,5 @@ std::string rtype::Menu::launchMenu()
         _win.display();
     }
 
-    return "";
+    return _menuClientInput;
 }
