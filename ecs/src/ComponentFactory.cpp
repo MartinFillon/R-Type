@@ -12,54 +12,79 @@
 
 #include <nlohmann/json.hpp>
 
+#include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Clicked.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/FilledColor.hpp"
+#include "Components/Hover.hpp"
+#include "Components/Life.hpp"
+#include "Components/OutlinedColor.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
+#include "Components/Score.hpp"
+#include "Components/Shield.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/Text.hpp"
+#include "Components/Velocity.hpp"
+#include "Entity.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory() {}
 
-    ComponentFactory::ComponentFactory(std::shared_ptr<Registry> &r) : _r(r)
+    ComponentFactory::ComponentFactory(std::shared_ptr<Registry> &r, Mode mode) : _r(r)
     {
         functions["position"] = [this](const Entity e, const nlohmann::json &node) {
             createPositionComponent(e, node);
         };
-        functions["drawable"] = [this](const Entity e, const nlohmann::json &node) {
-            createDrawableComponent(e, node);
-        };
-        functions["sprite"] = [this](const Entity e, const nlohmann::json &node) { createSpriteComponent(e, node); };
-        functions["animations"] = [this](const Entity e, const nlohmann::json &node) {
-            createAnimationsComponent(e, node);
-        };
-        functions["parallax"] = [this](const Entity e, const nlohmann::json &node) {
-            createParallaxComponent(e, node);
-        };
-        functions["size"] = [this](const Entity e, const nlohmann::json &node) { createSizeComponent(e, node); };
 
-        functions["text"] = [this](const Entity e, const nlohmann::json &node) { createTextComponent(e, node); };
-        functions["clicked"] = [this](const Entity e, const nlohmann::json &node) { createClickedComponent(e, node); };
+        if (mode == Mode::Client) {
+            functions["destroyable"] = [this](const Entity e, const nlohmann::json &node) {
+                createDestroyableComponent(e, node);
+            };
+            functions["drawable"] = [this](const Entity e, const nlohmann::json &node) {
+                createDrawableComponent(e, node);
+            };
+            functions["sprite"] = [this](const Entity e, const nlohmann::json &node) {
+                createSpriteComponent(e, node);
+            };
+            functions["animations"] = [this](const Entity e, const nlohmann::json &node) {
+                createAnimationsComponent(e, node);
+            };
+
+            functions["parallax"] = [this](const Entity e, const nlohmann::json &node) {
+                createParallaxComponent(e, node);
+            };
+            functions["text"] = [this](const Entity e, const nlohmann::json &node) { createTextComponent(e, node); };
+            functions["clicked"] = [this](const Entity e, const nlohmann::json &node) {
+                createClickedComponent(e, node);
+            };
+            functions["music"] = [this](const Entity e, const nlohmann::json &node) { createMusicComponent(e, node); };
+            functions["soundEffect"] = [this](const Entity e, const nlohmann::json &node) {
+                createSoundEffectComponent(e, node);
+            };
+            functions["filledColor"] = [this](const Entity e, const nlohmann::json &node) {
+                createFilledColorComponent(e, node);
+            };
+            functions["hover"] = [this](const Entity e, const nlohmann::json &node) { createHoverComponent(e, node); };
+            functions["outlinedColor"] = [this](const Entity e, const nlohmann::json &node) {
+                createOutlinedColorComponent(e, node);
+            };
+        }
+
+        functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
+
+        functions["size"] = [this](const Entity e, const nlohmann::json &node) { createSizeComponent(e, node); };
         functions["controllable"] = [this](const Entity e, const nlohmann::json &node) {
             createControllableComponent(e, node);
         };
-        functions["filledColor"] = [this](const Entity e, const nlohmann::json &node) {
-            createFilledColorComponent(e, node);
-        };
-        functions["hover"] = [this](const Entity e, const nlohmann::json &node) { createHoverComponent(e, node); };
-        functions["music"] = [this](const Entity e, const nlohmann::json &node) { createMusicComponent(e, node); };
-        functions["outlinedColor"] = [this](const Entity e, const nlohmann::json &node) {
-            createOutlinedColorComponent(e, node);
-        };
         functions["score"] = [this](const Entity e, const nlohmann::json &node) { createScoreComponent(e, node); };
         functions["shield"] = [this](const Entity e, const nlohmann::json &node) { createShieldComponent(e, node); };
-        functions["soundEffect"] = [this](const Entity e, const nlohmann::json &node) {
-            createSoundEffectComponent(e, node);
-        };
         functions["velocity"] = [this](const Entity e, const nlohmann::json &node) {
             createVelocityComponent(e, node);
         };
@@ -67,7 +92,7 @@ namespace ecs {
 
     ComponentFactory::~ComponentFactory() {}
 
-    void ComponentFactory::createEntity(const std::string &file)
+    Entity ComponentFactory::createEntity(const std::string &file)
     {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
@@ -78,11 +103,13 @@ namespace ecs {
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
         }
+        return e;
     }
 
     void ComponentFactory::createComponent(const Entity e, const std::string &name, const nlohmann::json &node)
     {
-        functions[name](e, node);
+        if (functions.find(name) != functions.end())
+            functions[name](e, node);
     }
 
     void ComponentFactory::createPositionComponent(const Entity e, const nlohmann::json &node)
@@ -106,6 +133,13 @@ namespace ecs {
         sprite_array[e.getId()] = component::Sprite{node};
     }
 
+    void ComponentFactory::createDestroyableComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &destroyable_array = _r->register_if_not_exist<component::Destroyable>();
+
+        destroyable_array[e.getId()] = component::Destroyable{node};
+    }
+
     void ComponentFactory::createAnimationsComponent(const Entity e, const nlohmann::json &node)
     {
         auto &animations_array = _r->register_if_not_exist<component::Animations>();
@@ -121,7 +155,7 @@ namespace ecs {
             type = component::Background;
 
         animations_array[e.getId()] = component::Animations{
-            sf::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
+            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
         };
     }
 
@@ -139,9 +173,19 @@ namespace ecs {
         size_array[e.getId()] = component::Size{node["width"], node["height"]};
     }
 
-    void ComponentFactory::createTextComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createTextComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &text_array = _r->register_if_not_exist<component::Text>();
 
-    void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node) {}
+        text_array[e.getId()] = component::Text{node["string"]};
+    }
+
+    void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &clicked_array = _r->register_if_not_exist<component::Clicked>();
+
+        clicked_array[e.getId()] = component::Clicked{node["value"]};
+    }
 
     void ComponentFactory::createControllableComponent(const Entity e, const nlohmann::json &node)
     {
@@ -150,19 +194,56 @@ namespace ecs {
         controllable_array[e.getId()] = component::Controllable{node["controllable"], node["speed"]};
     }
 
-    void ComponentFactory::createFilledColorComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createFilledColorComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &filled_color_array = _r->register_if_not_exist<component::FilledColor>();
 
-    void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node) {}
+        filled_color_array[e.getId()] = component::FilledColor{node["r"], node["g"], node["b"], node["a"]};
+    }
+
+    void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &hover_array = _r->register_if_not_exist<component::Hover>();
+
+        hover_array[e.getId()] = component::Hover{node["value"]};
+    }
 
     void ComponentFactory::createMusicComponent(const Entity e, const nlohmann::json &node) {}
 
-    void ComponentFactory::createOutlinedColorComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createOutlinedColorComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &outlined_color_array = _r->register_if_not_exist<component::OutlinedColor>();
 
-    void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node) {}
+        outlined_color_array[e.getId()] = component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
+    }
 
-    void ComponentFactory::createShieldComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &score_array = _r->register_if_not_exist<component::Score>();
+
+        score_array[e.getId()] = component::Score{node["value"]};
+    }
+
+    void ComponentFactory::createShieldComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &shield_array = _r->register_if_not_exist<component::Shield>();
+
+        shield_array[e.getId()] = component::Shield{node["value"]};
+    }
 
     void ComponentFactory::createSoundEffectComponent(const Entity e, const nlohmann::json &node) {}
 
-    void ComponentFactory::createVelocityComponent(const Entity e, const nlohmann::json &node) {}
+    void ComponentFactory::createVelocityComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &velocity_array = _r->register_if_not_exist<component::Velocity>();
+
+        velocity_array[e.getId()] = component::Velocity{node["x"], node["y"]};
+    }
+
+    void ComponentFactory::createLifeComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &life_array = _r->register_if_not_exist<component::Life>();
+
+        life_array[e.getId()] = component::Life{node["value"]};
+    }
 } // namespace ecs

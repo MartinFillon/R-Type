@@ -16,7 +16,6 @@
 #include "Client.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
-#include "protocol.hpp"
 
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
@@ -29,6 +28,9 @@
 #define SERVER_STOP "Server stoped..."
 
 #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
+
+#define FIRST_PLAYER_PLACE 1
+#define MAX_PLAYER_PLACES 4
 
 namespace Rtype {
 
@@ -51,19 +53,22 @@ namespace Rtype {
         void broadcast(const Packet &packet);
         void handleMessage(const unsigned int id, const Message &message);
 
-        std::vector<uint8_t> getBitshiftedData(const unsigned int data);
+        std::vector<uint8_t> getBitshiftedData(const int length, const unsigned int data);
 
       private:
         void acceptConnections();
         void processGame();
 
-        void sendToClient(const unsigned int id, const Packet &packet);
-        void removeClient(const unsigned int id);
+        void sendToClient(const unsigned int client_id, const Packet &packet);
+        void removeClient(const unsigned int client_id);
 
         unsigned int generateClientId(const Endpoint &endpoint);
 
         void processAction(const unsigned int id, const Packet &packet);
         void handleEvents(const unsigned int id, const Packet &packet);
+
+        int placeInPlayers(void);
+        int getPlayerPlace(int client_id);
 
         Context _context;
 
@@ -76,6 +81,9 @@ namespace Rtype {
 
         std::mutex _mutex;
         std::unordered_map<int, Client> _clients;
+        /// @brief std::unordered_map containing the MAX_PLAYER_PLACES player client_id for the MAX_PLAYER_PLACES
+        /// player places
+        std::unordered_map<int, std::optional<int>> _players_clients_ids;
     };
 
 }; // namespace Rtype

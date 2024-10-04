@@ -18,7 +18,7 @@
     "drawable": true,
     "controllable": {
         "controllable": true,
-        "speed": 2
+        "speed": 0.9
     },
     "sprite": "r-typesheet42.gif",
     "animations": {

@@ -1,10 +1,13 @@
 #ifndef GUNFIRESYSTEM_HPP_
 #define GUNFIRESYSTEM_HPP_
 
-#define PROJECTILE_SPEED 0.1
+#define PROJECTILE_SPEED_ANIMATION 0.1
+#define PROJECTILE_SPEED 3
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include "Clock.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
@@ -31,13 +34,15 @@ namespace ecs {
                 auto &sprites = r.get_components<ecs::component::Sprite>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
+                auto &destroyable = r.get_components<ecs::component::Destroyable>();
 
                 positions[newProjectile.getId()] = ecs::component::Position{playerPos._x, playerPos._y};
                 drawables[newProjectile.getId()] = ecs::component::Drawable{true};
-                controllables[newProjectile.getId()] = ecs::component::Controllable{true, 1.3};
+                controllables[newProjectile.getId()] = ecs::component::Controllable{true, PROJECTILE_SPEED};
                 sprites[newProjectile.getId()] = ecs::component::Sprite{WEAPON_SPRITE};
+                destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
                 animations[newProjectile.getId()] =
-                    ecs::component::Animations{sf::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon};
+                    ecs::component::Animations{ecs::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon};
                 sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
             }
 
@@ -47,7 +52,9 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &drawable = r.get_components<ecs::component::Drawable>();
-                ecs::component::Position playerPos = {0.0, 0.0};
+                auto &destroyable = r.get_components<ecs::component::Destroyable>();
+
+                ecs::component::Position playerPos = {0, 0};
 
                 for (std::size_t i = 0; i < positions.size(); ++i) {
                     if (animations[i] && animations[i]->_object == ecs::component::Object::Player) {
@@ -73,11 +80,12 @@ namespace ecs {
                     if (drawable[i] && !drawable[i]->_drawable) {
                         continue;
                     }
-                    if (positions[i] && controllable[i] && animations[i]->_object == ecs::component::Object::Weapon) {
+
+                    if (positions[i] && controllable[i] && animations[i] && animations[i]->_object == ecs::component::Object::Weapon) {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;
                         }
-                        if (animations[i]->_clock.getElapsedTime().asSeconds() > PROJECTILE_SPEED &&
+                        if (animations[i]->_clock.getSeconds() > PROJECTILE_SPEED_ANIMATION &&
                             animations[i]->_x < 30) {
                             animations[i]->_x += 18;
                             animations[i]->_clock.restart();

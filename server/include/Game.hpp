@@ -8,6 +8,8 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include <queue>
+#include "ComponentFactory.hpp"
 #define UNUSED __attribute__((unused))
 
 #define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
@@ -26,10 +28,25 @@ namespace Rtype {
         Game();
 
         void update();
-        void handleLeaving(const unsigned int id);
+        void handleLeaving(const unsigned int player_place);
+
+        std::queue<Packet> &getPacketsToSend()
+        {
+            return _packetsToSend;
+        }
+
+        void createPlayer(const unsigned int player_place);
+        void movePlayer(const int player_place, const int dir);
+        void makePlayerShoot(const int player_place);
 
       private:
         std::shared_ptr<ecs::Registry> _r;
+        ecs::ComponentFactory _cf;
+        /// @brief std::unordered_map containing the 4 player_entity_id for the 4 player places
+        std::unordered_map<int, int> _players_entities_ids;
+        std::queue<Packet> _packetsToSend;
+
+        void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
     };
 
 }; // namespace Rtype

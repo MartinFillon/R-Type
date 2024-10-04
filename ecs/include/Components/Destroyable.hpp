@@ -2,19 +2,18 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** Position
+** Destroyable
 */
 
-#ifndef POSITION_HPP_
-#define POSITION_HPP_
+#ifndef DESTROYABLE_HPP_
+#define DESTROYABLE_HPP_
 
 namespace ecs {
     namespace component {
-        struct Position {
-            int _x;
-            int _y;
+        struct Destroyable {
+            bool _destroyable;
         };
     }; // namespace component
 }; // namespace ecs
 
-#endif /* !POSITION_HPP_ */
+#endif /* !DESTROYABLE_HPP_ */
