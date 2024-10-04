@@ -81,7 +81,7 @@ namespace rtype {
 
         // Log part
 
-		sf::RectangleShape _ipRect;
+		    sf::RectangleShape _ipRect;
         sf::Text _menuDisplayInput;
         std::string _menuClientInput;
         char _inputChar;
@@ -95,6 +95,7 @@ namespace rtype {
 
         // background
 
+        sf::Clock _menuClock;
         sf::Texture _backgroundTexture;
         sf::Sprite _backgroundSprite;
         float _bgScaleX;
