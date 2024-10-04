@@ -77,9 +77,8 @@ void Rtype::Server::acceptConnections()
 
             if (_clients.find(id) == _clients.end()) {
                 _clients[id] = std::make_shared<Rtype::Client>(id, *this, endpoint, _socket);
+                _clients[id].get()->send(Packet(10)); // Send welcome //
             }
-
-            _clients[id].get()->send(Packet(0));
 
             handleMessage(id, message);
         }
