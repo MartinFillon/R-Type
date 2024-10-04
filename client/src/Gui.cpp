@@ -141,7 +141,6 @@ namespace rtype {
             )) {
             return;
         }
-        sf::Clock clock;
 
         while (_isMenuOpen && _window.isOpen()) {
             sf::Event event;
@@ -198,7 +197,7 @@ namespace rtype {
                 }
             }
 
-            _bgOffset += clock.restart().asSeconds() / PARA_SPEED;
+            _bgOffset += _menuClock.restart().asSeconds() / PARA_SPEED;
             parallaxShader.setUniform(OFFSET, _bgOffset);
             _window.clear();
             _window.draw(_backgroundSprite, &parallaxShader);

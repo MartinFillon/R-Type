@@ -110,6 +110,7 @@ namespace rtype {
 
             // background
 
+            sf::Clock _menuClock;
             sf::Texture _backgroundTexture;
             sf::Sprite _backgroundSprite;
             float _bgScaleX;
