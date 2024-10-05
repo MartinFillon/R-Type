@@ -105,7 +105,6 @@ namespace Rtype {
 
         file.append(".json");
 
-        std::cerr << file << std::endl;
         ecs::Entity e = _cf.createEntity(file);
         auto &positions = _r->get_components<ecs::component::Position>();
 

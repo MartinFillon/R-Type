@@ -12,7 +12,8 @@
 namespace protocol {
 
     enum ObjectTypes {
-        PLAYER_1 = 1,
+        OBJECTSTYPES_FIRST = 0, // must be at the begining of the enum
+        PLAYER_1,
         PLAYER_2,
         PLAYER_3,
         PLAYER_4,
@@ -20,17 +21,21 @@ namespace protocol {
         BULLET,
         TEXT,
         BONUS,
+        OBJECTSTYPES_LENGTH, // must be at the end of the enum
     };
 
     enum Direction {
-        UP = 0,
+        DIRECTION_FIRST = -1, // must be at the begining of the enum
+        UP,
         RIGHT,
         DOWN,
         LEFT,
+        DIRECTION_LENGTH, // must be at the end of the enum
     };
 
     enum Operations {
-        OBJECT_POSITION = 1,
+        OPERATIONS_FIRST = 0, // must be at the begining of the enum
+        OBJECT_POSITION,
         NEW_OBJECT,
         EVENT,
         GAME_SPEED,
@@ -44,13 +49,16 @@ namespace protocol {
         READY,
         PING,
         OBJECT_INFORMATIONS,
+        OPERATIONS_LENGTH, // must be at the end of the enum
     };
 
     const uint32_t MAGIC = 0x42454552;
 
     enum Events {
-        Move = 1,
-        Shoot,
+        EVENTS_FIRST = 0, // must be at the begining of the enum
+        MOVE,
+        SHOOT,
+        EVENTS_LENGTH, // must be at the end of the enum
     };
 
 }; // namespace protocol

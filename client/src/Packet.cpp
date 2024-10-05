@@ -7,10 +7,9 @@
 
 #include "Packet.hpp"
 
-#include <iostream>
 #include "protocol.hpp"
 
-Rtype::Packet::Packet(const Message &message) : _isValid(false)
+rtype::Packet::Packet(const Message &message) : _isValid(false)
 {
     if (message.size() < MESSAGE_MIN_SIZE) {
         return;
@@ -33,7 +32,7 @@ Rtype::Packet::Packet(const Message &message) : _isValid(false)
     _isValid = true;
 }
 
-Rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
+rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
 {
     _magicNumber = protocol::MAGIC;
 
@@ -47,22 +46,22 @@ Rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
     _isValid = true;
 }
 
-bool Rtype::Packet::isValid() const
+bool rtype::Packet::isValid() const
 {
     return _isValid;
 }
 
-uint8_t Rtype::Packet::getOpcode() const
+uint8_t rtype::Packet::getOpcode() const
 {
     return _opcode;
 }
 
-Rtype::Packet::Arguments Rtype::Packet::getArguments() const
+rtype::Packet::Arguments rtype::Packet::getArguments() const
 {
     return _arguments;
 }
 
-Rtype::Packet::Message Rtype::Packet::toMessage() const
+rtype::Packet::Message rtype::Packet::toMessage() const
 {
     Message message;
 
@@ -78,7 +77,7 @@ Rtype::Packet::Message Rtype::Packet::toMessage() const
     return message;
 }
 
-bool Rtype::Packet::isValidOpcode(uint8_t opcode)
+bool rtype::Packet::isValidOpcode(uint8_t opcode)
 {
     for (size_t i = protocol::Operations::OPERATIONS_FIRST + 1; i < protocol::Operations::OPERATIONS_LENGTH; i++) {
         if (i == opcode) {

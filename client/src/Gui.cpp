@@ -5,11 +5,11 @@
 ** Gui
 */
 
-#include "Gui.hpp"
 #include <iostream>
 
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
+#include "Gui.hpp"
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
@@ -21,25 +21,23 @@
 #include "ZipperIterator.hpp"
 
 namespace rtype {
-    Gui::Gui()
-        : ecs::IContext(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
-        _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0),
-        _systemClock(ecs::Clock()), _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
+
+    Gui::Gui(const std::string &host, const std::string &port)
+        : ecs::IContext(), _network(host, port), _window(sf::VideoMode(1920, 1080), GAME_NAME),
+          _r(std::make_shared<ecs::Registry>()), _drawClock(ecs::Clock()), _bgOffset(0.0), _systemClock(ecs::Clock()),
+          _isQuitPress(false), _isWritting(false), _isMenuOpen(true)
     {
+        _network.setRegistry(_r);
         setupMenu();
     }
 
-    Gui::~Gui() {}
-
-    sf::RenderWindow &Gui::getRenderWindow()
+    void Gui::start()
     {
-        return _window;
-    }
+        std::thread handleNetwork(&rtype::Network::run, std::ref(_network));
+        // std::thread handleGame(&rtype::Gui::run, this);
 
-    void Gui::setupCollisons()
-    {
-        ecs::systems::CollisionsSystem collisions;
-        _r->add_system(collisions);
+        handleNetwork.join();
+        // handleGame.join();
     }
 
     void Gui::setupDestroy()
@@ -65,11 +63,17 @@ namespace rtype {
     void Gui::setupPlayer()
     {
         _factory.createEntity("config/player.json");
+        _r->add_system(ecs::systems::PlayerMouvementSystem());
+    }
 
-        std::cout << "Player created" << std::endl;
+    void Gui::setupCollisons()
+    {
+        _r->add_system(ecs::systems::CollisionsSystem());
+    }
 
-        ecs::systems::PlayerMouvementSystem playerMovementSystem;
-        _r->add_system(playerMovementSystem);
+    void Gui::setupBasicEnnemies()
+    {
+        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
     }
 
     void Gui::setupBackground()
@@ -143,17 +147,18 @@ namespace rtype {
     {
         sf::Shader parallaxShader;
         if (!parallaxShader.loadFromMemory(
-            "uniform float offset;"
+                "uniform float offset;"
 
-            "void main() {"
-            "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
-            "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-            "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
-            "    gl_FrontColor = gl_Color;"
-            "}", sf::Shader::Vertex)) {
+                "void main() {"
+                "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
+                "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
+                "    gl_FrontColor = gl_Color;"
+                "}",
+                sf::Shader::Vertex
+            )) {
             return;
         }
-        sf::Clock clock;
 
         while (_isMenuOpen && _window.isOpen()) {
             sf::Event event;
@@ -210,7 +215,7 @@ namespace rtype {
                 }
             }
 
-            _bgOffset += clock.restart().asSeconds() / PARA_SPEED;
+            _bgOffset += _menuClock.restart().asSeconds() / PARA_SPEED;
             parallaxShader.setUniform(OFFSET, _bgOffset);
             _window.clear();
             _window.draw(_backgroundSprite, &parallaxShader);
@@ -225,12 +230,13 @@ namespace rtype {
         }
     }
 
-
     int Gui::run()
     {
         launchMenu();
 
-        if (_isQuitPress) { return EXIT_SUCCESS; }
+        if (_isQuitPress) {
+            return EXIT_SUCCESS;
+        }
 
         auto &drawables = _r->get_components<ecs::component::Drawable>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
@@ -280,7 +286,9 @@ namespace rtype {
             }
             _window.display();
         }
-        return EXIT_SUCCESS;
+        _window.clear();
+        _r->run_systems();
+        return SUCCESS;
     }
 
 } // namespace rtype
