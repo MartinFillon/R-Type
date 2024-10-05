@@ -25,7 +25,8 @@
         "x": 0,
         "y": 0,
         "rotation": 0,
-        "type": "weapon"
+        "type": "weapon",
+        "objectType": "none"
     },
     "size": {
         "width": 3,

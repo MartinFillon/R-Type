@@ -42,7 +42,7 @@ namespace ecs {
                 sprites[newProjectile.getId()] = ecs::component::Sprite{WEAPON_SPRITE};
                 destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
                 animations[newProjectile.getId()] =
-                    ecs::component::Animations{ecs::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon};
+                    ecs::component::Animations{ecs::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::EnnemiesObject::None};
                 sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
             }
 

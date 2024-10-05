@@ -56,10 +56,10 @@ namespace rtype {
 
     void Gui::setupBasicEnnemies()
     {
-        ecs::systems::BasicRandomEnnemiesSystem basicEnnemies;
-        _r->add_system(basicEnnemies);
         ecs::systems::EnnemiesMilespatesSystem milespates;
         _r->add_system(milespates);
+        ecs::systems::BasicRandomEnnemiesSystem basicEnnemies;
+        _r->add_system(basicEnnemies);
     }
 
     void Gui::setupPlayer()

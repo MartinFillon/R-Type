@@ -27,7 +27,8 @@
         "x": 65,
         "y": 0,
         "rotation": 0,
-        "type": "player"
+        "type": "player",
+        "objectType": "none"
     },
     "size": {
         "width": 3,

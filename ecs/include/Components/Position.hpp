@@ -13,6 +13,7 @@ namespace ecs {
         struct Position {
             int _x;
             int _y;
+            bool _changeDirection;
         };
     }; // namespace component
 }; // namespace ecs

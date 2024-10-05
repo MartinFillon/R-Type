@@ -53,12 +53,12 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
-                positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY};
+                positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY, false};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
                 sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
                 animations[newEnnemies.getId()] =
-                    ecs::component::Animations{ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies};
+                    ecs::component::Animations{ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies, ecs::component::EnnemiesObject::Basic};
                 sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
                 destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
             }
@@ -69,7 +69,7 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
 
                 for (std::size_t i = 0; i < animations.size(); ++i) {
-                    if (animations[i] && animations[i]->_object == ecs::component::Object::Ennemies) {
+                    if (animations[i] && animations[i]->_ennemies == ecs::component::EnnemiesObject::Basic) {
                         nbOfEnnemies += 1;
                     }
                 }
@@ -88,20 +88,19 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
 
                 for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
-                    if (!anim || !pos || !ctrl) {
+                    if (!anim || !pos || !ctrl || anim->_object != ecs::component::Object::Ennemies ||
+                        anim->_ennemies != ecs::component::EnnemiesObject::Basic) {
                         continue;
                     }
-                    if (anim->_object == ecs::component::Object::Ennemies) {
-                        if (anim->_x <= 0 && anim->_x != 224) {
-                            anim->_x = 224;
-                        }
-                        if (anim->_x > 0 && anim->_clock.getSeconds() > 0.3) {
-                            anim->_x -= anim->_width;
-                            anim->_clock.restart();
-                        }
-                        if (anim->_clock.getMiliSeconds() > 0.3) {
-                            pos->_x -= ctrl->_speed;
-                        }
+                    if (anim->_x <= 0 && anim->_x != 224) {
+                        anim->_x = 224;
+                    }
+                    if (anim->_x > 0 && anim->_clock.getSeconds() > 0.3) {
+                        anim->_x -= anim->_width;
+                        anim->_clock.restart();
+                    }
+                    if (anim->_clock.getMiliSeconds() > 0.3) {
+                        pos->_x -= ctrl->_speed;
                     }
                 }
             }

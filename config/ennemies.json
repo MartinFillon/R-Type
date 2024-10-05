@@ -25,7 +25,8 @@
           "x": 224,
           "y": 0,
           "rotation": 0,
-          "type": "ennemies"
+          "type": "ennemies",
+        "objectType": "basic"
       },
       "size": {
           "width": 2.8,

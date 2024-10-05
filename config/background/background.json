@@ -14,7 +14,8 @@
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "type": "background"
+      "type": "background",
+      "objectType": "none"
     },
     "parallax": {
       "active": true,
