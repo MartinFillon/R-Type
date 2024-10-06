@@ -31,7 +31,9 @@ namespace rtype {
 
         public:
 
-            Network(const std::string &host, const std::string &port);
+            Network();
+
+            void setup(const std::string host, const std::string port);
 
             void run();
 

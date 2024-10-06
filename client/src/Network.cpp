@@ -10,12 +10,13 @@
 #include "Network.hpp"
 #include "protocol.hpp"
 
-rtype::Network::Network(const std::string &host, const std::string &port)
-    : _context(), _resolver(_context), _socket(_context)
+rtype::Network::Network() : _context(), _resolver(_context), _socket(_context) {}
+
+void rtype::Network::setup(const std::string host, const std::string port)
 {
     _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
     _socket.open(UDP::v4());
-};
+}
 
 void rtype::Network::run()
 {

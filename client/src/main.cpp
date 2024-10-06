@@ -5,17 +5,17 @@
 ** main
 */
 
+#include <iostream>
 #include "Gui.hpp"
 
-int main(int ac, char **av)
+int main()
 {
-    if (ac != NB_ARGS) {
-        return ERROR;
-    }
+    rtype::Gui gui;
+    std::string server_address = gui.getMenu().launchMenu();
+    std::string server_ip = server_address.substr(0, server_address.find(':'));
+    std::string server_port = server_address.substr(server_address.find(':') + 1);
 
-    rtype::Gui gui(av[HOST], av[PORT]);
-
-    gui.start();
-
+    gui.setupNetwork(server_ip, server_port);
+    gui.run();
     return SUCCESS;
 }
