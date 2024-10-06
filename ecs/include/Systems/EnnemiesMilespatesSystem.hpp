@@ -68,7 +68,7 @@ namespace ecs {
                         0,
                         0,
                         ecs::component::Object::Ennemies,
-                        ecs::component::EnnemiesObject::Milespates
+                        ecs::component::Type::Milespates
                     };
                     sizes[i.getId()] = ecs::component::Size{2.8, 2.8};
                     destroyable[i.getId()] = ecs::component::Destroyable{false};
@@ -85,7 +85,7 @@ namespace ecs {
                         continue;
                     }
 
-                    if (anim->_ennemies == ecs::component::EnnemiesObject::Milespates) {
+                    if (anim->_type == ecs::component::Type::Milespates) {
                         nbMilespates += 1;
                     }
                 }
@@ -108,7 +108,7 @@ namespace ecs {
 
                 for (auto &&[pos, anim, control] : custom_zip(positions, animations, controllable)) {
                     if (!pos || !anim || !control || anim->_object == ecs::component::InDestroy ||
-                        anim->_ennemies != ecs::component::EnnemiesObject::Milespates) {
+                        anim->_type != ecs::component::Type::Milespates) {
                         continue;
                     }
 
