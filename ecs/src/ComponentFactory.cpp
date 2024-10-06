@@ -145,6 +145,15 @@ namespace ecs {
         auto &animations_array = _r->register_if_not_exist<component::Animations>();
 
         component::Object type = component::Background;
+        component::EnnemiesObject ennemiesType = component::EnnemiesObject::None;
+
+        if (node["objectType"] == "boss")
+            ennemiesType = component::EnnemiesObject::Boss;
+        else if (node["objectType"] == "basic")
+            ennemiesType = component::EnnemiesObject::Basic;
+        else if (node["objectType"] == "milespates")
+            ennemiesType = component::EnnemiesObject::Milespates;
+
         if (node["type"] == "player")
             type = component::Player;
         else if (node["type"] == "weapon")
@@ -155,7 +164,7 @@ namespace ecs {
             type = component::Background;
 
         animations_array[e.getId()] = component::Animations{
-            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type
+            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type, ennemiesType
         };
     }
 

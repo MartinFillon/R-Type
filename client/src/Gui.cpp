@@ -13,6 +13,8 @@
 #include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
+#include "Systems/DestroySystem.hpp"
+#include "Systems/EnnemiesMilespatesSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
@@ -38,9 +40,24 @@ namespace rtype {
         // handleGame.join();
     }
 
+    void Gui::setupDestroy()
+    {
+        ecs::systems::DestroySystem destroy;
+        _r->add_system(destroy);
+    }
+
     void Gui::setupWeapon()
     {
-        _r->add_system(ecs::systems::GunFireSystem());
+        ecs::systems::GunFireSystem gunSystem;
+        _r->add_system(gunSystem);
+    }
+
+    void Gui::setupBasicEnnemies()
+    {
+        ecs::systems::EnnemiesMilespatesSystem milespates;
+        _r->add_system(milespates);
+        ecs::systems::BasicRandomEnnemiesSystem basicEnnemies;
+        _r->add_system(basicEnnemies);
     }
 
     void Gui::setupPlayer()
@@ -78,6 +95,7 @@ namespace rtype {
         setupWeapon();
         setupBasicEnnemies();
         setupCollisons();
+        setupDestroy();
     }
 
     void Gui::setupMenu()
