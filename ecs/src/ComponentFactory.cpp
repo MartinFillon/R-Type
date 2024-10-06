@@ -146,14 +146,14 @@ namespace ecs {
         auto &animations_array = _r->register_if_not_exist<component::Animations>();
 
         component::Object type = component::Background;
-        component::EnnemiesObject ennemiesType = component::EnnemiesObject::None;
+        component::Type ennemiesType = component::Type::None;
 
         if (node["objectType"] == "boss")
-            ennemiesType = component::EnnemiesObject::Boss;
+            ennemiesType = component::Type::Boss;
         else if (node["objectType"] == "basic")
-            ennemiesType = component::EnnemiesObject::Basic;
+            ennemiesType = component::Type::Basic;
         else if (node["objectType"] == "milespates")
-            ennemiesType = component::EnnemiesObject::Milespates;
+            ennemiesType = component::Type::Milespates;
 
         if (node["type"] == "player")
             type = component::Player;
