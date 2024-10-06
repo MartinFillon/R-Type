@@ -1,6 +1,7 @@
 #ifndef GUNFIRESYSTEM_HPP_
 #define GUNFIRESYSTEM_HPP_
 
+#include "Components/Life.hpp"
 #define PROJECTILE_SPEED_ANIMATION 0.1
 #define PROJECTILE_SPEED 3
 
@@ -35,7 +36,9 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
+                auto &life = r.get_components<ecs::component::Life>();
 
+                life[newProjectile.getId()] = ecs::component::Life{1};
                 positions[newProjectile.getId()] = ecs::component::Position{playerPos._x, playerPos._y};
                 drawables[newProjectile.getId()] = ecs::component::Drawable{true};
                 controllables[newProjectile.getId()] = ecs::component::Controllable{true, PROJECTILE_SPEED};

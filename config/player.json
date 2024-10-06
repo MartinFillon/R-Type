@@ -7,9 +7,11 @@
     "sprite",
     "animations",
     "size",
-    "destroyable"
+    "destroyable",
+    "life"
   ],
   "components": {
+    "life": 3,
     "position": {
         "x": 100,
         "y": 100

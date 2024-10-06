@@ -75,6 +75,7 @@ namespace ecs {
             functions["outlinedColor"] = [this](const Entity e, const nlohmann::json &node) {
                 createOutlinedColorComponent(e, node);
             };
+            functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
         }
 
         functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
@@ -253,6 +254,6 @@ namespace ecs {
     {
         auto &life_array = _r->register_if_not_exist<component::Life>();
 
-        life_array[e.getId()] = component::Life{node["value"]};
+        life_array[e.getId()] = component::Life{node };
     }
 } // namespace ecs
