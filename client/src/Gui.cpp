@@ -52,14 +52,6 @@ namespace rtype {
         _r->add_system(gunSystem);
     }
 
-    void Gui::setupBasicEnnemies()
-    {
-        ecs::systems::EnnemiesMilespatesSystem milespates;
-        _r->add_system(milespates);
-        ecs::systems::BasicRandomEnnemiesSystem basicEnnemies;
-        _r->add_system(basicEnnemies);
-    }
-
     void Gui::setupPlayer()
     {
         _factory.createEntity("config/player.json");
@@ -73,6 +65,7 @@ namespace rtype {
 
     void Gui::setupBasicEnnemies()
     {
+        _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
         _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
     }
 
