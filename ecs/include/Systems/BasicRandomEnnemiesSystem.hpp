@@ -10,6 +10,7 @@
 
 #include "Clock.hpp"
 #include "Components/Destroyable.hpp"
+#include "Components/Life.hpp"
 
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
@@ -36,7 +37,8 @@
 namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
-          public:
+            public:
+
             void createNewEnnemies(Registry &r)
             {
                 std::random_device randomPosition;
@@ -53,6 +55,9 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
+                auto &life = r.get_components<ecs::component::Life>();
+
+                life[newEnnemies.getId()] = ecs::component::Life{1};
                 positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY, false};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};

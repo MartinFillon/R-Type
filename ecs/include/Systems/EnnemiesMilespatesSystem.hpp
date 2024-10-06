@@ -8,6 +8,7 @@
 #ifndef ENNEMIESMILESPATESSYSTEM_HPP_
 #define ENNEMIESMILESPATESSYSTEM_HPP_
 
+#include "Components/Life.hpp"
 #define NB_ENNEMIES 4
 
 #define MILESPATES_SPEED 3.5
@@ -54,12 +55,14 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
+                auto &life = r.get_components<ecs::component::Life>();
 
                 for (const auto &i : milespates) {
                     positions[i.getId()] = ecs::component::Position{lastX -= 20, lastY += 60, false};
                     drawables[i.getId()] = ecs::component::Drawable{true};
                     controllable[i.getId()] = ecs::component::Controllable{false, MILESPATES_SPEED};
                     sprites[i.getId()] = ecs::component::Sprite{MILESPATES_SPRITE};
+                    life[i.getId()] = ecs::component::Life{1};
                     animations[i.getId()] = ecs::component::Animations{
                         ecs::Clock(),
                         30,

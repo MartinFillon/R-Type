@@ -6,9 +6,11 @@
     "controllable",
     "sprite",
     "animations",
-    "size"
+    "size",
+    "life"
   ],
   "components": {
+    "life": 1,
     "position": {
         "x": 0,
         "y": 0

@@ -8,6 +8,7 @@
 #ifndef COLLISIONSSYSTEM_HPP_
 #define COLLISIONSSYSTEM_HPP_
 
+#include "Components/Life.hpp"
 #define BLANK_SPRITE_SPACE 50
 
 #define WIDTH_MAX_LIMIT 2700
@@ -33,9 +34,10 @@ namespace ecs {
                 auto &drawable = r.get_components<ecs::component::Drawable>();
                 auto &animation = r.get_components<ecs::component::Animations>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
+                auto &life = r.get_components<ecs::component::Life>();
 
                 for (std::size_t i = 0; i < position.size(); ++i) {
-                    if (!position[i] || !destroyable[i] || !animation[i] || (drawable[i] && !drawable[i]->_drawable)) {
+                    if (!position[i] || !destroyable[i] || !life[i] || !animation[i] || (drawable[i] && !drawable[i]->_drawable)) {
                         continue;
                     }
 
@@ -55,7 +57,7 @@ namespace ecs {
                     }
 
                     for (std::size_t j = i + 1; j < position.size(); ++j) {
-                        if (!position[j] || i == j || animation[i]->_object == animation[j]->_object) {
+                        if (!position[j] || !life[j] || i == j || animation[i]->_object == animation[j]->_object) {
                             continue;
                         }
 
@@ -82,17 +84,35 @@ namespace ecs {
                             (position[i]->_y + animation[i]->_height >= position[j]->_y &&
                              position[i]->_y <= position[j]->_y + animation[j]->_height + BLANK_SPRITE_SPACE)) &&
                              animation[i]->_object != animation[j]->_object) {
+
+                                life[i]->_life -= 1;
+                                life[j]->_life -= 1;
+
+                                if (animation[i]->_object == ecs::component::Object::Player && life[i]->_life > 0) {
+                                    position[i]->_x = 100;
+                                    position[i]->_y = 100;
+                                }
+
+                                if (animation[j]->_object == ecs::component::Object::Player && life[j]->_life > 0) {
+                                    position[j]->_x = 100;
+                                    position[j]->_y = 100;
+                                }
+
                                 if (animation[i]->_object == ecs::component::Object::Weapon) {
                                     r.erase(i);
                                 } else {
-                                    destroyable[i]->_destroyable = true;
-                                    animation[i]->_object = ecs::component::Object::InDestroy;
+                                    if (life[i]->_life <= 0) {
+                                        destroyable[i]->_destroyable = true;
+                                        animation[i]->_object = ecs::component::Object::InDestroy;
+                                    }
                                 }
                                 if (animation[j]->_object == ecs::component::Object::Weapon) {
                                     r.erase(j);
                                 } else {
-                                    destroyable[j]->_destroyable = true;
-                                    animation[j]->_object = ecs::component::Object::InDestroy;
+                                    if (life[j]->_life <= 0) {
+                                        destroyable[j]->_destroyable = true;
+                                        animation[j]->_object = ecs::component::Object::InDestroy;
+                                    }
                                 }
                                 continue;
                         }

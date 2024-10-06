@@ -11,7 +11,7 @@
 namespace ecs {
     namespace component {
         struct Life {
-            double _life;
+            int _life;
         };
     }; // namespace component
 }; // namespace ecs
