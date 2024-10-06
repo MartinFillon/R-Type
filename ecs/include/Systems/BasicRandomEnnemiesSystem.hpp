@@ -41,7 +41,9 @@ namespace ecs {
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &sizes = r.get_components<ecs::component::Size>();
                 auto &destroyable = r.get_components<ecs::component::Destroyable>();
+                auto &life = r.get_components<ecs::component::Life>();
 
+                life[newProjectile.getId()] = ecs::component::Life{1};
                 positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + CENTERED_SHOOT};
                 drawables[newProjectile.getId()] = ecs::component::Drawable{true};
                 controllables[newProjectile.getId()] = ecs::component::Controllable{true, BASIC_ENNEMIES_PROJECTILE_SPEED};

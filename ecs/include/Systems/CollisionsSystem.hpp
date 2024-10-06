@@ -113,6 +113,7 @@ namespace ecs {
                                         animation[i]->_object = ecs::component::Object::InDestroy;
                                     }
                                 }
+
                                 if (animation[j]->_object == ecs::component::Object::Weapon) {
                                     r.erase(j);
                                 } else {
@@ -121,6 +122,7 @@ namespace ecs {
                                         animation[j]->_object = ecs::component::Object::InDestroy;
                                     }
                                 }
+
                                 continue;
                         }
                     }
