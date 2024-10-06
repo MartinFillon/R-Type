@@ -5,8 +5,6 @@
 ** Gui
 */
 
-#include <iostream>
-
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Gui.hpp"
@@ -47,14 +45,12 @@ namespace rtype {
 
     void Gui::setupDestroy()
     {
-        ecs::systems::DestroySystem destroy;
-        _r->add_system(destroy);
+        _r->add_system(ecs::systems::DestroySystem());
     }
 
     void Gui::setupWeapon()
     {
-        ecs::systems::GunFireSystem gunSystem;
-        _r->add_system(gunSystem);
+        _r->add_system(ecs::systems::GunFireSystem());
     }
 
     void Gui::setupPlayer()

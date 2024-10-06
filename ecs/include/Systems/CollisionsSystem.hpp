@@ -70,10 +70,18 @@ namespace ecs {
                                 continue;
                         }
 
-                        if ((animation[i]->_ennemies == ecs::component::EnnemiesObject::Milespates &&
+                        if ((animation[i]->_type == ecs::component::Type::Milespates &&
                             animation[i]->_object == ecs::component::Object::InDestroy) ||
                             (animation[j]->_object == ecs::component::Object::InDestroy &&
-                            animation[j]->_ennemies == ecs::component::EnnemiesObject::Milespates)) {
+                            animation[j]->_type == ecs::component::Type::Milespates)) {
+
+                            continue;
+                        }
+
+                        if ((animation[i]->_object == ecs::component::Object::Weapon ||
+                            animation[j]->_object == ecs::component::Object::Weapon) &&
+                            (animation[j]->_type != ecs::component::Type::None &&
+                            animation[i]->_type != ecs::component::Type::None)) {
                             continue;
                         }
 
@@ -82,6 +90,7 @@ namespace ecs {
                             (position[i]->_y + animation[i]->_height >= position[j]->_y &&
                              position[i]->_y <= position[j]->_y + animation[j]->_height + BLANK_SPRITE_SPACE)) &&
                              animation[i]->_object != animation[j]->_object) {
+
                                 if (animation[i]->_object == ecs::component::Object::Weapon) {
                                     r.erase(i);
                                 } else {

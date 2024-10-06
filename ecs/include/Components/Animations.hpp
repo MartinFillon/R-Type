@@ -14,7 +14,7 @@
 namespace ecs {
     namespace component {
         enum Object { Background, Player, Weapon, Ennemies, InDestroy};
-        enum EnnemiesObject { None, Basic, Milespates, Boss };
+        enum Type { None, Basic, Milespates, Boss };
 
         struct Animations {
             ecs::Clock _clock;
@@ -24,7 +24,7 @@ namespace ecs {
             double _y;
             double _rotation;
             Object _object;
-            EnnemiesObject _ennemies;
+            Type _type;
         };
     }; // namespace component
 }; // namespace ecs

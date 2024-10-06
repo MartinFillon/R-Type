@@ -42,7 +42,14 @@ namespace ecs {
                 sprites[newProjectile.getId()] = ecs::component::Sprite{WEAPON_SPRITE};
                 destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
                 animations[newProjectile.getId()] =
-                    ecs::component::Animations{ecs::Clock(), 18, 12, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::EnnemiesObject::None};
+                    ecs::component::Animations{ecs::Clock(),
+                    18,
+                    12,
+                    0,
+                    0,
+                    0,
+                    ecs::component::Object::Weapon,
+                    ecs::component::Type::None};
                 sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
             }
 
@@ -81,7 +88,9 @@ namespace ecs {
                         continue;
                     }
 
-                    if (positions[i] && controllable[i] && animations[i] && animations[i]->_object == ecs::component::Object::Weapon) {
+                    if (positions[i] && controllable[i] && animations[i] &&
+                        animations[i]->_object == ecs::component::Object::Weapon &&
+                        animations[i]->_type == ecs::component::Type::None) {
                         if (animations[i]->_x < 30) {
                             positions[i] = playerPos;
                         }
