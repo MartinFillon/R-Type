@@ -59,7 +59,6 @@ namespace ecs {
 
         Entity spawn_entity()
         {
-            
             return Entity(_entityCount++);
         }
 
