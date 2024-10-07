@@ -6,16 +6,25 @@
 */
 
 #include <iostream>
-
+#include <stdexcept>
 #include "Network.hpp"
 #include "protocol.hpp"
 
 rtype::Network::Network() : _context(), _resolver(_context), _socket(_context) {}
 
-void rtype::Network::setup(const std::string host, const std::string port)
+int rtype::Network::setup(const std::string host, const std::string port)
 {
-    _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
-    _socket.open(UDP::v4());
+    try {
+        _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
+        _socket.open(UDP::v4());
+    } catch (const std::runtime_error &e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
 
 void rtype::Network::run()

@@ -28,10 +28,13 @@ namespace rtype {
         _network.setRegistry(_r);
     }
 
-    void Gui::setupNetwork(const std::string server_ip, const std::string server_port)
+    int Gui::setupNetwork(const std::string server_ip, const std::string server_port)
     {
-        _network.setup(server_ip, server_port);
+        if (_network.setup(server_ip, server_port)) {
+            return EXIT_FAILURE;
+        }
         start();
+        return EXIT_SUCCESS;
     }
 
     void Gui::start()

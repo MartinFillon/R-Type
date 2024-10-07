@@ -30,23 +30,25 @@ void rtype::Menu::setupMenu()
     _menutitle[0].setFont(_fontTitle);
     _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
 
-    _menutitle[1].setString(BUTTON_IP);
-    _menutitle[1].setFont(_fontText);
-    _menutitle[1].setPosition(LEFT_MARGE, IP_POS_X);
-    _menutitle[1].setCharacterSize(FONT_SIZE_IP);
 
-    _menutitle[2].setString(BUTTON_OPTIONS);
+    _menutitle[1].setString(BUTTON_OPTIONS);
+    _menutitle[1].setFont(_fontTitle);
+    _menutitle[1].setPosition(LEFT_MARGE, OPTIONS_POS_X);
+
+    _menutitle[2].setString(BUTTON_QUIT);
     _menutitle[2].setFont(_fontTitle);
-    _menutitle[2].setPosition(LEFT_MARGE, OPTIONS_POS_X);
+    _menutitle[2].setPosition(LEFT_MARGE, QUIT_POS_X);
 
     _menutitle[3].setString(MENU_TITLE);
     _menutitle[3].setFont(_fontTitle);
     _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
     _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
 
-    _menutitle[4].setString(BUTTON_QUIT);
-    _menutitle[4].setFont(_fontTitle);
-    _menutitle[4].setPosition(LEFT_MARGE, QUIT_POS_X);
+
+    _menutitle[4].setString(BUTTON_IP);
+    _menutitle[4].setFont(_fontText);
+    _menutitle[4].setPosition(LEFT_MARGE, IP_POS_X);
+    _menutitle[4].setCharacterSize(FONT_SIZE_IP);
 
     _menuDisplayInput.setFont(_fontText);
     _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
@@ -88,9 +90,8 @@ std::string rtype::Menu::launchMenu()
                             case 1:
                                 break;
                             case 2:
-                                _win.close();
-                                _isQuitPress = true;
-                                break;
+                                _isMenuOpen = false;
+                                return _menuClientInput;
                         }
                     }
                 }
