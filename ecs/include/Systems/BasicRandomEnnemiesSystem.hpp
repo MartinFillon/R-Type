@@ -9,10 +9,13 @@
 
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
+
 #define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
 #define BASIC_ENNEMIES_SPEED 1.8
 #define BASIC_ENNEMIES_PROJECTILE_SPEED 10
+#define BASIC_PROJECTILE_SPEED_TICK 0.3
 #define CENTERED_SHOOT 15
+#define BASIC_ENNEMIES_SPEED_TICK 8
 
 #include <random>
 
@@ -147,8 +150,10 @@ namespace ecs {
                         continue;
                     }
 
-                    if (anim->_object == ecs::component::Object::Weapon) {
+                    if (anim->_object == ecs::component::Object::Weapon &&
+                        anim->_clock.getMiliSeconds() > 5) {
                         pos->_x -= ctrl->_speed;
+                        anim->_clock.restart();
                         continue;
                     }
 
@@ -160,12 +165,12 @@ namespace ecs {
                         anim->_x = 224;
                     }
 
-                    if (anim->_x > 0 && anim->_clock.getSeconds() > 0.3) {
+                    if (anim->_x > 0 && anim->_clock.getSeconds() > BASIC_PROJECTILE_SPEED_TICK) {
                         anim->_x -= anim->_width;
                         anim->_clock.restart();
                     }
 
-                    if (anim->_clock.getMiliSeconds() > 0.3) {
+                    if (anim->_clock.getMiliSeconds() > BASIC_ENNEMIES_SPEED_TICK) {
                         pos->_x -= ctrl->_speed;
                     }
 

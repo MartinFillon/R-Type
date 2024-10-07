@@ -11,7 +11,7 @@
 #include "Clock.hpp"
 
 #define BACKGROUND_SPEED 0.01
-#define BACKGROUND_TICK 1
+#define BACKGROUND_TICK 2.5
 
 #include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
