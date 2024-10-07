@@ -71,7 +71,7 @@ namespace Rtype {
         std::queue<Packet> _packetsToSend;
 
         /// @brief Creates a `Packet` of the player movement to be queued in the `_packetsToSend` queue.
-        /// @param p a `const std::optional<ecs::component::Position> &` representing the player's entity position
+        /// @param p a `const std::optional<ecs::component::Position> &` representing the reference to the player's entity position
         /// component.
         /// @param entity_id an `int` representing the player's entity id.
         void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
