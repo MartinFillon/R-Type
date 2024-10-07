@@ -65,7 +65,7 @@ namespace Rtype {
         std::shared_ptr<ecs::Registry> _r;
         /// @brief The ECS's component factory which creates the entities and the components from .json configs files.
         ecs::ComponentFactory _cf;
-        /// @brief The list of the players entities ids indexed by the player's place.
+        /// @brief The map of the players entities ids indexed by the player's place.
         std::unordered_map<int, int> _players_entities_ids;
         /// @brief The queue of the packets containing the updated data since the last tick to be sent to the clients.
         std::queue<Packet> _packetsToSend;
