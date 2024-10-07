@@ -17,6 +17,7 @@
 
 namespace Rtype {
 
+    /// @brief Class to wrap all the utilities of the communication packets to send to the client
     class Packet {
 
         using Message = std::vector<uint8_t>;
