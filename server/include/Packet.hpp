@@ -17,7 +17,7 @@
 
 namespace Rtype {
 
-    /// @brief Class to wrap all the utilities of the communication packets to send to the client
+    /// @brief Class to wrap all the utilities of the communication packets to send to the client.
     class Packet {
 
         using Message = std::vector<uint8_t>;
@@ -55,9 +55,9 @@ namespace Rtype {
         Message toMessage() const;
 
       private:
-        /// @brief Checks if the given operation code is in the `protocol::Operations::*` enum
+        /// @brief Checks if the given operation code is in the `protocol::Operations` enum
         /// @param opcode an `uint8_t` representing the operation code to check
-        /// @return `true` if the operation code is in the `protocol::Operations::*` enum or `false` if not
+        /// @return `true` if the operation code is in the `protocol::Operations` enum or `false` if not
         bool isValidOpcode(uint8_t opcode);
 
         /// @brief `true` means that the packet is valid and ready to be sent to the client, `false` means that the
@@ -66,7 +66,7 @@ namespace Rtype {
 
         /// @brief The magic number needed by the client to understand the beginning of a received packet
         uint32_t _magicNumber;
-        /// @brief The operation code from the `protocol::Operations::*` enum of the packet
+        /// @brief The operation code from the `protocol::Operations` enum of the packet
         uint8_t _opcode;
         /// @brief The vector of arguments of the packet
         Arguments _arguments;
