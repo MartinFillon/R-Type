@@ -9,7 +9,9 @@
 #define DESTROYSYSTEM_HPP_
 
 #define DESTROY_SPRITE "r-typesheet-explosion.gif"
+
 #define DESTROY_ANIMATION 0.01
+#define DESTROY_TICK 1
 
 #include "Components/Animations.hpp"
 #include "Components/Destroyable.hpp"
@@ -24,6 +26,10 @@ namespace ecs {
             public:
                 void operator()(Registry &r)
                 {
+                    if (_clock.getMiliSeconds() < DESTROY_TICK) {
+                        return;
+                    }
+                    _clock.restart();
                     auto &destroyables = r.get_components<ecs::component::Destroyable>();
                     auto &animations = r.get_components<ecs::component::Animations>();
                     auto &sprites = r.get_components<ecs::component::Sprite>();
@@ -56,6 +62,8 @@ namespace ecs {
                         idx += 1;
                     }
                 }
+            private:
+                Clock _clock;
         };
     }; // namespace systems
 }; // namespace ecs

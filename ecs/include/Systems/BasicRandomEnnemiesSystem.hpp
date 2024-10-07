@@ -5,6 +5,8 @@
 #include "Components/Destroyable.hpp"
 #include "Components/Life.hpp"
 
+#define ENNEMIES_TICK 2
+
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
 #define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
@@ -127,6 +129,10 @@ namespace ecs {
 
             void operator()(Registry &r)
             {
+                if (_clock.getMiliSeconds() < ENNEMIES_TICK) {
+                    return;
+                }
+                _clock.restart();
                 if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
                     createNewEnnemies(r);
                 }
@@ -166,6 +172,8 @@ namespace ecs {
                     shootRandomly(r, *pos);
                 }
             }
+          private:
+            Clock _clock;
         };
     }; // namespace systems
 }; // namespace ecs

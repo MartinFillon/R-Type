@@ -8,7 +8,10 @@
 #ifndef PARALAXSYSTEM_HPP_
 #define PARALAXSYSTEM_HPP_
 
+#include "Clock.hpp"
+
 #define BACKGROUND_SPEED 0.01
+#define BACKGROUND_TICK 1
 
 #include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
@@ -21,22 +24,29 @@
 namespace ecs {
     namespace systems {
         class ParalaxSystem : public ISystems {
-          public:
-            void operator()(Registry &r)
-            {
-                auto &paralax = r.get_components<ecs::component::Parallax>();
-                auto &positions = r.get_components<ecs::component::Position>();
-                auto &animation = r.get_components<ecs::component::Animations>();
+            public:
+                void operator()(Registry &r)
+                {
+                    if (_clock.getMiliSeconds() < BACKGROUND_TICK) {
+                        return;
+                    }
+                    _clock.restart();
+                    auto &paralax = r.get_components<ecs::component::Parallax>();
+                    auto &positions = r.get_components<ecs::component::Position>();
+                    auto &animation = r.get_components<ecs::component::Animations>();
 
-                for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
-                    if (anim->_object == ecs::component::Object::Background && anim->_clock.getSeconds() > (int)(1 / 60)) {
-                        if (pos->_x <= -1920) {
-                            pos->_x = 1920 * para->_multiplicator;
+                    for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
+                        if (anim->_object == ecs::component::Object::Background && anim->_clock.getSeconds() > (int)(1 / 60)) {
+                            if (pos->_x <= -1920) {
+                                pos->_x = 1920 * para->_multiplicator;
+                            }
+                            pos->_x -= para->_speed;
                         }
-                        pos->_x -= para->_speed;
                     }
                 }
-            }
+        
+            private:
+                Clock _clock;
         };
     }; // namespace systems
 }; // namespace ecs

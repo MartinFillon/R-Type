@@ -17,7 +17,9 @@
 #include "Registry.hpp"
 #include "ComponentFactory.hpp"
 #include "Menu.hpp"
+#include "TextureManager.hpp"
 
+#define FRAME_PER_SECONDS(x) (int)(1 / x)
 #define HOST 1
 #define PORT 2
 #define NB_ARGS 3
@@ -67,6 +69,7 @@ namespace rtype {
             std::shared_ptr<ecs::Registry> _r;
             ecs::Clock _drawClock;
             ecs::Clock _systemClock;
+            TextureManager _textureManager;
             ecs::ComponentFactory _factory;
 
     };

@@ -12,7 +12,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(r-type_client src/main.cpp src/Gui.cpp src/Network.cpp src/Packet.cpp src/Menu.cpp)
+add_executable(r-type_client src/main.cpp src/Gui.cpp src/Network.cpp src/Packet.cpp src/TextureManager.cpp src/Menu.cpp)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
 target_include_directories(r-type_client PUBLIC ../ecs/include include ../protocol)
