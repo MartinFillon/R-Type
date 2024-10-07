@@ -67,6 +67,7 @@ namespace rtype {
             std::shared_ptr<ecs::Registry> _r;
             ecs::Clock _drawClock;
             ecs::Clock _systemClock;
+            ecs::Clock _gameTimer;
             ecs::ComponentFactory _factory;
 
     };
