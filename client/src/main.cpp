@@ -15,7 +15,9 @@ int main()
     std::string server_ip = server_address.substr(0, server_address.find(':'));
     std::string server_port = server_address.substr(server_address.find(':') + 1);
 
-    gui.setupNetwork(server_ip, server_port);
+    if (gui.setupNetwork(server_ip, server_port)) {
+        return 84;
+    }
     gui.run();
     return SUCCESS;
 }

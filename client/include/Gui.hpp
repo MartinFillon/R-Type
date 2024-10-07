@@ -33,7 +33,7 @@ namespace rtype {
             Gui();
 
             void setupGame();
-            void setupNetwork(const std::string server_ip, const std::string server_port);
+            int setupNetwork(const std::string server_ip, const std::string server_port);
 
             void start();
 
