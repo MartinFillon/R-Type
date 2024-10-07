@@ -18,6 +18,5 @@ int main()
     if (gui.setupNetwork(server_ip, server_port)) {
         return 84;
     }
-    gui.run();
     return SUCCESS;
 }

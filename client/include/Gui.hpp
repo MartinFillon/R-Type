@@ -45,10 +45,6 @@ namespace rtype {
             {
                 return _menu;
             }
-            GameClient &getGame()
-            {
-                return _game;
-            }
             int run();
 
         private:
@@ -56,7 +52,6 @@ namespace rtype {
             std::shared_ptr<ecs::Registry> _r;
             Network _network;
             Menu _menu;
-            GameClient _game;
     };
 
 };

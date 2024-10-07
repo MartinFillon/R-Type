@@ -121,5 +121,5 @@ int rtype::GameClient::run()
     }
     _gameWin.clear();
     _r->run_systems();
-    return SUCCESS;
+    return EXIT_SUCCESS;
 }
