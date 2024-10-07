@@ -9,7 +9,7 @@
 
 #include "protocol.hpp"
 
-rtype::Packet::Packet(const Message &message) : _isValid(false)
+rtype::Packet::Packet(const Message &message) : _isValid(false), _opcode(-1), _arguments({})
 {
     if (message.size() < MESSAGE_MIN_SIZE) {
         return;
@@ -32,7 +32,7 @@ rtype::Packet::Packet(const Message &message) : _isValid(false)
     _isValid = true;
 }
 
-rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false)
+rtype::Packet::Packet(uint8_t opcode, Arguments arguments) : _isValid(false), _opcode(-1), _arguments({})
 {
     _magicNumber = protocol::MAGIC;
 
