@@ -47,12 +47,19 @@ namespace rtype {
             }
             int run();
 
+            sf::RenderWindow &getWindow()
+            {
+                return _window;
+            }
+            void setupGameThread();
+
         private:
             sf::RenderWindow _window;
             std::shared_ptr<ecs::Registry> _r;
             Network _network;
             Menu _menu;
             GameClient _game;
+            sf::Thread _gameThread;
     };
 
 };
