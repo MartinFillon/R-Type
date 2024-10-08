@@ -18,6 +18,7 @@
 #include "ComponentFactory.hpp"
 #include "Menu.hpp"
 #include "TextureManager.hpp"
+#include "GameClient.hpp"
 
 #define FRAME_PER_SECONDS(x) (int)(1 / x)
 #define HOST 1
@@ -34,12 +35,9 @@ namespace rtype {
 
             Gui();
 
-            void setupGame();
             int setupNetwork(const std::string server_ip, const std::string server_port);
 
             void start();
-
-            int run() override;
 
             std::shared_ptr<ecs::Registry> &getRegistry() {
                 return _r;
@@ -49,22 +47,15 @@ namespace rtype {
             {
                 return _menu;
             }
-            sf::RenderWindow &getWin()
+            int run();
+
+            sf::RenderWindow &getWindow()
             {
                 return _window;
             }
+            void setupGameThread();
+
         private:
-
-            Network _network;
-            Menu _menu;
-
-            void setupWeapon();
-            void setupPlayer();
-            void setupCollisons();
-            void setupBackground();
-            void setupBasicEnnemies();
-            void setupDestroy();
-
             sf::RenderWindow _window;
             std::shared_ptr<ecs::Registry> _r;
             ecs::Clock _drawClock;
@@ -72,7 +63,10 @@ namespace rtype {
             TextureManager _textureManager;
             ecs::Clock _gameTimer;
             ecs::ComponentFactory _factory;
-
+            Network _network;
+            Menu _menu;
+            GameClient _game;
+            sf::Thread _gameThread;
     };
 
 };
