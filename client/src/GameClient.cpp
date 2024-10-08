@@ -7,7 +7,6 @@
 
 #include "GameClient.hpp"
 #include "ComponentFactory.hpp"
-#include "ImageResolver.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
@@ -78,7 +77,6 @@ int rtype::GameClient::run()
     auto &positions = _r->register_component<ecs::component::Position>();
     auto &animations = _r->register_component<ecs::component::Animations>();
     auto &size = _r->register_component<ecs::component::Size>();
-    int testTick(20);
 
     while (_gameWin.isOpen()) {
         sf::Event event;
@@ -87,32 +85,29 @@ int rtype::GameClient::run()
                 _gameWin.close();
             }
         }
-        if (_systemClock.getSeconds() > (1 / 5)) {
+        if (_systemClock.getSeconds() > FRAME_PER_SECONDS(2)) {
             _r->run_systems();
             _systemClock.restart();
         }
-        if (_drawClock.getSeconds() > (1 / 60)) {
+        if (_drawClock.getSeconds() > FRAME_PER_SECONDS(60)) {
             _gameWin.clear();
             for (auto &&[draws, anim, spri, si, pos] :
                  ecs::custom_zip(drawables, animations, sprites, size, positions)) {
                 if (!draws || !anim || !spri || !si || !pos) {
                     continue;
                 }
-                sf::Texture texture;
-                ecs::ImageResolver image(PATH_TO_ASSETS);
-                std::string pathToImage = image.getImage(spri->_pathToSprite);
-                if (pathToImage.empty()) {
+                if (spri->_pathToSprite.empty()) {
                     continue;
                 }
-                texture.loadFromMemory(
-                    pathToImage.c_str(),
-                    pathToImage.size(),
-                    sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height)
-                );
                 sf::Sprite sprite;
                 sprite.setPosition(pos->_x, pos->_y);
                 sprite.setScale(si->_width, si->_height);
-                sprite.setTexture(texture);
+                sprite.setTextureRect(sf::IntRect(
+                    anim->_x,
+                    anim->_y,
+                    anim->_width,
+                    anim->_height));
+                sprite.setTexture(_textureManager.getTexture(spri->_pathToSprite));
                 _gameWin.draw(sprite);
             }
             _drawClock.restart();
@@ -120,6 +115,5 @@ int rtype::GameClient::run()
         _gameWin.display();
     }
     _gameWin.clear();
-    _r->run_systems();
     return EXIT_SUCCESS;
 }

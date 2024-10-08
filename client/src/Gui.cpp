@@ -5,20 +5,9 @@
 ** Gui
 */
 
-#include "Clock.hpp"
-#include "ComponentFactory.hpp"
 #include "Gui.hpp"
 #include <SFML/Graphics/Rect.hpp>
 
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
-#include "Systems/CollisionsSystem.hpp"
-#include "Systems/DestroySystem.hpp"
-#include "Systems/EnnemiesMilespatesSystem.hpp"
-#include "Systems/GunFireSystem.hpp"
-#include "Systems/ParallaxSystem.hpp"
-#include "Systems/PlayerMouvementSystem.hpp"
-#include "ZipperIterator.hpp"
-#include <thread>
 
 namespace rtype {
 
