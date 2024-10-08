@@ -17,12 +17,13 @@
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/PlayerMouvementSystem.hpp"
 #include "ZipperIterator.hpp"
+#include <functional>
 
 namespace rtype {
 
     Gui::Gui()
         : ecs::IContext(), _network(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
-          _r(std::make_shared<ecs::Registry>()),_menu(_window)
+          _r(std::make_shared<ecs::Registry>()),_menu(_window), _game(_window, _r)
     {
         _menu.setupMenu();
         _network.setRegistry(_r);
@@ -39,17 +40,17 @@ namespace rtype {
 
     void Gui::start()
     {
-        std::thread handleNetwork(&rtype::Network::run, std::ref(_network));
-        std::thread handleGame(&rtype::Gui::run, this);
+        //std::thread handleNetwork(&rtype::Network::run, std::ref(_network));
+        //std::thread handleGame(&rtype::GameClient::run, std::ref(_game));
 
-        handleNetwork.join();
-        handleGame.join();
+        //handleNetwork.join();
+        //handleGame.join();
+        run();
     }
 
     int Gui::run()
     {
-        GameClient Game(_window, _r);
-        Game.run();
+        _game.run();
         return EXIT_SUCCESS;
     }
 

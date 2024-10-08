@@ -52,6 +52,7 @@ namespace rtype {
             std::shared_ptr<ecs::Registry> _r;
             Network _network;
             Menu _menu;
+            GameClient _game;
     };
 
 };
