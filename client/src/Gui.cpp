@@ -8,7 +8,8 @@
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Gui.hpp"
-#include "ImageResolver.hpp"
+#include <SFML/Graphics/Rect.hpp>
+
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"

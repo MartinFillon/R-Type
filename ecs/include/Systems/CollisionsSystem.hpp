@@ -8,7 +8,6 @@
 #ifndef COLLISIONSSYSTEM_HPP_
 #define COLLISIONSSYSTEM_HPP_
 
-#include "Components/Life.hpp"
 #define BLANK_SPRITE_SPACE 50
 
 #define WIDTH_MAX_LIMIT 2700
@@ -17,6 +16,7 @@
 #define WIDTH_MIN_LIMIT -300
 #define HEIGHT_MIN_LIMIT -300
 
+#include "Components/Life.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"

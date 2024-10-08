@@ -17,8 +17,10 @@
 #include "Registry.hpp"
 #include "ComponentFactory.hpp"
 #include "Menu.hpp"
+#include "TextureManager.hpp"
 #include "GameClient.hpp"
 
+#define FRAME_PER_SECONDS(x) (int)(1 / x)
 #define HOST 1
 #define PORT 2
 #define NB_ARGS 3
@@ -56,6 +58,11 @@ namespace rtype {
         private:
             sf::RenderWindow _window;
             std::shared_ptr<ecs::Registry> _r;
+            ecs::Clock _drawClock;
+            ecs::Clock _systemClock;
+            TextureManager _textureManager;
+            ecs::Clock _gameTimer;
+            ecs::ComponentFactory _factory;
             Network _network;
             Menu _menu;
             GameClient _game;
