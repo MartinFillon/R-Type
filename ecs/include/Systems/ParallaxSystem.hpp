@@ -11,7 +11,8 @@
 #include "Clock.hpp"
 
 #define BACKGROUND_SPEED 0.01
-#define BACKGROUND_TICK 2.5
+#define BACKGROUND_TICK 3
+#define SCREEN_WIDTH 1920
 
 #include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
@@ -37,8 +38,8 @@ namespace ecs {
 
                     for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
                         if (anim->_object == ecs::component::Object::Background && anim->_clock.getSeconds() > (int)(1 / 60)) {
-                            if (pos->_x <= -1920) {
-                                pos->_x = 1920 * para->_multiplicator;
+                            if (pos->_x <= -SCREEN_WIDTH) {
+                                pos->_x = SCREEN_WIDTH * para->_multiplicator;
                             }
                             pos->_x -= para->_speed;
                         }

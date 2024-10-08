@@ -10,7 +10,7 @@
 
 #include "Clock.hpp"
 #define PLAYER_MOVE_ANIMATION 0.2
-#define PLAYER_MOUVEMENT_TICK 2
+#define PLAYER_MOUVEMENT_TICK 3
 
 #include <SFML/Window/Keyboard.hpp>
 

@@ -10,6 +10,11 @@
 #define MAX_RANDOM_ENNEMIES 7
 #define VALUE_SPAWN_ENNEMIES 2
 
+#define BASIC_POS_SPAWN_X 1944
+#define MAX_SPAWN_X 2500
+
+#define SHOOTING_ELAPSED_TIME 0.2
+
 #define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
 #define BASIC_ENNEMIES_SPEED 1.8
 #define BASIC_ENNEMIES_PROJECTILE_SPEED 10
@@ -72,8 +77,10 @@ namespace ecs {
             {
                 std::random_device randomPosition;
                 std::default_random_engine randomEngine(randomPosition());
-                std::uniform_int_distribution<int> uniform_dist(100, 800);
-                int randomPosY = uniform_dist(randomEngine);
+                std::uniform_int_distribution<int> uniformDistForY(100, 800);
+                std::uniform_int_distribution<int> uniformDistForX(0, 500);
+                int randomPosY = uniformDistForY(randomEngine);
+                int randomPosX = uniformDistForY(randomEngine);
 
                 Entity newEnnemies = r.spawn_entity();
                 r._entities.addEntity(newEnnemies);
@@ -87,7 +94,7 @@ namespace ecs {
                 auto &life = r.get_components<ecs::component::Life>();
 
                 life[newEnnemies.getId()] = ecs::component::Life{1};
-                positions[newEnnemies.getId()] = ecs::component::Position{1944, randomPosY, false};
+                positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
                 sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
@@ -135,10 +142,11 @@ namespace ecs {
                 if (_clock.getMiliSeconds() < ENNEMIES_TICK) {
                     return;
                 }
-                _clock.restart();
                 if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
                     createNewEnnemies(r);
+                    return;
                 }
+                _clock.restart();
 
                 auto &animations = r.get_components<ecs::component::Animations>();
                 auto &positions = r.get_components<ecs::component::Position>();
@@ -174,11 +182,14 @@ namespace ecs {
                         pos->_x -= ctrl->_speed;
                     }
 
-                    shootRandomly(r, *pos);
+                    if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
+                        shootRandomly(r, *pos);
+                    }
                 }
             }
           private:
             Clock _clock;
+            Clock _shootingClock;
         };
     }; // namespace systems
 }; // namespace ecs

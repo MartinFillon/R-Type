@@ -10,7 +10,7 @@
 
 #define DESTROY_SPRITE "r-typesheet-explosion.gif"
 
-#define DESTROY_ANIMATION 0.01
+#define DESTROY_ANIMATION 0.1
 #define DESTROY_TICK 1
 
 #include "Components/Animations.hpp"
