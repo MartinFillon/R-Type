@@ -70,6 +70,7 @@ namespace rtype {
             ecs::Clock _drawClock;
             ecs::Clock _systemClock;
             TextureManager _textureManager;
+            ecs::Clock _gameTimer;
             ecs::ComponentFactory _factory;
 
     };
