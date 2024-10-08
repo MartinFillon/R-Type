@@ -56,6 +56,7 @@ namespace ecs {
                         ecs::component::Type::None};
                     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
                 }
+
                 void operator()(Registry &r)
                 {
                     if (_clock.getMiliSeconds() < PROJECTIL_TICK) {
