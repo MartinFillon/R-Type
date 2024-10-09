@@ -20,7 +20,16 @@
 
 namespace Rtype {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Server) {}
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Server)
+    {
+        setupBackground();
+        // setupPlayer(); %% to refacto %%
+        setupWeapon();
+        setupBasicEnnemies();
+        setupCollisons();
+        setupDestroy();
+        setupBosses();
+    }
 
     void Game::preparePosition(const std::optional<ecs::component::Position> &p, int entity_id)
     {
