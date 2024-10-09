@@ -6,8 +6,11 @@
 */
 
 #include "GameClient.hpp"
+#include <memory>
 #include "ComponentFactory.hpp"
+#include "Registry.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/BossSystems.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
 #include "Systems/EnnemiesMilespatesSystem.hpp"
@@ -43,6 +46,11 @@ void rtype::GameClient::setupCollisons()
     _r->add_system(ecs::systems::CollisionsSystem());
 }
 
+void rtype::GameClient::setupBosses()
+{
+    _r->add_system(ecs::systems::BossSystems());
+}
+
 void rtype::GameClient::setupBasicEnnemies()
 {
     _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
@@ -55,8 +63,7 @@ void rtype::GameClient::setupBackground()
     _factory.createEntity("config/background/background_2.json");
     _factory.createEntity("config/background/background_3.json");
     _factory.createEntity("config/background/background_4.json");
-    ecs::systems::ParalaxSystem parallaxSystem;
-    _r->add_system(parallaxSystem);
+    _r->add_system(ecs::systems::ParalaxSystem());
 }
 
 void rtype::GameClient::setupGame()
@@ -68,6 +75,7 @@ void rtype::GameClient::setupGame()
     setupBasicEnnemies();
     setupCollisons();
     setupDestroy();
+    setupBosses();
 }
 
 int rtype::GameClient::run()
@@ -102,11 +110,7 @@ int rtype::GameClient::run()
                 sf::Sprite sprite;
                 sprite.setPosition(pos->_x, pos->_y);
                 sprite.setScale(si->_width, si->_height);
-                sprite.setTextureRect(sf::IntRect(
-                    anim->_x,
-                    anim->_y,
-                    anim->_width,
-                    anim->_height));
+                sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
                 sprite.setTexture(_textureManager.getTexture(spri->_pathToSprite));
                 _gameWin.draw(sprite);
             }
@@ -114,6 +118,6 @@ int rtype::GameClient::run()
         }
         _gameWin.display();
     }
-    _gameWin.clear();
+
     return EXIT_SUCCESS;
 }

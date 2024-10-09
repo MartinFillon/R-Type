@@ -38,45 +38,42 @@
 
 namespace rtype {
     class Menu {
-        public:
+      public:
+        Menu(sf::RenderWindow &window);
+        ~Menu() = default;
+        void setupMenu();
+        std::string launchMenu();
 
-            Menu(sf::RenderWindow &window);
-            ~Menu() = default;
-            void setupMenu();
-            std::string launchMenu();
+      private:
+        // text part
+        sf::RenderWindow &_win;
 
-        private:
+        sf::Font _fontTitle;
+        sf::Font _fontText;
+        sf::Text _menutitle[5];
 
-            // text part
-            sf::RenderWindow &_win;
+        // Log part
 
-            sf::Font _fontTitle;
-            sf::Font _fontText;
-            sf::Text _menutitle[5];
+        sf::RectangleShape _ipRect;
+        sf::Text _menuDisplayInput;
+        std::string _menuClientInput;
+        char _inputChar;
 
-            // Log part
+        // menu or ?
 
-            sf::RectangleShape _ipRect;
-            sf::Text _menuDisplayInput;
-            std::string _menuClientInput;
-            char _inputChar;
+        bool _isWritting;
+        bool _isLogin;
+        bool _isQuitPress;
+        bool _isMenuOpen;
 
-            // menu or ?
+        // background
 
-            bool _isWritting;
-            bool _isLogin;
-            bool _isQuitPress;
-            bool _isMenuOpen;
-
-            // background
-
-            sf::Clock _menuClock;
-            sf::Texture _backgroundTexture;
-            sf::Sprite _backgroundSprite;
-            float _bgScaleX;
-            float _bgScaleY;
-            float _bgOffset;
-
+        sf::Clock _menuClock;
+        sf::Texture _backgroundTexture;
+        sf::Sprite _backgroundSprite;
+        float _bgScaleX;
+        float _bgScaleY;
+        float _bgOffset;
     };
-}
+} // namespace rtype
 #endif /* !MENU_HPP_ */

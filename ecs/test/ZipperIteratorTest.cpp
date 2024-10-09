@@ -108,7 +108,6 @@ Test(custom_zip, different_types_in_tuples)
         cr_assert_float_eq(val2, expected_double[index], 1e-6, "Incorrect double value at index %zu", index);
         cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Incorrect string value at index %zu", index);
 
-
         index++;
     }
 
@@ -131,7 +130,6 @@ Test(custom_zip, missing_element_in_one_array)
         cr_assert_eq(val1, expected_int[index], "Incorrect int value at index %zu", index);
         cr_assert_float_eq(val2, expected_double[index], 1e-6, "Incorrect double value at index %zu", index);
         cr_assert_str_eq(val3.c_str(), expected_str[index].c_str(), "Incorrect string value at index %zu", index);
-
 
         index++;
     }

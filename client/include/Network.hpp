@@ -8,8 +8,8 @@
 #ifndef NETWORK_HPP_
 #define NETWORK_HPP_
 
-#include <memory>
 #include <asio.hpp>
+#include <memory>
 
 #include "Packet.hpp"
 #include "Registry.hpp"
@@ -31,34 +31,31 @@ namespace rtype {
         using Message = std::vector<uint8_t>;
         using Arguments = std::vector<uint8_t>;
 
-        public:
+      public:
+        Network();
 
-            Network();
+        int setup(const std::string host, const std::string port);
 
-            int setup(const std::string host, const std::string port);
+        int run();
 
-            int run();
+        void send(const Packet &packet);
+        void send(const Message &message);
+        void send(const uint8_t opcode, const Arguments &arguments = {});
 
-            void send(const Packet &packet);
-            void send(const Message &message);
-            void send(const uint8_t opcode, const Arguments &arguments = {});
+        void setRegistry(std::shared_ptr<ecs::Registry> registry);
 
-            void setRegistry(std::shared_ptr<ecs::Registry> registry);
+      private:
+        Context _context;
+        Resolver _resolver;
+        Endpoint _endpoint;
 
-        private:
+        Socket _socket;
 
-            Context _context;
-            Resolver _resolver;
-            Endpoint _endpoint;
+        ecs::Clock _keepaliveClock;
 
-            Socket _socket;
-
-            std::shared_ptr<ecs::Registry> _registry;
-
-            ecs::Clock _keepaliveClock;
-
+        std::shared_ptr<ecs::Registry> _registry;
     };
 
-};
+}; // namespace rtype
 
 #endif /* !NETWORK_HPP_ */

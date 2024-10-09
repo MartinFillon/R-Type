@@ -42,6 +42,6 @@ namespace rtype {
         Arguments _arguments;
     };
 
-}; // namespace Rtype
+}; // namespace rtype
 
 #endif /* !PACKET_HPP_ */

@@ -12,10 +12,10 @@
 
 namespace ecs {
     class IContext {
-        public:
-            virtual ~IContext() = default;
+      public:
+        virtual ~IContext() = default;
 
-            virtual int run() = 0;
+        virtual int run() = 0;
     };
 } // namespace ecs
 

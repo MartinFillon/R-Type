@@ -5,7 +5,6 @@
 ** ComponentFactory
 */
 
-#include <SFML/System/Clock.hpp>
 #include <fstream>
 #include <functional>
 #include <memory>
@@ -254,6 +253,6 @@ namespace ecs {
     {
         auto &life_array = _r->register_if_not_exist<component::Life>();
 
-        life_array[e.getId()] = component::Life{node };
+        life_array[e.getId()] = component::Life{node};
     }
 } // namespace ecs

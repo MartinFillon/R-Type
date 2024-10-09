@@ -20,7 +20,7 @@
 #define PORT 1
 #define NB_ARGS_REQUIRED 2
 
-#define ERROR 84
+#define R_TYPE_ERROR 84
 #define SUCCESS 0
 
 #define SERVER_MISSING_PORT "Server cannot start: server port not specified"
