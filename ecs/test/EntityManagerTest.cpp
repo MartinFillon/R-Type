@@ -5,13 +5,12 @@
 ** EntityManager
 */
 
-
 #include <criterion/assert.h>
 #include <criterion/criterion.h>
 
 #define private public
-#include "EntityManager.hpp"
 #include "Entity.hpp"
+#include "EntityManager.hpp"
 
 Test(EntityManager, TestEntityManagerContructor)
 {

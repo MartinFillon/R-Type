@@ -110,11 +110,7 @@ int rtype::GameClient::run()
                 sf::Sprite sprite;
                 sprite.setPosition(pos->_x, pos->_y);
                 sprite.setScale(si->_width, si->_height);
-                sprite.setTextureRect(sf::IntRect(
-                    anim->_x,
-                    anim->_y,
-                    anim->_width,
-                    anim->_height));
+                sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
                 sprite.setTexture(_textureManager.getTexture(spri->_pathToSprite));
                 _gameWin.draw(sprite);
             }

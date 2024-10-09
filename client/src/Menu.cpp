@@ -30,7 +30,6 @@ void rtype::Menu::setupMenu()
     _menutitle[0].setFont(_fontTitle);
     _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
 
-
     _menutitle[1].setString(BUTTON_OPTIONS);
     _menutitle[1].setFont(_fontTitle);
     _menutitle[1].setPosition(LEFT_MARGE, OPTIONS_POS_X);
@@ -43,7 +42,6 @@ void rtype::Menu::setupMenu()
     _menutitle[3].setFont(_fontTitle);
     _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
     _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
-
 
     _menutitle[4].setString(BUTTON_IP);
     _menutitle[4].setFont(_fontText);

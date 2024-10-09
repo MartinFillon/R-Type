@@ -12,7 +12,7 @@ namespace rtype {
 
     Gui::Gui()
         : ecs::IContext(), _network(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
-        _r(std::make_shared<ecs::Registry>()),_menu(_window), _game(_window, _r)
+          _r(std::make_shared<ecs::Registry>()), _menu(_window), _game(_window, _r)
     {
         _menu.setupMenu();
         _network.setRegistry(_r);

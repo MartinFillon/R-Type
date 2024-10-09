@@ -15,35 +15,38 @@
 
 namespace ecs {
 
-        class Clock {
-          public:
-            Clock() {
-                _start = std::chrono::system_clock::now();
-            }
+    class Clock {
+      public:
+        Clock()
+        {
+            _start = std::chrono::system_clock::now();
+        }
 
-            void restart()
-            {
-                _start = std::chrono::system_clock::now();
-            }
+        void restart()
+        {
+            _start = std::chrono::system_clock::now();
+        }
 
-            double getSeconds()
-            {
-                return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count();
-            }
+        double getSeconds()
+        {
+            return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count();
+        }
 
-            double getMiliSeconds()
-            {
-                return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() * SECONDS_TO_MILISECONDS;
-            }
+        double getMiliSeconds()
+        {
+            return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() *
+                SECONDS_TO_MILISECONDS;
+        }
 
-            double getMicroSeconds()
-            {
-                return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() * SECONDS_TO_MICROSECONDS;
-            }
+        double getMicroSeconds()
+        {
+            return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() *
+                SECONDS_TO_MICROSECONDS;
+        }
 
-          private:
-            std::chrono::time_point<std::chrono::system_clock> _start;
-        };
+      private:
+        std::chrono::time_point<std::chrono::system_clock> _start;
+    };
 
 }; // namespace ecs
 

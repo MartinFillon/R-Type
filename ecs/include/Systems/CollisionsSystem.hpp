@@ -14,20 +14,19 @@
 #define WIDTH_MIN_LIMIT -300
 #define HEIGHT_MIN_LIMIT -300
 
-#include "Systems/ISystems.hpp"
-#include "Components/Life.hpp"
-#include "Components/Destroyable.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/Life.hpp"
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
+#include "Systems/ISystems.hpp"
 
 namespace ecs {
     namespace systems {
         class CollisionsSystem : public ISystems {
-            public:
-
+          public:
             void operator()(Registry &r)
             {
                 auto &position = r.get_components<ecs::component::Position>();
@@ -38,7 +37,8 @@ namespace ecs {
                 auto &size = r.get_components<ecs::component::Size>();
 
                 for (std::size_t i = 0; i < position.size(); ++i) {
-                    if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] || (drawable[i] && !drawable[i]->_drawable)) {
+                    if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] ||
+                        (drawable[i] && !drawable[i]->_drawable)) {
                         continue;
                     }
 
@@ -52,17 +52,18 @@ namespace ecs {
 
                     if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
                         (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
-                            if (animation[i]->_object == ecs::component::Object::Weapon) {
-                                r.erase(i);
-                            } else {
-                                destroyable[i]->_destroyable = true;
-                                animation[i]->_object = ecs::component::Object::InDestroy;
-                            }
-                            continue;
+                        if (animation[i]->_object == ecs::component::Object::Weapon) {
+                            r.erase(i);
+                        } else {
+                            destroyable[i]->_destroyable = true;
+                            animation[i]->_object = ecs::component::Object::InDestroy;
+                        }
+                        continue;
                     }
 
                     for (std::size_t j = i + 1; j < position.size(); ++j) {
-                        if (!position[j] || !size[j] || !life[j] || i == j || animation[i]->_object == animation[j]->_object) {
+                        if (!position[j] || !size[j] || !life[j] || i == j ||
+                            animation[i]->_object == animation[j]->_object) {
                             continue;
                         }
 
@@ -71,34 +72,34 @@ namespace ecs {
 
                         if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
                             (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
-                                if (animation[j]->_object == ecs::component::Object::Weapon) {
-                                    r.erase(j);
-                                } else {
-                                    destroyable[j]->_destroyable = true;
-                                    animation[j]->_object = ecs::component::Object::InDestroy;
-                                }
-                                continue;
+                            if (animation[j]->_object == ecs::component::Object::Weapon) {
+                                r.erase(j);
+                            } else {
+                                destroyable[j]->_destroyable = true;
+                                animation[j]->_object = ecs::component::Object::InDestroy;
+                            }
+                            continue;
                         }
 
                         if ((animation[i]->_type == ecs::component::Type::Milespates &&
-                            animation[i]->_object == ecs::component::Object::InDestroy) ||
+                             animation[i]->_object == ecs::component::Object::InDestroy) ||
                             (animation[j]->_object == ecs::component::Object::InDestroy &&
-                            animation[j]->_type == ecs::component::Type::Milespates)) {
+                             animation[j]->_type == ecs::component::Type::Milespates)) {
                             continue;
                         }
 
                         if ((animation[i]->_object == ecs::component::Object::Weapon ||
-                            animation[j]->_object == ecs::component::Object::Weapon) &&
+                             animation[j]->_object == ecs::component::Object::Weapon) &&
                             (animation[j]->_type != ecs::component::Type::None &&
-                            animation[i]->_type != ecs::component::Type::None)) {
+                             animation[i]->_type != ecs::component::Type::None)) {
                             continue;
                         }
 
                         if (((position[i]->_x + i_width >= position[j]->_x &&
-                             position[i]->_x <= position[j]->_x + j_width) &&
-                            (position[i]->_y + i_height >= position[j]->_y &&
-                             position[i]->_y <= position[j]->_y + j_height)) &&
-                             animation[i]->_object != animation[j]->_object) {
+                              position[i]->_x <= position[j]->_x + j_width) &&
+                             (position[i]->_y + i_height >= position[j]->_y &&
+                              position[i]->_y <= position[j]->_y + j_height)) &&
+                            animation[i]->_object != animation[j]->_object) {
 
                             life[i]->_life -= 1;
                             life[j]->_life -= 1;

@@ -38,8 +38,7 @@
 namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
-            public:
-
+          public:
             void createNewProjectile(Registry &r, const ecs::component::Position &ennemiesPos)
             {
                 Entity newProjectile = r.spawn_entity();
@@ -54,21 +53,15 @@ namespace ecs {
                 auto &life = r.get_components<ecs::component::Life>();
 
                 life[newProjectile.getId()] = ecs::component::Life{1};
-                positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + CENTERED_SHOOT};
+                positions[newProjectile.getId()] =
+                    ecs::component::Position{ennemiesPos._x, ennemiesPos._y + CENTERED_SHOOT};
                 drawables[newProjectile.getId()] = ecs::component::Drawable{true};
-                controllables[newProjectile.getId()] = ecs::component::Controllable{true, BASIC_ENNEMIES_PROJECTILE_SPEED};
+                controllables[newProjectile.getId()] =
+                    ecs::component::Controllable{true, BASIC_ENNEMIES_PROJECTILE_SPEED};
                 sprites[newProjectile.getId()] = ecs::component::Sprite{ENNEMIES_WEAPON_SPRITE};
                 destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
-                animations[newProjectile.getId()] =
-                ecs::component::Animations {
-                    ecs::Clock(),
-                    20,
-                    18,
-                    0,
-                    0,
-                    0,
-                    ecs::component::Object::Weapon,
-                    ecs::component::Type::Basic
+                animations[newProjectile.getId()] = ecs::component::Animations{
+                    ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Basic
                 };
                 sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
             }
@@ -94,20 +87,14 @@ namespace ecs {
                 auto &life = r.get_components<ecs::component::Life>();
 
                 life[newEnnemies.getId()] = ecs::component::Life{1};
-                positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
+                positions[newEnnemies.getId()] =
+                    ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
                 drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
                 controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
                 sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
-                animations[newEnnemies.getId()] =
-                    ecs::component::Animations{
-                        ecs::Clock(),
-                        32,
-                        35,
-                        224,
-                        0,
-                        0,
-                        ecs::component::Object::Ennemies,
-                        ecs::component::Type::Basic};
+                animations[newEnnemies.getId()] = ecs::component::Animations{
+                    ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies, ecs::component::Type::Basic
+                };
                 sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
                 destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
             }
@@ -153,13 +140,11 @@ namespace ecs {
                 auto &controllable = r.get_components<ecs::component::Controllable>();
 
                 for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
-                    if (!anim || !pos || !ctrl ||
-                        anim->_type != ecs::component::Type::Basic) {
+                    if (!anim || !pos || !ctrl || anim->_type != ecs::component::Type::Basic) {
                         continue;
                     }
 
-                    if (anim->_object == ecs::component::Object::Weapon &&
-                        anim->_clock.getMiliSeconds() > 5) {
+                    if (anim->_object == ecs::component::Object::Weapon && anim->_clock.getMiliSeconds() > 5) {
                         pos->_x -= ctrl->_speed;
                         anim->_clock.restart();
                         continue;
@@ -187,6 +172,7 @@ namespace ecs {
                     }
                 }
             }
+
           private:
             Clock _clock;
             Clock _shootingClock;

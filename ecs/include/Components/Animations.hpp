@@ -13,7 +13,8 @@
 
 namespace ecs {
     namespace component {
-        enum Object { Background, Player, Weapon, Ennemies, InDestroy};
+        enum Object { Background, Player, Weapon, Ennemies, InDestroy };
+
         enum Type { None, Basic, Milespates, Boss };
 
         struct Animations {
