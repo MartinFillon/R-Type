@@ -27,7 +27,7 @@ int rtype::Network::setup(const std::string host, const std::string port)
     return EXIT_SUCCESS;
 }
 
-void rtype::Network::run()
+int rtype::Network::run()
 {
     bool running = true;
 
@@ -48,6 +48,8 @@ void rtype::Network::run()
 
         std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
     }
+
+    return EXIT_SUCCESS;
 }
 
 void rtype::Network::send(const Packet &packet)
