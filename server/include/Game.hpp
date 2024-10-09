@@ -15,12 +15,14 @@
 
 #define FRAME_PER_SECONDS(x) (int)(1 / x)
 
-#include <queue>
-#include <iostream>
+#define SERVER_TPS 20
 
+#include <iostream>
+#include <queue>
+
+#include "ComponentFactory.hpp"
 #include "Packet.hpp"
 #include "Registry.hpp"
-#include "ComponentFactory.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/BossSystems.hpp"
 #include "Systems/CollisionsSystem.hpp"
@@ -29,7 +31,7 @@
 #include "Systems/ParallaxSystem.hpp"
 #include "ZipperIterator.hpp"
 
-namespace Rtype {
+namespace rtype {
 
     /// @brief Class to wrap all the utilities of the game loop and logic with the ECS.
     class Game {
@@ -96,6 +98,6 @@ namespace Rtype {
         ecs::Clock _systemClock;
     };
 
-}; // namespace Rtype
+}; // namespace rtype
 
 #endif /* !GAME_HPP_ */

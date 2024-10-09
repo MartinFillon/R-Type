@@ -14,7 +14,7 @@ int main(int ac, char **av)
         return R_TYPE_ERROR;
     }
 
-    Rtype::Server server(std::atoi(av[PORT]));
+    rtype::Server server(std::atoi(av[PORT]));
 
     return server.run();
 }

@@ -13,8 +13,8 @@
 #include <thread>
 #include <vector>
 
-#include "Packet.hpp"
 #include "Clock.hpp"
+#include "Packet.hpp"
 
 #define LOGIN 0x42
 #define DATA_MAX_SIZE 1024
@@ -22,7 +22,7 @@
 #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
 #define CLIENT_LEFT(x) "Client [" << x << "]" << " disconnected"
 
-namespace Rtype {
+namespace rtype {
 
     class Server;
 
@@ -74,6 +74,6 @@ namespace Rtype {
         Endpoint _endpoint;
     };
 
-}; // namespace Rtype
+}; // namespace rtype
 
 #endif /* !CLIENT_HPP_ */

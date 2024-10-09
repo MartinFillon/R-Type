@@ -8,13 +8,13 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
-Rtype::Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
+rtype::Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
     : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
 {
     std::cout << NEW_CLIENT(_id) << std::endl;
 };
 
-void Rtype::Client::send(const Packet &packet)
+void rtype::Client::send(const Packet &packet)
 {
     std::cerr << "Sending packet to client [" << _id << "]" << packet.isValid() << std::endl;
     if (packet.isValid()) {
@@ -22,18 +22,18 @@ void Rtype::Client::send(const Packet &packet)
     }
 }
 
-void Rtype::Client::disconnect()
+void rtype::Client::disconnect()
 {
     std::cout << CLIENT_LEFT(_id) << std::endl;
     _running = false;
 }
 
-bool Rtype::Client::isRunning()
+bool rtype::Client::isRunning()
 {
     return _running;
 }
 
-ecs::Clock &Rtype::Client::getHeartbeatClock()
+ecs::Clock &rtype::Client::getHeartbeatClock()
 {
     return _heartbeatClock;
 }

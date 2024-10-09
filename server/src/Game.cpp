@@ -18,7 +18,7 @@
 #include "Packet.hpp"
 #include "protocol.hpp"
 
-namespace Rtype {
+namespace rtype {
 
     Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Client)
     {
@@ -60,7 +60,7 @@ namespace Rtype {
     {
         auto &positions = _r->get_components<ecs::component::Position>();
 
-        if (_systemClock.getSeconds() > FRAME_PER_SECONDS(2)) { // %%% magic value %%%
+        if (_systemClock.getSeconds() > FRAME_PER_SECONDS(SERVER_TPS)) {
             _r->run_systems();
             _systemClock.restart();
         }
@@ -128,28 +128,28 @@ namespace Rtype {
         ));
     }
 
-    void Rtype::Game::setupDestroy()
+    void rtype::Game::setupDestroy()
     {
         _r->add_system(ecs::systems::DestroySystem());
     }
 
-    void Rtype::Game::setupCollisons()
+    void rtype::Game::setupCollisons()
     {
         _r->add_system(ecs::systems::CollisionsSystem());
     }
 
-    void Rtype::Game::setupBosses()
+    void rtype::Game::setupBosses()
     {
         _r->add_system(ecs::systems::BossSystems());
     }
 
-    void Rtype::Game::setupBasicEnnemies()
+    void rtype::Game::setupBasicEnnemies()
     {
         _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
         _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
     }
 
-    void Rtype::Game::setupBackground()
+    void rtype::Game::setupBackground()
     {
         _cf.createEntity("config/background/background.json");
         _cf.createEntity("config/background/background_2.json");
@@ -158,4 +158,4 @@ namespace Rtype {
         _r->add_system(ecs::systems::ParalaxSystem());
     }
 
-} // namespace Rtype
+} // namespace rtype

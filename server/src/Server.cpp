@@ -11,7 +11,7 @@
 #include <queue>
 #include "protocol.hpp"
 
-namespace Rtype {
+namespace rtype {
 
     Server::Server(int port)
         : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
@@ -114,7 +114,7 @@ namespace Rtype {
             if (!error && len && player_place != -1) {
 
                 if (_clients.find(client_id) == _clients.end()) {
-                    _clients[client_id] = std::make_shared<Rtype::Client>(client_id, *this, endpoint, _socket);
+                    _clients[client_id] = std::make_shared<rtype::Client>(client_id, *this, endpoint, _socket);
                     _players_clients_ids[player_place] = client_id;
 
                     _game.createPlayer(player_place);
@@ -292,4 +292,4 @@ namespace Rtype {
             return;
         }
     }
-} // namespace Rtype
+} // namespace rtype

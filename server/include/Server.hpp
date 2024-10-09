@@ -34,13 +34,13 @@
 
 #define KEEPALIVE_TIMEOUT 2
 
-namespace Rtype {
+namespace rtype {
 
     /// @brief Class of the server's context.
     class Server : ecs::IContext {
 
         using Message = std::vector<uint8_t>;
-        using Client = std::shared_ptr<Rtype::Client>;
+        using Client = std::shared_ptr<rtype::Client>;
 
         using Context = asio::io_context;
         using Socket = asio::ip::udp::socket;
@@ -128,7 +128,7 @@ namespace Rtype {
         bool _running;
 
         /// @brief The game wrapper.
-        Rtype::Game _game;
+        rtype::Game _game;
 
         /// @brief The server's asio UDP socket.
         Socket _socket;
@@ -141,6 +141,6 @@ namespace Rtype {
         std::unordered_map<int, std::optional<int>> _players_clients_ids;
     };
 
-}; // namespace Rtype
+}; // namespace rtype
 
 #endif /* !SERVER_HPP_ */
