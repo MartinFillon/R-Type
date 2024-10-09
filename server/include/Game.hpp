@@ -8,17 +8,28 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#include <queue>
-#include "ComponentFactory.hpp"
 #define UNUSED __attribute__((unused))
 
 #define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
 #define VALID_PACKET(x) "Valid packet from client [" << x << "]"
 
+#define FRAME_PER_SECONDS(x) (int)(1 / x)
+
+#include <queue>
 #include <iostream>
 
 #include "Packet.hpp"
 #include "Registry.hpp"
+#include "ComponentFactory.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/BossSystems.hpp"
+#include "Systems/CollisionsSystem.hpp"
+#include "Systems/DestroySystem.hpp"
+#include "Systems/EnnemiesMilespatesSystem.hpp"
+#include "Systems/GunFireSystem.hpp"
+#include "Systems/ParallaxSystem.hpp"
+#include "Systems/PlayerMouvementSystem.hpp"
+#include "ZipperIterator.hpp"
 
 namespace Rtype {
 
@@ -77,6 +88,16 @@ namespace Rtype {
         /// entity position component.
         /// @param entity_id an `int` representing the player's entity id.
         void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
+
+        void setupDestroy();
+        void setupWeapon();
+        void setupPlayer();
+        void setupCollisons();
+        void setupBosses();
+        void setupBasicEnnemies();
+        void setupBackground();
+
+        ecs::Clock _systemClock;
     };
 
 }; // namespace Rtype

@@ -43,13 +43,22 @@ namespace Rtype {
 
     void Game::update(bool are_any_clients_connected)
     {
-        auto &position_array = _r->register_component<ecs::component::Position>();
+        auto &drawables = _r->get_components<ecs::component::Drawable>();
+        auto &sprites = _r->get_components<ecs::component::Sprite>();
+        auto &positions = _r->register_component<ecs::component::Position>();
+        auto &animations = _r->register_component<ecs::component::Animations>();
+        auto &size = _r->register_component<ecs::component::Size>();
 
-        for (size_t entity_id = 0; entity_id < position_array.size(); entity_id++) {
-            if (!position_array[entity_id])
+        if (_systemClock.getSeconds() > FRAME_PER_SECONDS(2)) { // %%% magic value %%%
+            _r->run_systems();
+            _systemClock.restart();
+        }
+
+        for (size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
+            if (!positions[entity_id])
                 continue;
             if (are_any_clients_connected)
-                preparePosition(position_array[entity_id], entity_id);
+                preparePosition(positions[entity_id], entity_id);
         }
     }
 
@@ -106,6 +115,47 @@ namespace Rtype {
             protocol::Operations::NEW_OBJECT,
             {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
         ));
+    }
+
+    void Rtype::Game::setupDestroy()
+    {
+        _r->add_system(ecs::systems::DestroySystem());
+    }
+
+    void Rtype::Game::setupWeapon()
+    {
+        _r->add_system(ecs::systems::GunFireSystem());
+    }
+
+    void Rtype::Game::setupPlayer()
+    {
+        _cf.createEntity("config/player.json"); // %%% to refacto %%%
+        _r->add_system(ecs::systems::PlayerMouvementSystem());
+    }
+
+    void Rtype::Game::setupCollisons()
+    {
+        _r->add_system(ecs::systems::CollisionsSystem());
+    }
+
+    void Rtype::Game::setupBosses()
+    {
+        _r->add_system(ecs::systems::BossSystems());
+    }
+
+    void Rtype::Game::setupBasicEnnemies()
+    {
+        _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
+        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+    }
+
+    void Rtype::Game::setupBackground()
+    {
+        _cf.createEntity("config/background/background.json");
+        _cf.createEntity("config/background/background_2.json");
+        _cf.createEntity("config/background/background_3.json");
+        _cf.createEntity("config/background/background_4.json");
+        _r->add_system(ecs::systems::ParalaxSystem());
     }
 
 } // namespace Rtype

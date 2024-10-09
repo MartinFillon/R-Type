@@ -33,12 +33,6 @@ namespace rtype {
         Gui();
 
         int setupNetwork(const std::string server_ip, const std::string server_port);
-
-        std::shared_ptr<ecs::Registry> &getRegistry()
-        {
-            return _r;
-        };
-
         Menu &getMenu()
         {
             return _menu;
@@ -54,7 +48,6 @@ namespace rtype {
 
       private:
         sf::RenderWindow _window;
-        std::shared_ptr<ecs::Registry> _r;
         ecs::ComponentFactory _factory;
         Network _network;
         Menu _menu;
