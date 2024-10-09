@@ -26,9 +26,7 @@
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
 #include "Systems/EnnemiesMilespatesSystem.hpp"
-#include "Systems/GunFireSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
-#include "Systems/PlayerMouvementSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace Rtype {
@@ -90,8 +88,6 @@ namespace Rtype {
         void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
 
         void setupDestroy();
-        void setupWeapon();
-        void setupPlayer();
         void setupCollisons();
         void setupBosses();
         void setupBasicEnnemies();

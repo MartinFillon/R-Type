@@ -20,11 +20,17 @@
 
 namespace Rtype {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Server)
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Client)
     {
+        _r->register_component<ecs::component::Position>();
+        _r->register_component<ecs::component::Controllable>();
+        _r->register_component<ecs::component::Animations>();
+        _r->register_component<ecs::component::Size>();
+        _r->register_component<ecs::component::Drawable>();
+        _r->register_component<ecs::component::Sprite>();
+        _r->register_component<ecs::component::Destroyable>();
+
         setupBackground();
-        // setupPlayer(); %% to refacto %%
-        setupWeapon();
         setupBasicEnnemies();
         setupCollisons();
         setupDestroy();
@@ -52,11 +58,7 @@ namespace Rtype {
 
     void Game::update(bool are_any_clients_connected)
     {
-        auto &drawables = _r->get_components<ecs::component::Drawable>();
-        auto &sprites = _r->get_components<ecs::component::Sprite>();
-        auto &positions = _r->register_component<ecs::component::Position>();
-        auto &animations = _r->register_component<ecs::component::Animations>();
-        auto &size = _r->register_component<ecs::component::Size>();
+        auto &positions = _r->get_components<ecs::component::Position>();
 
         if (_systemClock.getSeconds() > FRAME_PER_SECONDS(2)) { // %%% magic value %%%
             _r->run_systems();
@@ -93,8 +95,8 @@ namespace Rtype {
     void Game::movePlayer(const int player_place, const int dir)
     {
         const int player_entity_id = _players_entities_ids[player_place];
-        auto &position = _r->register_component<ecs::component::Position>()[player_entity_id];
-        auto &controllable = _r->register_component<ecs::component::Controllable>()[player_entity_id];
+        auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
+        auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
 
         if (dir == protocol::Direction::UP) {
             position->_y -= controllable->_speed;
@@ -129,17 +131,6 @@ namespace Rtype {
     void Rtype::Game::setupDestroy()
     {
         _r->add_system(ecs::systems::DestroySystem());
-    }
-
-    void Rtype::Game::setupWeapon()
-    {
-        _r->add_system(ecs::systems::GunFireSystem());
-    }
-
-    void Rtype::Game::setupPlayer()
-    {
-        _cf.createEntity("config/player.json"); // %%% to refacto %%%
-        _r->add_system(ecs::systems::PlayerMouvementSystem());
     }
 
     void Rtype::Game::setupCollisons()
