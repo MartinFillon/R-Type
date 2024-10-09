@@ -24,13 +24,6 @@ namespace rtype {
         ~GameClient() = default;
 
         void setupGame();
-        void setupWeapon();
-        void setupPlayer();
-        void setupCollisons();
-        void setupBackground();
-        void setupBasicEnnemies();
-        void setupBosses();
-        void setupDestroy();
         int run();
 
       private:

@@ -15,14 +15,6 @@ rtype::GameClient::GameClient(sf::RenderWindow &window) : _gameWin(window)
 
 void rtype::GameClient::setupGame()
 {
-    _factory = ecs::ComponentFactory(_r, ecs::ComponentFactory::Mode::Client);
-    setupBackground();
-    setupPlayer();
-    setupWeapon();
-    setupBasicEnnemies();
-    setupCollisons();
-    setupDestroy();
-    setupBosses();
 }
 
 int rtype::GameClient::run()
