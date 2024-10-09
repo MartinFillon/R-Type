@@ -30,71 +30,20 @@ namespace ecs {
     class Registry {
       public:
         template <class Component>
-        SparseArray<Component> &register_component()
-        {
-            auto type = std::type_index(typeid(SparseArray<Component>));
-            if (_componentsArrays.find(type) == _componentsArrays.end()) {
-                _componentsArrays[type] = SparseArray<Component>();
-            }
-            return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
-        }
+        SparseArray<Component> &register_component();
 
         template <class Component>
-        SparseArray<Component> &get_components()
-        {
-            return std::any_cast<SparseArray<Component> &>(
-                _componentsArrays[std::type_index(typeid(SparseArray<Component>))]
-            );
-        }
+        SparseArray<Component> &get_components();
 
         template <class Component>
-        SparseArray<Component> &register_if_not_exist()
-        {
-            auto type = std::type_index(typeid(SparseArray<Component>));
-            if (_componentsArrays.find(type) == _componentsArrays.end()) {
-                return register_component<Component>();
-            }
-            return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
-        }
-
-        Entity spawn_entity()
-        {
-            return Entity(_entityCount++);
-        }
-
-        void erase(const std::size_t &entityIdx)
-        {
-            auto &positions = register_component<ecs::component::Position>();
-            auto &drawable = register_component<ecs::component::Drawable>();
-            auto &sprite = register_component<ecs::component::Sprite>();
-            auto &animation = register_component<ecs::component::Animations>();
-            auto &parallax = register_component<ecs::component::Parallax>();
-            auto &size = register_component<ecs::component::Size>();
-            auto &controllable = register_component<ecs::component::Controllable>();
-            auto &destroyable = register_component<ecs::component::Destroyable>();
-
-            destroyable.erase(entityIdx);
-            positions.erase(entityIdx);
-            drawable.erase(entityIdx);
-            sprite.erase(entityIdx);
-            animation.erase(entityIdx);
-            parallax.erase(entityIdx);
-            size.erase(entityIdx);
-            controllable.erase(entityIdx);
-        }
+        SparseArray<Component> &register_if_not_exist();
 
         template <typename Function>
-        void add_system(Function &&f)
-        {
-            _systems.push_back(f);
-        }
+        void add_system(Function &&f);
 
-        void run_systems()
-        {
-            for (auto &system : _systems) {
-                system(*this);
-            }
-        }
+        Entity spawn_entity();
+        void erase(const std::size_t &entityIdx);
+        void run_systems();
 
         EntityManager _entities;
 

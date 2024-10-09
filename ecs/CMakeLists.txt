@@ -17,7 +17,7 @@ FetchContent_Declare(
   URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
-add_library(ecs src/ImageResolver.cpp src/ComponentFactory.cpp src/systems/BasicRandomEnnemiesSystem.cpp src/systems/BossSystems.cpp src/systems/CollisionsSystem.cpp src/systems/DestroySystem.cpp src/systems/BossSystems.cpp src/systems/CollisionsSystem.cpp src/systems/EnnemiesMilepatesSystem.cpp src/systems/ParallaxSystem.cpp)
+add_library(ecs src/ImageResolver.cpp src/ComponentFactory.cpp src/systems/BasicRandomEnnemiesSystem.cpp src/systems/BossSystems.cpp src/systems/CollisionsSystem.cpp src/systems/DestroySystem.cpp src/systems/BossSystems.cpp src/systems/CollisionsSystem.cpp src/systems/EnnemiesMilepatesSystem.cpp src/systems/ParallaxSystem.cpp src/Registry.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
