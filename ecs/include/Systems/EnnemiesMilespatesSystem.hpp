@@ -21,11 +21,7 @@
 #define MARGIN_X 40
 #define FOLLOW_DISTANCE 70
 
-#include <vector>
-
 #include <deque>
-#include "Components/Animations.hpp"
-#include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
