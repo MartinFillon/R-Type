@@ -30,16 +30,38 @@ namespace ecs {
     class Registry {
       public:
         template <class Component>
-        SparseArray<Component> &register_component();
+        SparseArray<Component> &register_component()
+        {
+            auto type = std::type_index(typeid(SparseArray<Component>));
+            if (_componentsArrays.find(type) == _componentsArrays.end()) {
+                _componentsArrays[type] = SparseArray<Component>();
+            }
+            return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
+        }
 
         template <class Component>
-        SparseArray<Component> &get_components();
+        SparseArray<Component> &get_components()
+        {
+            return std::any_cast<SparseArray<Component> &>(
+                _componentsArrays[std::type_index(typeid(SparseArray<Component>))]
+            );
+        }
 
         template <class Component>
-        SparseArray<Component> &register_if_not_exist();
+        SparseArray<Component> &register_if_not_exist()
+        {
+            auto type = std::type_index(typeid(SparseArray<Component>));
+            if (_componentsArrays.find(type) == _componentsArrays.end()) {
+                return register_component<Component>();
+            }
+            return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
+        }
 
         template <typename Function>
-        void add_system(Function &&f);
+        void add_system(Function &&f)
+        {
+            _systems.push_back(f);
+        }
 
         Entity spawn_entity();
         void erase(const std::size_t &entityIdx);
