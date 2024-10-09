@@ -30,7 +30,9 @@ namespace Rtype {
         Game();
 
         /// @brief Runs the updating loop of the game and add all the updated informations to the packet queue.
-        void update();
+        /// @param are_any_clients_connected `true` if any number of clients are connected and packets need to be
+        /// created, `false` otherwise.
+        void update(bool are_any_clients_connected);
         /// @brief Handles the case when a player leaves the game and disconnects from the server by removing its entity
         /// and opening its occupied place for new players to join.
         /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and

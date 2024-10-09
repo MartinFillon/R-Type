@@ -11,7 +11,7 @@ int main(int ac, char **av)
 {
     if (ac != NB_ARGS_REQUIRED) {
         std::cerr << SERVER_MISSING_PORT << std::endl;
-        return ERROR;
+        return R_TYPE_ERROR;
     }
 
     Rtype::Server server(std::atoi(av[PORT]));

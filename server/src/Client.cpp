@@ -27,3 +27,13 @@ void Rtype::Client::disconnect()
     std::cout << CLIENT_LEFT(_id) << std::endl;
     _running = false;
 }
+
+bool Rtype::Client::isRunning()
+{
+    return _running;
+}
+
+ecs::Clock &Rtype::Client::getHeartbeatClock()
+{
+    return _heartbeatClock;
+}

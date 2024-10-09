@@ -16,6 +16,8 @@ namespace Rtype {
     Server::Server(int port)
         : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
     {
+        _socket.non_blocking(true);
+
         for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
             _players_clients_ids[player_place] = std::nullopt;
         }
@@ -116,23 +118,47 @@ namespace Rtype {
                     _players_clients_ids[player_place] = client_id;
 
                     _game.createPlayer(player_place);
-                    _clients[client_id].get()->send(Packet(10, {static_cast<uint8_t>(client_id)}));
+                    _clients[client_id].get()->send(
+                        Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(client_id)})
+                    );
                 }
-
-                handleMessage(client_id, message);
+                if (_clients[client_id]->isRunning())
+                    handleMessage(client_id, message);
             }
 
             if (error && _clients.find(client_id) != _clients.end()) {
-                _clients[client_id].get()->disconnect();
+                disconnectClient(client_id);
+            }
+
+            for (auto client : _clients) {
+                if (!client.second->isRunning())
+                    continue;
+                if (client.second->getHeartbeatClock().getSeconds() > KEEPALIVE_TIMEOUT)
+                    disconnectClient(client.first);
             }
         }
+    }
+
+    void Server::disconnectClient(const unsigned int client_id)
+    {
+        for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+            if (_players_clients_ids[player_place] == client_id) {
+                _players_clients_ids[player_place] = std::nullopt;
+            }
+        }
+
+        _clients[client_id]->disconnect();
+
+        removeClient(client_id);
     }
 
     void Server::processGame()
     {
         while (_running) {
-            _game.update();
-            std::queue<Packet> packets = _game.getPacketsToSend();
+            _game.update(_clients.size() > 0 ? true : false);
+
+            std::queue<Packet> &packets = _game.getPacketsToSend();
+
             while (!packets.empty()) {
                 broadcast(packets.front());
                 packets.pop();
@@ -142,13 +168,14 @@ namespace Rtype {
 
     void Server::sendToClient(const unsigned int client_id, const Packet &packet)
     {
-        std::lock_guard<std::mutex> lock(_mutex);
+        // std::lock_guard<std::mutex> lock(_mutex);
 
         if (!packet.isValid()) {
             return;
         }
 
         if (_clients.find(client_id) != _clients.end()) {
+            std::cout << "Sent packet to client! Optcode: " << std::to_string(packet.getOpcode()) << std::endl;
             _clients[client_id]->send(packet);
         }
     }
@@ -216,12 +243,17 @@ namespace Rtype {
         }
         if (optCode == protocol::Operations::READY) {
             std::cout << "READ\n";
-            // who asked and who cares??
+            // todo send actual informations
             return;
         }
         if (optCode == protocol::Operations::PING) {
             std::cout << "PONG\n";
-            const Packet clPacket(protocol::Operations::PING);
+
+            if (_clients.find(client_id) != _clients.end()) {
+                _clients[client_id]->getHeartbeatClock().restart();
+            }
+
+            const Packet clPacket(protocol::Operations::PING, {});
 
             sendToClient(client_id, clPacket);
             return;

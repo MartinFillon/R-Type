@@ -17,6 +17,7 @@ int rtype::Network::setup(const std::string host, const std::string port)
     try {
         _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
         _socket.open(UDP::v4());
+        _socket.non_blocking(true);
     } catch (const std::runtime_error &e) {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
@@ -47,6 +48,11 @@ int rtype::Network::run()
         Packet received_packet(message);
 
         std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
+
+        if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
+            send(protocol::Operations::PING, {});
+            _keepaliveClock.restart();
+        }
     }
 
     return EXIT_SUCCESS;
