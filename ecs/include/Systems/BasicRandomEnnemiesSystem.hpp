@@ -1,10 +1,6 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
-#include "Clock.hpp"
-#include "Components/Destroyable.hpp"
-#include "Components/Life.hpp"
-
 #define ENNEMIES_TICK 2
 
 #define MAX_RANDOM_ENNEMIES 6
@@ -23,14 +19,9 @@
 #define BASIC_ENNEMIES_SPEED_TICK 8
 
 #include <random>
-
-#include "Components/Animations.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
-
+#include "Clock.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Life.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
