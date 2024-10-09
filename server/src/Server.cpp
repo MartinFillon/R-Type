@@ -116,7 +116,7 @@ void rtype::Server::acceptConnections()
                 _players_clients_ids[player_place] = client_id;
 
                 _game.createPlayer(player_place);
-                _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(client_id)})
+                _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
                 );
             }
             if (_clients[client_id]->isRunning())
