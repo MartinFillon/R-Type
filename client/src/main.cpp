@@ -7,15 +7,22 @@
 
 #include "Gui.hpp"
 
-int main(int ac, char **av)
+int main()
 {
-    if (ac != NB_ARGS) {
-        return ERROR;
+    rtype::Gui gui;
+    std::string server_address = gui.getMenu().launchMenu();
+    std::string server_ip = server_address.substr(0, server_address.find(':'));
+    std::string server_port = server_address.substr(server_address.find(':') + 1);
+
+    if (gui.setupNetwork(server_ip, server_port)) {
+        return 84;
     }
 
-    rtype::Gui gui(av[HOST], av[PORT]);
+    std::thread network = std::thread(&rtype::Gui::runNetwork, std::ref(gui));
 
-    gui.start();
+    gui.run();
+
+    network.join();
 
     return SUCCESS;
 }

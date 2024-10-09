@@ -1,11 +1,12 @@
 {
   "name": "background",
-  "active": ["position", "drawable", "sprite", "animations", "parallax", "size"],
+  "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life"],
   "components": {
     "position": {
       "x": 0,
       "y": 0
     },
+    "life": 1,
     "drawable": true,
     "sprite": "Background/background_2.png",
     "animations": {
@@ -14,7 +15,8 @@
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "type": "background"
+      "type": "background",
+      "objectType": "none"
     },
     "parallax": {
       "active": true,

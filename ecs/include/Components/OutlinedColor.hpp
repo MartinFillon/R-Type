@@ -8,12 +8,13 @@
 #ifndef OUTLINEDCOLOR_HPP_
 #define OUTLINEDCOLOR_HPP_
 
-#include <SFML/Graphics/Color.hpp>
-
 namespace ecs {
     namespace component {
         struct OutlinedColor {
-            sf::Color _outlinedColor;
+            double _r;
+            double _g;
+            double _b;
+            double _a;
         };
     }; // namespace component
 }; // namespace ecs

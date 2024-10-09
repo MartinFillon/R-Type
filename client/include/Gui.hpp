@@ -8,54 +8,59 @@
 #ifndef GUI_HPP_
 #define GUI_HPP_
 
-#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-
-#include "Network.hpp"
-#include "IContext.hpp"
-#include "Registry.hpp"
+#include <memory>
 #include "ComponentFactory.hpp"
+#include "GameClient.hpp"
+#include "IContext.hpp"
+#include "Menu.hpp"
+#include "Network.hpp"
+#include "Registry.hpp"
 
 #define HOST 1
 #define PORT 2
 #define NB_ARGS 3
 #define SUCCESS 0
-#define ERROR 84
+
+// #define ERROR 84
 
 namespace rtype {
 
     class Gui : ecs::IContext {
 
-        public:
+      public:
+        Gui();
 
-            Gui(const std::string &host, const std::string &port);
+        int setupNetwork(const std::string server_ip, const std::string server_port);
 
-            void start();
+        std::shared_ptr<ecs::Registry> &getRegistry()
+        {
+            return _r;
+        };
 
-            int run() override;
+        Menu &getMenu()
+        {
+            return _menu;
+        }
 
-            std::shared_ptr<ecs::Registry> &getRegistry() {
-                return _r;
-            };
+        int run();
+        int runNetwork();
 
-        private:
+        sf::RenderWindow &getWindow()
+        {
+            return _window;
+        }
 
-            Network _network;
-
-            void setupWeapon();
-            void setupPlayer();
-            void setupCollisons();
-            void setupBackground();
-            void setupBasicEnnemies();
-
-            sf::RenderWindow _window;
-
-            std::shared_ptr<ecs::Registry> _r;
-            ecs::ComponentFactory _factory;
-
+      private:
+        sf::RenderWindow _window;
+        std::shared_ptr<ecs::Registry> _r;
+        ecs::ComponentFactory _factory;
+        Network _network;
+        Menu _menu;
+        GameClient _game;
     };
 
-};
+}; // namespace rtype
 
 #endif /* !GUI_HPP_ */

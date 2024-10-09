@@ -5,46 +5,57 @@
 ** Network
 */
 
-#include <iostream>
-
 #include "Network.hpp"
+#include <iostream>
+#include <stdexcept>
+#include "protocol.hpp"
 
-rtype::Network::Network(const std::string &host, const std::string &port):
-    _context(),
-    _resolver(_context),
-    _socket(_context)
+rtype::Network::Network() : _context(), _resolver(_context), _socket(_context) {}
+
+int rtype::Network::setup(const std::string host, const std::string port)
 {
-    _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
-    _socket.open(UDP::v4());
-};
+    try {
+        _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
+        _socket.open(UDP::v4());
+    } catch (const std::runtime_error &e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
 
-void rtype::Network::run()
+int rtype::Network::run()
 {
     bool running = true;
 
-    std::thread context([&](){ _context.run(); });
+    std::thread context([&]() { _context.run(); });
 
     context.detach();
 
-    Packet packet(12); // Ready message to server //
+    Packet ready_packet(protocol::Operations::READY, {}); // Ready message to server
 
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(ready_packet);
 
     while (running) {
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
-
         size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+        Packet received_packet(message);
 
-        std::cout << "Packet recu du server!" << std::endl;
-
+        std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
     }
+
+    return EXIT_SUCCESS;
 }
 
 void rtype::Network::send(const Packet &packet)
 {
     if (!packet.isValid()) {
+        std::cerr << "Packet is not valid" << std::endl;
         return;
     }
 
@@ -55,22 +66,14 @@ void rtype::Network::send(const Message &message)
 {
     Packet packet(message);
 
-    if (!packet.isValid()) {
-        return;
-    }
-
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(packet);
 }
 
 void rtype::Network::send(const uint8_t opcode, const Arguments &arguments)
 {
     Packet packet(opcode, arguments);
 
-    if (!packet.isValid()) {
-        return;
-    }
-
-    _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    send(packet);
 }
 
 void rtype::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)

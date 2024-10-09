@@ -8,7 +8,9 @@
 #ifndef PLAYERMOUVEMENTSYSTEM_HPP_
 #define PLAYERMOUVEMENTSYSTEM_HPP_
 
+#include "Clock.hpp"
 #define PLAYER_MOVE_ANIMATION 0.2
+#define PLAYER_MOUVEMENT_TICK 3
 
 #include <SFML/Window/Keyboard.hpp>
 
@@ -26,25 +28,31 @@ namespace ecs {
           public:
             void operator()(Registry &r)
             {
+                if (_clock.getMiliSeconds() < PLAYER_MOUVEMENT_TICK) {
+                    return;
+                }
+                _clock.restart();
                 auto &positions = r.get_components<ecs::component::Position>();
                 auto &controllables = r.get_components<ecs::component::Controllable>();
                 auto &animations = r.get_components<ecs::component::Animations>();
+                auto &drawable = r.register_component<ecs::component::Drawable>();
+                auto &sprite = r.register_component<ecs::component::Sprite>();
+                auto &parallax = r.register_component<ecs::component::Parallax>();
+                auto &size = r.register_component<ecs::component::Size>();
 
                 for (auto &&[position, controllable, animation] :
                      ecs::custom_zip(positions, controllables, animations)) {
                     if (animation->_object == ecs::component::Object::Player) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                             position->_y -= controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
-                                animation->_x < 135) {
+                            if (animation->_clock.getSeconds() > PLAYER_MOVE_ANIMATION && animation->_x < 135) {
                                 animation->_x += 35;
                                 animation->_clock.restart();
                             }
                         }
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                             position->_y += controllable->_speed;
-                            if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION &&
-                                animation->_x > 0) {
+                            if (animation->_clock.getSeconds() > PLAYER_MOVE_ANIMATION && animation->_x > 0) {
                                 animation->_x -= 35;
                                 animation->_clock.restart();
                             }
@@ -58,6 +66,9 @@ namespace ecs {
                     }
                 }
             }
+
+          private:
+            Clock _clock;
         };
     }; // namespace systems
 } // namespace ecs

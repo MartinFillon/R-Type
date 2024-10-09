@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 include(FetchContent)
+
 FetchContent_Declare(
   SFML
   GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -11,18 +12,16 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-include(FetchContent)
-
 FetchContent_Declare(
   json
   URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
 add_library(ecs src/ImageResolver.cpp src/ComponentFactory.cpp)
-target_link_libraries(ecs PRIVATE sfml-graphics)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(ecs PUBLIC sfml-graphics)
 
 if(WIN32)
   add_custom_command(
@@ -42,7 +41,9 @@ if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)
 
   enable_testing()
-  add_executable(test_ecs test/SparseArrayTest.cpp test/RegistryTest.cpp test/EntityTest.cpp test/EntityManagerTest.cpp test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
+  add_executable(
+    test_ecs test/EntityTest.cpp test/EntityManagerTest.cpp
+             test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
 
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 

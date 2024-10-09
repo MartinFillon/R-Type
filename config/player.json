@@ -6,17 +6,21 @@
     "controllable",
     "sprite",
     "animations",
-    "size"
+    "size",
+    "destroyable",
+    "life"
   ],
   "components": {
+    "life": 3,
     "position": {
         "x": 100,
         "y": 100
     },
+    "destroyable": false,
     "drawable": true,
     "controllable": {
         "controllable": true,
-        "speed": 0.9
+        "speed": 2
     },
     "sprite": "r-typesheet42.gif",
     "animations": {
@@ -25,7 +29,8 @@
         "x": 65,
         "y": 0,
         "rotation": 0,
-        "type": "player"
+        "type": "player",
+        "objectType": "none"
     },
     "size": {
         "width": 3,

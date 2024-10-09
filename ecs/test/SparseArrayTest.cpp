@@ -5,9 +5,9 @@
 ** SparseArrayTest
 */
 
-#include <criterion/criterion.h>
-#include <criterion/assert.h>
 #include "SparseArray.hpp"
+#include <criterion/assert.h>
+#include <criterion/criterion.h>
 
 Test(SparseArray, InsertionAndAccess)
 {

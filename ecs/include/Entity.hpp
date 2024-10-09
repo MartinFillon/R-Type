@@ -15,6 +15,11 @@ namespace ecs {
       public:
         Entity(std::size_t id) : _id(id) {}
 
+        Entity(const Entity &e)
+        {
+            _id = e._id;
+        }
+
         std::size_t getId() const
         {
             return _id;
