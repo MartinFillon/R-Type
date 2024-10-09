@@ -41,14 +41,15 @@ namespace Rtype {
         _packetsToSend.push(Packet(protocol::Operations::OBJECT_POSITION, args));
     }
 
-    void Game::update()
+    void Game::update(bool are_any_clients_connected)
     {
         auto &position_array = _r->register_component<ecs::component::Position>();
 
         for (size_t entity_id = 0; entity_id < position_array.size(); entity_id++) {
             if (!position_array[entity_id])
                 continue;
-            preparePosition(position_array[entity_id], entity_id);
+            if (are_any_clients_connected)
+                preparePosition(position_array[entity_id], entity_id);
         }
     }
 

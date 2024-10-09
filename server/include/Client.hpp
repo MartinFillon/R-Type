@@ -14,8 +14,7 @@
 #include <vector>
 
 #include "Packet.hpp"
-
-#include "Packet.hpp"
+#include "Clock.hpp"
 
 #define LOGIN 0x42
 #define DATA_MAX_SIZE 1024
@@ -51,12 +50,21 @@ namespace Rtype {
         void send(const Packet &packet);
         /// @brief Disconnects the client from the server.
         void disconnect();
+        /// @brief Checks if the client is running or not.
+        /// @return `true` if the client is running or `false` if not.
+        bool isRunning();
+        /// @brief Get the client's heartbeat clock.
+        /// @return `ecs::Clock &` representing the client's heartbeat clock.
+        ecs::Clock &getHeartbeatClock();
 
       private:
         /// @brief The client's UDP id.
         unsigned int _id;
         /// @brief `true` if the client is connected and running, `false` otherwise.
         bool _running;
+        /// @brief The client's heartbeat clock to know since when the server received the last
+        /// `protocol::Operations::PING` packet.
+        ecs::Clock _heartbeatClock;
 
         /// @brief The reference to the wrapper of the whole server.
         Server &_server;

@@ -16,6 +16,8 @@
 
 #define DATA_MAX_SIZE 1024
 
+#define KEEPALIVE_TIMEOUT 1
+
 namespace rtype {
 
     class Network {
@@ -53,9 +55,10 @@ namespace rtype {
 
             std::shared_ptr<ecs::Registry> _registry;
 
+            ecs::Clock _keepaliveClock;
+
     };
 
 };
 
 #endif /* !NETWORK_HPP_ */
- 

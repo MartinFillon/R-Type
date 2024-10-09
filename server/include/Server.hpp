@@ -32,6 +32,8 @@
 #define FIRST_PLAYER_PLACE 1
 #define MAX_PLAYER_PLACES 4
 
+#define KEEPALIVE_TIMEOUT 2
+
 namespace Rtype {
 
     /// @brief Class of the server's context.
@@ -79,6 +81,9 @@ namespace Rtype {
         /// @brief Loops the main network loop by checking new clients connections and current ones too with new
         /// messages from clients.
         void acceptConnections();
+        /// @brief Disconnects the client according to the given `client_id`.
+        /// @param client_id a `const unsigned int` representing the id of the client to disconnect.
+        void disconnectClient(const unsigned int client_id);
         /// @brief Loops the main game loop by updating the game state and broadcasting all the packets stored in the
         /// packet queue.
         void processGame();
