@@ -35,7 +35,7 @@ namespace rtype {
 
             int setup(const std::string host, const std::string port);
 
-            void run();
+            int run();
 
             void send(const Packet &packet);
             void send(const Message &message);

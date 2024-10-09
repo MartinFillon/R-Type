@@ -34,8 +34,6 @@ namespace rtype {
 
             int setupNetwork(const std::string server_ip, const std::string server_port);
 
-            void start();
-
             std::shared_ptr<ecs::Registry> &getRegistry() {
                 return _r;
             };
@@ -44,13 +42,14 @@ namespace rtype {
             {
                 return _menu;
             }
+
             int run();
+            int runNetwork();
 
             sf::RenderWindow &getWindow()
             {
                 return _window;
             }
-            void setupGameThread();
 
         private:
             sf::RenderWindow _window;
@@ -59,7 +58,6 @@ namespace rtype {
             Network _network;
             Menu _menu;
             GameClient _game;
-            sf::Thread _gameThread;
     };
 
 };

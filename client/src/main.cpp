@@ -17,6 +17,12 @@ int main()
     if (gui.setupNetwork(server_ip, server_port)) {
         return 84;
     }
+
+    std::thread network = std::thread(&rtype::Gui::runNetwork, std::ref(gui));
+
     gui.run();
+
+    network.join();
+
     return SUCCESS;
 }
