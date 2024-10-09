@@ -5,7 +5,6 @@
 ** ComponentFactory
 */
 
-#include <SFML/System/Clock.hpp>
 #include <fstream>
 #include <functional>
 #include <memory>

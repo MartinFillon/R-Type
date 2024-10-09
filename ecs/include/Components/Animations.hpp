@@ -8,7 +8,6 @@
 #ifndef ANIMATIONS_HPP_
 #define ANIMATIONS_HPP_
 
-#include <SFML/System/Clock.hpp>
 #include "Clock.hpp"
 
 namespace ecs {
