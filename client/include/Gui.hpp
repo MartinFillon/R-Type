@@ -11,55 +11,56 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
-#include "Network.hpp"
-#include "IContext.hpp"
-#include "Registry.hpp"
 #include "ComponentFactory.hpp"
-#include "Menu.hpp"
 #include "GameClient.hpp"
+#include "IContext.hpp"
+#include "Menu.hpp"
+#include "Network.hpp"
+#include "Registry.hpp"
 
 #define HOST 1
 #define PORT 2
 #define NB_ARGS 3
 #define SUCCESS 0
-#define ERROR 84
+
+// #define ERROR 84
 
 namespace rtype {
 
     class Gui : ecs::IContext {
 
-        public:
+      public:
+        Gui();
 
-            Gui();
+        int setupNetwork(const std::string server_ip, const std::string server_port);
 
-            int setupNetwork(const std::string server_ip, const std::string server_port);
+        std::shared_ptr<ecs::Registry> &getRegistry()
+        {
+            return _r;
+        };
 
-            std::shared_ptr<ecs::Registry> &getRegistry() {
-                return _r;
-            };
+        Menu &getMenu()
+        {
+            return _menu;
+        }
 
-            Menu &getMenu()
-            {
-                return _menu;
-            }
+        int run();
+        int runNetwork();
 
-            int run();
-            int runNetwork();
+        sf::RenderWindow &getWindow()
+        {
+            return _window;
+        }
 
-            sf::RenderWindow &getWindow()
-            {
-                return _window;
-            }
-
-        private:
-            sf::RenderWindow _window;
-            std::shared_ptr<ecs::Registry> _r;
-            ecs::ComponentFactory _factory;
-            Network _network;
-            Menu _menu;
-            GameClient _game;
+      private:
+        sf::RenderWindow _window;
+        std::shared_ptr<ecs::Registry> _r;
+        ecs::ComponentFactory _factory;
+        Network _network;
+        Menu _menu;
+        GameClient _game;
     };
 
-};
+}; // namespace rtype
 
 #endif /* !GUI_HPP_ */
