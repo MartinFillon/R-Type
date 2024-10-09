@@ -29,6 +29,7 @@ namespace rtype {
             void setupCollisons();
             void setupBackground();
             void setupBasicEnnemies();
+            void setupBosses();
             void setupDestroy();
             int run();
 
