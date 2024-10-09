@@ -80,17 +80,9 @@ namespace Rtype {
 
         if (dir == protocol::Direction::UP) {
             position->_y -= controllable->_speed;
-            // if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x < 135) {
-            //     animation->_x += 35;
-            //     animation->_clock.restart();
-            // }
         }
         if (dir == protocol::Direction::DOWN) {
             position->_y += controllable->_speed;
-            // if (animation->_clock.getElapsedTime().asSeconds() > PLAYER_MOVE_ANIMATION && animation->_x > 0) {
-            //     animation->_x -= 35;
-            //     animation->_clock.restart();
-            // }
         }
         if (dir == protocol::Direction::LEFT) {
             position->_x -= controllable->_speed;

@@ -42,8 +42,6 @@ namespace rtype {
         void send(const Message &message);
         void send(const uint8_t opcode, const Arguments &arguments = {});
 
-        void setRegistry(std::shared_ptr<ecs::Registry> registry);
-
       private:
         Context _context;
         Resolver _resolver;
@@ -52,8 +50,6 @@ namespace rtype {
         Socket _socket;
 
         ecs::Clock _keepaliveClock;
-
-        std::shared_ptr<ecs::Registry> _registry;
     };
 
 }; // namespace rtype

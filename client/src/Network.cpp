@@ -81,8 +81,3 @@ void rtype::Network::send(const uint8_t opcode, const Arguments &arguments)
 
     send(packet);
 }
-
-void rtype::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)
-{
-    _registry = registry;
-}

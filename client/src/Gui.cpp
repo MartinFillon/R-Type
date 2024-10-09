@@ -15,7 +15,6 @@ namespace rtype {
           _r(std::make_shared<ecs::Registry>()), _menu(_window), _game(_window, _r)
     {
         _menu.setupMenu();
-        _network.setRegistry(_r);
     }
 
     int Gui::setupNetwork(const std::string server_ip, const std::string server_port)
