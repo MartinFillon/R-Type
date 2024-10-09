@@ -16,7 +16,7 @@
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "Packet.hpp"
-#include "Protocole.hpp"
+#include "Protocol.hpp"
 
 rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Client)
 {
