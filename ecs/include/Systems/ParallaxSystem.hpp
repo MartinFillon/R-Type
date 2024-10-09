@@ -14,7 +14,6 @@
 #define BACKGROUND_TICK 3
 #define SCREEN_WIDTH 1920
 
-#include <SFML/Config.hpp>
 #include "Components/Animations.hpp"
 #include "Components/Parallax.hpp"
 #include "Components/Position.hpp"
