@@ -48,7 +48,6 @@ namespace rtype {
 
       private:
         sf::RenderWindow _window;
-        ecs::ComponentFactory _factory;
         Network _network;
         Menu _menu;
         GameClient _game;

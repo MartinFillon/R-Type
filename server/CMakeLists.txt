@@ -15,6 +15,7 @@ FetchContent_Declare(
 
 set(ASIO_CMAKE_ASIO_TAG asio-1-12-2)
 FetchContent_MakeAvailable(asio-cmake)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb")
 
 target_link_libraries(r-type_server PRIVATE ecs)
 target_link_libraries(r-type_server PRIVATE asio)
