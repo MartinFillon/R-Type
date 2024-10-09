@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <optional>
 #include <queue>
-#include "protocol.hpp"
+#include "Protocol.hpp"
 
 namespace rtype {
 

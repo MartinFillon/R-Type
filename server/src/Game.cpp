@@ -16,7 +16,7 @@
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "Packet.hpp"
-#include "protocol.hpp"
+#include "Protocol.hpp"
 
 namespace rtype {
 

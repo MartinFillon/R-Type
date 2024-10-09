@@ -8,7 +8,7 @@
 #include "Network.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "protocol.hpp"
+#include "Protocol.hpp"
 
 rtype::Network::Network() : _context(), _resolver(_context), _socket(_context) {}
 
