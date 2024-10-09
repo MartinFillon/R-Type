@@ -42,7 +42,8 @@ namespace ecs {
                         continue;
                     }
 
-                    if (animation[i]->_object == ecs::component::Object::Background) {
+                    if (animation[i]->_object == ecs::component::Object::Background ||
+                        animation[i]->_object == ecs::component::Object::InDestroy) {
                         continue;
                     }
 

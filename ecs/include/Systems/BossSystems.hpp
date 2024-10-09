@@ -10,9 +10,10 @@
 
 #define BOSS_LIFE(x) 100 * x
 #define BOSS_SPEED 5
-#define BOSS_SPAWN_TIME 60
+#define BOSS_SPAWN_TIME 600
 #define BOSS_PROJECTILE_SPEED 5
-#define BOSS_PROJECTILE_SPAWN_TIME 0.05
+#define MOVING_PROJECTILE_SPEED 0.01
+#define BOSS_PROJECTILE_SPAWN_TIME 3
 #define BOSS_SHOOTING_ELAPSED_TIME 0.5
 
 #define PROJECTILE_CLOSE 200
@@ -102,7 +103,7 @@ namespace ecs {
                     };
                     sizes[bossEntity.getId()] = ecs::component::Size{4, 4};
                     destroyable[bossEntity.getId()] = ecs::component::Destroyable{false};
-                    life[bossEntity.getId()] = ecs::component::Life{2};
+                    life[bossEntity.getId()] = ecs::component::Life{BOSS_LIFE(1)};
                 }
 
                 bool isABoss(Registry &r)
@@ -199,7 +200,7 @@ namespace ecs {
                         }
 
                         if (anim->_object == ecs::component::Weapon &&
-                            _projectileClock.getSeconds() > 0.01) {
+                            _projectileClock.getSeconds() > MOVING_PROJECTILE_SPEED) {
                                 moveProjectileTowardsPlayer(r, *pos, idx);
                                 _projectileClock.restart();
                                 continue;
@@ -228,7 +229,7 @@ namespace ecs {
                 ecs::Clock _shootingClock;
                 ecs::Clock _projectileClock;
                 std::size_t times = 0;
-                std::array<std::function<void (Registry &r)>, 4> _bosses {
+                std::array<std::function<void (Registry &r)>, 1> _bosses {
                     {[this](Registry &r){createFirstBoss(r);}},
                 };
         };
