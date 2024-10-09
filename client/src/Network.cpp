@@ -47,7 +47,8 @@ int rtype::Network::run()
         size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
         Packet received_packet(message);
 
-        std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
+        if (!error && len)
+            std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
             send(protocol::Operations::PING, {});
