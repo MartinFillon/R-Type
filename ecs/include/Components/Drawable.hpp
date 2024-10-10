@@ -11,6 +11,7 @@
 namespace ecs {
     namespace component {
         struct Drawable {
+        /// @brief Drawable component only store a boolean to know if the entity is drawable or not
             bool _drawable;
         };
     }; // namespace component
