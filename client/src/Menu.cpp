@@ -1,15 +1,18 @@
 /*
 ** EPITECH PROJECT, 2024
-** Rtype
+** R-type
 ** File description:
 ** menu file
 */
 
 #include "Menu.hpp"
 
-rtype::Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true) {}
+client::Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
+{
+    setupMenu();
+}
 
-void rtype::Menu::setupMenu()
+void client::Menu::setupMenu()
 {
     _backgroundTexture.loadFromFile(BG_PATH);
     _backgroundTexture.setRepeated(true);
@@ -54,7 +57,7 @@ void rtype::Menu::setupMenu()
     _menuDisplayInput.setFillColor(sf::Color::Black);
 }
 
-std::string rtype::Menu::launchMenu()
+std::string client::Menu::launchMenu()
 {
     sf::Shader parallaxShader;
     if (!parallaxShader.loadFromMemory(
