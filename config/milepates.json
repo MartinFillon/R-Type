@@ -14,23 +14,23 @@
       "life": 1,
       "position": {
           "x": 1944.0,
-          "y": 500.0
+          "y": 80.0
       },
       "destroyable": false,
       "drawable": true,
       "controllable": {
           "controllable": false,
-          "speed": 1.8
+          "speed": 2.5
       },
-      "sprite": "r-typesheet5.gif",
+      "sprite": "r-typesheet8.gif",
       "animations": {
-          "width": 32,
-          "height": 35,
-          "x": 224,
+          "width": 30,
+          "height": 30,
+          "x": 0,
           "y": 0,
           "rotation": 0,
           "type": "ennemies",
-        "objectType": "basic"
+        "objectType": "milepates"
       },
       "size": {
           "width": 2.8,
@@ -38,3 +38,4 @@
       }
     }
   }
+  

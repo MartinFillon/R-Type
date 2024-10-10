@@ -11,30 +11,30 @@
       "destroyable"
     ],
     "components": {
-      "life": 1,
+      "life": 100,
       "position": {
-          "x": 1944.0,
-          "y": 500.0
-      },
+          "x": 2000.0,
+          "y": 572.0
+        },
       "destroyable": false,
       "drawable": true,
       "controllable": {
           "controllable": false,
-          "speed": 1.8
+          "speed": 0.0
       },
-      "sprite": "r-typesheet5.gif",
+      "sprite": "r-typesheet32.gif",
       "animations": {
-          "width": 32,
-          "height": 35,
-          "x": 224,
+          "width": 255,
+          "height": 127,
+          "x": 260,
           "y": 0,
           "rotation": 0,
           "type": "ennemies",
-        "objectType": "basic"
+        "objectType": "boss"
       },
       "size": {
-          "width": 2.8,
-          "height": 2.8
+          "width": 4.0,
+          "height": 4.0
       }
     }
-  }
+}
