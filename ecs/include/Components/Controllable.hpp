@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Controllable component to know if the component is controllable by the player and his speed, this component is applicable to all component because they're speed is store in it
         struct Controllable {
             bool _controllable;
             double _speed;
