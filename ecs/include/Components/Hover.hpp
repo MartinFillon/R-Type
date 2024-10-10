@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Hover Component to know if the entity is Hover, it's stored a boolean to know it
         struct Hover {
             bool _value;
         };
