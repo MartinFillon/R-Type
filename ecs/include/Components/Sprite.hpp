@@ -22,6 +22,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Sprite Component, stored the path to the image of the entity as a string
         struct Sprite {
             std::string _pathToSprite;
         };
