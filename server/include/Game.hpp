@@ -73,6 +73,10 @@ namespace rtype {
         /// the `MAX_PLAYER_PLACES`.
         void makePlayerShoot(const int player_place);
 
+        std::shared_ptr<ecs::Registry> getRegistry();
+
+        const int getPlayerEntityIdByPlace(const int player_place);
+
       private:
         /// @brief The ECS's registry which stores and interacts with all entities and components.
         std::shared_ptr<ecs::Registry> _r;

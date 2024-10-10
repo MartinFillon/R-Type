@@ -155,3 +155,13 @@ void rtype::Game::setupBackground()
     _cf.createEntity("config/background/background_4.json");
     _r->add_system(ecs::systems::ParalaxSystem());
 }
+
+std::shared_ptr<ecs::Registry> rtype::Game::getRegistry()
+{
+    return _r;
+}
+
+const int rtype::Game::getPlayerEntityIdByPlace(const int player_place)
+{
+    return _players_entities_ids[player_place];
+}

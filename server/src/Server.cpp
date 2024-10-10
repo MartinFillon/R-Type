@@ -116,7 +116,8 @@ void rtype::Server::acceptConnections()
                 _players_clients_ids[player_place] = client_id;
 
                 _game.createPlayer(player_place);
-                _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
+                _clients[client_id].get()->send(
+                    Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
                 );
             }
             if (_clients[client_id]->isRunning())
@@ -233,7 +234,52 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
     }
     if (optCode == protocol::Operations::READY) {
         std::cout << "READ\n";
-        // todo send actual informations
+
+        auto r = _game.getRegistry();
+        auto &positions = r->get_components<ecs::component::Position>();
+        auto &animations = r->get_components<ecs::component::Animations>();
+        auto &drawables = r->get_components<ecs::component::Drawable>();
+        auto &sprites = r->get_components<ecs::component::Sprite>();
+        auto &sizes = r->get_components<ecs::component::Size>();
+        int entity_id = 0;
+
+        for (auto &&[draws, anim, sprite, size, pos] :
+             ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+            if (!draws || !anim || !sprite || !size || !pos) {
+                entity_id++;
+                continue;
+            }
+
+            if (anim->_object == ecs::component::Object::Player) {
+                for (int player_place = FIRST_PLAYER_PLACE; player_place < MAX_PLAYER_PLACES; player_place++) {
+                    const int player_entity_id = _game.getPlayerEntityIdByPlace(player_place);
+
+                    if (player_entity_id != entity_id)
+                        continue;
+
+                    const std::vector<uint8_t> player_entity_id_bits = getBitshiftedData(4, player_entity_id);
+
+                    sendToClient(
+                        client_id,
+                        Packet(
+                            protocol::NEW_OBJECT,
+                            {player_entity_id_bits[0],
+                             player_entity_id_bits[1],
+                             player_entity_id_bits[2],
+                             player_entity_id_bits[3],
+                             static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}
+                        )
+                    );
+                }
+                entity_id++;
+                continue;
+            }
+            if (anim->_object == ecs::component::Object::Weapon) {
+                sendToClient(client_id, Packet())
+            }
+
+            entity_id++;
+        }
         return;
     }
     if (optCode == protocol::Operations::PING) {

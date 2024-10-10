@@ -116,7 +116,8 @@ namespace rtype {
         int placeInPlayers();
         /// @brief Get a player's place from the given `client_id`.
         /// @param client_id an `int` representing the UDP client id of the player you want the place of.
-        /// @return `int` representing the player's place between `FRIST_PLAYER_PLACE` and `MAX_PLAYER_PALCES`.
+        /// @return `int` representing the player's place between `FRIST_PLAYER_PLACE` and `MAX_PLAYER_PALCES` if
+        /// client's player is found, -1 else.
         int getPlayerPlace(int client_id);
 
         /// @brief The global context of the backend server.
