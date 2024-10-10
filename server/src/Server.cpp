@@ -104,7 +104,7 @@ void rtype::Server::acceptConnections()
 
         std::lock_guard<std::mutex> lock(_mutex);
 
-        size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
+        std::size_t len = _socket.receive_from(asio::buffer(message), endpoint, 0, error);
 
         unsigned int client_id = generateClientId(endpoint);
         int player_place = placeInPlayers();
