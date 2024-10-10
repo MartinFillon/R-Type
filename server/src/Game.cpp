@@ -42,7 +42,7 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     int y = p->_y;
 
     args.reserve(sizeof(int) + sizeof(int) + sizeof(int));
-    for (size_t i = 0; i < sizeof(int); ++i) {
+    for (std::size_t i = 0; i < sizeof(int); ++i) {
         args.push_back(entity_id & 0xFF);
         args.push_back(x & 0xFF);
         args.push_back(y & 0xFF);
@@ -63,7 +63,7 @@ void rtype::Game::update(bool are_any_clients_connected)
         _systemClock.restart();
     }
 
-    for (size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
+    for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
         if (!positions[entity_id])
             continue;
         if (are_any_clients_connected)
