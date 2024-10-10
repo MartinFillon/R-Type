@@ -9,9 +9,91 @@
 #include <stdexcept>
 
 #include "Network.hpp"
+#include "ComponentFactory.hpp"
+#include "Components/Animations.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
+#include "Entity.hpp"
 #include "Protocol.hpp"
 
-client::Network::Network(): _context(), _resolver(_context), _socket(_context) {}
+client::Network::Network(): _context(), _resolver(_context), _socket(_context)
+{
+    _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        std::size_t id = received_packet.getArguments()[0];
+        auto &pos = r->get_components<ecs::component::Position>();
+
+        if (id > pos.size()) {
+            return;
+        }
+        int x = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
+        int y = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
+        // std::cerr << "pos x: " << x << " y: " << y << "\n";
+        pos[id]->_x = x;
+        pos[id]->_y = y;
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+
+        switch (received_packet.getArguments()[1]) {
+            case protocol::ObjectTypes::PLAYER_1:
+                factory.createEntity("config/player1.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_2:
+                factory.createEntity("config/player2.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_3:
+                factory.createEntity("config/player3.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_4:
+                factory.createEntity("config/player4.json");
+                break;
+            case protocol::ObjectTypes::ENEMY:
+                factory.createEntity("config/ennemies.json");
+                break;
+            case protocol::ObjectTypes::MILESPATES:
+                factory.createEntity("config/milepates.json");
+                break;
+            case protocol::ObjectTypes::BOSS:
+                factory.createEntity("config/boss.json");
+                break;
+            default:
+                break;        
+        }
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        std::size_t id = received_packet.getArguments()[0];
+
+        r->erase(id);
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        std::size_t id = received_packet.getArguments()[0];
+
+        r->erase(id);
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        std::size_t id = received_packet.getArguments()[0];
+
+        r->erase(id);
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        std::size_t id = received_packet.getArguments()[0];
+
+        r->erase(id);
+    }};
+
+}
 
 void client::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)
 {
@@ -41,6 +123,15 @@ int client::Network::setup(const std::string &host, const std::string &port)
     return SUCCESS;
 }
 
+void client::Network::updateRegistry(const rtype::Packet &received_packet)
+{
+    for (auto &[id, func]: _updateRegistryFunctions) {
+        if (received_packet.getOpcode() == id) {
+            func(_registry, received_packet);
+        }
+    }
+}
+
 int client::Network::run()
 {
     bool running = true;
@@ -55,24 +146,15 @@ int client::Network::run()
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
-        std::size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+        size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+
         rtype::Packet received_packet(message);
 
         if (!error && len) {
-            std::string str = "Received packet from server! Optcode: ";
-            str += std::to_string(received_packet.getOpcode()) += "\n";
-            if (!received_packet.getArguments().empty()) {
-                if (received_packet.getArguments()[0]) {
-                    str += "Arg0: ";
-                    str += std::to_string(received_packet.getArguments()[0]) += "\n";
-                }
-                if (received_packet.getArguments()[1]) {
-                    str += "Arg1: ";
-                    str += std::to_string(received_packet.getArguments()[1]) += "\n";
-                }
-            }
-            std::cout << str;
+            std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
         }
+
+        updateRegistry(received_packet);
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
             send(protocol::Operations::PING, {});

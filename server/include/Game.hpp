@@ -51,9 +51,9 @@ namespace rtype {
         void handleLeaving(const unsigned int player_place);
 
         /// @brief Get the packet queue of all the packets needed to be sent to the clients for update.
-        /// @return `std::queue<Packet> &` of the packets containing all the updated informations since the last tick.
+        /// @return `std::vector<Packet> &` of the packets containing all the updated informations since the last tick.
         /// The returned value is always at least an empty queue.
-        std::queue<Packet> &getPacketsToSend()
+        std::vector<Packet> &getPacketsToSend()
         {
             return _packetsToSend;
         }
@@ -85,7 +85,7 @@ namespace rtype {
         /// @brief The map of the players entities ids indexed by the players places.
         std::unordered_map<int, int> _players_entities_ids;
         /// @brief The queue of the packets containing the updated data since the last tick to be sent to the clients.
-        std::queue<Packet> _packetsToSend;
+        std::vector<Packet> _packetsToSend;
 
         /// @brief Creates a `Packet` of the player movement to be queued in the `_packetsToSend` queue.
         /// @param p a `const std::optional<ecs::component::Position> &` representing the reference to the player's

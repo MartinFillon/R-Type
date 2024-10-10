@@ -32,6 +32,7 @@ namespace protocol {
         RIGHT,
         DOWN,
         LEFT,
+        Space,
         DIRECTION_LENGTH, // must be at the end of the enum
     };
 

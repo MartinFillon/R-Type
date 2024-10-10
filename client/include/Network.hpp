@@ -13,6 +13,8 @@
 
     #include "Packet.hpp"
     #include "Registry.hpp"
+    #include "Protocol.hpp"
+    #include "Components/Position.hpp"
 
     #define ERROR 84
     #define SUCCESS 0
@@ -42,7 +44,7 @@ namespace client {
             int setup(const std::string &host, const std::string &port);
 
             int run();
-
+            void updateRegistry(const rtype::Packet &received_packet);
             void send(const rtype::Packet &packet);
             void send(const uint8_t opcode, const Arguments &arguments = {});
 
@@ -57,6 +59,8 @@ namespace client {
             ecs::Clock _keepaliveClock;
 
             std::shared_ptr<ecs::Registry> _registry;
+
+            std::unordered_map<protocol::Operations, std::function<void(std::shared_ptr<ecs::Registry> &, const rtype::Packet &)>> _updateRegistryFunctions;
 
     };
 

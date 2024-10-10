@@ -37,6 +37,7 @@ namespace client {
 
             int event();
             int display();
+            void setupBackground();
 
             Network &_network;
 
@@ -52,7 +53,8 @@ namespace client {
         { sf::Keyboard::Up,     protocol::Direction::UP       },
         { sf::Keyboard::Down,   protocol::Direction::DOWN     },
         { sf::Keyboard::Left,   protocol::Direction::LEFT     },
-        { sf::Keyboard::Right,  protocol::Direction::RIGHT    }
+        { sf::Keyboard::Right,  protocol::Direction::RIGHT    },
+        { sf::Keyboard::Space,  protocol::Direction::Space    }
     };
 
 };

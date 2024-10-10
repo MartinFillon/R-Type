@@ -14,6 +14,7 @@
 #include <unordered_map>
 
 #include "Client.hpp"
+#include "Clock.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
 
@@ -127,7 +128,7 @@ namespace rtype {
         int _port;
         /// @brief `true` if the server is connected and running, `false` otherwise.
         bool _running;
-
+        ecs::Clock _clock;
         /// @brief The game wrapper.
         rtype::Game _game;
 

@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <optional>
 #include <queue>
+#include <vector>
+#include "Game.hpp"
 #include "Protocol.hpp"
 
 rtype::Server::Server(int port)
@@ -155,11 +157,12 @@ void rtype::Server::processGame()
     while (_running) {
         _game.update(_clients.size() > 0 ? true : false);
 
-        std::queue<Packet> &packets = _game.getPacketsToSend();
+        std::vector<Packet> &packets = _game.getPacketsToSend();
 
-        while (!packets.empty()) {
+        while (!packets.empty() && _clock.getSeconds() > FRAME_PER_SECONDS(60)) {
             broadcast(packets.front());
-            packets.pop();
+            packets.erase(packets.begin());
+            _clock.restart();
         }
     }
 }

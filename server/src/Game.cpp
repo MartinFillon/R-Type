@@ -41,17 +41,21 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     int x = p->_x;
     int y = p->_y;
 
-    args.reserve(sizeof(int) + sizeof(int) + sizeof(int));
-    for (std::size_t i = 0; i < sizeof(int); ++i) {
-        args.push_back(entity_id & 0xFF);
-        args.push_back(x & 0xFF);
-        args.push_back(y & 0xFF);
-        entity_id >>= 8;
-        x >>= 8;
-        y >>= 8;
+    if (y < 0 || x < 0) {
+        return;
     }
 
-    _packetsToSend.push(Packet(protocol::Operations::OBJECT_POSITION, args));
+    std::cerr << "pos: " << x << " y: " << y << "\n";
+
+    args.push_back(entity_id);
+
+    args.push_back(x >> 8);
+    args.push_back(x & 0xFF);
+
+    args.push_back(y >> 8);
+    args.push_back(y & 0xFF);
+
+    _packetsToSend.push_back(Packet(protocol::Operations::OBJECT_POSITION, args));
 }
 
 void rtype::Game::update(bool are_any_clients_connected)
@@ -87,7 +91,7 @@ void rtype::Game::createPlayer(const unsigned int player_place)
     ecs::Entity e = _cf.createEntity(file);
 
     _players_entities_ids[player_place] = e.getId();
-    _packetsToSend.push(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
+    _packetsToSend.push_back(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
 }
 
 void rtype::Game::movePlayer(const int player_place, const int dir)
@@ -120,7 +124,7 @@ void rtype::Game::makePlayerShoot(int player_place)
     auto &positions = _r->get_components<ecs::component::Position>();
 
     positions[e.getId()] = positions[_players_entities_ids[player_place]];
-    _packetsToSend.push(Packet(
+    _packetsToSend.push_back(Packet(
         protocol::Operations::NEW_OBJECT,
         {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
     ));
@@ -133,18 +137,18 @@ void rtype::Game::setupDestroy()
 
 void rtype::Game::setupCollisons()
 {
-    _r->add_system(ecs::systems::CollisionsSystem());
+    // _r->add_system(ecs::systems::CollisionsSystem());
 }
 
 void rtype::Game::setupBosses()
 {
-    _r->add_system(ecs::systems::BossSystems());
+    // _r->add_system(ecs::systems::BossSystems());
 }
 
 void rtype::Game::setupBasicEnnemies()
 {
-    _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
-    _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+    // _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
+    // _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
 }
 
 void rtype::Game::setupBackground()

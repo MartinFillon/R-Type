@@ -8,10 +8,22 @@
 #include <iostream>
 
 #include "Game.hpp"
+#include "ComponentFactory.hpp"
 #include "Packet.hpp"
+#include "Systems/ParallaxSystem.hpp"
 #include "ZipperIterator.hpp"
 
 client::Game::Game(sf::RenderWindow &window, Network &network): _window(window), _network(network) {}
+
+void client::Game::setupBackground()
+{
+    // ecs::ComponentFactory factory(_registry, ecs::ComponentFactory::Mode::Client);
+    // factory.createEntity("config/background/background.json");
+    // factory.createEntity("config/background/background_2.json");
+    // factory.createEntity("config/background/background_3.json");
+    // factory.createEntity("config/background/background_4.json");
+    // _registry->add_system(ecs::systems::ParalaxSystem());
+}
 
 void client::Game::setRegistry(std::shared_ptr<ecs::Registry> registry)
 {
@@ -26,9 +38,11 @@ void client::Game::setRegistry(std::shared_ptr<ecs::Registry> registry)
 
 int client::Game::run()
 {
+    setupBackground();
     while (_window.isOpen()) {
         event();
         display();
+        _registry->run_systems();
     }
 
     return EXIT_SUCCESS;
@@ -60,9 +74,6 @@ int client::Game::display()
     if (_clock.getSeconds() < FRAME_PER_SECONDS(60)) {
         return EXIT_SUCCESS;
     }
-
-    _window.clear();
-    _window.display();
 
     auto &sizes = _registry->get_components<ecs::component::Size>();
     auto &sprites = _registry->get_components<ecs::component::Sprite>();
