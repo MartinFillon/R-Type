@@ -44,7 +44,7 @@ int rtype::Network::run()
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
-        size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+        std::size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
         Packet received_packet(message);
 
         if (!error && len)

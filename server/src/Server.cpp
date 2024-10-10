@@ -160,6 +160,7 @@ void rtype::Server::processGame()
         while (!packets.empty()) {
             broadcast(packets.front());
             packets.pop();
+            std::exit(0);
         }
     }
 }
@@ -254,9 +255,9 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 for (int player_place = FIRST_PLAYER_PLACE; player_place < MAX_PLAYER_PLACES; player_place++) {
                     const int player_entity_id = _game.getPlayerEntityIdByPlace(player_place);
 
-                    if (player_entity_id != entity_id)
+                    if (player_entity_id != entity_id) {
                         continue;
-
+                    }
                     sendToClient(
                         client_id,
                         Packet(
@@ -269,10 +270,16 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 entity_id++;
                 continue;
             }
-            // if (anim->_object == ecs::component::Object::Weapon) {
-            //     sendToClient(client_id, Packet())
-            // }
-
+            if (anim->_object == ecs::component::Object::Weapon) {
+                 sendToClient(
+                    client_id,
+                    Packet(
+                        protocol::NEW_OBJECT,
+                        {static_cast<uint8_t>(entity_id),
+                        static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+                    )
+                 );
+            }
             entity_id++;
         }
         return;
