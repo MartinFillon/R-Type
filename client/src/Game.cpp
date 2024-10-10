@@ -70,30 +70,30 @@ int client::Game::display()
     auto &positions = _registry->get_components<ecs::component::Position>();
     auto &animations = _registry->get_components<ecs::component::Animations>();
 
-    //_window.clear();
-//
-    //for (auto &&[draw, anim, spri, si, pos]: ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-//
-    //    if (!draw || !anim || !spri || !si || !pos) {
-    //        continue;
-    //    }
-//
-    //    if (spri->_pathToSprite.empty()) {
-    //        continue;
-    //    }
-//
-    //    sf::Sprite sprite;
-//
-    //    sprite.setPosition(pos->_x, pos->_y);
-    //    sprite.setScale(si->_width, si->_height);
-    //    sprite.setTexture(_textureManager.getTexture(spri->_pathToSprite));
-    //    sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-//
-    //    _window.draw(sprite);
-    //}
-//
-    //_clock.restart();
-    //_window.display();
+    _window.clear();
+
+    for (auto &&[draw, anim, spri, si, pos]: ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+
+        if (!draw || !anim || !spri || !si || !pos) {
+            continue;
+        }
+
+        if (spri->_pathToSprite.empty()) {
+            continue;
+        }
+
+        sf::Sprite sprite;
+
+        sprite.setPosition(pos->_x, pos->_y);
+        sprite.setScale(si->_width, si->_height);
+        sprite.setTexture(_textureManager.getTexture(spri->_pathToSprite));
+        sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
+
+        _window.draw(sprite);
+    }
+
+    _clock.restart();
+    _window.display();
 
     return EXIT_SUCCESS;
 }
