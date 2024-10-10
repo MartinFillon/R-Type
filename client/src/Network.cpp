@@ -5,30 +5,43 @@
 ** Network
 */
 
-#include "Network.hpp"
 #include <iostream>
 #include <stdexcept>
+
+#include "Network.hpp"
 #include "Protocol.hpp"
 
-rtype::Network::Network() : _context(), _resolver(_context), _socket(_context) {}
+client::Network::Network(): _context(), _resolver(_context), _socket(_context) {}
 
-int rtype::Network::setup(const std::string host, const std::string port)
+void client::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)
+{
+    _registry = registry;
+}
+
+int client::Network::setup(const std::string &host, const std::string &port)
 {
     try {
+
         _endpoint = *_resolver.resolve(UDP::v4(), host, port).begin();
         _socket.open(UDP::v4());
         _socket.non_blocking(true);
+
     } catch (const std::runtime_error &e) {
+
         std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
+        return ERROR;
+
     } catch (const std::exception &e) {
+
         std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
+        return ERROR;
+
     }
-    return EXIT_SUCCESS;
+
+    return SUCCESS;
 }
 
-int rtype::Network::run()
+int client::Network::run()
 {
     bool running = true;
 
@@ -36,14 +49,13 @@ int rtype::Network::run()
 
     context.detach();
 
-    Packet ready_packet(protocol::Operations::READY, {}); // Ready message to server
-
-    send(ready_packet);
+    send(rtype::Packet(protocol::Operations::READY));
 
     while (running) {
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
+<<<<<<< HEAD
         std::size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
         Packet received_packet(message);
 
@@ -61,6 +73,14 @@ int rtype::Network::run()
                 }
             }
             std::cout << str;
+=======
+        size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
+
+        rtype::Packet received_packet(message);
+
+        if (!error && len) {
+            std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
+>>>>>>> 91df836 (fix(client): refacto network class and add a registry to the class to update it when received packets)
         }
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
@@ -72,7 +92,7 @@ int rtype::Network::run()
     return EXIT_SUCCESS;
 }
 
-void rtype::Network::send(const Packet &packet)
+void client::Network::send(const rtype::Packet &packet)
 {
     if (!packet.isValid()) {
         std::cerr << "Packet is not valid" << std::endl;
@@ -82,16 +102,9 @@ void rtype::Network::send(const Packet &packet)
     _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
 }
 
-void rtype::Network::send(const Message &message)
+void client::Network::send(const uint8_t opcode, const Arguments &arguments)
 {
-    Packet packet(message);
-
-    send(packet);
-}
-
-void rtype::Network::send(const uint8_t opcode, const Arguments &arguments)
-{
-    Packet packet(opcode, arguments);
+    rtype::Packet packet(opcode, arguments);
 
     send(packet);
 }

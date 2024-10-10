@@ -6,19 +6,21 @@
 */
 
 #ifndef NETWORK_HPP_
-#define NETWORK_HPP_
+    #define NETWORK_HPP_
 
-#include <asio.hpp>
-#include <memory>
+    #include <memory>
+    #include <asio.hpp>
 
-#include "Packet.hpp"
-#include "Registry.hpp"
+    #include "Packet.hpp"
+    #include "Registry.hpp"
 
-#define DATA_MAX_SIZE 1024
+    #define ERROR 84
+    #define SUCCESS 0
 
-#define KEEPALIVE_TIMEOUT 1
+    #define DATA_MAX_SIZE 1024
+    #define KEEPALIVE_TIMEOUT 1
 
-namespace rtype {
+namespace client {
 
     class Network {
 
@@ -31,27 +33,33 @@ namespace rtype {
         using Message = std::vector<uint8_t>;
         using Arguments = std::vector<uint8_t>;
 
-      public:
-        Network();
+        public:
 
-        int setup(const std::string host, const std::string port);
+            Network();
 
-        int run();
+            void setRegistry(std::shared_ptr<ecs::Registry> registry);
 
-        void send(const Packet &packet);
-        void send(const Message &message);
-        void send(const uint8_t opcode, const Arguments &arguments = {});
+            int setup(const std::string &host, const std::string &port);
 
-      private:
-        Context _context;
-        Resolver _resolver;
-        Endpoint _endpoint;
+            int run();
 
-        Socket _socket;
+            void send(const rtype::Packet &packet);
+            void send(const uint8_t opcode, const Arguments &arguments = {});
 
-        ecs::Clock _keepaliveClock;
+        private:
+
+            Context _context;
+            Resolver _resolver;
+            Endpoint _endpoint;
+
+            Socket _socket;
+
+            ecs::Clock _keepaliveClock;
+
+            std::shared_ptr<ecs::Registry> _registry;
+
     };
 
-}; // namespace rtype
+};
 
 #endif /* !NETWORK_HPP_ */
