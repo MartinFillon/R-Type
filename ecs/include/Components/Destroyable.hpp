@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Destroyable component only store a boolean to know if the entity is destroyable or not
         struct Destroyable {
             bool _destroyable;
         };
