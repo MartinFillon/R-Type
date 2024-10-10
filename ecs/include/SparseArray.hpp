@@ -114,7 +114,7 @@ namespace ecs {
             return _data[idx];
         }
 
-        /// @brief size() method is to know the size of the container
+        /// @brief size method is to know the size of the container
         /// @return an std::size_t of the container 
         std::size_t size() const
         {
