@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Score component, store the score as a double to know the score of each entity
         struct Score {
             double _score;
         };
