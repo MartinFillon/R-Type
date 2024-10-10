@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Velocity Component, to have the velocity of an entity, it stored velocity x and y as a double
         struct Velocity {
             double _vx;
             double _vy;
