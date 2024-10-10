@@ -19,7 +19,6 @@ void rtype::GameClient::setupGame()
 
 int rtype::GameClient::run()
 {
-
     while (_gameWin.isOpen()) {
         sf::Event event;
         while (_gameWin.pollEvent(event)) {
