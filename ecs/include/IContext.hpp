@@ -11,14 +11,14 @@
 #define GAME_NAME "R-Type"
 
 namespace ecs {
-    /// @brief IContext class is an Interface of context. The GUI must have a class for window handling... that heritate of the IContext
+    /// @brief Interface representing the global runtime context.
     class IContext {
       public:
-        /// @brief virtual default destructor
+        /// @brief Virtual default constructor to overwrite.
         virtual ~IContext() = default;
 
-        /// @brief run method to run the GUI
-        /// @return it return an int, 0 in success, and error is what you prefered
+        /// @brief Runs the context.
+        /// @return `int` representing its status, 0 for ok, any other for error.
         virtual int run() = 0;
     };
 } // namespace ecs
