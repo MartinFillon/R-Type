@@ -64,7 +64,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 break;        
         }
     }};
-
+ 
     _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
