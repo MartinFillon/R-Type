@@ -28,7 +28,7 @@ rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::Compon
     _r->register_component<ecs::component::Sprite>();
     _r->register_component<ecs::component::Destroyable>();
 
-    setupBackground();
+    // setupBackground();
     setupBasicEnnemies();
     setupCollisons();
     setupDestroy();

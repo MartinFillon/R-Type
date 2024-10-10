@@ -29,7 +29,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         }
         int x = (received_packet.getArguments()[1]) + (received_packet.getArguments()[2]);
         int y = (received_packet.getArguments()[3]) + (received_packet.getArguments()[4]);
-        std::cerr << "pos x: " << x << " y: " << y << "\n";
+        // std::cerr << "pos x: " << x << " y: " << y << "\n";
         pos[id]->_x = x;
         pos[id]->_y = y;
     }};

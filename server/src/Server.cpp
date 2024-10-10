@@ -122,8 +122,10 @@ void rtype::Server::acceptConnections()
                     Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
                 );
             }
-            if (_clients[client_id]->isRunning())
+            if (_clients[client_id]->isRunning()) {
+                std::cerr << "OUAAAAAIIIIISSS\n";
                 handleMessage(client_id, message);
+            }
         }
 
         if (error && _clients.find(client_id) != _clients.end()) {
@@ -362,7 +364,7 @@ void rtype::Server::handleEvents(const unsigned int client_id, const Packet &pac
 
     if (event == protocol::Events::MOVE) {
         const uint8_t dir = packet.getArguments()[1];
-
+        std::cerr << "          MOVVVEEEE!!!!\n";
         _game.movePlayer(player_place, dir);
 
         return;

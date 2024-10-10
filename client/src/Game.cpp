@@ -5,6 +5,7 @@
 ** Game file
 */
 
+#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 
 #include "Game.hpp"
@@ -58,11 +59,31 @@ int client::Game::event()
             _window.close();
         }
 
-        for (auto &move: moves) {
-            if (event.type == sf::Keyboard::isKeyPressed(move.first)) {
-                _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, move.second });
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            std::cerr << "move UP\n";
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::UP});
         }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            std::cerr << "move Left\n";
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::LEFT});
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            std::cerr << "move Right\n";
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::RIGHT});
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            std::cerr << "move Down\n";
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::DOWN});
+        }
+
+
+        // for (auto &move: moves) {
+            // if (event.type == sf::Keyboard::isKeyPressed(move.first)) {
+            // }
+        // }
 
     }
 
