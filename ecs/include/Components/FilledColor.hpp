@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief FilledColor Component with double for r, g, b, a to stored the color with his transparency
         struct FilledColor {
             double _r;
             double _g;
