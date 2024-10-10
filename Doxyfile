@@ -951,7 +951,6 @@ WARN_LOGFILE           =
 
 INPUT                  = ./ecs \
                          ./server \
-                         ./client \
                          ./protocol \
 
 # This tag can be used to specify the character encoding of the source files
