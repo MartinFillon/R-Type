@@ -27,9 +27,9 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         if (id > pos.size()) {
             return;
         }
-        int x = (received_packet.getArguments()[1]) + (received_packet.getArguments()[2]);
-        int y = (received_packet.getArguments()[3]) + (received_packet.getArguments()[4]);
-        // std::cerr << "pos x: " << x << " y: " << y << "\n";
+        int x = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
+        int y = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
+
         pos[id]->_x = x;
         pos[id]->_y = y;
     }};
@@ -63,13 +63,6 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
             default:
                 break;        
         }
-    }};
- 
-    _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
-        std::size_t id = received_packet.getArguments()[0];
-
-        r->erase(id);
     }};
 
     _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
@@ -151,7 +144,7 @@ int client::Network::run()
         rtype::Packet received_packet(message);
 
         if (!error && len) {
-            std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
+            //std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
         }
 
         updateRegistry(received_packet);

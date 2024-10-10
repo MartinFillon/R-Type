@@ -41,10 +41,6 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     int x = p->_x;
     int y = p->_y;
 
-    if (y < 0 || x < 0) {
-        return;
-    }
-
     std::cerr << "pos: " << x << " y: " << y << "\n";
 
     args.push_back(entity_id);
