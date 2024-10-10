@@ -160,7 +160,6 @@ void rtype::Server::processGame()
         while (!packets.empty()) {
             broadcast(packets.front());
             packets.pop();
-            std::exit(0);
         }
     }
 }
@@ -174,7 +173,20 @@ void rtype::Server::sendToClient(const unsigned int client_id, const Packet &pac
     }
 
     if (_clients.find(client_id) != _clients.end()) {
-        std::cout << "Sent packet to client! Optcode: " << std::to_string(packet.getOpcode()) << std::endl;
+
+        std::string str = "Received packet from server! Optcode: ";
+        str += std::to_string(packet.getOpcode()) += "\n";
+        if (!packet.getArguments().empty()) {
+            if (packet.getArguments()[0]) {
+                str += "Arg0: ";
+                str += std::to_string(packet.getArguments()[0]) += "\n";
+            }
+            if (packet.getArguments()[1]) {
+                str += "Arg1: ";
+                str += std::to_string(packet.getArguments()[1]) += "\n";
+            }
+        }
+        std::cout << str;
         _clients[client_id]->send(packet);
     }
 }

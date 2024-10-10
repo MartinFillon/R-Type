@@ -51,12 +51,14 @@ int rtype::Network::run()
             std::string str = "Received packet from server! Optcode: ";
             str += std::to_string(received_packet.getOpcode()) += "\n";
             if (!received_packet.getArguments().empty()) {
-                if (received_packet.getArguments()[0])
+                if (received_packet.getArguments()[0]) {
                     str += "Arg0: ";
-                str += std::to_string(received_packet.getArguments()[0]) += "\n";
-                if (received_packet.getArguments()[1])
+                    str += std::to_string(received_packet.getArguments()[0]) += "\n";
+                }
+                if (received_packet.getArguments()[1]) {
                     str += "Arg1: ";
-                str += std::to_string(received_packet.getArguments()[1]) += "\n";
+                    str += std::to_string(received_packet.getArguments()[1]) += "\n";
+                }
             }
             std::cout << str;
         }
