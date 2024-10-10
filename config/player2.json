@@ -1,0 +1,40 @@
+{
+  "name": "player",
+  "active": [
+    "position",
+    "drawable",
+    "controllable",
+    "sprite",
+    "animations",
+    "size",
+    "destroyable",
+    "life"
+  ],
+  "components": {
+    "life": 3,
+    "position": {
+        "x": 100,
+        "y": 100
+    },
+    "destroyable": false,
+    "drawable": true,
+    "controllable": {
+        "controllable": true,
+        "speed": 0.9
+    },
+    "sprite": "r-typesheet42.gif",
+    "animations": {
+        "width": 33,
+        "height": 20,
+        "x": 65,
+        "y": 20,
+        "rotation": 0,
+        "type": "player",
+        "objectType": "none"
+    },
+    "size": {
+        "width": 3,
+        "height": 3
+    }
+  }
+}
