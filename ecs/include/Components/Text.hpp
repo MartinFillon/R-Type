@@ -12,6 +12,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Text Component, stored the text of the entity as a string
         struct Text {
             std::string _string;
         };
