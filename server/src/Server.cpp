@@ -292,15 +292,6 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 );
             }
             if (anim->_object == ecs::component::Object::Ennemies) {
-                sendToClient(
-                    client_id,
-                    Packet(
-                        protocol::NEW_OBJECT,
-                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
-                    )
-                );
-            }
-            if (anim->_object == ecs::component::Object::Ennemies) {
                 switch (anim->_type) {
                     case ecs::component::Type::Milespates:
                         sendToClient(
