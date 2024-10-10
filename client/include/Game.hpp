@@ -44,7 +44,7 @@ namespace client {
             std::shared_ptr<ecs::Registry> _registry;
 
             ecs::Clock _clock;
-            TextureManager _textureManager;
+            rtype::TextureManager _textureManager;
 
     };
 

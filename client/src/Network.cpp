@@ -55,9 +55,8 @@ int client::Network::run()
 
         Message message(DATA_MAX_SIZE);
         asio::error_code error;
-<<<<<<< HEAD
         std::size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
-        Packet received_packet(message);
+        rtype::Packet received_packet(message);
 
         if (!error && len) {
             std::string str = "Received packet from server! Optcode: ";
@@ -73,14 +72,6 @@ int client::Network::run()
                 }
             }
             std::cout << str;
-=======
-        size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
-
-        rtype::Packet received_packet(message);
-
-        if (!error && len) {
-            std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
->>>>>>> 91df836 (fix(client): refacto network class and add a registry to the class to update it when received packets)
         }
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
