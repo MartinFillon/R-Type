@@ -27,7 +27,7 @@ namespace ecs {
           public:
             void operator()(Registry &r)
             {
-                if (_clock.getMiliSeconds() < BACKGROUND_TICK) {
+                if (_clock.getMilliSeconds() < BACKGROUND_TICK) {
                     return;
                 }
                 _clock.restart();

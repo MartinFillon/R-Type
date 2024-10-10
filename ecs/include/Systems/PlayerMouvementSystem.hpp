@@ -28,7 +28,7 @@ namespace ecs {
           public:
             void operator()(Registry &r)
             {
-                if (_clock.getMiliSeconds() < PLAYER_MOUVEMENT_TICK) {
+                if (_clock.getMilliSeconds() < PLAYER_MOUVEMENT_TICK) {
                     return;
                 }
                 _clock.restart();

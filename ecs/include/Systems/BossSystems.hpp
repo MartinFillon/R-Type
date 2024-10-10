@@ -210,7 +210,7 @@ namespace ecs {
                         break;
                     }
 
-                    if (anim->_clock.getMiliSeconds() > 10 && pos->_x >= 1000) {
+                    if (anim->_clock.getMilliSeconds() > 10 && pos->_x >= 1000) {
                         pos->_x -= control->_speed;
                         anim->_clock.restart();
                     }

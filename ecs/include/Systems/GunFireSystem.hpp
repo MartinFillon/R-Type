@@ -54,7 +54,7 @@ namespace ecs {
 
             void operator()(Registry &r)
             {
-                if (_clock.getMiliSeconds() < PROJECTIL_TICK) {
+                if (_clock.getMilliSeconds() < PROJECTIL_TICK) {
                     return;
                 }
                 _clock.restart();

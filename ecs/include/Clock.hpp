@@ -15,38 +15,38 @@
 
 namespace ecs {
 
-    /// @brief Clock encapsulation to get a Clock and not an sf::Clock
+    /// @brief Class to wrap all the utilities of the system's clock.
     class Clock {
       public:
-        /// @brief Constructor of Clock, start a clock in his constructor
+        /// @brief Generates a `Clock` and starts it by setting its start time to now.
         Clock()
         {
             _start = std::chrono::system_clock::now();
         }
 
-        /// @brief restart method, reset the clock
+        /// @brief Sets the clock's start time to now.
         void restart()
         {
             _start = std::chrono::system_clock::now();
         }
 
-        /// @brief getSeconds time elapsed since the last start
-        /// @return the time as a double of the time elapsed since the last start, return it as seconds
+        /// @brief Get the elapsed time since the clock's start time in seconds.
+        /// @return `double` representing the elapsed time since the clock's start time in seconds.
         double getSeconds()
         {
             return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count();
         }
 
-        /// @brief getMiliSeconds time elapsed since the last start
-        /// @return the time as a double of the time elapsed since the last start, return it as Miliseconds
-        double getMiliSeconds()
+        /// @brief Get the elapsed time since the clock's start time in milliseconds.
+        /// @return `double` representing the elapsed time since the clock's start time in milliseconds.
+        double getMilliSeconds()
         {
             return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() *
                 SECONDS_TO_MILISECONDS;
         }
 
-        /// @brief getMiliSeconds time elapsed since the last start
-        /// @return the time as a double of the time elapsed since the last start, return it as MicroSeconds
+        /// @brief Get the elapsed time since the clock's start time in microseconds.
+        /// @return `double` representing the elapsed time since the clock's start time in microseconds.
         double getMicroSeconds()
         {
             return std::chrono::duration<double>(std::chrono::system_clock::now() - _start).count() *
@@ -54,7 +54,7 @@ namespace ecs {
         }
 
       private:
-        /// @brief is the chrono of the class
+        /// @brief The clock's start time.
         std::chrono::time_point<std::chrono::system_clock> _start;
     };
 

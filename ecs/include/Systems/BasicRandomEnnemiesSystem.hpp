@@ -126,7 +126,7 @@ namespace ecs {
 
             void operator()(Registry &r)
             {
-                if (_clock.getMiliSeconds() < ENNEMIES_TICK) {
+                if (_clock.getMilliSeconds() < ENNEMIES_TICK) {
                     return;
                 }
                 if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
@@ -144,7 +144,7 @@ namespace ecs {
                         continue;
                     }
 
-                    if (anim->_object == ecs::component::Object::Weapon && anim->_clock.getMiliSeconds() > 5) {
+                    if (anim->_object == ecs::component::Object::Weapon && anim->_clock.getMilliSeconds() > 5) {
                         pos->_x -= ctrl->_speed;
                         anim->_clock.restart();
                         continue;
@@ -163,7 +163,7 @@ namespace ecs {
                         anim->_clock.restart();
                     }
 
-                    if (anim->_clock.getMiliSeconds() > BASIC_ENNEMIES_SPEED_TICK) {
+                    if (anim->_clock.getMilliSeconds() > BASIC_ENNEMIES_SPEED_TICK) {
                         pos->_x -= ctrl->_speed;
                     }
 
