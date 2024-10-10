@@ -174,17 +174,7 @@ void rtype::Server::sendToClient(const unsigned int client_id, const Packet &pac
     }
 
     if (_clients.find(client_id) != _clients.end()) {
-        std::string str = "Sent packet to client! Optcode: ";
-        str += std::to_string(packet.getOpcode()) += "\n";
-        if (!packet.getArguments().empty()) {
-            if (packet.getArguments()[0])
-                str += "Arg0: ";
-                str += std::to_string(packet.getArguments()[0]) += "\n";
-            if (packet.getArguments()[1])
-                str += "Arg1: ";
-                str += std::to_string(packet.getArguments()[1]) += "\n";
-        }
-        std::cout << str;
+        std::cout << "Sent packet to client! Optcode: " << std::to_string(packet.getOpcode()) << std::endl;
         _clients[client_id]->send(packet);
     }
 }
@@ -287,6 +277,16 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                         protocol::NEW_OBJECT,
                         {static_cast<uint8_t>(entity_id),
                         static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+                    )
+                 );
+            }
+            if (anim->_object == ecs::component::Object::Ennemies) {
+                sendToClient(
+                    client_id,
+                    Packet(
+                        protocol::NEW_OBJECT,
+                        {static_cast<uint8_t>(entity_id),
+                        static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
                     )
                  );
             }
