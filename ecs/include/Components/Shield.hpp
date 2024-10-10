@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Shield component to store the shield of the entity as a double
         struct Shield {
             double _shield;
         };
