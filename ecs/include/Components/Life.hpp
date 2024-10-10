@@ -10,6 +10,7 @@
 
 namespace ecs {
     namespace component {
+        /// @brief Life component stored an integer of the life of the entity
         struct Life {
             int _life;
         };
