@@ -27,9 +27,9 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         if (id > pos.size()) {
             return;
         }
-        int x = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
-        int y = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
-        // std::cerr << "pos x: " << x << " y: " << y << "\n";
+        int x = (received_packet.getArguments()[1]) + (received_packet.getArguments()[2]);
+        int y = (received_packet.getArguments()[3]) + (received_packet.getArguments()[4]);
+        std::cerr << "pos x: " << x << " y: " << y << "\n";
         pos[id]->_x = x;
         pos[id]->_y = y;
     }};
@@ -55,7 +55,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/ennemies.json");
                 break;
             case protocol::ObjectTypes::MILESPATES:
-                factory.createEntity("config/milepates.json");
+                factory.createEntity("config/milespates.json");
                 break;
             case protocol::ObjectTypes::BOSS:
                 factory.createEntity("config/boss.json");
