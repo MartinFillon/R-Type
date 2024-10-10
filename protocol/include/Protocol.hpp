@@ -21,6 +21,8 @@ namespace protocol {
         BULLET,
         TEXT,
         BONUS,
+        MILESPATES,
+        BOSS,
         OBJECTSTYPES_LENGTH, // must be at the end of the enum
     };
 

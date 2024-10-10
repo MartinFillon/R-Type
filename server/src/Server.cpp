@@ -271,24 +271,54 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 continue;
             }
             if (anim->_object == ecs::component::Object::Weapon) {
-                 sendToClient(
+                sendToClient(
                     client_id,
                     Packet(
                         protocol::NEW_OBJECT,
-                        {static_cast<uint8_t>(entity_id),
-                        static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
                     )
-                 );
+                );
             }
             if (anim->_object == ecs::component::Object::Ennemies) {
                 sendToClient(
                     client_id,
                     Packet(
                         protocol::NEW_OBJECT,
-                        {static_cast<uint8_t>(entity_id),
-                        static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
+                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
                     )
-                 );
+                );
+            }
+            if (anim->_object == ecs::component::Object::Ennemies) {
+                switch (anim->_type) {
+                    case ecs::component::Type::Milespates:
+                        sendToClient(
+                            client_id,
+                            Packet(
+                                protocol::NEW_OBJECT,
+                                {static_cast<uint8_t>(entity_id),
+                                 static_cast<uint8_t>(protocol::ObjectTypes::MILESPATES)}
+                            )
+                        );
+                        break;
+                    case ecs::component::Type::Boss:
+                        sendToClient(
+                            client_id,
+                            Packet(
+                                protocol::NEW_OBJECT,
+                                {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BOSS)}
+                            )
+                        );
+                        break;
+                    default:
+                        sendToClient(
+                            client_id,
+                            Packet(
+                                protocol::NEW_OBJECT,
+                                {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
+                            )
+                        );
+                        break;
+                }
             }
             entity_id++;
         }
