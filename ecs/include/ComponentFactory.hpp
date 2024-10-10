@@ -16,110 +16,135 @@
 #include <unordered_map>
 
 namespace ecs {
-    /// @brief ComponentFactory is a class that make component from a json configuration file
+    /// @brief Class to wrap all the necessary functions to build components from json configs.
     class ComponentFactory {
       public:
-        /// @brief Mode of the factory, they are different if we are server side or client side, client will load useful drawable component and server not
+        /// @brief `enum` representing the mode of the component factory, server's one is much more complete than client's one.
         enum class Mode { Server, Client };
-        /// @brief Component Factory constructor, it will init an unorderd map of function and store it, string as a Key and function as a value
-        /// @param registry is a shared pointer reference to the registry of the game
-        /// @param mode is to set the mode, actions will be different if we are a server or a Client
+
+        /// @brief Generates a `ComponentFactory` creating in the process an unorderd map of function and store it, string as a Key and function as a value.
+        /// @param registry a `std::shared_ptr<Registry> &` representing the reference of the registry of the game.
+        /// @param mode `Mode::*` representing the mode of the component factory, actions will be different server and client versions.
         ComponentFactory(std::shared_ptr<Registry> &registry, Mode mode);
+
+        /// @brief Generates an empty `ComponentFactory`
+        /// @deprecated use `ComponentFactory(std::shared_ptr<Registry> &registry, Mode mode)` instead.
         ComponentFactory();
+
         ~ComponentFactory();
 
-        /// @brief createEntity method will create an entity and will entirely set in the registry, in the SparseArray.
-        /// @param file is the path to the config json file
-        /// @return an new Entity
+        /// @brief Creates an `Entity` and will entirely set it up in the registry `_r`.
+        /// @param file a `const std::string&` representing the reference to the json config file of the newly created entity.
+        /// @return `Entity` representing the newly created entity.
         Entity createEntity(const std::string &file);
-        /// @brief createComponent a component by the string, entity and the node in the json config file
-        /// @param e is the entity we want to set the compnent
-        /// @param component is the component we want
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a component by linking the factory's functions map and the given `component` string into the given entity `e` from the given json node reference `node`.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param component a `const std::string &` representing the reference of the name of the component to add to the entity.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createComponent(const Entity e, const std::string &component, const nlohmann::json &node);
 
       protected:
       private:
-        /// @brief shared pointer of the Registry shared with the game client
+        /// @brief The client's registry which stores and interacts with all entities and components.
         std::shared_ptr<Registry> _r;
 
-        /// @brief Create Position component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+        /// @brief Creates a `ecs::component::Position` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createPositionComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Destroy component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Destroyable` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createDestroyableComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Sprite component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Sprite` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createSpriteComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Animations component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Animation` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createAnimationsComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Parallax component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Parallax` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createParallaxComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Text component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Text` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createTextComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Clicked component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Clicked` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createClickedComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Controllable component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Controllable` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createControllableComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Drawable component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Drawable` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createDrawableComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Filled color component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::FilledColor` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createFilledColorComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Hover component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Hover` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createHoverComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Music component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Music` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createMusicComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Outlined Color component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::OutlinedColor` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createOutlinedColorComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Score component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Score` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createScoreComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Shield component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Shield` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createShieldComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Size component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Size` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createSizeComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Sound Effect component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::SoundEffect` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createSoundEffectComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Velocity component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Velocity` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createVelocityComponent(const Entity e, const nlohmann::json &node);
-        /// @brief Create Life component to set it to the entity we want to create
-        /// @param e is the entity
-        /// @param node is the node in the json config file
+
+        /// @brief Creates a `ecs::component::Life` component to link it to the entity in the creation process.
+        /// @param e a `const Entity` representing the entity to which to add the new component.
+        /// @param node a `const nlohmann:json &` representing the reference of the json node from which the new component will be created.
         void createLifeComponent(const Entity e, const nlohmann::json &node);
-        /// @brief functions is the map of name component (string) as key and function (create[name]Component) as value to create the component
+
+        /// @brief The map of the factory's functions indexed by an `std::string` key is the map of name component (string) as key and function (create[name]Component) as value to create the component
         std::unordered_map<std::string, std::function<void(const Entity, const nlohmann::json)>> functions;
     };
 
