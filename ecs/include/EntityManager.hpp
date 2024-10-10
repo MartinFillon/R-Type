@@ -16,57 +16,58 @@
 #define ENTITY_MANAGER_ERROR_OUT_OF_RANGE "Out of range"
 
 namespace ecs {
-    /// @brief EntityManager is a class for handling all Entity
+    /// @brief Class to wrap and manage all the entities of the ECS.
     class EntityManager {
       public:
-        /// @brief Default Constructor for entityManager
+        /// @brief Generates an empty `EntityManager`.
         EntityManager() = default;
 
-        /// @brief Constructor for push_back a first id in the EntityManager
-        /// @param id is the id of the first entity that will be push back
+        /// @brief Generates an `EntityManager` pushing in the process the given entity `id` into itself.
+        /// @param id a `const std::size_t &` representing the reference of the first entity id to push to the entity
+        /// manager.
         EntityManager(const std::size_t &id)
         {
             _entities.push_back(Entity(id));
         }
 
-        /// @brief Constructor for push_back a first Entity in the EntityManager
-        /// @param id is the Entity that will be the first in the EntityManager
+        /// @brief Generates an `EntityManager` pushing in the process the given entity into itself.
+        /// @param id a `const Entity &` representing the reference of the first entity to push to the entity manager.
         EntityManager(const Entity &id)
         {
             _entities.push_back(id);
         }
 
-        /// @brief EntityManager Error is here to handle the error of the EntityManager
+        /// @brief Class that handles the exceptions that can be lead to by the entity manager.
         class EntityManagerError : std::exception {
           public:
-            /// @brief EntityManagerError constructor take a string in parrameter and store it
-            /// @param message 
+            /// @brief Generates a `EntityManagerError` with the given `message` attached to it.
+            /// @param message a `std::string` representing the exception message.
             EntityManagerError(std::string message) : _message(message) {}
 
             ~EntityManagerError() = default;
 
-            /// @brief What method for a catch error
-            /// @return in const char *the message of the error
+            /// @brief Method for a catch error.
+            /// @return `const char *` representing the error's message.
             const char *what() const noexcept
             {
                 return _message.c_str();
             }
 
           private:
-            /// @brief Error message that have been set in the constructor
+            /// @brief The error's message.
             std::string _message;
         };
 
-        /// @brief addEntity is a method that add an entity to the Entity Manager
-        /// @param entity is the entity we want to add, if you have an std::size_t and not an Entity just call the Entity constructor like: "addEntity(Entity(std::size_t id))"
+        /// @brief Adds the given entity to the entity manager.
+        /// @param entity a `const Entity &` representing the reference of the entity to add to the manager.
         void addEntity(const Entity &entity)
         {
             _entities.push_back(entity);
         }
 
-        /// @brief operator[] method is to take an index of the EntityManager, to target an index, if it is superior it's throw an error
-        /// @param idx is the index we want in the entityManager
-        /// @return the Entity targeted
+        /// @brief Get the entity at the given `idx`.
+        /// @param idx a `const std::size_t &` representing the reference of the index to check.
+        /// @return `Entity` representing the found entity.
         Entity operator[](const std::size_t &idx)
         {
             if (idx > _entities.size()) {
@@ -76,8 +77,8 @@ namespace ecs {
             return _entities[idx];
         }
 
-        /// @brief erase method it to erase an id in the EntityManager
-        /// @param id is the Id we want to erase
+        /// @brief Erases the entity of id `id` in the entity manager.
+        /// @param id a `const std::size_t &` representing the id of the entity to erase.
         void erase(const std::size_t &id)
         {
             for (std::size_t i = 0; i < _entities.size(); ++i) {
@@ -88,22 +89,22 @@ namespace ecs {
             }
         }
 
-        /// @brief size method is to get the Size of the EntityManager
-        /// @return the size as a std::size_t of the EntityManager
+        /// @brief Get the amount of entities contained in the entity manager.
+        /// @return `std::size_t` representing the amount of entities in the entity manager.
         std::size_t size() const
         {
             return _entities.size();
         }
 
-        /// @brief lastEntity method is to get the last entity of the EntityManager
-        /// @return the last entityof the EntityManager
+        /// @brief Get the last entity of the stored entities in the entity manager.
+        /// @return `Entity` representing the last entity of the stored entities in the entity manager
         Entity lastEntity() const
         {
             return _entities[_entities.size() - 1];
         }
 
       private:
-        /// @brief _entities is the vector of all Entity, it stored EntityClasses
+        /// @brief The list of the entities managed by the entity manager.
         std::vector<Entity> _entities;
     };
 }; // namespace ecs
