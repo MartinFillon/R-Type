@@ -12,7 +12,8 @@
 
 namespace ecs {
     namespace component {
-        struct SoundEffect {
+        /// @brief Music Component, that stored a path to the music as a string
+        struct Music {
             std::string _pathToMusic;
         };
     }; // namespace component
