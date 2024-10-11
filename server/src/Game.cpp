@@ -117,6 +117,7 @@ namespace rtype::server {
 
         positions[e.getId()] = positions[_players_entities_ids[player_place]];
         _ctx->createProjectile(e.getId());
+        _ctx->moveObject(e.getId(), positions[e.getId()]->_x, positions[e.getId()]->_y);
     }
 
     void Game::setupDestroy()

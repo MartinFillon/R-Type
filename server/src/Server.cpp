@@ -262,7 +262,7 @@ namespace rtype::server {
 
         if (optCode == protocol::Operations::READY) {
 
-            const unsigned int id = placeInPlayers();
+            const unsigned int id = getPlayerPlace(client_id);
             ecs::Entity e = _game.createPlayer(id);
 
             auto r = _game.getRegistry();
@@ -341,13 +341,12 @@ namespace rtype::server {
 
         if (event == protocol::Events::MOVE) {
             const uint8_t dir = packet.getArguments()[1];
-            _game.movePlayer(player_place + 1, dir);
+            _game.movePlayer(player_place, dir);
         }
 
         if (event == protocol::Events::SHOOT) {
             const int player_place = getPlayerPlace(client_id);
-
-            if (player_place > 0) {
+            if (player_place >= 0) {
                 _game.makePlayerShoot(player_place);
             }
         }

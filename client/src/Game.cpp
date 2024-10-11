@@ -6,6 +6,7 @@
 */
 
 #include <SFML/Window/Keyboard.hpp>
+#include <iostream>
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
@@ -61,6 +62,7 @@ namespace rtype::client {
                 }
 
                 if (event.key.code == sf::Keyboard::X) {
+                    std::cerr << "shoot" << std::endl;
                     _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
                 }
             }

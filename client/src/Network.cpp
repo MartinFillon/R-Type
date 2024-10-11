@@ -23,27 +23,7 @@ namespace rtype::client {
     Network::Network() : _context(), _resolver(_context), _socket(_context)
     {
         _updateRegistryFunctions[protocol::Operations::WELCOME] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                      const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-
-            // std::cerr << "Welcome\n";
-            // switch (received_packet.getArguments()[0]) {
-            //     case protocol::ObjectTypes::PLAYER_1:
-            //         factory.createEntity("config/player0.json");
-            //         break;
-            //     case protocol::ObjectTypes::PLAYER_2:
-            //         factory.createEntity("config/player1.json");
-            //         break;
-            //     case protocol::ObjectTypes::PLAYER_3:
-            //         factory.createEntity("config/player2.json");
-            //         break;
-            //     case protocol::ObjectTypes::PLAYER_4:
-            //         factory.createEntity("config/player3.json");
-            //         break;
-            //     default:
-            //         break;
-            // }
-        }};
+                                                                      const protocol::Packet &received_packet) {}};
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                               const protocol::Packet &received_packet) {
