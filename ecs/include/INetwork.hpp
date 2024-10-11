@@ -8,9 +8,12 @@
 #ifndef INETWORK_HPP_
 #define INETWORK_HPP_
 
+#include <memory>
 #include "Packet.hpp"
 
 namespace ecs {
+    class IContext;
+
     class INetwork {
       public:
         virtual ~INetwork() = default;
@@ -22,7 +25,7 @@ namespace ecs {
 
         /// @brief Runs the server
         /// @return Always `EXIT_SUCCESS` for now.
-        virtual int run() = 0;
+        virtual int run(std::shared_ptr<IContext> &) = 0;
 
       protected:
       private:

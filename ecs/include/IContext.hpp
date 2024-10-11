@@ -18,7 +18,7 @@ namespace ecs {
       public:
         IContext() = default;
 
-        IContext(std::shared_ptr<INetwork> &network) : _network(network) {}
+        IContext(std::shared_ptr<INetwork> network) : _network(network) {}
 
         virtual ~IContext() = default;
 

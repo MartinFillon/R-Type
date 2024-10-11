@@ -9,6 +9,7 @@
 #define SERVER_HPP_
 
 #include <asio.hpp>
+#include <memory>
 #include <mutex>
 #include <vector>
 #include <unordered_map>
@@ -38,7 +39,7 @@
 namespace rtype {
 
     /// @brief Class of the server's context.
-    class Server : ecs::INetwork {
+    class Server : public ecs::INetwork {
 
         using Message = std::vector<uint8_t>;
         using Client = std::shared_ptr<rtype::Client>;
@@ -55,11 +56,11 @@ namespace rtype {
 
         /// @brief Runs the server by launching the `start()` function of the server.
         /// @return Always `EXIT_SUCCESS` for now.
-        int run() override;
+        int run(std::shared_ptr<ecs::IContext> &ctx) override;
 
         /// @brief Starts the server by setting up all the networking, the data with the global context, and creates the
         /// necessary threads.
-        void start();
+        void start(std::shared_ptr<ecs::IContext> &ctx);
 
         /// @brief Stops the server by disconnecting all the clients and closing the networking.
         void stop();
@@ -98,7 +99,8 @@ namespace rtype {
 
         /// @brief Loops the main game loop by updating the game state and broadcasting all the packets stored in the
         /// packet queue.
-        void processGame();
+        /// @param ctx a `std::shared_ptr<ecs::IContext>` representing the reference to the global context of the
+        void processGame(std::shared_ptr<ecs::IContext> ctx);
 
         /// @brief Sends the given `packet` to the client which has as its id `client_id`.
         /// @param client_id a `const unsigned int` representing the id of the client to send the given `packet`.

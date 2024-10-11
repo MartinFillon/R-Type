@@ -7,16 +7,15 @@
 
 #include "Server.hpp"
 #include <cstdint>
+#include <iostream>
 #include <memory>
 #include <optional>
-#include <queue>
 #include <vector>
 #include "Components/Animations.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
+#include "IContext.hpp"
 #include "Protocol.hpp"
-#include "Registry.hpp"
-#include "asio/posix/descriptor_base.hpp"
 
 rtype::Server::Server(int port)
     : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
@@ -28,21 +27,21 @@ rtype::Server::Server(int port)
     }
 };
 
-int rtype::Server::run()
+int rtype::Server::run(std::shared_ptr<ecs::IContext> &context)
 {
-    start();
+    start(context);
 
     return EXIT_SUCCESS;
 }
 
-void rtype::Server::start()
+void rtype::Server::start(std::shared_ptr<ecs::IContext> &ctx)
 {
     std::cout << SERVER_START(_port) << std::endl;
 
     std::thread context([&]() { _context.run(); });
 
     std::thread acceptConnections(&Server::acceptConnections, this);
-    std::thread processGame(&Server::processGame, this);
+    std::thread processGame(&Server::processGame, this, ctx);
 
     context.detach();
 
@@ -50,7 +49,7 @@ void rtype::Server::start()
     processGame.join();
 }
 
-void rtype::Server::stop()
+void rtype::Server::stop(void)
 {
     _running = false;
     _socket.close();
@@ -124,7 +123,7 @@ int rtype::Server::countCurrentPlayer()
     return count;
 }
 
-void rtype::Server::acceptConnections()
+void rtype::Server::acceptConnections(void)
 {
     while (_running) {
 
@@ -184,10 +183,10 @@ void rtype::Server::disconnectClient(const unsigned int client_id)
     removeClient(client_id);
 }
 
-void rtype::Server::processGame()
+void rtype::Server::processGame(std::shared_ptr<ecs::IContext> ctx)
 {
     while (_running) {
-        _game.update(_clients.size() > 0 ? true : false);
+        _game.update(_clients.size() > 0);
 
         std::vector<ecs::Packet> &packets = _game.getPacketsToSend();
 

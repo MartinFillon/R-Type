@@ -9,8 +9,6 @@
 #define CLIENT_HPP_
 
 #include <asio.hpp>
-#include <iostream>
-#include <thread>
 #include <vector>
 
 #include "Clock.hpp"

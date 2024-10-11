@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -17,6 +18,10 @@
 #include "Game.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/CollisionsSystem.hpp"
+#include "Systems/DestroySystem.hpp"
+#include "Systems/ParallaxSystem.hpp"
 
 rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::ComponentFactory::Mode::Client)
 {

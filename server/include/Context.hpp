@@ -14,10 +14,10 @@
 #include "INetwork.hpp"
 
 namespace rtype {
-    class Context : ecs::IContext {
+    class Context : public ecs::IContext {
       public:
-        Context(std::shared_ptr<ecs::INetwork> &network) : ecs::IContext(network) {};
-        ~Context();
+        Context(std::shared_ptr<ecs::INetwork> network) : ecs::IContext(network) {};
+        ~Context() {};
 
       protected:
       private:

@@ -18,19 +18,9 @@
 
 #define SERVER_TPS 20
 
-#include <iostream>
-#include <queue>
-
 #include "ComponentFactory.hpp"
 #include "Packet.hpp"
 #include "Registry.hpp"
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
-#include "Systems/BossSystems.hpp"
-#include "Systems/CollisionsSystem.hpp"
-#include "Systems/DestroySystem.hpp"
-#include "Systems/EnnemiesMilespatesSystem.hpp"
-#include "Systems/ParallaxSystem.hpp"
-#include "ZipperIterator.hpp"
 
 namespace rtype {
 

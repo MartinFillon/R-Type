@@ -6,6 +6,7 @@
 */
 
 #include "Client.hpp"
+#include <iostream>
 #include "Server.hpp"
 
 rtype::Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
