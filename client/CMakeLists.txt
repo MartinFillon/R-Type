@@ -6,17 +6,26 @@ include(FetchContent)
 FetchContent_Declare(
   SFML
   GIT_REPOSITORY https://github.com/SFML/SFML.git
-
   GIT_TAG 2.6.x
   GIT_SHALLOW ON
   EXCLUDE_FROM_ALL SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(r-type_client src/main.cpp src/Gui.cpp src/Network.cpp src/Packet.cpp src/TextureManager.cpp src/Menu.cpp src/GameClient.cpp)
+add_executable(
+  r-type_client
+  src/Main.cpp
+  src/Gui.cpp
+  src/Network.cpp
+  src/TextureManager.cpp
+  src/Menu.cpp
+  src/Game.cpp
+  src/RegistryWrapper.cpp)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
-target_include_directories(r-type_client PUBLIC ../ecs/include include ../protocol)
+target_include_directories(r-type_client PUBLIC ../ecs/include include
+                                                ../protocol/include)
 target_link_libraries(r-type_client ecs)
+target_link_libraries(r-type_client protocol)
 target_link_libraries(r-type_client asio)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 

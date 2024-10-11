@@ -20,14 +20,14 @@
     "drawable": true,
     "controllable": {
         "controllable": true,
-        "speed": 0.9
+        "speed": 4
     },
     "sprite": "r-typesheet42.gif",
     "animations": {
         "width": 33,
         "height": 20,
         "x": 65,
-        "y": 0,
+        "y": 18,
         "rotation": 0,
         "type": "player",
         "objectType": "none"

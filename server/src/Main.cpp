@@ -5,7 +5,22 @@
 ** Main
 */
 
+#include <memory>
+
+#include <iostream>
+#include "Context.hpp"
+#include "INetwork.hpp"
 #include "Server.hpp"
+
+std::shared_ptr<ecs::INetwork> create_network(int port)
+{
+    return std::make_shared<rtype::server::Server>(port);
+}
+
+std::shared_ptr<ecs::IContext> create_context(std::shared_ptr<ecs::INetwork> &network)
+{
+    return std::make_shared<rtype::server::Context>(network);
+}
 
 int main(int ac, char **av)
 {
@@ -14,7 +29,10 @@ int main(int ac, char **av)
         return R_TYPE_ERROR;
     }
 
-    Rtype::Server server(std::atoi(av[PORT]));
+    int port = std::stoi(av[PORT]);
 
-    return server.run();
+    auto server = create_network(port);
+    auto ctx = create_context(server);
+
+    return server->run(ctx);
 }

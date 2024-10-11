@@ -1,0 +1,40 @@
+{
+  "name": "ennemies",
+  "active": [
+    "position",
+    "drawable",
+    "controllable",
+    "sprite",
+    "animations",
+    "size",
+    "life",
+    "destroyable"
+  ],
+  "components": {
+    "life": 1,
+    "position": {
+      "x": 1944.0,
+      "y": 80.0
+    },
+    "destroyable": false,
+    "drawable": true,
+    "controllable": {
+      "controllable": false,
+      "speed": 3
+    },
+    "sprite": "r-typesheet8.gif",
+    "animations": {
+      "width": 30,
+      "height": 30,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "type": "ennemies",
+      "objectType": "milepates"
+    },
+    "size": {
+      "width": 2.8,
+      "height": 2.8
+    }
+  }
+}

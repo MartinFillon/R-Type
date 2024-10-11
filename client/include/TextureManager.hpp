@@ -15,7 +15,7 @@
 
 #define PATH_TO_ASSETS "assets/sprites/"
 
-namespace rtype {
+namespace rtype::client {
     class TextureManager {
       public:
         TextureManager();
@@ -25,6 +25,6 @@ namespace rtype {
       private:
         std::unordered_map<std::string, std::unique_ptr<sf::Texture>> _textures;
     };
-} // namespace rtype
+} // namespace rtype::client
 
 #endif /* !TEXTUREMANAGER_HPP_ */

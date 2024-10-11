@@ -1,5 +1,5 @@
 {
-  "name": "projectile",
+  "name": "player",
   "active": [
     "position",
     "drawable",
@@ -7,27 +7,29 @@
     "sprite",
     "animations",
     "size",
+    "destroyable",
     "life"
   ],
   "components": {
-    "life": 1,
+    "life": 3,
     "position": {
-        "x": 0,
-        "y": 0
+        "x": 100,
+        "y": 100
     },
+    "destroyable": false,
     "drawable": true,
     "controllable": {
         "controllable": true,
-        "speed": 5
+        "speed": 4
     },
-    "sprite": "r-typesheetGun.gif",
+    "sprite": "r-typesheet42.gif",
     "animations": {
-        "width": 18,
-        "height": 12,
-        "x": 0,
-        "y": 0,
+        "width": 33,
+        "height": 20,
+        "x": 65,
+        "y": 36,
         "rotation": 0,
-        "type": "weapon",
+        "type": "player",
         "objectType": "none"
     },
     "size": {

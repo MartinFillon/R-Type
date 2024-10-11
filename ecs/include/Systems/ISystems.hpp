@@ -8,13 +8,14 @@
 #ifndef ISYSTEMS_HPP_
 #define ISYSTEMS_HPP_
 
+#include "IContext.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
     namespace systems {
         class ISystems {
           public:
-            virtual void operator()(Registry &) = 0;
+            virtual void operator()(Registry &, std::shared_ptr<IContext> ctx) = 0;
         };
     }; // namespace systems
 }; // namespace ecs

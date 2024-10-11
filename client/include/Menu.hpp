@@ -8,6 +8,9 @@
 #ifndef MENU_HPP_
 #define MENU_HPP_
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #define TITLE_FONT "assets/fonts/ARCADE_I.ttf"
 #define TEXT_FONT "assets/fonts/OpenSans-Semibold.ttf"
 #define BUTTON_PLAY "Play"
@@ -33,19 +36,17 @@
 #define PARA_SPEED 10.f
 #define BG_PATH "assets/sprites/Background/background_2.png"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+namespace rtype::client {
 
-namespace rtype {
     class Menu {
+
       public:
         Menu(sf::RenderWindow &window);
-        ~Menu() = default;
+
         void setupMenu();
         std::string launchMenu();
 
       private:
-        // text part
         sf::RenderWindow &_win;
 
         sf::Font _fontTitle;
@@ -75,5 +76,7 @@ namespace rtype {
         float _bgScaleY;
         float _bgOffset;
     };
-} // namespace rtype
+
+}; // namespace rtype::client
+
 #endif /* !MENU_HPP_ */

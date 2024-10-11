@@ -12,13 +12,16 @@
 #include <memory>
 
 #include "Packet.hpp"
+#include "Protocol.hpp"
 #include "Registry.hpp"
 
-#define DATA_MAX_SIZE 1024
+#define ERROR 84
+#define SUCCESS 0
 
+#define DATA_MAX_SIZE 1024
 #define KEEPALIVE_TIMEOUT 1
 
-namespace rtype {
+namespace rtype::client {
 
     class Network {
 
@@ -34,15 +37,14 @@ namespace rtype {
       public:
         Network();
 
-        int setup(const std::string host, const std::string port);
+        void setRegistry(std::shared_ptr<ecs::Registry> registry);
+
+        int setup(const std::string &host, const std::string &port);
 
         int run();
-
-        void send(const Packet &packet);
-        void send(const Message &message);
+        void updateRegistry(const protocol::Packet &received_packet);
+        void send(const protocol::Packet &packet);
         void send(const uint8_t opcode, const Arguments &arguments = {});
-
-        void setRegistry(std::shared_ptr<ecs::Registry> registry);
 
       private:
         Context _context;
@@ -54,8 +56,12 @@ namespace rtype {
         ecs::Clock _keepaliveClock;
 
         std::shared_ptr<ecs::Registry> _registry;
+        std::size_t _id;
+        std::unordered_map<
+            protocol::Operations,
+            std::function<void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &)>>
+            _updateRegistryFunctions;
     };
 
-}; // namespace rtype
-
+}; // namespace rtype::client
 #endif /* !NETWORK_HPP_ */

@@ -10,8 +10,7 @@
 
 #include "TextureManager.hpp"
 
-namespace rtype {
-
+namespace rtype::client {
     TextureManager::TextureManager()
     {
         for (const auto &entry : std::filesystem::directory_iterator(PATH_TO_ASSETS)) {
@@ -39,5 +38,4 @@ namespace rtype {
     {
         return *_textures[pathToImage];
     }
-
-} // namespace rtype
+} // namespace rtype::client
