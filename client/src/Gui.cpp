@@ -6,10 +6,13 @@
 */
 
 #include "Gui.hpp"
+#include "RegistryWrapper.hpp"
 
-client::Gui::Gui(): ecs::IContext(), _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
+client::Gui::Gui()
+    : ecs::IContext(), _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window),
+      _game(_window, _network)
 {
-    _registry = std::make_shared<ecs::Registry>();
+    _registry = std::make_shared<rtype::RegistryWrapper>();
 }
 
 int client::Gui::run()
@@ -23,7 +26,7 @@ int client::Gui::run()
     }
 
     _game.setRegistry(_registry);
-    _network.setRegistry(_registry);
+    _network.setRegistry(_registry->getServerRegistry());
 
     std::thread network = std::thread(&client::Network::run, std::ref(_network));
 

@@ -6,47 +6,45 @@
 */
 
 #ifndef GUI_HPP_
-    #define GUI_HPP_
+#define GUI_HPP_
 
-    #include <memory>
-    #include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
+#include <memory>
 
-    #include "Menu.hpp"
-    #include "Game.hpp"
-    #include "Network.hpp"
-    #include "IContext.hpp"
-    #include "Registry.hpp"
-    #include "ComponentFactory.hpp"
+#include "ComponentFactory.hpp"
+#include "Game.hpp"
+#include "IContext.hpp"
+#include "Menu.hpp"
+#include "Network.hpp"
+#include "Registry.hpp"
+#include "RegistryWrapper.hpp"
 
-    #define ERROR 84
-    #define SUCCESS 0
+#define ERROR 84
+#define SUCCESS 0
 
-    #define WIN_WIDTH 1920
-    #define WIN_HEIGHT 1080
+#define WIN_WIDTH 1920
+#define WIN_HEIGHT 1080
 
 namespace client {
 
     class Gui : ecs::IContext {
 
-        public:
+      public:
+        Gui();
 
-            Gui();
+        int run();
 
-            int run();
+      private:
+        sf::RenderWindow _window;
 
-        private:
+        Network _network;
 
-            sf::RenderWindow _window;
+        Menu _menu;
+        Game _game;
 
-            Network _network;
-
-            Menu _menu;
-            Game _game;
-
-            std::shared_ptr<ecs::Registry> _registry;
-
+        std::shared_ptr<rtype::RegistryWrapper> _registry;
     };
 
-};
+}; // namespace client
 
 #endif /* !GUI_HPP_ */
