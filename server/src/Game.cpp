@@ -41,7 +41,7 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     int x = p->_x;
     int y = p->_y;
 
-    std::cerr << "pos: " << x << " y: " << y << "\n";
+    //std::cerr << "pos: " << x << " y: " << y << "\n";
 
     args.push_back(entity_id);
 
@@ -87,7 +87,7 @@ void rtype::Game::createPlayer(const unsigned int player_place)
     ecs::Entity e = _cf.createEntity(file);
 
     _players_entities_ids[player_place] = e.getId();
-    _packetsToSend.push_back(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place)}));
+    _packetsToSend.push_back(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place), static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}));
 }
 
 void rtype::Game::movePlayer(const int player_place, const int dir)

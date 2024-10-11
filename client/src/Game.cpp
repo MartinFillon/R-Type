@@ -60,30 +60,20 @@ int client::Game::event()
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            std::cerr << "move UP\n";
-            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::UP});
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::UP });
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            std::cerr << "move Left\n";
-            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::LEFT});
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::LEFT });
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            std::cerr << "move Right\n";
-            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::RIGHT});
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::RIGHT });
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            std::cerr << "move Down\n";
-            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::DOWN});
+            _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, protocol::Direction::DOWN });
         }
-
-
-        // for (auto &move: moves) {
-            // if (event.type == sf::Keyboard::isKeyPressed(move.first)) {
-            // }
-        // }
 
     }
 

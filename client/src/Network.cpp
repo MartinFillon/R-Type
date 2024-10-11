@@ -12,6 +12,7 @@
 #include "Network.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
@@ -40,11 +41,14 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
     _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = 
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+        std::cerr << "arg: (" << static_cast<int>(received_packet.getArguments()[1]) << ")\n";
+
         switch (received_packet.getArguments()[1]) {
             case protocol::ObjectTypes::PLAYER_1:
                 factory.createEntity("config/player1.json");
                 break;
             case protocol::ObjectTypes::PLAYER_2:
+                std::cerr << "Player 2 created NEW Player\n";
                 factory.createEntity("config/player2.json");
                 break;
             case protocol::ObjectTypes::PLAYER_3:
@@ -54,6 +58,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/player4.json");
                 break;
             default:
+                std::cerr << "none NEW Player\n";
                 break;
         }
     }};
@@ -63,6 +68,19 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         switch (received_packet.getArguments()[1]) {
+            case protocol::ObjectTypes::PLAYER_1:
+                factory.createEntity("config/player1.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_2:
+                std::cerr << "Player 2 created NEW Object\n";
+                factory.createEntity("config/player2.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_3:
+                factory.createEntity("config/player3.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_4:
+                factory.createEntity("config/player4.json");
+                break;
             case protocol::ObjectTypes::ENEMY:
                 factory.createEntity("config/ennemies.json");
                 break;
@@ -73,6 +91,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/boss.json");
                 break;
             default:
+                std::cerr << "none NEW Object\n";
                 break;        
         }
     }};
@@ -156,6 +175,9 @@ int client::Network::run()
         rtype::Packet received_packet(message);
 
         if (!error && len) {
+            if (received_packet.getOpcode() == protocol::Operations::NEW_PLAYER) {
+                std::cout << "new player detect\n";
+            }
             //std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
         }
 

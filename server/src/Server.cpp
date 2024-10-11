@@ -12,6 +12,7 @@
 #include <vector>
 #include "Game.hpp"
 #include "Protocol.hpp"
+#include "asio/posix/descriptor_base.hpp"
 
 rtype::Server::Server(int port)
     : _context(), _port(port), _running(true), _socket(_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
@@ -25,7 +26,7 @@ rtype::Server::Server(int port)
 
 int rtype::Server::run()
 {
-    this->start();
+    start();
 
     return EXIT_SUCCESS;
 }
@@ -55,8 +56,6 @@ void rtype::Server::stop()
 
 void rtype::Server::broadcast(const Packet &packet)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
-
     if (!packet.isValid()) {
         return;
     }
@@ -95,6 +94,19 @@ int rtype::Server::getPlayerPlace(int client_id)
     return -1;
 }
 
+int rtype::Server::countCurrentPlayer()
+{
+    int count = 0;
+
+    for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
+        if (_players_clients_ids[player_place] != std::nullopt) {
+            count += 1;
+        }
+    }
+
+    return count;
+}
+
 void rtype::Server::acceptConnections()
 {
     while (_running) {
@@ -117,11 +129,15 @@ void rtype::Server::acceptConnections()
                 _clients[client_id] = std::make_shared<rtype::Client>(client_id, *this, endpoint, _socket);
                 _players_clients_ids[player_place] = client_id;
 
-                _game.createPlayer(player_place);
+                std::cout << "create =>" << placeInPlayers() << "\n";
+                _game.createPlayer(placeInPlayers());
+
                 _clients[client_id].get()->send(
                     Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
                 );
+
             }
+
             if (_clients[client_id]->isRunning()) {
                 handleMessage(client_id, message);
             }
@@ -170,8 +186,6 @@ void rtype::Server::processGame()
 
 void rtype::Server::sendToClient(const unsigned int client_id, const Packet &packet)
 {
-    // std::lock_guard<std::mutex> lock(_mutex);
-
     if (!packet.isValid()) {
         return;
     }
@@ -246,32 +260,26 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
         auto &sizes = r->get_components<ecs::component::Size>();
         int entity_id = 0;
 
+        int size = countCurrentPlayer();
+        std::cout << "player size: " << size << "\n";
+        for (int player_place = FIRST_PLAYER_PLACE; player_place < size; ++player_place) {
+            std::cout << "Packet normal send player place: " << player_place << "\n";
+            sendToClient(
+                client_id,
+                Packet(
+                    protocol::NEW_PLAYER,
+                    {static_cast<uint8_t>(player_place),
+                     static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}
+                )
+            );
+        }
         for (auto &&[draws, anim, sprite, size, pos] :
-             ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+            ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
             if (!draws || !anim || !sprite || !size || !pos) {
                 entity_id++;
                 continue;
             }
 
-            if (anim->_object == ecs::component::Object::Player) {
-                for (int player_place = FIRST_PLAYER_PLACE; player_place < MAX_PLAYER_PLACES; player_place++) {
-                    const int player_entity_id = _game.getPlayerEntityIdByPlace(player_place);
-
-                    if (player_entity_id != entity_id) {
-                        continue;
-                    }
-                    sendToClient(
-                        client_id,
-                        Packet(
-                            protocol::NEW_OBJECT,
-                            {static_cast<uint8_t>(entity_id),
-                             static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}
-                        )
-                    );
-                }
-                entity_id++;
-                continue;
-            }
             if (anim->_object == ecs::component::Object::Weapon) {
                 sendToClient(
                     client_id,
@@ -340,20 +348,22 @@ void rtype::Server::handleEvents(const unsigned int client_id, const Packet &pac
     uint8_t event = packet.getArguments()[0];
     int player_place = -1;
 
-    for (int player_place = FIRST_PLAYER_PLACE; player_place <= MAX_PLAYER_PLACES; player_place++) {
-        if (_players_clients_ids[player_place] == client_id) {
-            player_place = player_place;
+    for (int i = FIRST_PLAYER_PLACE; i <= MAX_PLAYER_PLACES; ++i) {
+        if (_players_clients_ids[i] == client_id) {
+            player_place = i;
             break;
         }
     }
 
+    std::cerr << "LE CLIENT n°" << player_place << "a bougé\n";
+
     if (event == protocol::Events::MOVE) {
         const uint8_t dir = packet.getArguments()[1];
-        std::cerr << "          MOVVVEEEE!!!!\n";
         _game.movePlayer(player_place, dir);
 
         return;
     }
+
     if (event == protocol::Events::SHOOT) {
         const int player_place = getPlayerPlace(client_id);
 

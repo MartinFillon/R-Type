@@ -20,18 +20,14 @@
     "drawable": true,
     "controllable": {
         "controllable": true,
-<<<<<<< HEAD
-        "speed": 5
-=======
         "speed": 1
->>>>>>> a604d47 (fix(server): change bitshifting to send position)
     },
     "sprite": "r-typesheet42.gif",
     "animations": {
         "width": 33,
         "height": 20,
         "x": 65,
-        "y": 40,
+        "y": 36,
         "rotation": 0,
         "type": "player",
         "objectType": "none"
