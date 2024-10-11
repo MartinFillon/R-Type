@@ -154,17 +154,19 @@ void rtype::Server::acceptConnections()
 
         if (_clients.find(client_id) == _clients.end() && player_place == -1) {
             sendToClient(client_id, Packet(protocol::Operations::REFUSED));
-        } 
+        }
 
         if (error && _clients.find(client_id) != _clients.end()) {
             disconnectClient(client_id);
         }
 
         for (auto client : _clients) {
-            if (!client.second->isRunning())
+            if (!client.second->isRunning()) {
                 continue;
-            if (client.second->getHeartbeatClock().getSeconds() > KEEPALIVE_TIMEOUT)
+            }
+            if (client.second->getHeartbeatClock().getSeconds() > KEEPALIVE_TIMEOUT) {
                 disconnectClient(client.first);
+            }
         }
     }
 }
