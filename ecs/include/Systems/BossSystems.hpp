@@ -24,18 +24,14 @@
 #include <functional>
 
 #include "Clock.hpp"
-#include "Components/Destroyable.hpp"
-#include "Components/Life.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
-#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
         class BossSystems : public ISystems {
           public:
-
-            void operator()(Registry &r);
+            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
             void createNewProjectile(Registry &r, const ecs::component::Position &bossPos);
             void createFirstBoss(Registry &r);
@@ -43,7 +39,8 @@ namespace ecs {
             void moveProjectileTowardsPlayer(
                 Registry &r,
                 ecs::component::Position &projectilePos,
-                const std::size_t &idx);
+                const std::size_t &idx
+            );
 
           private:
             ecs::Clock _bossClock;

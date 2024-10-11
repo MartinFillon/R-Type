@@ -186,7 +186,7 @@ void rtype::Server::disconnectClient(const unsigned int client_id)
 void rtype::Server::processGame(std::shared_ptr<ecs::IContext> ctx)
 {
     while (_running) {
-        _game.update(_clients.size() > 0);
+        _game.update(_clients.size() > 0, ctx);
 
         std::vector<ecs::Packet> &packets = _game.getPacketsToSend();
 
@@ -298,17 +298,15 @@ void rtype::Server::processAction(const unsigned int client_id, const ecs::Packe
                     ecs::Packet(
                         protocol::NEW_PLAYER,
                         {static_cast<uint8_t>(i),
-                         static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i) - 1))}
+                         static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))}
                     )
                 );
             }
         }
-        _clients[client_id].get()->send(ecs::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id - 1)}));
+        _clients[client_id].get()->send(ecs::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id)}));
         broadcastExcept(
             client_id,
-            ecs::Packet(
-                protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id - 1)}
-            )
+            ecs::Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id)})
         );
         return;
     }

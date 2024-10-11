@@ -14,8 +14,6 @@
 #define WIDTH_MIN_LIMIT -300
 #define HEIGHT_MIN_LIMIT -300
 
-#include "Components/Destroyable.hpp"
-#include "Components/Life.hpp"
 #include "Registry.hpp"
 #include "Systems/ISystems.hpp"
 
@@ -23,7 +21,7 @@ namespace ecs {
     namespace systems {
         class CollisionsSystem : public ISystems {
           public:
-            void operator()(Registry &r);
+            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
         };
     }; // namespace systems
 }; // namespace ecs

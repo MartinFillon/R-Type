@@ -8,7 +8,6 @@
 #ifndef ENNEMIESMILESPATESSYSTEM_HPP_
 #define ENNEMIESMILESPATESSYSTEM_HPP_
 
-#include "Components/Life.hpp"
 #define NB_ENNEMIES 4
 
 #define MILESPATES_SPEED 3.5
@@ -22,16 +21,14 @@
 #define FOLLOW_DISTANCE 70
 
 #include <deque>
-#include "Entity.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
-#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
         class EnnemiesMilespatesSystem : public ISystems {
           public:
-            void operator()(Registry &r);
+            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
             void createMilespates(Registry &r);
             int countMilespates(Registry &r);

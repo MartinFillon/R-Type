@@ -10,6 +10,7 @@
 
 #include <any>
 #include <functional>
+#include <memory>
 #include <typeindex>
 #include <vector>
 #include <unordered_map>
@@ -24,6 +25,7 @@
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
+#include "IContext.hpp"
 #include "SparseArray.hpp"
 
 namespace ecs {
@@ -65,12 +67,12 @@ namespace ecs {
 
         Entity spawn_entity();
         void erase(const std::size_t &entityIdx);
-        void run_systems();
+        void run_systems(std::shared_ptr<IContext> ctx);
 
         EntityManager _entities;
 
       private:
-        std::vector<std::function<void(Registry &)>> _systems;
+        std::vector<std::function<void(Registry &, std::shared_ptr<ecs::IContext>)>> _systems;
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };

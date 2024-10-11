@@ -46,7 +46,7 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     int x = p->_x;
     int y = p->_y;
 
-    std::cerr << "Object " << entity_id << " at x: " << x << " y: " << y << std::endl;
+    // std::cerr << "Object " << entity_id << " at x: " << x << " y: " << y << std::endl;
 
     args.push_back(entity_id);
 
@@ -59,12 +59,12 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     _packetsToSend.push_back(ecs::Packet(protocol::Operations::OBJECT_POSITION, args));
 }
 
-void rtype::Game::update(bool are_any_clients_connected)
+void rtype::Game::update(bool are_any_clients_connected, std::shared_ptr<ecs::IContext> &ctx)
 {
     auto &positions = _r->get_components<ecs::component::Position>();
 
     if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
-        _r->run_systems();
+        _r->run_systems(ctx);
         _systemClock.restart();
     }
 
@@ -158,7 +158,7 @@ void rtype::Game::setupBosses()
 void rtype::Game::setupBasicEnnemies()
 {
     // _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
-    _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+    // _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
 }
 
 void rtype::Game::setupBackground()

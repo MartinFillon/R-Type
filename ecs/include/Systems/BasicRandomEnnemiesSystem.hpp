@@ -18,13 +18,9 @@
 #define CENTERED_SHOOT 15
 #define BASIC_ENNEMIES_SPEED_TICK 8
 
-#include <random>
 #include "Clock.hpp"
-#include "Components/Destroyable.hpp"
-#include "Components/Life.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
-#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -34,7 +30,7 @@ namespace ecs {
             void createNewEnnemies(Registry &r);
             int nbOfBasicEnnemies(Registry &r);
             void shootRandomly(Registry &r, ecs::component::Position &enemyPos);
-            void operator()(Registry &r);
+            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
           private:
             Clock _clock;

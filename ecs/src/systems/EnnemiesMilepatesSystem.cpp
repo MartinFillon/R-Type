@@ -5,9 +5,11 @@
 ** EnnemiesMilepatesSystem
 */
 
+#include "Components/Life.hpp"
 #include "Systems/EnnemiesMilespatesSystem.hpp"
+#include "ZipperIterator.hpp"
 
-void ecs::systems::EnnemiesMilespatesSystem::operator()(Registry &r)
+void ecs::systems::EnnemiesMilespatesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     auto &positions = r.get_components<ecs::component::Position>();
     auto &animations = r.get_components<ecs::component::Animations>();

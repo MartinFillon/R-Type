@@ -6,8 +6,11 @@
 */
 
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include <random>
+#include "Components/Life.hpp"
+#include "ZipperIterator.hpp"
 
-void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r)
+void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     if (_clock.getMiliSeconds() < ENNEMIES_TICK) {
         return;

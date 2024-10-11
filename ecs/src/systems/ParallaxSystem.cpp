@@ -6,8 +6,9 @@
 */
 
 #include "Systems/ParallaxSystem.hpp"
+#include "ZipperIterator.hpp"
 
-void ecs::systems::ParalaxSystem::operator()(Registry &r)
+void ecs::systems::ParalaxSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     if (_clock.getMiliSeconds() < BACKGROUND_TICK) {
         return;

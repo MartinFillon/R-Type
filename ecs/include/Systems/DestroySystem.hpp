@@ -15,13 +15,12 @@
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
-#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
         class DestroySystem : public ISystems {
           public:
-            void operator()(Registry &r);
+            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
           private:
             Clock _clock;

@@ -6,8 +6,12 @@
 */
 
 #include "Systems/BossSystems.hpp"
+#include <memory>
+#include "Components/Life.hpp"
+#include "IContext.hpp"
+#include "ZipperIterator.hpp"
 
-void ecs::systems::BossSystems::operator()(Registry &r)
+void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::IContext> ctx)
 {
     bool isBoss = isABoss(r);
 
@@ -135,7 +139,11 @@ bool ecs::systems::BossSystems::isABoss(Registry &r)
     return false;
 }
 
-void ecs::systems::BossSystems::moveProjectileTowardsPlayer(Registry &r, ecs::component::Position &projectilePos, const std::size_t &idx)
+void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
+    Registry &r,
+    ecs::component::Position &projectilePos,
+    const std::size_t &idx
+)
 {
     auto &positions = r.get_components<ecs::component::Position>();
     ecs::component::Position playerPos = {0, 0};

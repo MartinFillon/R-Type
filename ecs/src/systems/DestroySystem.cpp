@@ -6,8 +6,9 @@
 */
 
 #include "Systems/DestroySystem.hpp"
+#include "ZipperIterator.hpp"
 
-void ecs::systems::DestroySystem::operator()(Registry &r)
+void ecs::systems::DestroySystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     if (_clock.getMiliSeconds() < DESTROY_TICK) {
         return;

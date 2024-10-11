@@ -6,6 +6,8 @@
 */
 
 #include "Registry.hpp"
+#include <memory>
+#include "IContext.hpp"
 
 ecs::Entity ecs::Registry::spawn_entity()
 {
@@ -33,9 +35,9 @@ void ecs::Registry::erase(const std::size_t &entityIdx)
     controllable.erase(entityIdx);
 }
 
-void ecs::Registry::run_systems()
+void ecs::Registry::run_systems(std::shared_ptr<IContext> ctx = nullptr)
 {
     for (auto &system : _systems) {
-        system(*this);
+        system(*this, ctx);
     }
 }

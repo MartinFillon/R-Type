@@ -6,8 +6,9 @@
 */
 
 #include "Systems/CollisionsSystem.hpp"
+#include "Components/Life.hpp"
 
-void ecs::systems::CollisionsSystem::operator()(Registry &r)
+void ecs::systems::CollisionsSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     auto &position = r.register_if_not_exist<ecs::component::Position>();
     auto &drawable = r.register_if_not_exist<ecs::component::Drawable>();
