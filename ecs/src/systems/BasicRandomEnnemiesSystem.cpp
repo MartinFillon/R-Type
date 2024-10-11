@@ -50,9 +50,9 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r)
             pos->_x -= ctrl->_speed;
         }
 
-        if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
-            shootRandomly(r, *pos);
-        }
+        // if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
+        //     shootRandomly(r, *pos);
+        // }
     }
 }
 

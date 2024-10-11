@@ -9,12 +9,12 @@
 
 void ecs::systems::CollisionsSystem::operator()(Registry &r)
 {
-    auto &position = r.get_components<ecs::component::Position>();
-    auto &drawable = r.get_components<ecs::component::Drawable>();
-    auto &animation = r.get_components<ecs::component::Animations>();
-    auto &destroyable = r.get_components<ecs::component::Destroyable>();
-    auto &life = r.get_components<ecs::component::Life>();
-    auto &size = r.get_components<ecs::component::Size>();
+    auto &position = r.register_if_not_exist<ecs::component::Position>();
+    auto &drawable = r.register_if_not_exist<ecs::component::Drawable>();
+    auto &animation = r.register_if_not_exist<ecs::component::Animations>();
+    auto &destroyable = r.register_if_not_exist<ecs::component::Destroyable>();
+    auto &life = r.register_if_not_exist<ecs::component::Life>();
+    auto &size = r.register_if_not_exist<ecs::component::Size>();
 
     for (std::size_t i = 0; i < position.size(); ++i) {
         if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] ||

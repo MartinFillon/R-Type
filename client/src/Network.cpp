@@ -92,15 +92,18 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
                                                                      const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
-        switch (received_packet.getArguments()[0]) {
+        uint8_t id = received_packet.getArguments()[0];
+        uint8_t type = received_packet.getArguments()[1];
+
+        switch (type) {
             case protocol::ObjectTypes::ENEMY:
-                factory.createEntity("config/ennemies.json");
+                factory.createEntity(id, "config/ennemies.json");
                 break;
             case protocol::ObjectTypes::MILESPATES:
-                factory.createEntity("config/milespates.json");
+                factory.createEntity(id, "config/milespates.json");
                 break;
             case protocol::ObjectTypes::BOSS:
-                factory.createEntity("config/boss.json");
+                factory.createEntity(id, "config/boss.json");
                 break;
             default:
                 break;

@@ -37,8 +37,11 @@ rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::Compon
 void rtype::Game::preparePosition(const std::optional<ecs::component::Position> &p, int entity_id)
 {
     std::vector<uint8_t> args;
+
     int x = p->_x;
     int y = p->_y;
+
+    std::cerr << "Object " << entity_id << " at x: " << x << " y: " << y << std::endl;
 
     args.push_back(entity_id);
 
@@ -55,7 +58,7 @@ void rtype::Game::update(bool are_any_clients_connected)
 {
     auto &positions = _r->get_components<ecs::component::Position>();
 
-    if (_systemClock.getSeconds() > FRAME_PER_SECONDS(SERVER_TPS)) {
+    if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
         _r->run_systems();
         _systemClock.restart();
     }
@@ -139,7 +142,7 @@ void rtype::Game::setupDestroy()
 
 void rtype::Game::setupCollisons()
 {
-    // _r->add_system(ecs::systems::CollisionsSystem());
+    _r->add_system(ecs::systems::CollisionsSystem());
 }
 
 void rtype::Game::setupBosses()
