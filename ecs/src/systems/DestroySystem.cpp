@@ -14,9 +14,9 @@ void ecs::systems::DestroySystem::operator()(Registry &r, std::shared_ptr<IConte
         return;
     }
     _clock.restart();
-    auto &destroyables = r.get_components<ecs::component::Destroyable>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &sprites = r.get_components<ecs::component::Sprite>();
+    auto &destroyables = r.register_if_not_exist<ecs::component::Destroyable>();
+    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
+    auto &sprites = r.register_if_not_exist<ecs::component::Sprite>();
     int idx = 0;
 
     for (auto &&[anim, destroy, sprite] : ecs::custom_zip(animations, destroyables, sprites)) {

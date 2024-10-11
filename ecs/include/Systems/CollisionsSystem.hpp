@@ -8,6 +8,8 @@
 #ifndef COLLISIONSSYSTEM_HPP_
 #define COLLISIONSSYSTEM_HPP_
 
+#include <memory>
+#include "IContext.hpp"
 #define WIDTH_MAX_LIMIT 2700
 #define HEIGHT_MAX_LIMIT 2500
 
@@ -22,6 +24,9 @@ namespace ecs {
         class CollisionsSystem : public ISystems {
           public:
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
+
+          private:
+            void sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i);
         };
     }; // namespace systems
 }; // namespace ecs

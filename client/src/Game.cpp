@@ -10,6 +10,7 @@
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
 #include "RegistryWrapper.hpp"
+#include "Systems/DestroySystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 
 client::Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _network(network) {}
@@ -31,11 +32,13 @@ void client::Game::setRegistry(std::shared_ptr<rtype::RegistryWrapper> &registry
 
 int client::Game::run()
 {
+    _registry->getServerRegistry()->add_system(ecs::systems::DestroySystem());
     setupBackground();
     while (_window.isOpen()) {
         event();
         display();
         _registry->getClientRegistry()->run_systems(nullptr);
+        _registry->getServerRegistry()->run_systems(nullptr);
     }
 
     return EXIT_SUCCESS;

@@ -12,10 +12,13 @@
 #include <stdexcept>
 
 #include "ComponentFactory.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Sprite.hpp"
 #include "Network.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"
+#include "Systems/DestroySystem.hpp"
 
 client::Network::Network() : _context(), _resolver(_context), _socket(_context)
 {
@@ -110,7 +113,11 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
                                                                          const ecs::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
-        r->erase(id);
+        auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
+        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+
+        destroyable[id]->_destroyable = true;
+        animations[id]->_object = ecs::component::Object::InDestroy;
     }};
 
     _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
