@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 
 add_executable(r-type_server src/Main.cpp src/Server.cpp src/Client.cpp
-                             src/Game.cpp)
+                             src/Game.cpp src/Context.cpp)
 
 target_include_directories(r-type_server PUBLIC include ../protocol/include
                                                 ../ecs/include)
@@ -18,6 +18,7 @@ FetchContent_MakeAvailable(asio-cmake)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb")
 
 target_link_libraries(r-type_server PRIVATE ecs)
+target_link_libraries(r-type_server PRIVATE protocol)
 target_link_libraries(r-type_server PRIVATE asio)
 
 if(WIN32)

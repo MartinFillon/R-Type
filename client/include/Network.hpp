@@ -42,8 +42,8 @@ namespace rtype::client {
         int setup(const std::string &host, const std::string &port);
 
         int run();
-        void updateRegistry(const ecs::Packet &received_packet);
-        void send(const ecs::Packet &packet);
+        void updateRegistry(const protocol::Packet &received_packet);
+        void send(const protocol::Packet &packet);
         void send(const uint8_t opcode, const Arguments &arguments = {});
 
       private:
@@ -59,7 +59,7 @@ namespace rtype::client {
         std::size_t _id;
         std::unordered_map<
             protocol::Operations,
-            std::function<void(std::shared_ptr<ecs::Registry> &, const ecs::Packet &)>>
+            std::function<void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &)>>
             _updateRegistryFunctions;
     };
 

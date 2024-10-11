@@ -25,6 +25,7 @@ target_link_directories(r-type_client PUBLIC ../ecs/include)
 target_include_directories(r-type_client PUBLIC ../ecs/include include
                                                 ../protocol/include)
 target_link_libraries(r-type_client ecs)
+target_link_libraries(r-type_client protocol)
 target_link_libraries(r-type_client asio)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 

@@ -23,7 +23,7 @@ namespace rtype::client {
     Network::Network() : _context(), _resolver(_context), _socket(_context)
     {
         _updateRegistryFunctions[protocol::Operations::WELCOME] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                      const ecs::Packet &received_packet) {
+                                                                      const protocol::Packet &received_packet) {
             ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
             // std::cerr << "Welcome\n";
@@ -46,7 +46,7 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                              const ecs::Packet &received_packet) {
+                                                                              const protocol::Packet &received_packet) {
             std::size_t id = received_packet.getArguments()[0];
             auto &pos = r->get_components<ecs::component::Position>();
 
@@ -62,7 +62,7 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const ecs::Packet &received_packet) {
+                                                                         const protocol::Packet &received_packet) {
             ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
             int id = received_packet.getArguments()[0];
@@ -88,7 +88,7 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const ecs::Packet &received_packet) {
+                                                                         const protocol::Packet &received_packet) {
             ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
             uint8_t id = received_packet.getArguments()[0];
@@ -113,7 +113,7 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                             const ecs::Packet &received_packet) {
+                                                                             const protocol::Packet &received_packet) {
             std::size_t id = received_packet.getArguments()[0];
 
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
@@ -128,14 +128,14 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                             const ecs::Packet &received_packet) {
+                                                                             const protocol::Packet &received_packet) {
             std::size_t id = received_packet.getArguments()[0];
 
             r->erase(id);
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                          const ecs::Packet &received_packet) {
+                                                                          const protocol::Packet &received_packet) {
             std::size_t id = received_packet.getArguments()[0];
 
             r->erase(id);
@@ -169,7 +169,7 @@ namespace rtype::client {
         return SUCCESS;
     }
 
-    void Network::updateRegistry(const ecs::Packet &received_packet)
+    void Network::updateRegistry(const protocol::Packet &received_packet)
     {
         for (auto &[id, func] : _updateRegistryFunctions) {
             if (received_packet.getOpcode() == id) {
@@ -186,7 +186,7 @@ namespace rtype::client {
 
         context.detach();
 
-        send(ecs::Packet(protocol::Operations::READY));
+        send(protocol::Packet(protocol::Operations::READY));
 
         while (running) {
 
@@ -194,7 +194,7 @@ namespace rtype::client {
             asio::error_code error;
             size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
 
-            ecs::Packet packet(message);
+            protocol::Packet packet(message);
 
             if (!packet.isValid()) {
                 continue;
@@ -205,7 +205,7 @@ namespace rtype::client {
                 return EXIT_FAILURE;
             }
 
-            updateRegistry(ecs::Packet(message));
+            updateRegistry(protocol::Packet(message));
 
             if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
                 send(protocol::Operations::PING, {});
@@ -216,7 +216,7 @@ namespace rtype::client {
         return EXIT_SUCCESS;
     }
 
-    void Network::send(const ecs::Packet &packet)
+    void Network::send(const protocol::Packet &packet)
     {
         if (!packet.isValid()) {
             return;
@@ -227,7 +227,7 @@ namespace rtype::client {
 
     void Network::send(const uint8_t opcode, const Arguments &arguments)
     {
-        ecs::Packet packet(opcode, arguments);
+        protocol::Packet packet(opcode, arguments);
 
         send(packet);
     }

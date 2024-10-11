@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-namespace protocol {
+namespace rtype::protocol {
 
     enum ObjectTypes {
         OBJECTSTYPES_FIRST = -1, // must be at the begining of the enum
@@ -64,4 +64,4 @@ namespace protocol {
         EVENTS_LENGTH, // must be at the end of the enum
     };
 
-}; // namespace protocol
+}; // namespace rtype::protocol

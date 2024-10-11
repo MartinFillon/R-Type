@@ -9,7 +9,7 @@
 
 #include "Protocol.hpp"
 
-namespace ecs {
+namespace rtype::protocol {
     Packet::Packet(const Message &message) : _isValid(false), _opcode(-1), _arguments({})
     {
         if (message.size() < MESSAGE_MIN_SIZE) {

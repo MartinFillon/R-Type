@@ -10,8 +10,7 @@
 
 namespace rtype::client {
     Gui::Gui()
-        : ecs::IContext(), _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window),
-          _game(_window, _network)
+        : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
     {
         _registry = std::make_shared<RegistryWrapper>();
     }

@@ -29,8 +29,7 @@ add_library(
   src/systems/CollisionsSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
-  src/Registry.cpp
-  src/Packet.cpp)
+  src/Registry.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)

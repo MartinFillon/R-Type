@@ -22,6 +22,14 @@ namespace ecs {
 
         virtual ~IContext() = default;
 
+        virtual void destroyObject(int id) = 0;
+
+        virtual void createEnemy(int id) = 0;
+
+        virtual void moveObject(int id, int x, int y) = 0;
+
+        virtual void createProjectile(int id) = 0;
+
         std::shared_ptr<INetwork> _network = nullptr;
 
       protected:

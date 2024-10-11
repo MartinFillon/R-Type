@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb")
 add_subdirectory(ecs)
 add_subdirectory(client)
 add_subdirectory(server)
+add_subdirectory(protocol)
 
 if(UNIX)
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)

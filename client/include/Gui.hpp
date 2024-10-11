@@ -12,7 +12,6 @@
 #include <memory>
 
 #include "Game.hpp"
-#include "IContext.hpp"
 #include "Menu.hpp"
 #include "Network.hpp"
 #include "RegistryWrapper.hpp"
@@ -25,7 +24,7 @@
 
 namespace rtype::client {
 
-    class Gui : ecs::IContext {
+    class Gui {
 
       public:
         Gui();

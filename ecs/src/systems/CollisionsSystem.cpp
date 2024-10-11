@@ -7,7 +7,6 @@
 
 #include "Systems/CollisionsSystem.hpp"
 #include "Components/Life.hpp"
-#include "Protocol.hpp"
 
 namespace ecs {
     namespace systems {
@@ -129,8 +128,8 @@ namespace ecs {
 
         void CollisionsSystem::sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i)
         {
-            if (ctx && ctx->_network) {
-                ctx->_network->broadcast(Packet(protocol::Operations::OBJECT_REMOVED, {static_cast<uint8_t>(i)}));
+            if (ctx) {
+                ctx->destroyObject(i);
             }
         }
     } // namespace systems

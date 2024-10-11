@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "Clock.hpp"
-#include "Packet.hpp"
+#include "IPacket.hpp"
 
 #define LOGIN 0x42
 #define DATA_MAX_SIZE 1024

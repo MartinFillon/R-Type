@@ -10,8 +10,6 @@
 #include <random>
 #include "Components/Life.hpp"
 #include "IContext.hpp"
-#include "Packet.hpp"
-#include "Protocol.hpp"
 #include "ZipperIterator.hpp"
 
 void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
@@ -90,11 +88,8 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
         ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Basic
     };
     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
-    if (ctx && ctx->_network) {
-        ctx->_network->broadcast(ecs::Packet(
-            protocol::NEW_OBJECT,
-            {static_cast<uint8_t>(newProjectile.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
-        ));
+    if (ctx) {
+        ctx->createProjectile(newProjectile.getId());
     }
 }
 
@@ -128,11 +123,8 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std
     };
     sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
     destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
-    if (ctx && ctx->_network) {
-        ctx->_network->broadcast(ecs::Packet(
-            protocol::NEW_OBJECT,
-            {static_cast<uint8_t>(newEnnemies.getId()), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
-        ));
+    if (ctx) {
+        ctx->createEnemy(newEnnemies.getId());
     }
 }
 

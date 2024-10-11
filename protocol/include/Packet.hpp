@@ -16,10 +16,10 @@
 #define MESSAGE_MIN_SIZE 5
 #define GET_MAGIC_NUMBER(x) (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3]
 
-namespace ecs {
+namespace rtype::protocol {
 
     /// @brief Class to wrap all the utilities of the communication packets to send to the client.
-    class Packet : public IPacket {
+    class Packet : public ecs::IPacket {
 
         using Message = std::vector<uint8_t>;
         using Arguments = std::vector<uint8_t>;
@@ -73,6 +73,6 @@ namespace ecs {
         Arguments _arguments;
     };
 
-}; // namespace ecs
+}; // namespace rtype::protocol
 
 #endif /* !PACKET_HPP_ */

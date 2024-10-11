@@ -5,17 +5,19 @@
 ** Server
 */
 
-#include "Server.hpp"
 #include <cstdint>
 #include <iostream>
 #include <memory>
 #include <optional>
 #include <vector>
+
 #include "Components/Animations.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
+#include "Packet.hpp"
 #include "Protocol.hpp"
+#include "Server.hpp"
 
 namespace rtype::server {
     Server::Server(int port)
@@ -84,7 +86,7 @@ namespace rtype::server {
 
     void Server::handleMessage(const unsigned int client_id, const Message &message)
     {
-        ecs::Packet packet(message);
+        protocol::Packet packet(message);
 
         std::cout << MESSAGE_RECEIVED(client_id) << std::endl;
 
@@ -153,7 +155,7 @@ namespace rtype::server {
             }
 
             if (_clients.find(client_id) == _clients.end() && player_place == -1) {
-                sendToClient(client_id, ecs::Packet(protocol::Operations::REFUSED));
+                sendToClient(client_id, protocol::Packet(protocol::Operations::REFUSED));
             }
 
             if (error && _clients.find(client_id) != _clients.end()) {
@@ -189,13 +191,7 @@ namespace rtype::server {
         while (_running) {
             _game.update(_clients.size() > 0, ctx);
 
-            std::vector<ecs::Packet> &packets = _game.getPacketsToSend();
-
-            while (!packets.empty() && _clock.getSeconds() > FRAME_PER_SECONDS(5)) {
-                broadcast(packets.front());
-                packets.erase(packets.begin());
-                _clock.restart();
-            }
+            _clock.restart();
         }
     }
 
@@ -251,7 +247,7 @@ namespace rtype::server {
         }
 
         if (optCode == protocol::Operations::LEAVING) {
-            const ecs::Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
+            const protocol::Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
             const int player_place = getPlayerPlace(client_id);
 
             if (player_place > 0) {
@@ -285,7 +281,7 @@ namespace rtype::server {
                     std::cerr << "Sending ennemy entity id: " << i << std::endl;
                     sendToClient(
                         client_id,
-                        ecs::Packet(
+                        protocol::Packet(
                             protocol::NEW_OBJECT,
                             {static_cast<uint8_t>(i), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
                         )
@@ -296,7 +292,7 @@ namespace rtype::server {
                     std::cerr << "Player entity id: " << i << std::endl;
                     sendToClient(
                         client_id,
-                        ecs::Packet(
+                        protocol::Packet(
                             protocol::NEW_PLAYER,
                             {static_cast<uint8_t>(i),
                              static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))}
@@ -304,10 +300,11 @@ namespace rtype::server {
                     );
                 }
             }
-            _clients[client_id].get()->send(ecs::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id)}));
+            _clients[client_id].get()->send(protocol::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id)})
+            );
             broadcastExcept(
                 client_id,
-                ecs::Packet(
+                protocol::Packet(
                     protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id)}
                 )
             );
@@ -320,7 +317,7 @@ namespace rtype::server {
                 _clients[client_id]->getHeartbeatClock().restart();
             }
 
-            const ecs::Packet clPacket(protocol::Operations::PING, {});
+            const protocol::Packet clPacket(protocol::Operations::PING, {});
 
             sendToClient(client_id, clPacket);
 

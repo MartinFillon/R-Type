@@ -6,17 +6,16 @@
 */
 
 #include <cstddef>
-#include <cstdint>
 #include <iostream>
+#include <memory>
 #include <string>
-#include <vector>
 
 #include "ComponentFactory.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
-#include "Packet.hpp"
+#include "IContext.hpp"
 #include "Protocol.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/CollisionsSystem.hpp"
@@ -42,24 +41,17 @@ namespace rtype::server {
 
     void Game::preparePosition(const std::optional<ecs::component::Position> &p, int entity_id)
     {
-        std::vector<uint8_t> args;
-
         int x = p->_x;
         int y = p->_y;
 
-        args.push_back(entity_id);
-
-        args.push_back(x >> 8);
-        args.push_back(x & 0xFF);
-
-        args.push_back(y >> 8);
-        args.push_back(y & 0xFF);
-
-        _packetsToSend.push_back(ecs::Packet(protocol::Operations::OBJECT_POSITION, args));
+        _ctx->moveObject(entity_id, x, y);
     }
 
     void Game::update(bool are_any_clients_connected, std::shared_ptr<ecs::IContext> &ctx)
     {
+        if (_ctx == nullptr) {
+            _ctx = ctx;
+        }
         auto &positions = _r->get_components<ecs::component::Position>();
 
         if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
@@ -124,10 +116,7 @@ namespace rtype::server {
         auto &positions = _r->get_components<ecs::component::Position>();
 
         positions[e.getId()] = positions[_players_entities_ids[player_place]];
-        _packetsToSend.push_back(ecs::Packet(
-            protocol::Operations::NEW_OBJECT,
-            {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
-        ));
+        _ctx->createProjectile(e.getId());
     }
 
     void Game::setupDestroy()
