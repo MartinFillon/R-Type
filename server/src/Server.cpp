@@ -58,7 +58,7 @@ namespace rtype::server {
         std::cout << SERVER_STOP << std::endl;
     }
 
-    void Server::broadcast(const ecs::Packet &packet)
+    void Server::broadcast(const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
             return;
@@ -69,7 +69,7 @@ namespace rtype::server {
         }
     }
 
-    void Server::broadcastExcept(const unsigned int client_id, const ecs::Packet &packet)
+    void Server::broadcastExcept(const unsigned int client_id, const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
             return;
@@ -199,7 +199,7 @@ namespace rtype::server {
         }
     }
 
-    void Server::sendToClient(const unsigned int client_id, const ecs::Packet &packet)
+    void Server::sendToClient(const unsigned int client_id, const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
             return;
@@ -236,7 +236,7 @@ namespace rtype::server {
         return bytes;
     }
 
-    void Server::processAction(const unsigned int client_id, const ecs::Packet &packet)
+    void Server::processAction(const unsigned int client_id, const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
             std::cout << INVALID_PACKET(client_id) << std::endl;
@@ -330,7 +330,7 @@ namespace rtype::server {
         std::cout << VALID_PACKET(client_id) << std::endl;
     }
 
-    void Server::handleEvents(const unsigned int client_id, const ecs::Packet &packet)
+    void Server::handleEvents(const unsigned int client_id, const ecs::IPacket &packet)
     {
         uint8_t event = packet.getArguments()[0];
         int player_place = -1;

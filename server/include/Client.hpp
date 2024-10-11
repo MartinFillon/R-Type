@@ -45,7 +45,7 @@ namespace rtype::server {
 
         /// @brief Sends the given `packet` to the client via its UDP socket.
         /// @param packet a `const Packet &` representing to packet to send to the client.
-        void send(const ecs::Packet &packet);
+        void send(const ecs::IPacket &packet);
         /// @brief Disconnects the client from the server.
         void disconnect();
         /// @brief Checks if the client is running or not.
@@ -72,6 +72,6 @@ namespace rtype::server {
         Endpoint _endpoint;
     };
 
-}; // namespace rtype
+}; // namespace rtype::server
 
 #endif /* !CLIENT_HPP_ */

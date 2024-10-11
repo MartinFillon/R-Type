@@ -16,7 +16,7 @@ namespace rtype::server {
         std::cout << NEW_CLIENT(_id) << std::endl;
     };
 
-    void Client::send(const ecs::Packet &packet)
+    void Client::send(const ecs::IPacket &packet)
     {
         if (packet.isValid()) {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);

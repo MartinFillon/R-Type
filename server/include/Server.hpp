@@ -68,13 +68,13 @@ namespace rtype::server {
         /// @brief Broadcasts the given `packet` to all the currently connected clients.
         /// @param packet a `const Packet &` representing the reference to the packet to be sent to all the currently
         /// connected clients.
-        void broadcast(const ecs::Packet &packet) override;
+        void broadcast(const ecs::IPacket &packet) override;
 
         /// @brief Broadcasts the given `packet` to all the currently connected clients except one.
         /// @param client_id a `const unsigned int` representing the client's id which NOT sent the message.
         /// @param packet a `const Packet &` representing the reference to the packet to be sent to all the currently
         /// connected clients except client_id.
-        void broadcastExcept(const unsigned int client_id, const ecs::Packet &packet);
+        void broadcastExcept(const unsigned int client_id, const ecs::IPacket &packet);
 
         /// @brief Handles any message received by the server from any connected client.
         /// @param id a `const unsigned int` representing the client's id which sent the message.
@@ -105,7 +105,7 @@ namespace rtype::server {
         /// @brief Sends the given `packet` to the client which has as its id `client_id`.
         /// @param client_id a `const unsigned int` representing the id of the client to send the given `packet`.
         /// @param packet a `const Packet &` representing the reference to the packet to send to the client.
-        void sendToClient(const unsigned int client_id, const ecs::Packet &packet);
+        void sendToClient(const unsigned int client_id, const ecs::IPacket &packet);
 
         /// @brief Deletes the client which has as its id `client_id`.
         /// @param client_id a `const unsigned int` representing the id of the client to delete.
@@ -120,12 +120,12 @@ namespace rtype::server {
         /// @brief Handles all the actions which can be called by the UDP clients.
         /// @param client_id a `const unsigned int` representing the id of the UDP client who called the event.
         /// @param packet a `const Packet &` representing the reference to the packet sent by the client.
-        void processAction(const unsigned int client_id, const ecs::Packet &packet);
+        void processAction(const unsigned int client_id, const ecs::IPacket &packet);
 
         /// @brief Handles all the events which can be called by the UDP clients.
         /// @param client_id a `const unsigned int` representing the id of the UDP client who called the event.
         /// @param packet a `const Packet &` representing the reference to the packet sent by the client.
-        void handleEvents(const unsigned int client_id, const ecs::Packet &packet);
+        void handleEvents(const unsigned int client_id, const ecs::IPacket &packet);
 
         /// @brief Checks if there is any unused player place.
         /// @return `int` between `FRIST_PLAYER_PLACE` and `MAX_PLAYER_PALCES` if there is an available place, else -1.
