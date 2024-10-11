@@ -26,7 +26,7 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
                                                                   const ecs::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
-        std::cerr << "Welcome\n";
+        // std::cerr << "Welcome\n";
         // switch (received_packet.getArguments()[0]) {
         //     case protocol::ObjectTypes::PLAYER_1:
         //         factory.createEntity("config/player0.json");

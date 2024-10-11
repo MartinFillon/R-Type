@@ -6,7 +6,6 @@
 */
 
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
-#include <iostream>
 #include <memory>
 #include <random>
 #include "Components/Life.hpp"

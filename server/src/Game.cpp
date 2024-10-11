@@ -105,8 +105,6 @@ void rtype::Game::movePlayer(const int player_place, const int dir)
 {
     const int player_entity_id = _players_entities_ids[player_place];
 
-    std::cerr << "Player entity id to move: " << player_entity_id << std::endl;
-    std::cerr << "Player place to move: " << player_place << std::endl;
     auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
     auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
 
@@ -126,11 +124,7 @@ void rtype::Game::movePlayer(const int player_place, const int dir)
 
 void rtype::Game::makePlayerShoot(int player_place)
 {
-    std::string file = "config/projectile";
-
-    file.append(".json");
-
-    ecs::Entity e = _cf.createEntity(file);
+    ecs::Entity e = _cf.createEntity("config/projectile.json");
     auto &positions = _r->get_components<ecs::component::Position>();
 
     positions[e.getId()] = positions[_players_entities_ids[player_place]];
