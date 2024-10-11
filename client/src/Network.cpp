@@ -5,12 +5,12 @@
 ** Network
 */
 
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 
-#include "Network.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
@@ -18,36 +18,37 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
+#include "Network.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"
 
-client::Network::Network(): _context(), _resolver(_context), _socket(_context)
+client::Network::Network() : _context(), _resolver(_context), _socket(_context)
 {
-    _updateRegistryFunctions[protocol::Operations::WELCOME] = 
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::WELCOME] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                  const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
-        switch (received_packet.getArguments()[0]) {
-            case protocol::ObjectTypes::PLAYER_1:
-                factory.createEntity("config/player0.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_2:
-                factory.createEntity("config/player1.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_3:
-                factory.createEntity("config/player2.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_4:
-                factory.createEntity("config/player3.json");
-                break;
-            default:
-                break;
-        }
+        // switch (received_packet.getArguments()[0]) {
+        //     case protocol::ObjectTypes::PLAYER_1:
+        //         factory.createEntity("config/player0.json");
+        //         break;
+        //     case protocol::ObjectTypes::PLAYER_2:
+        //         factory.createEntity("config/player1.json");
+        //         break;
+        //     case protocol::ObjectTypes::PLAYER_3:
+        //         factory.createEntity("config/player2.json");
+        //         break;
+        //     case protocol::ObjectTypes::PLAYER_4:
+        //         factory.createEntity("config/player3.json");
+        //         break;
+        //     default:
+        //         break;
+        // }
     }};
 
-    _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                          const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
         auto &pos = r->get_components<ecs::component::Position>();
 
@@ -62,30 +63,33 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         pos[id]->_y = y;
     }};
 
-    _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = 
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                     const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
-        switch (received_packet.getArguments()[0]) {
+        uint8_t id = received_packet.getArguments()[0];
+        uint8_t type = received_packet.getArguments()[1];
+
+        switch (type) {
             case protocol::ObjectTypes::PLAYER_1:
-                factory.createEntity("config/player0.json");
+                factory.createEntity(id, "config/player0.json");
                 break;
             case protocol::ObjectTypes::PLAYER_2:
-                factory.createEntity("config/player1.json");
+                factory.createEntity(id, "config/player1.json");
                 break;
             case protocol::ObjectTypes::PLAYER_3:
-                factory.createEntity("config/player2.json");
+                factory.createEntity(id, "config/player2.json");
                 break;
             case protocol::ObjectTypes::PLAYER_4:
-                factory.createEntity("config/player3.json");
+                factory.createEntity(id, "config/player3.json");
                 break;
             default:
                 break;
         }
     }};
 
-    _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                     const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         switch (received_packet.getArguments()[0]) {
@@ -99,31 +103,30 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/boss.json");
                 break;
             default:
-                break;        
+                break;
         }
     }};
 
-    _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                         const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
     }};
 
-    _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                         const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
     }};
 
-    _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] =
-    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+    _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                      const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
     }};
-
 }
 
 void client::Network::setRegistry(std::shared_ptr<ecs::Registry> registry)
@@ -148,7 +151,6 @@ int client::Network::setup(const std::string &host, const std::string &port)
 
         std::cerr << e.what() << std::endl;
         return ERROR;
-
     }
 
     return SUCCESS;
@@ -156,7 +158,7 @@ int client::Network::setup(const std::string &host, const std::string &port)
 
 void client::Network::updateRegistry(const rtype::Packet &received_packet)
 {
-    for (auto &[id, func]: _updateRegistryFunctions) {
+    for (auto &[id, func] : _updateRegistryFunctions) {
         if (received_packet.getOpcode() == id) {
             func(_registry, received_packet);
         }

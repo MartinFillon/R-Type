@@ -18,9 +18,9 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r)
     }
     _clock.restart();
 
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &controllable = r.get_components<ecs::component::Controllable>();
+    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
+    auto &positions = r.register_if_not_exist<ecs::component::Position>();
+    auto &controllable = r.register_if_not_exist<ecs::component::Controllable>();
 
     for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
         if (!anim || !pos || !ctrl || anim->_type != ecs::component::Type::Basic) {
@@ -56,18 +56,21 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r)
     }
 }
 
-void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(Registry &r, const ecs::component::Position &ennemiesPos)
+void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
+    Registry &r,
+    const ecs::component::Position &ennemiesPos
+)
 {
     Entity newProjectile = r.spawn_entity();
     r._entities.addEntity(newProjectile);
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &drawables = r.get_components<ecs::component::Drawable>();
-    auto &controllables = r.get_components<ecs::component::Controllable>();
-    auto &sprites = r.get_components<ecs::component::Sprite>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &sizes = r.get_components<ecs::component::Size>();
-    auto &destroyable = r.get_components<ecs::component::Destroyable>();
-    auto &life = r.get_components<ecs::component::Life>();
+    auto &positions = r.register_if_not_exist<ecs::component::Position>();
+    auto &drawables = r.register_if_not_exist<ecs::component::Drawable>();
+    auto &controllables = r.register_if_not_exist<ecs::component::Controllable>();
+    auto &sprites = r.register_if_not_exist<ecs::component::Sprite>();
+    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
+    auto &sizes = r.register_if_not_exist<ecs::component::Size>();
+    auto &destroyable = r.register_if_not_exist<ecs::component::Destroyable>();
+    auto &life = r.register_if_not_exist<ecs::component::Life>();
 
     life[newProjectile.getId()] = ecs::component::Life{1};
     positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + CENTERED_SHOOT};
@@ -92,14 +95,14 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r)
 
     Entity newEnnemies = r.spawn_entity();
     r._entities.addEntity(newEnnemies);
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &drawables = r.get_components<ecs::component::Drawable>();
-    auto &controllable = r.get_components<ecs::component::Controllable>();
-    auto &sprites = r.get_components<ecs::component::Sprite>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &sizes = r.get_components<ecs::component::Size>();
-    auto &destroyable = r.get_components<ecs::component::Destroyable>();
-    auto &life = r.get_components<ecs::component::Life>();
+    auto &positions = r.register_if_not_exist<ecs::component::Position>();
+    auto &drawables = r.register_if_not_exist<ecs::component::Drawable>();
+    auto &controllable = r.register_if_not_exist<ecs::component::Controllable>();
+    auto &sprites = r.register_if_not_exist<ecs::component::Sprite>();
+    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
+    auto &sizes = r.register_if_not_exist<ecs::component::Size>();
+    auto &destroyable = r.register_if_not_exist<ecs::component::Destroyable>();
+    auto &life = r.register_if_not_exist<ecs::component::Life>();
 
     life[newEnnemies.getId()] = ecs::component::Life{1};
     positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
@@ -116,7 +119,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r)
 int ecs::systems::BasicRandomEnnemiesSystem::nbOfBasicEnnemies(Registry &r)
 {
     int nbOfEnnemies = 0;
-    auto &animations = r.get_components<ecs::component::Animations>();
+    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
 
     for (std::size_t i = 0; i < animations.size(); ++i) {
         if (animations[i] && animations[i]->_type == ecs::component::Type::Basic) {

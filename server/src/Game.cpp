@@ -75,7 +75,7 @@ void rtype::Game::handleLeaving(const unsigned int player_place)
     _r->_entities.erase(_players_entities_ids[player_place]);
 }
 
-void rtype::Game::createPlayer(const unsigned int player_place)
+ecs::Entity rtype::Game::createPlayer(const unsigned int player_place)
 {
     std::string file = "config/player";
 
@@ -85,15 +85,20 @@ void rtype::Game::createPlayer(const unsigned int player_place)
     std::cerr << file << std::endl;
     ecs::Entity e = _cf.createEntity(file);
 
-    std::cout << "set nanana => " << _players_entities_ids[player_place] << "\n";
+    std::cout << "Player entity id: " << e.getId() << "\n";
+    std::cout << "Player place " << player_place << "\n";
 
     _players_entities_ids[player_place] = e.getId();
+
+    return e;
 }
 
 void rtype::Game::movePlayer(const int player_place, const int dir)
 {
     const int player_entity_id = _players_entities_ids[player_place];
 
+    std::cerr << "Player entity id to move: " << player_entity_id << std::endl;
+    std::cerr << "Player place to move: " << player_place << std::endl;
     auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
     auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
 
@@ -145,7 +150,7 @@ void rtype::Game::setupBosses()
 void rtype::Game::setupBasicEnnemies()
 {
     // _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
-    // _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+    _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
 }
 
 void rtype::Game::setupBackground()
@@ -165,4 +170,14 @@ std::shared_ptr<ecs::Registry> rtype::Game::getRegistry()
 const int rtype::Game::getPlayerEntityIdByPlace(const int player_place)
 {
     return _players_entities_ids[player_place];
+}
+
+const int rtype::Game::getEntityById(int id)
+{
+    for (size_t i = 0; i < _players_entities_ids.size(); i++) {
+        if (_players_entities_ids[i] == id) {
+            return i;
+        }
+    }
+    return -1;
 }

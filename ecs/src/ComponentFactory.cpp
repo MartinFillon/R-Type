@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <functional>
+#include <iostream>
 #include <memory>
 
 #include <nlohmann/json.hpp>
@@ -94,10 +95,26 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(const std::string &file)
     {
+        std::cerr << "Creating entity from file: " << file << std::endl;
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = _r->spawn_entity();
+        _r->_entities.addEntity(e.getId());
+
+        for (auto &c : config["active"]) {
+            createComponent(e, c, config["components"][c]);
+        }
+        return e;
+    }
+
+    Entity ComponentFactory::createEntity(int id, const std::string &file)
+    {
+        std::cerr << "Creating entity from file: " << file << std::endl;
+        std::ifstream f(file);
+        nlohmann::json config = nlohmann::json::parse(f);
+
+        Entity e = Entity(id);
         _r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {

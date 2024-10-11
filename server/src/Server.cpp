@@ -12,6 +12,7 @@
 #include <queue>
 #include <vector>
 #include "Components/Animations.hpp"
+#include "Entity.hpp"
 #include "Game.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"
@@ -149,7 +150,6 @@ void rtype::Server::acceptConnections()
             if (_clients[client_id]->isRunning()) {
                 handleMessage(client_id, message);
             }
-
         }
 
         if (_clients.find(client_id) == _clients.end() && player_place == -1) {
@@ -266,6 +266,9 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
 
     if (optCode == protocol::Operations::READY) {
 
+        const unsigned int id = placeInPlayers();
+        ecs::Entity e = _game.createPlayer(id);
+
         auto r = _game.getRegistry();
         auto &positions = r->get_components<ecs::component::Position>();
         auto &animations = r->get_components<ecs::component::Animations>();
@@ -278,16 +281,34 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 continue;
             }
 
+            // if (animations[i]->_object == ecs::component::Object::Ennemies) {
+            //     std::cerr << "Sending ennemy entity id: " << i << std::endl;
+            //     sendToClient(
+            //         client_id,
+            //         Packet(
+            //             protocol::NEW_OBJECT,
+            //             {static_cast<uint8_t>(i), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
+            //         )
+            //     );
+            // }
+
             if (animations[i]->_object == ecs::component::Object::Player) {
-                sendToClient(client_id,Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(i), static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(i))}));
+                std::cerr << "Player entity id: " << i << std::endl;
+                sendToClient(
+                    client_id,
+                    Packet(
+                        protocol::NEW_PLAYER,
+                        {static_cast<uint8_t>(i),
+                         static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i) - 1))}
+                    )
+                );
             }
         }
-
-        _game.createPlayer(r->_entities.size());
-
-        _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(r->_entities.size() - 1)}));
-        broadcastExcept(client_id, Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(r->_entities.size() - 1)}));
-
+        _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id - 1)}));
+        broadcastExcept(
+            client_id,
+            Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id - 1)})
+        );
         return;
     }
 
@@ -321,7 +342,7 @@ void rtype::Server::handleEvents(const unsigned int client_id, const Packet &pac
 
     if (event == protocol::Events::MOVE) {
         const uint8_t dir = packet.getArguments()[1];
-        _game.movePlayer(player_place, dir);
+        _game.movePlayer(player_place + 1, dir);
     }
 
     if (event == protocol::Events::SHOOT) {

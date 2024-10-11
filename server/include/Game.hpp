@@ -8,6 +8,7 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include "Entity.hpp"
 #define UNUSED __attribute__((unused))
 
 #define INVALID_PACKET(x) "Invalid packet from client [" << x << "]"
@@ -62,7 +63,8 @@ namespace rtype {
         /// the `player_place` position by the newly created entity.
         /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and
         /// the `MAX_PLAYER_PLACES`.
-        void createPlayer(const unsigned int player_place);
+        /// @return an `ecs::Entity` representing the newly created player entity.
+        ecs::Entity createPlayer(const unsigned int player_place);
         /// @brief Moves the player at the `player_place` in the direction `dir` in the ECS's registry `_r`.
         /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and
         /// the `MAX_PLAYER_PLACES`.
@@ -76,6 +78,8 @@ namespace rtype {
         std::shared_ptr<ecs::Registry> getRegistry();
 
         const int getPlayerEntityIdByPlace(const int player_place);
+
+        const int getEntityById(int id);
 
       private:
         /// @brief The ECS's registry which stores and interacts with all entities and components.
