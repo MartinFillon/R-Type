@@ -19,7 +19,6 @@ add_executable(
   src/TextureManager.cpp
   src/Menu.cpp
   src/Game.cpp
-  ../protocol/src/Packet.cpp
   src/RegistryWrapper.cpp)
 target_link_libraries(r-type_client sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)

@@ -58,7 +58,7 @@ void rtype::Server::stop()
     std::cout << SERVER_STOP << std::endl;
 }
 
-void rtype::Server::broadcast(const Packet &packet)
+void rtype::Server::broadcast(const ecs::Packet &packet)
 {
     if (!packet.isValid()) {
         return;
@@ -69,7 +69,7 @@ void rtype::Server::broadcast(const Packet &packet)
     }
 }
 
-void rtype::Server::broadcastExcept(const unsigned int client_id, const Packet &packet)
+void rtype::Server::broadcastExcept(const unsigned int client_id, const ecs::Packet &packet)
 {
     if (!packet.isValid()) {
         return;
@@ -84,7 +84,7 @@ void rtype::Server::broadcastExcept(const unsigned int client_id, const Packet &
 
 void rtype::Server::handleMessage(const unsigned int client_id, const Message &message)
 {
-    Packet packet(message);
+    ecs::Packet packet(message);
 
     std::cout << MESSAGE_RECEIVED(client_id) << std::endl;
 
@@ -153,7 +153,7 @@ void rtype::Server::acceptConnections()
         }
 
         if (_clients.find(client_id) == _clients.end() && player_place == -1) {
-            sendToClient(client_id, Packet(protocol::Operations::REFUSED));
+            sendToClient(client_id, ecs::Packet(protocol::Operations::REFUSED));
         }
 
         if (error && _clients.find(client_id) != _clients.end()) {
@@ -189,7 +189,7 @@ void rtype::Server::processGame()
     while (_running) {
         _game.update(_clients.size() > 0 ? true : false);
 
-        std::vector<Packet> &packets = _game.getPacketsToSend();
+        std::vector<ecs::Packet> &packets = _game.getPacketsToSend();
 
         while (!packets.empty() && _clock.getSeconds() > FRAME_PER_SECONDS(5)) {
             broadcast(packets.front());
@@ -199,7 +199,7 @@ void rtype::Server::processGame()
     }
 }
 
-void rtype::Server::sendToClient(const unsigned int client_id, const Packet &packet)
+void rtype::Server::sendToClient(const unsigned int client_id, const ecs::Packet &packet)
 {
     if (!packet.isValid()) {
         return;
@@ -236,7 +236,7 @@ std::vector<uint8_t> rtype::Server::getBitshiftedData(const int length, const un
     return bytes;
 }
 
-void rtype::Server::processAction(const unsigned int client_id, const Packet &packet)
+void rtype::Server::processAction(const unsigned int client_id, const ecs::Packet &packet)
 {
     if (!packet.isValid()) {
         std::cout << INVALID_PACKET(client_id) << std::endl;
@@ -251,7 +251,7 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
     }
 
     if (optCode == protocol::Operations::LEAVING) {
-        const Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
+        const ecs::Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
         const int player_place = getPlayerPlace(client_id);
 
         if (player_place > 0) {
@@ -285,7 +285,7 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
             //     std::cerr << "Sending ennemy entity id: " << i << std::endl;
             //     sendToClient(
             //         client_id,
-            //         Packet(
+            //         ecs::Packet(
             //             protocol::NEW_OBJECT,
             //             {static_cast<uint8_t>(i), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
             //         )
@@ -296,7 +296,7 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 std::cerr << "Player entity id: " << i << std::endl;
                 sendToClient(
                     client_id,
-                    Packet(
+                    ecs::Packet(
                         protocol::NEW_PLAYER,
                         {static_cast<uint8_t>(i),
                          static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i) - 1))}
@@ -304,10 +304,12 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
                 );
             }
         }
-        _clients[client_id].get()->send(Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id - 1)}));
+        _clients[client_id].get()->send(ecs::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id - 1)}));
         broadcastExcept(
             client_id,
-            Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id - 1)})
+            ecs::Packet(
+                protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id - 1)}
+            )
         );
         return;
     }
@@ -318,7 +320,7 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
             _clients[client_id]->getHeartbeatClock().restart();
         }
 
-        const Packet clPacket(protocol::Operations::PING, {});
+        const ecs::Packet clPacket(protocol::Operations::PING, {});
 
         sendToClient(client_id, clPacket);
 
@@ -328,7 +330,7 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
     std::cout << VALID_PACKET(client_id) << std::endl;
 }
 
-void rtype::Server::handleEvents(const unsigned int client_id, const Packet &packet)
+void rtype::Server::handleEvents(const unsigned int client_id, const ecs::Packet &packet)
 {
     uint8_t event = packet.getArguments()[0];
     int player_place = -1;

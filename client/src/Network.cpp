@@ -12,12 +12,6 @@
 #include <stdexcept>
 
 #include "ComponentFactory.hpp"
-#include "Components/Animations.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
-#include "Entity.hpp"
 #include "Network.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
@@ -26,7 +20,7 @@
 client::Network::Network() : _context(), _resolver(_context), _socket(_context)
 {
     _updateRegistryFunctions[protocol::Operations::WELCOME] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                  const rtype::Packet &received_packet) {
+                                                                  const ecs::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         // switch (received_packet.getArguments()[0]) {
@@ -48,7 +42,7 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
     }};
 
     _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                          const rtype::Packet &received_packet) {
+                                                                          const ecs::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
         auto &pos = r->get_components<ecs::component::Position>();
 
@@ -64,7 +58,7 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
     }};
 
     _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                     const rtype::Packet &received_packet) {
+                                                                     const ecs::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         uint8_t id = received_packet.getArguments()[0];
@@ -89,7 +83,7 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
     }};
 
     _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                     const rtype::Packet &received_packet) {
+                                                                     const ecs::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         uint8_t id = received_packet.getArguments()[0];
@@ -111,21 +105,21 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
     }};
 
     _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const rtype::Packet &received_packet) {
+                                                                         const ecs::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
     }};
 
     _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const rtype::Packet &received_packet) {
+                                                                         const ecs::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
     }};
 
     _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                      const rtype::Packet &received_packet) {
+                                                                      const ecs::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
 
         r->erase(id);
@@ -159,7 +153,7 @@ int client::Network::setup(const std::string &host, const std::string &port)
     return SUCCESS;
 }
 
-void client::Network::updateRegistry(const rtype::Packet &received_packet)
+void client::Network::updateRegistry(const ecs::Packet &received_packet)
 {
     for (auto &[id, func] : _updateRegistryFunctions) {
         if (received_packet.getOpcode() == id) {
@@ -176,7 +170,7 @@ int client::Network::run()
 
     context.detach();
 
-    send(rtype::Packet(protocol::Operations::READY));
+    send(ecs::Packet(protocol::Operations::READY));
 
     while (running) {
 
@@ -184,7 +178,7 @@ int client::Network::run()
         asio::error_code error;
         size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
 
-        rtype::Packet packet(message);
+        ecs::Packet packet(message);
 
         if (!packet.isValid()) {
             continue;
@@ -195,7 +189,7 @@ int client::Network::run()
             return EXIT_FAILURE;
         }
 
-        updateRegistry(rtype::Packet(message));
+        updateRegistry(ecs::Packet(message));
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
             send(protocol::Operations::PING, {});
@@ -206,7 +200,7 @@ int client::Network::run()
     return EXIT_SUCCESS;
 }
 
-void client::Network::send(const rtype::Packet &packet)
+void client::Network::send(const ecs::Packet &packet)
 {
     if (!packet.isValid()) {
         return;
@@ -217,7 +211,7 @@ void client::Network::send(const rtype::Packet &packet)
 
 void client::Network::send(const uint8_t opcode, const Arguments &arguments)
 {
-    rtype::Packet packet(opcode, arguments);
+    ecs::Packet packet(opcode, arguments);
 
     send(packet);
 }

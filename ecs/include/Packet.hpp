@@ -15,7 +15,7 @@
 #define MESSAGE_MIN_SIZE 5
 #define GET_MAGIC_NUMBER(x) (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3]
 
-namespace rtype {
+namespace ecs {
 
     /// @brief Class to wrap all the utilities of the communication packets to send to the client.
     class Packet {
@@ -72,6 +72,6 @@ namespace rtype {
         Arguments _arguments;
     };
 
-}; // namespace rtype
+}; // namespace ecs
 
 #endif /* !PACKET_HPP_ */

@@ -51,7 +51,7 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     args.push_back(y >> 8);
     args.push_back(y & 0xFF);
 
-    _packetsToSend.push_back(Packet(protocol::Operations::OBJECT_POSITION, args));
+    _packetsToSend.push_back(ecs::Packet(protocol::Operations::OBJECT_POSITION, args));
 }
 
 void rtype::Game::update(bool are_any_clients_connected)
@@ -129,7 +129,7 @@ void rtype::Game::makePlayerShoot(int player_place)
     auto &positions = _r->get_components<ecs::component::Position>();
 
     positions[e.getId()] = positions[_players_entities_ids[player_place]];
-    _packetsToSend.push_back(Packet(
+    _packetsToSend.push_back(ecs::Packet(
         protocol::Operations::NEW_OBJECT,
         {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
     ));

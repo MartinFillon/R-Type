@@ -5,6 +5,9 @@
 ** Main
 */
 
+#include <memory>
+#include "Context.hpp"
+#include "INetwork.hpp"
 #include "Server.hpp"
 
 int main(int ac, char **av)
@@ -14,7 +17,9 @@ int main(int ac, char **av)
         return R_TYPE_ERROR;
     }
 
-    rtype::Server server(std::atoi(av[PORT]));
+    std::shared_ptr<ecs::INetwork> server = std::make_shared<ecs::INetwork>(rtype::Server(std::atoi(av[PORT])));
 
-    return server.run();
+    rtype::Context ctx = rtype::Context(server);
+
+    return server->run();
 }
