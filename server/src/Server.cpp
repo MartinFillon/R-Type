@@ -7,11 +7,14 @@
 
 #include "Server.hpp"
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <queue>
 #include <vector>
+#include "Components/Animations.hpp"
 #include "Game.hpp"
 #include "Protocol.hpp"
+#include "Registry.hpp"
 #include "asio/posix/descriptor_base.hpp"
 
 rtype::Server::Server(int port)
@@ -62,6 +65,19 @@ void rtype::Server::broadcast(const Packet &packet)
 
     for (const auto &client : _clients) {
         sendToClient(client.first, packet);
+    }
+}
+
+void rtype::Server::broadcastNot(const unsigned int client_id, const Packet &packet)
+{
+    if (!packet.isValid()) {
+        return;
+    }
+
+    for (const auto &client : _clients) {
+        if (client.first != client_id) {
+            sendToClient(client.first, packet);
+        }
     }
 }
 
@@ -128,14 +144,6 @@ void rtype::Server::acceptConnections()
             if (_clients.find(client_id) == _clients.end()) {
                 _clients[client_id] = std::make_shared<rtype::Client>(client_id, *this, endpoint, _socket);
                 _players_clients_ids[player_place] = client_id;
-
-                std::cout << "create =>" << placeInPlayers() << "\n";
-                _game.createPlayer(placeInPlayers());
-
-                _clients[client_id].get()->send(
-                    Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(player_place)})
-                );
-
             }
 
             if (_clients[client_id]->isRunning()) {
@@ -176,7 +184,7 @@ void rtype::Server::processGame()
 
         std::vector<Packet> &packets = _game.getPacketsToSend();
 
-        while (!packets.empty() && _clock.getSeconds() > FRAME_PER_SECONDS(60)) {
+        while (!packets.empty() && _clock.getSeconds() > FRAME_PER_SECONDS(5)) {
             broadcast(packets.front());
             packets.erase(packets.begin());
             _clock.restart();
@@ -251,7 +259,6 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
     }
     if (optCode == protocol::Operations::READY) {
         std::cout << "READ\n";
-
         auto r = _game.getRegistry();
         auto &positions = r->get_components<ecs::component::Position>();
         auto &animations = r->get_components<ecs::component::Animations>();
@@ -260,70 +267,93 @@ void rtype::Server::processAction(const unsigned int client_id, const Packet &pa
         auto &sizes = r->get_components<ecs::component::Size>();
         int entity_id = 0;
 
-        int size = countCurrentPlayer();
-        std::cout << "player size: " << size << "\n";
-        for (int player_place = FIRST_PLAYER_PLACE; player_place < size; ++player_place) {
-            std::cout << "Packet normal send player place: " << player_place << "\n";
-            sendToClient(
-                client_id,
-                Packet(
-                    protocol::NEW_PLAYER,
-                    {static_cast<uint8_t>(player_place),
-                     static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}
-                )
-            );
-        }
-        for (auto &&[draws, anim, sprite, size, pos] :
-            ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-            if (!draws || !anim || !sprite || !size || !pos) {
-                entity_id++;
+        std::cout << "current before " << countCurrentPlayer() << "\n";
+
+        for (std::size_t i = 0; i < r->_entities.size(); ++i) {
+            if (!positions[i] || !animations[i] || !drawables[i] || !sprites[i] || !sizes[i]) {
                 continue;
             }
 
-            if (anim->_object == ecs::component::Object::Weapon) {
-                sendToClient(
-                    client_id,
-                    Packet(
-                        protocol::NEW_OBJECT,
-                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
-                    )
-                );
+            if (animations[i]->_object == ecs::component::Object::Player) {
+                sendToClient(client_id,Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(i), static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(i))}));
             }
-            if (anim->_object == ecs::component::Object::Ennemies) {
-                switch (anim->_type) {
-                    case ecs::component::Type::Milespates:
-                        sendToClient(
-                            client_id,
-                            Packet(
-                                protocol::NEW_OBJECT,
-                                {static_cast<uint8_t>(entity_id),
-                                 static_cast<uint8_t>(protocol::ObjectTypes::MILESPATES)}
-                            )
-                        );
-                        break;
-                    case ecs::component::Type::Boss:
-                        sendToClient(
-                            client_id,
-                            Packet(
-                                protocol::NEW_OBJECT,
-                                {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BOSS)}
-                            )
-                        );
-                        break;
-                    default:
-                        sendToClient(
-                            client_id,
-                            Packet(
-                                protocol::NEW_OBJECT,
-                                {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
-                            )
-                        );
-                        break;
-                }
-            }
-            entity_id++;
         }
-        return;
+
+        _game.createPlayer(r->_entities.size());
+
+        _clients[client_id].get()->send(
+            Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(r->_entities.size() - 1)})
+        );
+
+        broadcastNot(client_id, Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(r->_entities.size() - 1)}));
+
+        std::cout << "current after " << countCurrentPlayer() << "\n";
+
+        //int size = countCurrentPlayer();
+        //std::cout << "player size: " << size << "\n";
+        //for (int player_place = FIRST_PLAYER_PLACE; player_place < size; ++player_place) {
+        //    std::cout << "Packet normal send player place: " << player_place << "\n";
+        //    sendToClient(
+        //        client_id,
+        //        Packet(
+        //            protocol::NEW_PLAYER,
+        //            {static_cast<uint8_t>(player_place),
+        //             static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}
+        //        )
+        //    );
+        //}
+        //broadcastNot(client_id, Packet(protocol::NEW_PLAYER, {static_cast<uint8_t>(size), static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(size))}));
+        //for (auto &&[draws, anim, sprite, size, pos] :
+        //    ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+        //    if (!draws || !anim || !sprite || !size || !pos) {
+        //        entity_id++;
+        //        continue;
+        //    }
+//
+        //    if (anim->_object == ecs::component::Object::Weapon) {
+        //        sendToClient(
+        //            client_id,
+        //            Packet(
+        //                protocol::NEW_OBJECT,
+        //                {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+        //            )
+        //        );
+        //    }
+        //    if (anim->_object == ecs::component::Object::Ennemies) {
+        //        switch (anim->_type) {
+        //            case ecs::component::Type::Milespates:
+        //                sendToClient(
+        //                    client_id,
+        //                    Packet(
+        //                        protocol::NEW_OBJECT,
+        //                        {static_cast<uint8_t>(entity_id),
+        //                         static_cast<uint8_t>(protocol::ObjectTypes::MILESPATES)}
+        //                    )
+        //                );
+        //                break;
+        //            case ecs::component::Type::Boss:
+        //                sendToClient(
+        //                    client_id,
+        //                    Packet(
+        //                        protocol::NEW_OBJECT,
+        //                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::BOSS)}
+        //                    )
+        //                );
+        //                break;
+        //            default:
+        //                sendToClient(
+        //                    client_id,
+        //                    Packet(
+        //                        protocol::NEW_OBJECT,
+        //                        {static_cast<uint8_t>(entity_id), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
+        //                    )
+        //                );
+        //                break;
+        //        }
+        //    }
+        //    entity_id++;
+        //}
+        //return;
     }
     if (optCode == protocol::Operations::PING) {
         std::cout << "PONG\n";

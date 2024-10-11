@@ -23,6 +23,34 @@
 
 client::Network::Network(): _context(), _resolver(_context), _socket(_context)
 {
+    _updateRegistryFunctions[protocol::Operations::WELCOME] = 
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+        std::cerr << "WELCOME arg: (" << static_cast<int>(received_packet.getArguments()[0]) << ")\n";
+
+        switch (received_packet.getArguments()[0]) {
+            case protocol::ObjectTypes::PLAYER_1:
+                std::cerr << "Player 1 created WELCOME\n";
+                factory.createEntity("config/player1.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_2:
+                std::cerr << "Player 2 created WELCOME\n";
+                factory.createEntity("config/player2.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_3:
+                std::cerr << "Player 3 created WELCOME\n";
+                factory.createEntity("config/player3.json");
+                break;
+            case protocol::ObjectTypes::PLAYER_4:
+                std::cerr << "Player 4 created WELCOME\n";
+                factory.createEntity("config/player4.json");
+                break;
+            default:
+                std::cerr << "none WELCOME\n";
+                break;
+        }
+    }};
+
     _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] =
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         std::size_t id = received_packet.getArguments()[0];
@@ -31,6 +59,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         if (id > pos.size()) {
             return;
         }
+
         int x = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
         int y = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
 
@@ -41,10 +70,11 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
     _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = 
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-        std::cerr << "arg: (" << static_cast<int>(received_packet.getArguments()[1]) << ")\n";
+        std::cerr << "arg: (" << static_cast<int>(received_packet.getArguments()[0]) << ")\n";
 
-        switch (received_packet.getArguments()[1]) {
+        switch (received_packet.getArguments()[0]) {
             case protocol::ObjectTypes::PLAYER_1:
+                std::cerr << "Player 1 created NEW Player\n";
                 factory.createEntity("config/player1.json");
                 break;
             case protocol::ObjectTypes::PLAYER_2:
@@ -52,9 +82,11 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/player2.json");
                 break;
             case protocol::ObjectTypes::PLAYER_3:
+                std::cerr << "Player 3 created NEW Player\n";
                 factory.createEntity("config/player3.json");
                 break;
             case protocol::ObjectTypes::PLAYER_4:
+                std::cerr << "Player 4 created NEW Player\n";
                 factory.createEntity("config/player4.json");
                 break;
             default:
@@ -68,19 +100,6 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
         switch (received_packet.getArguments()[1]) {
-            case protocol::ObjectTypes::PLAYER_1:
-                factory.createEntity("config/player1.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_2:
-                std::cerr << "Player 2 created NEW Object\n";
-                factory.createEntity("config/player2.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_3:
-                factory.createEntity("config/player3.json");
-                break;
-            case protocol::ObjectTypes::PLAYER_4:
-                factory.createEntity("config/player4.json");
-                break;
             case protocol::ObjectTypes::ENEMY:
                 factory.createEntity("config/ennemies.json");
                 break;

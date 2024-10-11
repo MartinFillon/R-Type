@@ -39,11 +39,11 @@ void client::Game::setRegistry(std::shared_ptr<ecs::Registry> registry)
 
 int client::Game::run()
 {
-    setupBackground();
+    // setupBackground();
     while (_window.isOpen()) {
         event();
         display();
-        _registry->run_systems();
+        // _registry->run_systems();
     }
 
     return EXIT_SUCCESS;

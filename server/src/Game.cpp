@@ -59,7 +59,7 @@ void rtype::Game::update(bool are_any_clients_connected)
     auto &positions = _r->get_components<ecs::component::Position>();
 
     if (_systemClock.getSeconds() > FRAME_PER_SECONDS(SERVER_TPS)) {
-        _r->run_systems();
+        //_r->run_systems();
         _systemClock.restart();
     }
 
@@ -86,13 +86,15 @@ void rtype::Game::createPlayer(const unsigned int player_place)
     std::cerr << file << std::endl;
     ecs::Entity e = _cf.createEntity(file);
 
+    std::cout << "set nanana => " << _players_entities_ids[player_place] << "\n";
+
     _players_entities_ids[player_place] = e.getId();
-    _packetsToSend.push_back(Packet(protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(player_place), static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(player_place))}));
 }
 
 void rtype::Game::movePlayer(const int player_place, const int dir)
 {
     const int player_entity_id = _players_entities_ids[player_place];
+    std::cout << "j'essaye de deplacer l'entite n°" << player_entity_id << "\n";
     auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
     auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
 

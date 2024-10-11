@@ -30,8 +30,8 @@
 
 #define MESSAGE_RECEIVED(x) "Message received from [" << x << "]"
 
-#define FIRST_PLAYER_PLACE 1
-#define MAX_PLAYER_PLACES 4
+#define FIRST_PLAYER_PLACE 0
+#define MAX_PLAYER_PLACES 3
 
 #define KEEPALIVE_TIMEOUT 2
 
@@ -68,6 +68,12 @@ namespace rtype {
         /// @param packet a `const Packet &` representing the reference to the packet to be sent to all the currently
         /// connected clients.
         void broadcast(const Packet &packet);
+
+        /// @brief Broadcasts the given `packet` to all the currently connected clients except one.
+        /// @param client_id a `const unsigned int` representing the client's id which NOT sent the message.
+        /// @param packet a `const Packet &` representing the reference to the packet to be sent to all the currently
+        /// connected clients except client_id.
+        void broadcastNot(const unsigned int client_id, const Packet &packet);
 
         /// @brief Handles any message received by the server from any connected client.
         /// @param id a `const unsigned int` representing the client's id which sent the message.

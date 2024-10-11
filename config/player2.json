@@ -13,8 +13,8 @@
   "components": {
     "life": 3,
     "position": {
-        "x": 100,
-        "y": 100
+        "x": 200,
+        "y": 200
     },
     "destroyable": false,
     "drawable": true,

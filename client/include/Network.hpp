@@ -59,7 +59,7 @@ namespace client {
             ecs::Clock _keepaliveClock;
 
             std::shared_ptr<ecs::Registry> _registry;
-
+            std::size_t _id;
             std::unordered_map<protocol::Operations, std::function<void(std::shared_ptr<ecs::Registry> &, const rtype::Packet &)>> _updateRegistryFunctions;
 
     };
