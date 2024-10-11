@@ -27,10 +27,14 @@ namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
-            void createNewProjectile(Registry &r, const ecs::component::Position &ennemiesPos);
+            void createNewProjectile(
+                Registry &r,
+                const ecs::component::Position &ennemiesPos,
+                std::shared_ptr<IContext> &ctx
+            );
             void createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx);
             int nbOfBasicEnnemies(Registry &r);
-            void shootRandomly(Registry &r, ecs::component::Position &enemyPos);
+            void shootRandomly(Registry &r, ecs::component::Position &enemyPos, std::shared_ptr<IContext> &ctx);
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
           private:

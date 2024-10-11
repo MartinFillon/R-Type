@@ -58,15 +58,16 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::share
             pos->_x -= ctrl->_speed;
         }
 
-        // if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
-        //     shootRandomly(r, *pos);
-        // }
+        if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
+            shootRandomly(r, *pos, ctx);
+        }
     }
 }
 
 void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
     Registry &r,
-    const ecs::component::Position &ennemiesPos
+    const ecs::component::Position &ennemiesPos,
+    std::shared_ptr<IContext> &ctx
 )
 {
     Entity newProjectile = r.spawn_entity();
@@ -90,6 +91,12 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
         ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Basic
     };
     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
+    if (ctx && ctx->_network) {
+        ctx->_network->broadcast(ecs::Packet(
+            protocol::NEW_OBJECT,
+            {static_cast<uint8_t>(newProjectile.getId()), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+        ));
+    }
 }
 
 void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx)
@@ -122,9 +129,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std
     };
     sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
     destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
-    std::cerr << "New enemy " << newEnnemies.getId() << std::endl;
     if (ctx && ctx->_network) {
-        std::cerr << "Sending new enemy" << std::endl;
         ctx->_network->broadcast(ecs::Packet(
             protocol::NEW_OBJECT,
             {static_cast<uint8_t>(newEnnemies.getId()), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
@@ -146,13 +151,17 @@ int ecs::systems::BasicRandomEnnemiesSystem::nbOfBasicEnnemies(Registry &r)
     return nbOfEnnemies;
 }
 
-void ecs::systems::BasicRandomEnnemiesSystem::shootRandomly(Registry &r, ecs::component::Position &enemyPos)
+void ecs::systems::BasicRandomEnnemiesSystem::shootRandomly(
+    Registry &r,
+    ecs::component::Position &enemyPos,
+    std::shared_ptr<IContext> &ctx
+)
 {
     std::random_device randomDevice;
     std::default_random_engine randomEngine(randomDevice());
     std::uniform_int_distribution<int> shootChance(0, 100);
 
     if (shootChance(randomEngine) < 1) {
-        createNewProjectile(r, enemyPos);
+        createNewProjectile(r, enemyPos, ctx);
     }
 }

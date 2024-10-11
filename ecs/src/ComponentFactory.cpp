@@ -95,7 +95,7 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(const std::string &file)
     {
-        std::cerr << "Creating entity from file: " << file << std::endl;
+        // std::cerr << "Creating entity from file: " << file << std::endl;
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
@@ -110,7 +110,7 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(int id, const std::string &file)
     {
-        std::cerr << "Creating entity from file: " << file << " with id " << id << std::endl;
+        // std::cerr << "Creating entity from file: " << file << " with id " << id << std::endl;
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 

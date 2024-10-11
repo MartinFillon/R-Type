@@ -5,9 +5,9 @@
 ** Collision system file
 */
 
+#include "Systems/CollisionsSystem.hpp"
 #include "Components/Life.hpp"
 #include "Protocol.hpp"
-#include "Systems/CollisionsSystem.hpp"
 
 namespace ecs {
     namespace systems {
@@ -41,8 +41,8 @@ namespace ecs {
                     } else {
                         destroyable[i]->_destroyable = true;
                         animation[i]->_object = component::Object::InDestroy;
-                        sendDestroyedObject(ctx, i);
                     }
+                    sendDestroyedObject(ctx, i);
                     continue;
                 }
 
@@ -62,8 +62,8 @@ namespace ecs {
                         } else {
                             destroyable[j]->_destroyable = true;
                             animation[j]->_object = component::Object::InDestroy;
-                            sendDestroyedObject(ctx, j);
                         }
+                        sendDestroyedObject(ctx, j);
                         continue;
                     }
 
@@ -102,6 +102,7 @@ namespace ecs {
 
                         if (animation[i]->_object == component::Object::Weapon) {
                             r.erase(i);
+                            sendDestroyedObject(ctx, i);
                         } else {
                             if (life[i]->_life <= 0) {
                                 destroyable[i]->_destroyable = true;
@@ -112,6 +113,7 @@ namespace ecs {
 
                         if (animation[j]->_object == component::Object::Weapon) {
                             r.erase(j);
+                            sendDestroyedObject(ctx, j);
                         } else {
                             if (life[j]->_life <= 0) {
                                 destroyable[j]->_destroyable = true;

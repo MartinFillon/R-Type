@@ -104,6 +104,9 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
             case protocol::ObjectTypes::BOSS:
                 factory.createEntity(id, "config/boss.json");
                 break;
+            case protocol::ObjectTypes::BULLET:
+                factory.createEntity(id, "config/projectile.json");
+                break;
             default:
                 break;
         }
@@ -116,8 +119,12 @@ client::Network::Network() : _context(), _resolver(_context), _socket(_context)
         auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
 
-        destroyable[id]->_destroyable = true;
-        animations[id]->_object = ecs::component::Object::InDestroy;
+        if (animations[id]->_object == ecs::component::Object::Weapon) {
+            r->erase(id);
+        } else {
+            destroyable[id]->_destroyable = true;
+            animations[id]->_object = ecs::component::Object::InDestroy;
+        }
     }};
 
     _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
