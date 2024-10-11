@@ -7,19 +7,21 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include "ComponentFactory.hpp"
 #include "Game.hpp"
 #include "RegistryWrapper.hpp"
+#include "Systems/ParallaxSystem.hpp"
 
 client::Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _network(network) {}
 
 void client::Game::setupBackground()
 {
-    // ecs::ComponentFactory factory(_registry, ecs::ComponentFactory::Mode::Client);
-    // factory.createEntity("config/background/background.json");
-    // factory.createEntity("config/background/background_2.json");
-    // factory.createEntity("config/background/background_3.json");
-    // factory.createEntity("config/background/background_4.json");
-    // _registry->add_system(ecs::systems::ParalaxSystem());
+    ecs::ComponentFactory factory(_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
+    factory.createEntity("config/background/background.json");
+    factory.createEntity("config/background/background_2.json");
+    factory.createEntity("config/background/background_3.json");
+    factory.createEntity("config/background/background_4.json");
+    _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
 }
 
 void client::Game::setRegistry(std::shared_ptr<rtype::RegistryWrapper> &registry)
@@ -29,11 +31,11 @@ void client::Game::setRegistry(std::shared_ptr<rtype::RegistryWrapper> &registry
 
 int client::Game::run()
 {
-    // setupBackground();
+    setupBackground();
     while (_window.isOpen()) {
         event();
         display();
-        // _registry->run_systems();
+        _registry->getClientRegistry()->run_systems(nullptr);
     }
 
     return EXIT_SUCCESS;
