@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 
 #include "Network.hpp"
@@ -15,7 +16,9 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
+#include "Packet.hpp"
 #include "Protocol.hpp"
+#include "Registry.hpp"
 
 client::Network::Network(): _context(), _resolver(_context), _socket(_context)
 {
@@ -34,10 +37,9 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
         pos[id]->_y = y;
     }};
 
-    _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] =
+    _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = 
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-
         switch (received_packet.getArguments()[1]) {
             case protocol::ObjectTypes::PLAYER_1:
                 factory.createEntity("config/player1.json");
@@ -51,6 +53,16 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
             case protocol::ObjectTypes::PLAYER_4:
                 factory.createEntity("config/player4.json");
                 break;
+            default:
+                break;
+        }
+    }};
+
+    _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] =
+    {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
+        ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+
+        switch (received_packet.getArguments()[1]) {
             case protocol::ObjectTypes::ENEMY:
                 factory.createEntity("config/ennemies.json");
                 break;
