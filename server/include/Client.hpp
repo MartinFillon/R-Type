@@ -20,7 +20,7 @@
 #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
 #define CLIENT_LEFT(x) "Client [" << x << "]" << " disconnected"
 
-namespace rtype {
+namespace rtype::server {
 
     class Server;
 

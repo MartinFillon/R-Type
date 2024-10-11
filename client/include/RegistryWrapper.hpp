@@ -12,8 +12,7 @@
 #include "Registry.hpp"
 #include "TextureManager.hpp"
 
-namespace rtype {
-
+namespace rtype::client {
     class RegistryWrapper {
       public:
         RegistryWrapper();
@@ -38,5 +37,4 @@ namespace rtype {
         std::shared_ptr<ecs::Registry> _client;
         std::shared_ptr<ecs::Registry> _server;
     };
-
-} // namespace rtype
+} // namespace rtype::client

@@ -9,31 +9,33 @@
 #include <iostream>
 #include "Server.hpp"
 
-rtype::Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
-    : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
-{
-    std::cout << NEW_CLIENT(_id) << std::endl;
-};
+namespace rtype::server {
+    Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
+        : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
+    {
+        std::cout << NEW_CLIENT(_id) << std::endl;
+    };
 
-void rtype::Client::send(const ecs::Packet &packet)
-{
-    if (packet.isValid()) {
-        _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+    void Client::send(const ecs::Packet &packet)
+    {
+        if (packet.isValid()) {
+            _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
+        }
     }
-}
 
-void rtype::Client::disconnect()
-{
-    std::cout << CLIENT_LEFT(_id) << std::endl;
-    _running = false;
-}
+    void Client::disconnect()
+    {
+        std::cout << CLIENT_LEFT(_id) << std::endl;
+        _running = false;
+    }
 
-bool rtype::Client::isRunning()
-{
-    return _running;
-}
+    bool Client::isRunning()
+    {
+        return _running;
+    }
 
-ecs::Clock &rtype::Client::getHeartbeatClock()
-{
-    return _heartbeatClock;
-}
+    ecs::Clock &Client::getHeartbeatClock()
+    {
+        return _heartbeatClock;
+    }
+} // namespace rtype::server

@@ -22,7 +22,7 @@
 #include "Packet.hpp"
 #include "Registry.hpp"
 
-namespace rtype {
+namespace rtype::server {
 
     /// @brief Class to wrap all the utilities of the game loop and logic with the ECS.
     class Game {

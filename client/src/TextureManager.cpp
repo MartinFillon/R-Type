@@ -10,30 +10,32 @@
 
 #include "TextureManager.hpp"
 
-rtype::TextureManager::TextureManager()
-{
-    for (const auto &entry : std::filesystem::directory_iterator(PATH_TO_ASSETS)) {
-        if (entry.is_directory()) {
-            for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
-                std::string path(newEntry.path().generic_string().c_str());
-                std::string asstesPath = path.substr(15, path.size());
-                sf::Texture temp;
+namespace rtype::client {
+    TextureManager::TextureManager()
+    {
+        for (const auto &entry : std::filesystem::directory_iterator(PATH_TO_ASSETS)) {
+            if (entry.is_directory()) {
+                for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
+                    std::string path(newEntry.path().generic_string().c_str());
+                    std::string asstesPath = path.substr(15, path.size());
+                    sf::Texture temp;
 
-                temp.loadFromFile(path);
-                _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
+                    temp.loadFromFile(path);
+                    _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
+                }
+                continue;
             }
-            continue;
+            std::string path(entry.path().generic_string().c_str());
+            std::string asstesPath = path.substr(15, path.size());
+            sf::Texture temp;
+
+            temp.loadFromFile(path);
+            _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
         }
-        std::string path(entry.path().generic_string().c_str());
-        std::string asstesPath = path.substr(15, path.size());
-        sf::Texture temp;
-
-        temp.loadFromFile(path);
-        _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
     }
-}
 
-sf::Texture &rtype::TextureManager::getTexture(const std::string &pathToImage)
-{
-    return *_textures[pathToImage];
-}
+    sf::Texture &TextureManager::getTexture(const std::string &pathToImage)
+    {
+        return *_textures[pathToImage];
+    }
+} // namespace rtype::client

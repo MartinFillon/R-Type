@@ -13,8 +13,7 @@
 #include "TextureManager.hpp"
 #include "ZipperIterator.hpp"
 
-namespace rtype {
-
+namespace rtype::client {
     RegistryWrapper::RegistryWrapper()
         : _client(std::make_shared<ecs::Registry>()), _server(std::make_shared<ecs::Registry>())
     {
@@ -78,4 +77,4 @@ namespace rtype {
         _server->run_systems(ctx);
     }
 
-} // namespace rtype
+} // namespace rtype::client

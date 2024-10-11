@@ -21,7 +21,7 @@
 #define DATA_MAX_SIZE 1024
 #define KEEPALIVE_TIMEOUT 1
 
-namespace client {
+namespace rtype::client {
 
     class Network {
 
@@ -63,6 +63,5 @@ namespace client {
             _updateRegistryFunctions;
     };
 
-}; // namespace client
-
+}; // namespace rtype::client
 #endif /* !NETWORK_HPP_ */

@@ -23,7 +23,7 @@
 #define WIN_WIDTH 1920
 #define WIN_HEIGHT 1080
 
-namespace client {
+namespace rtype::client {
 
     class Gui : ecs::IContext {
 
@@ -40,9 +40,8 @@ namespace client {
         Menu _menu;
         Game _game;
 
-        std::shared_ptr<rtype::RegistryWrapper> _registry;
+        std::shared_ptr<RegistryWrapper> _registry;
     };
 
-}; // namespace client
-
+}; // namespace rtype::client
 #endif /* !GUI_HPP_ */

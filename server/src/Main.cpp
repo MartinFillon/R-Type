@@ -14,12 +14,12 @@
 
 std::shared_ptr<ecs::INetwork> create_network(int port)
 {
-    return std::make_shared<rtype::Server>(port);
+    return std::make_shared<rtype::server::Server>(port);
 }
 
 std::shared_ptr<ecs::IContext> create_context(std::shared_ptr<ecs::INetwork> &network)
 {
-    return std::make_shared<rtype::Context>(network);
+    return std::make_shared<rtype::server::Context>(network);
 }
 
 int main(int ac, char **av)

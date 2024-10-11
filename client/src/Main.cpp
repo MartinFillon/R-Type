@@ -9,7 +9,7 @@
 
 int main()
 {
-    client::Gui gui;
+    rtype::client::Gui gui;
 
     return gui.run();
 }

@@ -20,29 +20,27 @@
 
 #define FRAME_PER_SECONDS(x) (int)(1 / x)
 
-namespace client {
-
+namespace rtype::client {
     class Game {
-
       public:
         Game(sf::RenderWindow &window, Network &network);
 
-        void setRegistry(std::shared_ptr<rtype::RegistryWrapper> &registry);
+        void setRegistry(std::shared_ptr<RegistryWrapper> &registry);
 
         int run();
 
       private:
-        int event();
-        int display();
+        void event();
+        void display();
         void setupBackground();
 
         Network &_network;
 
         sf::RenderWindow &_window;
-        std::shared_ptr<rtype::RegistryWrapper> _registry;
+        std::shared_ptr<RegistryWrapper> _registry;
 
         ecs::Clock _clock;
-        rtype::TextureManager _textureManager;
+        TextureManager _textureManager;
     };
 
     static std::map<sf::Keyboard::Key, unsigned char> moves = {
@@ -52,7 +50,5 @@ namespace client {
         {sf::Keyboard::Right, protocol::Direction::RIGHT},
         {sf::Keyboard::Space, protocol::Direction::Space}
     };
-
-}; // namespace client
-
+}; // namespace rtype::client
 #endif /* !GAME_HPP_ */
