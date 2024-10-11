@@ -8,7 +8,7 @@
 #ifndef PACKET_HPP_
 #define PACKET_HPP_
 
-#include <memory>
+#include <cstdint>
 #include <vector>
 
 #define MESSAGE_OPCODE 4

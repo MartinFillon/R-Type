@@ -11,12 +11,10 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "ComponentFactory.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
 #include "Menu.hpp"
 #include "Network.hpp"
-#include "Registry.hpp"
 #include "RegistryWrapper.hpp"
 
 #define ERROR 84

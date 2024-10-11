@@ -11,7 +11,6 @@
 #include <asio.hpp>
 #include <memory>
 
-#include "Components/Position.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"

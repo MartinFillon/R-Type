@@ -13,10 +13,8 @@
 #include <memory>
 
 #include "Clock.hpp"
-#include "ComponentFactory.hpp"
 #include "Network.hpp"
 #include "Protocol.hpp"
-#include "Registry.hpp"
 #include "RegistryWrapper.hpp"
 #include "TextureManager.hpp"
 
