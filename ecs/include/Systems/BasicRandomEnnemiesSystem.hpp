@@ -1,6 +1,7 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
+#include "IContext.hpp"
 #define ENNEMIES_TICK 2
 
 #define MAX_RANDOM_ENNEMIES 6
@@ -27,7 +28,7 @@ namespace ecs {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
             void createNewProjectile(Registry &r, const ecs::component::Position &ennemiesPos);
-            void createNewEnnemies(Registry &r);
+            void createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx);
             int nbOfBasicEnnemies(Registry &r);
             void shootRandomly(Registry &r, ecs::component::Position &enemyPos);
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;

@@ -158,7 +158,7 @@ void rtype::Game::setupBosses()
 void rtype::Game::setupBasicEnnemies()
 {
     // _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
-    // _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+    _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
 }
 
 void rtype::Game::setupBackground()

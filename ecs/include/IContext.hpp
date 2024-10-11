@@ -22,8 +22,9 @@ namespace ecs {
 
         virtual ~IContext() = default;
 
-      protected:
         std::shared_ptr<INetwork> _network = nullptr;
+
+      protected:
     };
 } // namespace ecs
 

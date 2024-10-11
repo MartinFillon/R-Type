@@ -6,8 +6,13 @@
 */
 
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include <iostream>
+#include <memory>
 #include <random>
 #include "Components/Life.hpp"
+#include "IContext.hpp"
+#include "Packet.hpp"
+#include "Protocol.hpp"
 #include "ZipperIterator.hpp"
 
 void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
@@ -16,7 +21,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::share
         return;
     }
     if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
-        createNewEnnemies(r);
+        createNewEnnemies(r, ctx);
         return;
     }
     _clock.restart();
@@ -87,7 +92,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
 }
 
-void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r)
+void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx)
 {
     std::random_device randomPosition;
     std::default_random_engine randomEngine(randomPosition());
@@ -117,6 +122,14 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r)
     };
     sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
     destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
+    std::cerr << "New enemy " << newEnnemies.getId() << std::endl;
+    if (ctx && ctx->_network) {
+        std::cerr << "Sending new enemy" << std::endl;
+        ctx->_network->broadcast(ecs::Packet(
+            protocol::NEW_OBJECT,
+            {static_cast<uint8_t>(newEnnemies.getId()), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
+        ));
+    }
 }
 
 int ecs::systems::BasicRandomEnnemiesSystem::nbOfBasicEnnemies(Registry &r)
