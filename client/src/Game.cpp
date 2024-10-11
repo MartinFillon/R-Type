@@ -37,8 +37,7 @@ int client::Game::run()
     while (_window.isOpen()) {
         event();
         display();
-        _registry->getClientRegistry()->run_systems(nullptr);
-        _registry->getServerRegistry()->run_systems(nullptr);
+        _registry->run_systems(nullptr);
     }
 
     return EXIT_SUCCESS;

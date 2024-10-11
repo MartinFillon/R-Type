@@ -31,6 +31,8 @@ namespace rtype {
             return _client;
         }
 
+        void run_systems(std::shared_ptr<ecs::IContext> ctx);
+
       protected:
       private:
         std::shared_ptr<ecs::Registry> _client;

@@ -72,4 +72,10 @@ namespace rtype {
         drawRegistry(window, textureManager, _server);
     }
 
+    void RegistryWrapper::run_systems(std::shared_ptr<ecs::IContext> ctx)
+    {
+        _client->run_systems(ctx);
+        _server->run_systems(ctx);
+    }
+
 } // namespace rtype
