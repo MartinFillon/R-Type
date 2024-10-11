@@ -28,7 +28,6 @@ rtype::Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(_r, ecs::Compon
     _r->register_component<ecs::component::Sprite>();
     _r->register_component<ecs::component::Destroyable>();
 
-    // setupBackground();
     setupBasicEnnemies();
     setupCollisons();
     setupDestroy();
@@ -40,8 +39,6 @@ void rtype::Game::preparePosition(const std::optional<ecs::component::Position> 
     std::vector<uint8_t> args;
     int x = p->_x;
     int y = p->_y;
-
-    //std::cerr << "pos: " << x << " y: " << y << "\n";
 
     args.push_back(entity_id);
 
@@ -59,15 +56,17 @@ void rtype::Game::update(bool are_any_clients_connected)
     auto &positions = _r->get_components<ecs::component::Position>();
 
     if (_systemClock.getSeconds() > FRAME_PER_SECONDS(SERVER_TPS)) {
-        //_r->run_systems();
+        _r->run_systems();
         _systemClock.restart();
     }
 
     for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
-        if (!positions[entity_id])
+        if (!positions[entity_id]) {
             continue;
-        if (are_any_clients_connected)
+        }
+        if (are_any_clients_connected) {
             preparePosition(positions[entity_id], entity_id);
+        }
     }
 }
 
@@ -94,7 +93,7 @@ void rtype::Game::createPlayer(const unsigned int player_place)
 void rtype::Game::movePlayer(const int player_place, const int dir)
 {
     const int player_entity_id = _players_entities_ids[player_place];
-    std::cout << "j'essaye de deplacer l'entite n°" << player_entity_id << "\n";
+
     auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
     auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
 

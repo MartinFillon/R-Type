@@ -5,6 +5,7 @@
 ** Network
 */
 
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -26,27 +27,21 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
     _updateRegistryFunctions[protocol::Operations::WELCOME] = 
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-        std::cerr << "WELCOME arg: (" << static_cast<int>(received_packet.getArguments()[0]) << ")\n";
 
         switch (received_packet.getArguments()[0]) {
             case protocol::ObjectTypes::PLAYER_1:
-                std::cerr << "Player 1 created WELCOME\n";
-                factory.createEntity("config/player1.json");
+                factory.createEntity("config/player0.json");
                 break;
             case protocol::ObjectTypes::PLAYER_2:
-                std::cerr << "Player 2 created WELCOME\n";
-                factory.createEntity("config/player2.json");
+                factory.createEntity("config/player1.json");
                 break;
             case protocol::ObjectTypes::PLAYER_3:
-                std::cerr << "Player 3 created WELCOME\n";
-                factory.createEntity("config/player3.json");
+                factory.createEntity("config/player2.json");
                 break;
             case protocol::ObjectTypes::PLAYER_4:
-                std::cerr << "Player 4 created WELCOME\n";
-                factory.createEntity("config/player4.json");
+                factory.createEntity("config/player3.json");
                 break;
             default:
-                std::cerr << "none WELCOME\n";
                 break;
         }
     }};
@@ -70,27 +65,21 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
     _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = 
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-        std::cerr << "arg: (" << static_cast<int>(received_packet.getArguments()[0]) << ")\n";
 
         switch (received_packet.getArguments()[0]) {
             case protocol::ObjectTypes::PLAYER_1:
-                std::cerr << "Player 1 created NEW Player\n";
-                factory.createEntity("config/player1.json");
+                factory.createEntity("config/player0.json");
                 break;
             case protocol::ObjectTypes::PLAYER_2:
-                std::cerr << "Player 2 created NEW Player\n";
-                factory.createEntity("config/player2.json");
+                factory.createEntity("config/player1.json");
                 break;
             case protocol::ObjectTypes::PLAYER_3:
-                std::cerr << "Player 3 created NEW Player\n";
-                factory.createEntity("config/player3.json");
+                factory.createEntity("config/player2.json");
                 break;
             case protocol::ObjectTypes::PLAYER_4:
-                std::cerr << "Player 4 created NEW Player\n";
-                factory.createEntity("config/player4.json");
+                factory.createEntity("config/player3.json");
                 break;
             default:
-                std::cerr << "none NEW Player\n";
                 break;
         }
     }};
@@ -99,7 +88,7 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
     {[](std::shared_ptr<ecs::Registry> &r, const rtype::Packet &received_packet) {
         ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
 
-        switch (received_packet.getArguments()[1]) {
+        switch (received_packet.getArguments()[0]) {
             case protocol::ObjectTypes::ENEMY:
                 factory.createEntity("config/ennemies.json");
                 break;
@@ -110,7 +99,6 @@ client::Network::Network(): _context(), _resolver(_context), _socket(_context)
                 factory.createEntity("config/boss.json");
                 break;
             default:
-                std::cerr << "none NEW Object\n";
                 break;        
         }
     }};
@@ -191,16 +179,18 @@ int client::Network::run()
         asio::error_code error;
         size_t len = _socket.receive_from(asio::buffer(message), _endpoint, 0, error);
 
-        rtype::Packet received_packet(message);
+        rtype::Packet packet(message);
 
-        if (!error && len) {
-            if (received_packet.getOpcode() == protocol::Operations::NEW_PLAYER) {
-                std::cout << "new player detect\n";
-            }
-            //std::cout << "Packet recu du server! OptCode: " << std::to_string(received_packet.getOpcode()) << std::endl;
+        if (!packet.isValid()) {
+            continue;
         }
 
-        updateRegistry(received_packet);
+        if (packet.getOpcode() == protocol::Operations::REFUSED) {
+            std::cerr << "Server full\n";
+            return EXIT_FAILURE;
+        }
+
+        updateRegistry(rtype::Packet(message));
 
         if (_keepaliveClock.getSeconds() > KEEPALIVE_TIMEOUT) {
             send(protocol::Operations::PING, {});
@@ -214,7 +204,6 @@ int client::Network::run()
 void client::Network::send(const rtype::Packet &packet)
 {
     if (!packet.isValid()) {
-        std::cerr << "Packet is not valid" << std::endl;
         return;
     }
 

@@ -73,7 +73,7 @@ namespace rtype {
         /// @param client_id a `const unsigned int` representing the client's id which NOT sent the message.
         /// @param packet a `const Packet &` representing the reference to the packet to be sent to all the currently
         /// connected clients except client_id.
-        void broadcastNot(const unsigned int client_id, const Packet &packet);
+        void broadcastExcept(const unsigned int client_id, const Packet &packet);
 
         /// @brief Handles any message received by the server from any connected client.
         /// @param id a `const unsigned int` representing the client's id which sent the message.

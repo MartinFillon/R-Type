@@ -13,8 +13,8 @@
   "components": {
     "life": 3,
     "position": {
-        "x": 200,
-        "y": 200
+        "x": 100,
+        "y": 100
     },
     "destroyable": false,
     "drawable": true,
@@ -27,7 +27,7 @@
         "width": 33,
         "height": 20,
         "x": 65,
-        "y": 18,
+        "y": 36,
         "rotation": 0,
         "type": "player",
         "objectType": "none"
