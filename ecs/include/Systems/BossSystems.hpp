@@ -10,7 +10,7 @@
 
 #define BOSS_LIFE(x) 100 * x
 #define BOSS_SPEED 5
-#define BOSS_SPAWN_TIME 600
+#define BOSS_SPAWN_TIME 10
 #define BOSS_PROJECTILE_SPEED 5
 #define MOVING_PROJECTILE_SPEED 0.01
 #define BOSS_PROJECTILE_SPAWN_TIME 3
@@ -33,13 +33,14 @@ namespace ecs {
           public:
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
-            void createNewProjectile(Registry &r, const ecs::component::Position &bossPos);
-            void createFirstBoss(Registry &r);
+            void createNewProjectile(Registry &r, const ecs::component::Position &bossPos, std::shared_ptr<IContext> ctx);
+            void createFirstBoss(Registry &r, std::shared_ptr<IContext> ctx);
             bool isABoss(Registry &r);
             void moveProjectileTowardsPlayer(
                 Registry &r,
                 ecs::component::Position &projectilePos,
-                const std::size_t &idx
+                const std::size_t &idx,
+                std::shared_ptr<IContext> ctx
             );
 
           private:
@@ -47,8 +48,8 @@ namespace ecs {
             ecs::Clock _shootingClock;
             ecs::Clock _projectileClock;
             std::size_t times = 0;
-            std::array<std::function<void(Registry &r)>, 1> _bosses{
-                {[this](Registry &r) { createFirstBoss(r); }},
+            std::array<std::function<void(Registry &r, std::shared_ptr<IContext> ctx)>, 1> _bosses{
+                {[this](Registry &r, std::shared_ptr<IContext> ctx) { createFirstBoss(r, ctx); }},
             };
         };
     } // namespace systems

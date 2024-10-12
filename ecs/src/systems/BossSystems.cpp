@@ -5,10 +5,13 @@
 ** boss sytem file
 */
 
-#include "Systems/BossSystems.hpp"
 #include <memory>
+#include <iostream>
+#include "Systems/BossSystems.hpp"
+#include "Components/Animations.hpp"
 #include "Components/Life.hpp"
 #include "IContext.hpp"
+#include "Packet.hpp"
 #include "ZipperIterator.hpp"
 
 void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::IContext> ctx)
@@ -18,10 +21,9 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
     if (_bossClock.getSeconds() < BOSS_SPAWN_TIME && !isBoss) {
         return;
     }
-
     if (!isBoss && times < _bosses.size()) {
         auto createBossFunction = _bosses[times];
-        createBossFunction(r);
+        createBossFunction(r, ctx);
         times += 1;
     }
 
@@ -39,23 +41,19 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
             continue;
         }
 
-        if (anim->_type == ecs::component::Type::Basic || anim->_type == ecs::component::Type::Milespates) {
-            destroyable->_destroyable = true;
-        }
-
         if (anim->_type != ecs::component::Type::Boss) {
             idx += 1;
             continue;
         }
 
         if (anim->_object == ecs::component::Weapon && _projectileClock.getSeconds() > MOVING_PROJECTILE_SPEED) {
-            moveProjectileTowardsPlayer(r, *pos, idx);
+            moveProjectileTowardsPlayer(r, *pos, idx, ctx);
             _projectileClock.restart();
             continue;
         }
 
         if (_shootingClock.getSeconds() > BOSS_PROJECTILE_SPAWN_TIME) {
-            createNewProjectile(r, *pos);
+            createNewProjectile(r, *pos, ctx);
             _shootingClock.restart();
         }
 
@@ -72,7 +70,7 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
     }
 }
 
-void ecs::systems::BossSystems::createNewProjectile(Registry &r, const ecs::component::Position &bossPos)
+void ecs::systems::BossSystems::createNewProjectile(Registry &r, const ecs::component::Position &bossPos, std::shared_ptr<IContext> ctx)
 {
     Entity newProjectile = r.spawn_entity();
     r._entities.addEntity(newProjectile);
@@ -95,9 +93,10 @@ void ecs::systems::BossSystems::createNewProjectile(Registry &r, const ecs::comp
         ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Boss
     };
     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
+    ctx->createBossProjectile(newProjectile.getId(), rtype::protocol::BULLET);
 }
 
-void ecs::systems::BossSystems::createFirstBoss(Registry &r)
+void ecs::systems::BossSystems::createFirstBoss(Registry &r, std::shared_ptr<IContext> ctx)
 {
     Entity bossEntity = r.spawn_entity();
     r._entities.addEntity(bossEntity);
@@ -121,6 +120,7 @@ void ecs::systems::BossSystems::createFirstBoss(Registry &r)
     sizes[bossEntity.getId()] = ecs::component::Size{4, 4};
     destroyable[bossEntity.getId()] = ecs::component::Destroyable{false};
     life[bossEntity.getId()] = ecs::component::Life{BOSS_LIFE(1)};
+    ctx->createBoss(bossEntity.getId());
 }
 
 bool ecs::systems::BossSystems::isABoss(Registry &r)
@@ -142,7 +142,8 @@ bool ecs::systems::BossSystems::isABoss(Registry &r)
 void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
     Registry &r,
     ecs::component::Position &projectilePos,
-    const std::size_t &idx
+    const std::size_t &idx,
+    std::shared_ptr<IContext> ctx
 )
 {
     auto &positions = r.get_components<ecs::component::Position>();
@@ -167,6 +168,7 @@ void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
     if (distance <= PROJECTILE_CLOSE) {
         auto &destroyables = r.get_components<ecs::component::Destroyable>();
         destroyables[idx]->_destroyable = true;
+        ctx->destroyObject(idx);
         return;
     }
 

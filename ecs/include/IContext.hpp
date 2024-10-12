@@ -36,6 +36,11 @@ namespace ecs {
 
         virtual void createMilespates(int id) = 0;
 
+        virtual void createBoss(int id) = 0;
+
+        virtual void createBossProjectile(int id, const rtype::protocol::ObjectTypes &type) = 0;
+
+
         std::shared_ptr<INetwork> _network = nullptr;
 
       protected:

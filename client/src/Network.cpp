@@ -47,11 +47,12 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_RECT] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                           const protocol::Packet &received_packet) {
-            std::size_t id = received_packet.getArguments()[0];
-            int width = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
-            int height = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
-            int x = (received_packet.getArguments()[5] << 8) + (received_packet.getArguments()[6]);
-            int y = (received_packet.getArguments()[7] << 8) + (received_packet.getArguments()[8]);
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
+            int width = (received_packet.getArguments()[4] << 8) + (received_packet.getArguments()[5]);
+            int height = (received_packet.getArguments()[6] << 8) + (received_packet.getArguments()[7]);
+            int x = (received_packet.getArguments()[8] << 8) + (received_packet.getArguments()[9]);
+            int y = (received_packet.getArguments()[10] << 8) + (received_packet.getArguments()[11]);
             auto &anim = r->get_components<ecs::component::Animations>();
 
             anim[id] = ecs::component::Animations{ecs::Clock(), width, height, x, y};

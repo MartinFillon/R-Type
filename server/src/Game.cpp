@@ -156,7 +156,7 @@ namespace rtype::server {
 
     void Game::setupBosses()
     {
-        // _r->add_system(ecs::systems::BossSystems());
+        _r->add_system(ecs::systems::BossSystems());
     }
 
     void Game::setupBasicEnnemies()
