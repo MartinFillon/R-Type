@@ -1,5 +1,5 @@
 {
-  "name": "ennemies",
+  "name": "milepates",
   "active": [
     "position",
     "drawable",
@@ -20,7 +20,7 @@
     "drawable": true,
     "controllable": {
       "controllable": false,
-      "speed": 3
+      "speed": 3.5
     },
     "sprite": "r-typesheet8.gif",
     "animations": {

@@ -34,6 +34,8 @@ namespace ecs {
 
         virtual void createProjectile(int id, const rtype::protocol::ObjectTypes &type) = 0;
 
+        virtual void createMilespates(int id) = 0;
+
         std::shared_ptr<INetwork> _network = nullptr;
 
       protected:

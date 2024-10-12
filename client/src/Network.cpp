@@ -19,6 +19,7 @@
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"
+#include "Utils.hpp"
 
 namespace rtype::client {
 
@@ -29,15 +30,16 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                               const protocol::Packet &received_packet) {
-            std::size_t id = received_packet.getArguments()[0];
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
             auto &pos = r->get_components<ecs::component::Position>();
 
             if (id > pos.size()) {
                 return;
             }
 
-            int x = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
-            int y = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
+            int x = (arguments[4] << 8) + (arguments[5]);
+            int y = (arguments[6] << 8) + (arguments[7]);
 
             pos[id]->_x = x;
             pos[id]->_y = y;
@@ -57,10 +59,10 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                          const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
-
-            int id = received_packet.getArguments()[0];
-            int type = received_packet.getArguments()[1];
+            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
+            int type = arguments[4];
 
             std::cerr << "New player " << id << " type " << type << std::endl;
             switch (type) {
@@ -83,17 +85,18 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                          const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
 
-            uint8_t id = received_packet.getArguments()[0];
-            uint8_t type = received_packet.getArguments()[1];
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
+            int type = arguments[4];
 
             switch (type) {
                 case protocol::ObjectTypes::ENEMY:
                     factory.createEntity(id, "config/ennemies.json");
                     break;
                 case protocol::ObjectTypes::MILESPATES:
-                    factory.createEntity(id, "config/milespates.json");
+                    factory.createEntity(id, "config/milepates.json");
                     break;
                 case protocol::ObjectTypes::BOSS:
                     factory.createEntity(id, "config/boss.json");
@@ -111,7 +114,8 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                              const protocol::Packet &received_packet) {
-            std::size_t id = received_packet.getArguments()[0];
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
 
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
             auto &animations = r->register_if_not_exist<ecs::component::Animations>();
@@ -126,14 +130,16 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                              const protocol::Packet &received_packet) {
-            std::size_t id = received_packet.getArguments()[0];
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
 
             r->erase(id);
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                           const protocol::Packet &received_packet) {
-            std::size_t id = received_packet.getArguments()[0];
+            auto arguments = received_packet.getArguments();
+            int id = ecs::utils::bytesToInt(arguments);
 
             r->erase(id);
         }};

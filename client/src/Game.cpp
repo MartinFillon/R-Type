@@ -6,7 +6,6 @@
 */
 
 #include <SFML/Window/Keyboard.hpp>
-#include <iostream>
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
@@ -20,7 +19,7 @@ namespace rtype::client {
 
     void Game::setupBackground()
     {
-        ecs::ComponentFactory factory(_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
+        ecs::ComponentFactory factory(*_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
         factory.createEntity("config/background/background.json");
         factory.createEntity("config/background/background_2.json");
         factory.createEntity("config/background/background_3.json");

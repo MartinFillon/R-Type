@@ -30,6 +30,8 @@ namespace rtype::server {
 
         void createProjectile(int id, const rtype::protocol::ObjectTypes &type) override;
 
+        void createMilespates(int id) override final;
+
       protected:
       private:
     };

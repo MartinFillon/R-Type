@@ -26,12 +26,12 @@
 
 namespace ecs {
     namespace systems {
-        class EnnemiesMilespatesSystem : public ISystems {
+        class EnnemiesMilepatesSystem : public ISystems {
           public:
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
-            void createMilespates(Registry &r);
-            int countMilespates(Registry &r);
+            void createMilepates(Registry &r, std::shared_ptr<IContext> &ctx);
+            int countMilepates(Registry &r);
             std::deque<std::pair<int, int>> positionHistory;
         };
     }; // namespace systems

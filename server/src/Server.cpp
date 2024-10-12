@@ -18,6 +18,7 @@
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Server.hpp"
+#include "Utils.hpp"
 
 namespace rtype::server {
     Server::Server(int port)
@@ -241,8 +242,6 @@ namespace rtype::server {
 
         const int8_t optCode = packet.getOpcode();
 
-        std::cerr << "Packet opcode: " << static_cast<int>(optCode) << std::endl;
-
         if (optCode == protocol::Operations::EVENT) {
             handleEvents(client_id, packet);
             return;
@@ -280,35 +279,24 @@ namespace rtype::server {
                 }
 
                 if (animations[i]->_object == ecs::component::Object::Ennemies) {
-                    std::cerr << "Sending ennemy entity id: " << i << std::endl;
-                    sendToClient(
-                        client_id,
-                        protocol::Packet(
-                            protocol::NEW_OBJECT,
-                            {static_cast<uint8_t>(i), static_cast<uint8_t>(protocol::ObjectTypes::ENEMY)}
-                        )
-                    );
+                    auto arguments = ecs::utils::intToBytes(i);
+
+                    arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
+                    sendToClient(client_id, protocol::Packet(protocol::NEW_OBJECT, arguments));
                 }
 
                 if (animations[i]->_object == ecs::component::Object::Player) {
-                    std::cerr << "Player entity id: " << i << std::endl;
-                    sendToClient(
-                        client_id,
-                        protocol::Packet(
-                            protocol::NEW_PLAYER,
-                            {static_cast<uint8_t>(i),
-                             static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))}
-                        )
+                    auto arguments = ecs::utils::intToBytes(i);
+
+                    arguments.push_back(static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))
                     );
+
+                    sendToClient(client_id, protocol::Packet(protocol::NEW_PLAYER, arguments));
                 }
             }
-            _clients[client_id].get()->send(protocol::Packet(protocol::Operations::WELCOME, {static_cast<uint8_t>(id)})
-            );
+            _clients[client_id].get()->send(protocol::Packet(protocol::Operations::WELCOME, {}));
             broadcastExcept(
-                client_id,
-                protocol::Packet(
-                    protocol::Operations::NEW_PLAYER, {static_cast<uint8_t>(e.getId()), static_cast<uint8_t>(id)}
-                )
+                client_id, protocol::Packet(protocol::Operations::NEW_PLAYER, ecs::utils::intToBytes(e.getId()))
             );
             return;
         }
