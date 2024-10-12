@@ -11,7 +11,9 @@
 #include <memory>
 #include <stdexcept>
 
+#include "Clock.hpp"
 #include "ComponentFactory.hpp"
+#include "Components/Animations.hpp"
 #include "Components/Destroyable.hpp"
 #include "Network.hpp"
 #include "Packet.hpp"
@@ -39,6 +41,18 @@ namespace rtype::client {
 
             pos[id]->_x = x;
             pos[id]->_y = y;
+        }};
+
+        _updateRegistryFunctions[protocol::Operations::OBJECT_RECT] = {[](std::shared_ptr<ecs::Registry> &r,
+                                                                          const protocol::Packet &received_packet) {
+            std::size_t id = received_packet.getArguments()[0];
+            int width = (received_packet.getArguments()[1] << 8) + (received_packet.getArguments()[2]);
+            int height = (received_packet.getArguments()[3] << 8) + (received_packet.getArguments()[4]);
+            int x = (received_packet.getArguments()[5] << 8) + (received_packet.getArguments()[6]);
+            int y = (received_packet.getArguments()[7] << 8) + (received_packet.getArguments()[8]);
+            auto &anim = r->get_components<ecs::component::Animations>();
+
+            anim[id] = ecs::component::Animations{ecs::Clock(), width, height, x, y};
         }};
 
         _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
