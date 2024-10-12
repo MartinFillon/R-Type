@@ -32,6 +32,10 @@ namespace rtype::server {
 
         void createMilespates(int id) override final;
 
+        void createBoss(int id) override final;
+
+        void createBossProjectile(int id, const protocol::ObjectTypes &type) override final;
+
       protected:
       private:
     };
