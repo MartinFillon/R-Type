@@ -30,7 +30,7 @@ namespace ecs {
           public:
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
-            void createMilespates(Registry &r);
+            void createMilespates(Registry &r, std::shared_ptr<IContext> &ctx);
             int countMilespates(Registry &r);
             std::deque<std::pair<int, int>> positionHistory;
         };
