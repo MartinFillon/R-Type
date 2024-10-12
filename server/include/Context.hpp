@@ -12,6 +12,7 @@
 
 #include "IContext.hpp"
 #include "INetwork.hpp"
+#include "Protocol.hpp"
 
 namespace rtype::server {
     class Context : public ecs::IContext {
@@ -25,7 +26,7 @@ namespace rtype::server {
 
         void moveObject(int id, int x, int y) override final;
 
-        void createProjectile(int id) override final;
+        void createProjectile(int id, const rtype::protocol::ObjectTypes &type) override;
 
       protected:
       private:

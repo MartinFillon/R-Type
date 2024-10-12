@@ -87,6 +87,9 @@ namespace rtype::client {
                 case protocol::ObjectTypes::BULLET:
                     factory.createEntity(id, "config/projectile.json");
                     break;
+                case protocol::ObjectTypes::PLAYER_BULLET:
+                    factory.createEntity(id, "config/playerProjectile.json");
+                    break;
                 default:
                     break;
             }

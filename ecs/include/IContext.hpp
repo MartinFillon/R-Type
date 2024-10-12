@@ -10,6 +10,7 @@
 
 #include <memory>
 #include "INetwork.hpp"
+#include "Protocol.hpp"
 
 #define GAME_NAME "R-Type"
 
@@ -28,7 +29,7 @@ namespace ecs {
 
         virtual void moveObject(int id, int x, int y) = 0;
 
-        virtual void createProjectile(int id) = 0;
+        virtual void createProjectile(int id, const rtype::protocol::ObjectTypes &type) = 0;
 
         std::shared_ptr<INetwork> _network = nullptr;
 

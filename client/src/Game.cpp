@@ -62,7 +62,6 @@ namespace rtype::client {
                 }
 
                 if (event.key.code == sf::Keyboard::X) {
-                    std::cerr << "shoot" << std::endl;
                     _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
                 }
             }
