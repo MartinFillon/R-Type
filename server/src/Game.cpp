@@ -23,6 +23,7 @@
 #include "Systems/BossSystems.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
+#include "Systems/EnnemiesMilespatesSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "ZipperIterator.hpp"
 
@@ -126,7 +127,6 @@ namespace rtype::server {
         ecs::Entity e = ctf.createEntity("config/playerProjectile.json");
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
-
         for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
             if (!pos || !anim) {
                 i += 1;
@@ -161,7 +161,7 @@ namespace rtype::server {
 
     void Game::setupBasicEnnemies()
     {
-        // _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
+        _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
         _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
     }
 

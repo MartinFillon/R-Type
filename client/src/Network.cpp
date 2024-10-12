@@ -93,7 +93,7 @@ namespace rtype::client {
                     factory.createEntity(id, "config/ennemies.json");
                     break;
                 case protocol::ObjectTypes::MILESPATES:
-                    factory.createEntity(id, "config/milespates.json");
+                    factory.createEntity(id, "config/milepates.json");
                     break;
                 case protocol::ObjectTypes::BOSS:
                     factory.createEntity(id, "config/boss.json");

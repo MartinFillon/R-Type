@@ -168,7 +168,7 @@ namespace ecs {
             ennemiesType = component::Type::Boss;
         else if (node["objectType"] == "basic")
             ennemiesType = component::Type::Basic;
-        else if (node["objectType"] == "milespates")
+        else if (node["objectType"] == "milepates")
             ennemiesType = component::Type::Milespates;
 
         if (node["type"] == "player")
