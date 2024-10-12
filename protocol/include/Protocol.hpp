@@ -19,6 +19,7 @@ namespace rtype::protocol {
         PLAYER_4,
         ENEMY,
         BULLET,
+        PLAYER_BULLET,
         TEXT,
         BONUS,
         MILESPATES,

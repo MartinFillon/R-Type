@@ -31,14 +31,14 @@ namespace rtype::server {
         ));
     }
 
-    void Context::createProjectile(int id)
+    void Context::createProjectile(int id, const protocol::ObjectTypes &type)
     {
         if (!_network) {
             return;
         }
         _network->broadcast(protocol::Packet(
             protocol::Operations::NEW_OBJECT,
-            {static_cast<uint8_t>(id), static_cast<uint8_t>(protocol::ObjectTypes::BULLET)}
+            {static_cast<uint8_t>(id), static_cast<uint8_t>(type)}
         ));
     }
 

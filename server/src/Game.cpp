@@ -11,15 +11,20 @@
 #include <string>
 
 #include "ComponentFactory.hpp"
+#include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
 #include "Protocol.hpp"
+#include "Registry.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/BossSystems.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
+#include "Systems/GunFireSystem.hpp"
+#include "ZipperIterator.hpp"
 
 namespace rtype::server {
 
@@ -112,12 +117,28 @@ namespace rtype::server {
 
     void Game::makePlayerShoot(int player_place)
     {
-        ecs::Entity e = _cf.createEntity("config/projectile.json");
         auto &positions = _r->get_components<ecs::component::Position>();
+        auto &animations = _r->get_components<ecs::component::Animations>();
+        int i = 0;
+        ecs::ComponentFactory ctf(_r, ecs::ComponentFactory::Mode::Client);
+        ecs::Entity e = ctf.createEntity("config/playerProjectile.json");
+        _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
-        positions[e.getId()] = positions[_players_entities_ids[player_place]];
-        _ctx->createProjectile(e.getId());
-        _ctx->moveObject(e.getId(), positions[e.getId()]->_x, positions[e.getId()]->_y);
+
+        for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
+            if (!pos || !anim) {
+                i += 1;
+                continue;
+            }
+            if (anim->_object == ecs::component::Object::Weapon && anim->_type == ecs::component::Type::None) {
+                break;
+            }
+            i += 1;
+        }
+
+        positions[i] = positions[_players_entities_ids[player_place]];
+        _ctx->createProjectile(i, rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        _ctx->moveObject(i, positions[i]->_x, positions[i]->_y);
     }
 
     void Game::setupDestroy()
@@ -128,6 +149,7 @@ namespace rtype::server {
     void Game::setupCollisons()
     {
         _r->add_system(ecs::systems::CollisionsSystem());
+        _r->add_system(ecs::systems::GunFireSystem());
     }
 
     void Game::setupBosses()

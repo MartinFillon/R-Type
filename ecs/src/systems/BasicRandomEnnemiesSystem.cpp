@@ -10,6 +10,7 @@
 #include <random>
 #include "Components/Life.hpp"
 #include "IContext.hpp"
+#include "Protocol.hpp"
 #include "ZipperIterator.hpp"
 
 void ecs::systems::BasicRandomEnnemiesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
@@ -89,7 +90,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
     };
     sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
     if (ctx) {
-        ctx->createProjectile(newProjectile.getId());
+        ctx->createProjectile(newProjectile.getId(), rtype::protocol::BULLET);
     }
 }
 
