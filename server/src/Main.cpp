@@ -29,10 +29,18 @@ int main(int ac, char **av)
         return R_TYPE_ERROR;
     }
 
+    std::shared_ptr<ecs::INetwork> server;
+    std::shared_ptr<ecs::IContext> ctx;
+
     int port = std::stoi(av[PORT]);
 
-    auto server = create_network(port);
-    auto ctx = create_context(server);
+    try {
+        server = create_network(port);
+        ctx = create_context(server);
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return R_TYPE_ERROR;
+    }
 
     return server->run(ctx);
 }
