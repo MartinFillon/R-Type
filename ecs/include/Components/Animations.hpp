@@ -18,11 +18,11 @@ namespace ecs {
 
         struct Animations {
             ecs::Clock _clock;
-            double _width;
-            double _height;
-            double _x;
-            double _y;
-            double _rotation;
+            int _width;
+            int _height;
+            int _x;
+            int _y;
+            int _rotation;
             Object _object;
             Type _type;
         };

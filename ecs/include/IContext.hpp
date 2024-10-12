@@ -9,6 +9,7 @@
 #define ICONTEXT_HPP_
 
 #include <memory>
+#include "Components/Animations.hpp"
 #include "INetwork.hpp"
 #include "Protocol.hpp"
 
@@ -26,6 +27,8 @@ namespace ecs {
         virtual void destroyObject(int id) = 0;
 
         virtual void createEnemy(int id) = 0;
+
+        virtual void animationObject(int id, const ecs::component::Animations &rect) = 0;
 
         virtual void moveObject(int id, int x, int y) = 0;
 

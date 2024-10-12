@@ -24,6 +24,8 @@ namespace rtype::server {
 
         void createEnemy(int id) override final;
 
+        void animationObject(int id, const ecs::component::Animations &rect) override final;
+
         void moveObject(int id, int x, int y) override final;
 
         void createProjectile(int id, const rtype::protocol::ObjectTypes &type) override;

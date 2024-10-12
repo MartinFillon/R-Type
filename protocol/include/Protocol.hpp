@@ -40,6 +40,7 @@ namespace rtype::protocol {
     enum Operations {
         OPERATIONS_FIRST = -1, // must be at the begining of the enum
         OBJECT_POSITION,
+        OBJECT_RECT,
         NEW_OBJECT,
         EVENT,
         GAME_SPEED,

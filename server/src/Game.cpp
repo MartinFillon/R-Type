@@ -58,6 +58,7 @@ namespace rtype::server {
             _ctx = ctx;
         }
         auto &positions = _r->get_components<ecs::component::Position>();
+        auto &animations = _r->get_components<ecs::component::Animations>();
 
         if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
             _r->run_systems(ctx);
@@ -65,11 +66,12 @@ namespace rtype::server {
         }
 
         for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
-            if (!positions[entity_id]) {
+            if (!positions[entity_id] || !animations[entity_id]) {
                 continue;
             }
             if (are_any_clients_connected) {
                 preparePosition(positions[entity_id], entity_id);
+                _ctx->animationObject(entity_id, animations[entity_id].value());
             }
         }
     }
