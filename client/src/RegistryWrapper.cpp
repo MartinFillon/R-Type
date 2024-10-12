@@ -8,7 +8,6 @@
 #include "RegistryWrapper.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <iostream>
 #include <memory>
 #include "Registry.hpp"
 #include "TextureManager.hpp"
@@ -70,7 +69,6 @@ namespace rtype::client {
     {
         drawRegistry(window, textureManager, _client);
         drawRegistry(window, textureManager, _server);
-        std::cerr << "End of drawing" << std::endl;
     }
 
     void RegistryWrapper::run_systems(std::shared_ptr<ecs::IContext> ctx)

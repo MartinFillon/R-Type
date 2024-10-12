@@ -23,7 +23,7 @@
 #include "Systems/BossSystems.hpp"
 #include "Systems/CollisionsSystem.hpp"
 #include "Systems/DestroySystem.hpp"
-#include "Systems/EnnemiesMilespatesSystem.hpp"
+#include "Systems/EnnemiesMilepatesSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
 #include "ZipperIterator.hpp"
 
@@ -161,7 +161,7 @@ namespace rtype::server {
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system(ecs::systems::EnnemiesMilespatesSystem());
+        _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
         _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
     }
 
