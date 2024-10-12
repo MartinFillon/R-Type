@@ -6,7 +6,6 @@
 */
 
 #include <SFML/Window/Keyboard.hpp>
-#include <iostream>
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"

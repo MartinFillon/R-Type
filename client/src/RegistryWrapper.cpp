@@ -8,6 +8,7 @@
 #include "RegistryWrapper.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <iostream>
 #include <memory>
 #include "Registry.hpp"
 #include "TextureManager.hpp"
@@ -58,9 +59,9 @@ namespace rtype::client {
 
             sprite.setPosition(pos->_x, pos->_y);
             sprite.setScale(si->_width, si->_height);
-            sprite.setTexture(textureManager.getTexture(spri->_pathToSprite));
+            auto texture = textureManager.getTexture(spri->_pathToSprite);
+            sprite.setTexture(texture);
             sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-
             window.draw(sprite);
         }
     }
@@ -69,6 +70,7 @@ namespace rtype::client {
     {
         drawRegistry(window, textureManager, _client);
         drawRegistry(window, textureManager, _server);
+        std::cerr << "End of drawing" << std::endl;
     }
 
     void RegistryWrapper::run_systems(std::shared_ptr<ecs::IContext> ctx)
