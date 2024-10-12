@@ -224,7 +224,7 @@ namespace rtype::server {
 
     std::vector<uint8_t> Server::getBitshiftedData(const int length, const unsigned int data)
     {
-        std::vector<uint8_t> bytes;
+        std::vector<uint8_t> bytes = std::vector<uint8_t>(length);
 
         for (int index = 0; index < length; index++)
             bytes[index] = (data >> (length - (index + 1))) & 0xFF;
@@ -241,21 +241,23 @@ namespace rtype::server {
 
         const int8_t optCode = packet.getOpcode();
 
+        std::cerr << "Packet opcode: " << static_cast<int>(optCode) << std::endl;
+
         if (optCode == protocol::Operations::EVENT) {
             handleEvents(client_id, packet);
             return;
         }
 
         if (optCode == protocol::Operations::LEAVING) {
-            const protocol::Packet brPacket(protocol::Direction::LEFT, getBitshiftedData(4, client_id));
+            const protocol::Packet brPacket(protocol::Operations::PLAYER_LEFT, getBitshiftedData(4, client_id));
             const int player_place = getPlayerPlace(client_id);
 
-            if (player_place > 0) {
+            if (player_place >= 0) {
                 _game.handleLeaving(player_place);
                 _players_clients_ids[player_place] = std::nullopt;
             }
 
-            removeClient(client_id);
+            disconnectClient(client_id);
             broadcast(brPacket);
             return;
         }

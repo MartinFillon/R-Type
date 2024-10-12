@@ -42,7 +42,8 @@ namespace rtype::client {
             display();
             _registry->run_systems(nullptr);
         }
-
+        _network.send(protocol::Operations::LEAVING, {});
+        _network.stop();
         return EXIT_SUCCESS;
     }
 
@@ -62,7 +63,6 @@ namespace rtype::client {
                 }
 
                 if (event.key.code == sf::Keyboard::X) {
-                    std::cerr << "shoot" << std::endl;
                     _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
                 }
             }

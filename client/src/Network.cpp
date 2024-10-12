@@ -158,10 +158,13 @@ namespace rtype::client {
         }
     }
 
+    void Network::stop()
+    {
+        running = false;
+    }
+
     int Network::run()
     {
-        bool running = true;
-
         std::thread context([&]() { _context.run(); });
 
         context.detach();
