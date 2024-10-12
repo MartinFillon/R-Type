@@ -46,13 +46,15 @@ namespace rtype::client {
         void send(const protocol::Packet &packet);
         void send(const uint8_t opcode, const Arguments &arguments = {});
 
+        void stop();
+
       private:
         Context _context;
         Resolver _resolver;
         Endpoint _endpoint;
 
         Socket _socket;
-
+        bool running = true;
         ecs::Clock _keepaliveClock;
 
         std::shared_ptr<ecs::Registry> _registry;
