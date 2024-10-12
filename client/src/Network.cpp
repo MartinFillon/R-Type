@@ -59,7 +59,7 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                          const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
             int type = arguments[4];
@@ -85,7 +85,7 @@ namespace rtype::client {
 
         _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                          const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(r, ecs::ComponentFactory::Mode::Client);
+            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
 
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);

@@ -34,9 +34,7 @@
 #include "Registry.hpp"
 
 namespace ecs {
-    ComponentFactory::ComponentFactory() {}
-
-    ComponentFactory::ComponentFactory(std::shared_ptr<Registry> &r, Mode mode) : _r(r)
+    ComponentFactory::ComponentFactory(Registry &r, Mode mode) : _r(r)
     {
         functions["position"] = [this](const Entity e, const nlohmann::json &node) {
             createPositionComponent(e, node);
@@ -98,8 +96,8 @@ namespace ecs {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
-        Entity e = _r->spawn_entity();
-        _r->_entities.addEntity(e.getId());
+        Entity e = _r.spawn_entity();
+        _r._entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
@@ -114,7 +112,7 @@ namespace ecs {
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = Entity(id);
-        _r->_entities.addEntity(e.getId());
+        _r._entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
             createComponent(e, c, config["components"][c]);
@@ -130,35 +128,35 @@ namespace ecs {
 
     void ComponentFactory::createPositionComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &pos_array = _r->register_if_not_exist<component::Position>();
+        auto &pos_array = _r.register_if_not_exist<component::Position>();
 
         pos_array[e.getId()] = component::Position{node["x"], node["y"]};
     }
 
     void ComponentFactory::createDrawableComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &drawable_array = _r->register_if_not_exist<component::Drawable>();
+        auto &drawable_array = _r.register_if_not_exist<component::Drawable>();
 
         drawable_array[e.getId()] = component::Drawable{node};
     }
 
     void ComponentFactory::createSpriteComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &sprite_array = _r->register_if_not_exist<component::Sprite>();
+        auto &sprite_array = _r.register_if_not_exist<component::Sprite>();
 
         sprite_array[e.getId()] = component::Sprite{node};
     }
 
     void ComponentFactory::createDestroyableComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &destroyable_array = _r->register_if_not_exist<component::Destroyable>();
+        auto &destroyable_array = _r.register_if_not_exist<component::Destroyable>();
 
         destroyable_array[e.getId()] = component::Destroyable{node};
     }
 
     void ComponentFactory::createAnimationsComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &animations_array = _r->register_if_not_exist<component::Animations>();
+        auto &animations_array = _r.register_if_not_exist<component::Animations>();
 
         component::Object type = component::Background;
         component::Type ennemiesType = component::Type::None;
@@ -186,49 +184,49 @@ namespace ecs {
 
     void ComponentFactory::createParallaxComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &parallax_array = _r->register_if_not_exist<component::Parallax>();
+        auto &parallax_array = _r.register_if_not_exist<component::Parallax>();
 
         parallax_array[e.getId()] = component::Parallax{node["active"], node["speed"], node["multiplier"]};
     }
 
     void ComponentFactory::createSizeComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &size_array = _r->register_if_not_exist<component::Size>();
+        auto &size_array = _r.register_if_not_exist<component::Size>();
 
         size_array[e.getId()] = component::Size{node["width"], node["height"]};
     }
 
     void ComponentFactory::createTextComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &text_array = _r->register_if_not_exist<component::Text>();
+        auto &text_array = _r.register_if_not_exist<component::Text>();
 
         text_array[e.getId()] = component::Text{node["string"]};
     }
 
     void ComponentFactory::createClickedComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &clicked_array = _r->register_if_not_exist<component::Clicked>();
+        auto &clicked_array = _r.register_if_not_exist<component::Clicked>();
 
         clicked_array[e.getId()] = component::Clicked{node["value"]};
     }
 
     void ComponentFactory::createControllableComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &controllable_array = _r->register_if_not_exist<component::Controllable>();
+        auto &controllable_array = _r.register_if_not_exist<component::Controllable>();
 
         controllable_array[e.getId()] = component::Controllable{node["controllable"], node["speed"]};
     }
 
     void ComponentFactory::createFilledColorComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &filled_color_array = _r->register_if_not_exist<component::FilledColor>();
+        auto &filled_color_array = _r.register_if_not_exist<component::FilledColor>();
 
         filled_color_array[e.getId()] = component::FilledColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createHoverComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &hover_array = _r->register_if_not_exist<component::Hover>();
+        auto &hover_array = _r.register_if_not_exist<component::Hover>();
 
         hover_array[e.getId()] = component::Hover{node["value"]};
     }
@@ -237,21 +235,21 @@ namespace ecs {
 
     void ComponentFactory::createOutlinedColorComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &outlined_color_array = _r->register_if_not_exist<component::OutlinedColor>();
+        auto &outlined_color_array = _r.register_if_not_exist<component::OutlinedColor>();
 
         outlined_color_array[e.getId()] = component::OutlinedColor{node["r"], node["g"], node["b"], node["a"]};
     }
 
     void ComponentFactory::createScoreComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &score_array = _r->register_if_not_exist<component::Score>();
+        auto &score_array = _r.register_if_not_exist<component::Score>();
 
         score_array[e.getId()] = component::Score{node["value"]};
     }
 
     void ComponentFactory::createShieldComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &shield_array = _r->register_if_not_exist<component::Shield>();
+        auto &shield_array = _r.register_if_not_exist<component::Shield>();
 
         shield_array[e.getId()] = component::Shield{node["value"]};
     }
@@ -260,14 +258,14 @@ namespace ecs {
 
     void ComponentFactory::createVelocityComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &velocity_array = _r->register_if_not_exist<component::Velocity>();
+        auto &velocity_array = _r.register_if_not_exist<component::Velocity>();
 
         velocity_array[e.getId()] = component::Velocity{node["x"], node["y"]};
     }
 
     void ComponentFactory::createLifeComponent(const Entity e, const nlohmann::json &node)
     {
-        auto &life_array = _r->register_if_not_exist<component::Life>();
+        auto &life_array = _r.register_if_not_exist<component::Life>();
 
         life_array[e.getId()] = component::Life{node};
     }

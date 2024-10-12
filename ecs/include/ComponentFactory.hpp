@@ -19,8 +19,7 @@ namespace ecs {
     class ComponentFactory {
       public:
         enum class Mode { Server, Client };
-        ComponentFactory(std::shared_ptr<Registry> &registry, Mode mode);
-        ComponentFactory();
+        ComponentFactory(Registry &registry, Mode mode);
         ~ComponentFactory();
 
         Entity createEntity(const std::string &file);
@@ -29,7 +28,7 @@ namespace ecs {
 
       protected:
       private:
-        std::shared_ptr<Registry> _r;
+        Registry &_r;
 
         void createPositionComponent(const Entity e, const nlohmann::json &node);
         void createDestroyableComponent(const Entity e, const nlohmann::json &node);

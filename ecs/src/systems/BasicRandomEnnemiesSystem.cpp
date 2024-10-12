@@ -8,6 +8,7 @@
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include <memory>
 #include <random>
+#include "ComponentFactory.hpp"
 #include "Components/Life.hpp"
 #include "IContext.hpp"
 #include "Protocol.hpp"
@@ -96,6 +97,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
 
 void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx)
 {
+    auto cf = ecs::ComponentFactory(r, ecs::ComponentFactory::Mode::Client);
     std::random_device randomPosition;
     std::default_random_engine randomEngine(randomPosition());
     std::uniform_int_distribution<int> uniformDistForY(100, 800);
@@ -103,27 +105,10 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std
     int randomPosY = uniformDistForY(randomEngine);
     int randomPosX = uniformDistForY(randomEngine);
 
-    Entity newEnnemies = r.spawn_entity();
-    r._entities.addEntity(newEnnemies);
+    Entity newEnnemies = cf.createEntity("config/ennemies.json");
     auto &positions = r.register_if_not_exist<ecs::component::Position>();
-    auto &drawables = r.register_if_not_exist<ecs::component::Drawable>();
-    auto &controllable = r.register_if_not_exist<ecs::component::Controllable>();
-    auto &sprites = r.register_if_not_exist<ecs::component::Sprite>();
-    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
-    auto &sizes = r.register_if_not_exist<ecs::component::Size>();
-    auto &destroyable = r.register_if_not_exist<ecs::component::Destroyable>();
-    auto &life = r.register_if_not_exist<ecs::component::Life>();
-
-    life[newEnnemies.getId()] = ecs::component::Life{1};
     positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
-    drawables[newEnnemies.getId()] = ecs::component::Drawable{true};
-    controllable[newEnnemies.getId()] = ecs::component::Controllable{false, BASIC_ENNEMIES_SPEED};
-    sprites[newEnnemies.getId()] = ecs::component::Sprite{BASIC_ENNEMIES_SPRITE};
-    animations[newEnnemies.getId()] = ecs::component::Animations{
-        ecs::Clock(), 32, 35, 224, 0, 0, ecs::component::Object::Ennemies, ecs::component::Type::Basic
-    };
-    sizes[newEnnemies.getId()] = ecs::component::Size{2.8, 2.8};
-    destroyable[newEnnemies.getId()] = ecs::component::Destroyable{false};
+
     if (ctx) {
         ctx->createEnemy(newEnnemies.getId());
     }

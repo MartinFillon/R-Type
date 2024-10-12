@@ -242,8 +242,6 @@ namespace rtype::server {
 
         const int8_t optCode = packet.getOpcode();
 
-        std::cerr << "Packet opcode: " << static_cast<int>(optCode) << std::endl;
-
         if (optCode == protocol::Operations::EVENT) {
             handleEvents(client_id, packet);
             return;
