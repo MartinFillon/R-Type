@@ -186,6 +186,13 @@ namespace rtype::client {
         _win.display();
     }
 
+    void Menu::launchMusic()
+    {
+        if (_menuMusic.getStatus() != sf::SoundSource::Status::Playing) {
+            _menuMusic.play();
+        }
+    }
+
     int Menu::menuLoadShader()
     {
        if (!_para.loadFromMemory(
@@ -207,10 +214,12 @@ namespace rtype::client {
     {
         setupMenuMusic();
         menuLoadShader();
+
         while (_isMenuOpen && _win.isOpen()) {
             sf::Event event;
             while (_win.pollEvent(event) && _isMenuOpen) {
-                _menuMusic.play();
+
+                launchMusic();
                 menuCloseWindow(event);
 
                 if (event.type == sf::Event::MouseButtonPressed) {

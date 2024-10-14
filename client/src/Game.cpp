@@ -29,8 +29,13 @@ namespace rtype::client {
 
     void Game::setupSound()
     {
-        _gameSoundBuffer.loadFromFile("assets/musics/shotSound.ogg");
-        _gameMusic.setBuffer(_gameSoundBuffer);
+        _gameShotSoundBuffer.loadFromFile("assets/musics/shotSound.ogg");
+        _gameMusicBuffer.loadFromFile("assets/musics/gameMusic.ogg");
+
+        _shotSound.setBuffer(_gameShotSoundBuffer);
+        _gameSound.setBuffer(_gameMusicBuffer);
+
+        _gameSound.setLoop(true);
     }
 
     void Game::setRegistry(std::shared_ptr<RegistryWrapper> &registry)
@@ -53,23 +58,29 @@ namespace rtype::client {
         return EXIT_SUCCESS;
     }
 
+    void Game::launchMusic()
+    {
+        if (_gameSound.getStatus() != sf::SoundSource::Status::Playing) {
+            _gameSound.play();
+        }
+    }
+
     void Game::event()
     {
         sf::Event event;
 
         while (_window.pollEvent(event)) {
-
             if (event.type == sf::Event::Closed) {
                 _window.close();
             }
-
+            launchMusic();
             if (event.type == sf::Event::KeyPressed) {
                 if (moves.find(event.key.code) != moves.end()) {
                     _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, moves[event.key.code]});
                 }
 
                 if (event.key.code == sf::Keyboard::X) {
-                    _gameMusic.play();
+                    _shotSound.play();
                     _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
                 }
             }

@@ -36,6 +36,7 @@ namespace rtype::client {
         void display();
         void setupBackground();
         void setupSound();
+        void launchMusic();
 
         Network &_network;
 
@@ -45,8 +46,11 @@ namespace rtype::client {
         ecs::Clock _clock;
         TextureManager _textureManager;
 
-        sf::SoundBuffer _gameSoundBuffer;
-        sf::Sound _gameMusic;
+        sf::SoundBuffer _gameShotSoundBuffer;
+        sf::Sound _shotSound;
+
+        sf::SoundBuffer _gameMusicBuffer;
+        sf::Sound _gameSound;
 
     };
 

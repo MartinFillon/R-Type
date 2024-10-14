@@ -75,6 +75,7 @@ namespace rtype::client {
         void menuShaderParams(sf::Shader &para);
 
         int menuLoadShader();
+        void launchMusic();
 
         void menuDrawtitles();
         void menuDraw(sf::Shader &para);
