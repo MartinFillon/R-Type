@@ -10,6 +10,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+
 #include <memory>
 
 #include "Clock.hpp"
@@ -33,6 +35,7 @@ namespace rtype::client {
         void event();
         void display();
         void setupBackground();
+        void setupSound();
 
         Network &_network;
 
@@ -41,6 +44,10 @@ namespace rtype::client {
 
         ecs::Clock _clock;
         TextureManager _textureManager;
+
+        sf::SoundBuffer _gameSoundBuffer;
+        sf::Sound _gameMusic;
+
     };
 
     static std::map<sf::Keyboard::Key, unsigned char> moves = {

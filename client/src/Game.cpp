@@ -27,6 +27,12 @@ namespace rtype::client {
         _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
     }
 
+    void Game::setupSound()
+    {
+        _gameSoundBuffer.loadFromFile("assets/musics/shotSound.ogg");
+        _gameMusic.setBuffer(_gameSoundBuffer);
+    }
+
     void Game::setRegistry(std::shared_ptr<RegistryWrapper> &registry)
     {
         _registry = registry;
@@ -36,6 +42,7 @@ namespace rtype::client {
     {
         _registry->getServerRegistry()->add_system(ecs::systems::DestroySystem());
         setupBackground();
+        setupSound();
         while (_window.isOpen()) {
             event();
             display();
@@ -62,6 +69,7 @@ namespace rtype::client {
                 }
 
                 if (event.key.code == sf::Keyboard::X) {
+                    _gameMusic.play();
                     _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
                 }
             }
