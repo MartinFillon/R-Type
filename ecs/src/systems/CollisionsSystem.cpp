@@ -80,12 +80,14 @@ namespace ecs {
                         )) {
                         continue;
                     }
-                    if ((animation[i]->_object == component::Object::Weapon && animation[i]->_type == component::Type::None &&
-                        animation[j]->_object == component::Object::Player) ||
-                        (animation[j]->_object == component::Object::Weapon && animation[j]->_type == component::Type::None &&
-                        animation[i]->_object == component::Object::Player)) {
-                            continue;
-                        }
+                    if ((animation[i]->_object == component::Object::Weapon &&
+                         animation[i]->_type == component::Type::None &&
+                         animation[j]->_object == component::Object::Player) ||
+                        (animation[j]->_object == component::Object::Weapon &&
+                         animation[j]->_type == component::Type::None &&
+                         animation[i]->_object == component::Object::Player)) {
+                        continue;
+                    }
 
                     if (((position[i]->_x + i_width >= position[j]->_x && position[i]->_x <= position[j]->_x + j_width
                          ) &&

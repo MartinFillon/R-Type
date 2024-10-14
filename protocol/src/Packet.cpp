@@ -89,4 +89,4 @@ namespace rtype::protocol {
         return false;
     }
 
-} // namespace ecs
+} // namespace rtype::protocol

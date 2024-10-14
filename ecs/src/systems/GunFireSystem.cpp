@@ -11,8 +11,6 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-
-
 namespace ecs {
 
     void systems::GunFireSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
@@ -61,4 +59,4 @@ namespace ecs {
             }
         }
     }
-}
+} // namespace ecs

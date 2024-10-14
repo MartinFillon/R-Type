@@ -18,7 +18,7 @@ namespace rtype::server {
     class Context : public ecs::IContext {
       public:
         Context(std::shared_ptr<ecs::INetwork> network);
-        ~Context() {};
+        ~Context();
 
         void destroyObject(int id) override final;
 

@@ -33,7 +33,11 @@ namespace ecs {
           public:
             void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
 
-            void createNewProjectile(Registry &r, const ecs::component::Position &bossPos, std::shared_ptr<IContext> ctx);
+            void createNewProjectile(
+                Registry &r,
+                const ecs::component::Position &bossPos,
+                std::shared_ptr<IContext> ctx
+            );
             void createFirstBoss(Registry &r, std::shared_ptr<IContext> ctx);
             bool isABoss(Registry &r);
             void moveProjectileTowardsPlayer(

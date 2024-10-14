@@ -5,9 +5,9 @@
 ** boss sytem file
 */
 
-#include <memory>
-#include <iostream>
 #include "Systems/BossSystems.hpp"
+#include <iostream>
+#include <memory>
 #include "Components/Animations.hpp"
 #include "Components/Life.hpp"
 #include "IContext.hpp"
@@ -70,7 +70,11 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
     }
 }
 
-void ecs::systems::BossSystems::createNewProjectile(Registry &r, const ecs::component::Position &bossPos, std::shared_ptr<IContext> ctx)
+void ecs::systems::BossSystems::createNewProjectile(
+    Registry &r,
+    const ecs::component::Position &bossPos,
+    std::shared_ptr<IContext> ctx
+)
 {
     Entity newProjectile = r.spawn_entity();
     r._entities.addEntity(newProjectile);

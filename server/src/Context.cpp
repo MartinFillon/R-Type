@@ -14,6 +14,8 @@
 namespace rtype::server {
     Context::Context(std::shared_ptr<ecs::INetwork> network) : ecs::IContext(network) {}
 
+    Context::~Context() {}
+
     void Context::destroyObject(int id)
     {
         if (!_network) {
@@ -40,7 +42,7 @@ namespace rtype::server {
             return;
         }
 
-        auto argument= ecs::utils::intToBytes(id);
+        auto argument = ecs::utils::intToBytes(id);
 
         argument.push_back(static_cast<uint8_t>(rect._width >> 8));
         argument.push_back(static_cast<uint8_t>(rect._width & 0xFF));
@@ -51,10 +53,7 @@ namespace rtype::server {
         argument.push_back(static_cast<uint8_t>(rect._y >> 8));
         argument.push_back(static_cast<uint8_t>(rect._y & 0xFF));
 
-        _network->broadcast(protocol::Packet(
-            protocol::Operations::OBJECT_RECT,
-            argument
-        ));
+        _network->broadcast(protocol::Packet(protocol::Operations::OBJECT_RECT, argument));
     }
 
     void Context::createBoss(int id)
