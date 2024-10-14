@@ -10,6 +10,7 @@
 
 #include <any>
 #include <functional>
+#include <memory>
 #include <typeindex>
 #include <vector>
 #include <unordered_map>
@@ -24,6 +25,7 @@
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
+#include "IContext.hpp"
 #include "SparseArray.hpp"
 
 namespace ecs {
@@ -57,49 +59,20 @@ namespace ecs {
             return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
         }
 
-        Entity spawn_entity()
-        {
-            return Entity(_entityCount++);
-        }
-
-        void erase(const std::size_t &entityIdx)
-        {
-            auto &positions = register_component<ecs::component::Position>();
-            auto &drawable = register_component<ecs::component::Drawable>();
-            auto &sprite = register_component<ecs::component::Sprite>();
-            auto &animation = register_component<ecs::component::Animations>();
-            auto &parallax = register_component<ecs::component::Parallax>();
-            auto &size = register_component<ecs::component::Size>();
-            auto &controllable = register_component<ecs::component::Controllable>();
-            auto &destroyable = register_component<ecs::component::Destroyable>();
-
-            destroyable.erase(entityIdx);
-            positions.erase(entityIdx);
-            drawable.erase(entityIdx);
-            sprite.erase(entityIdx);
-            animation.erase(entityIdx);
-            parallax.erase(entityIdx);
-            size.erase(entityIdx);
-            controllable.erase(entityIdx);
-        }
-
         template <typename Function>
         void add_system(Function &&f)
         {
             _systems.push_back(f);
         }
 
-        void run_systems()
-        {
-            for (auto &system : _systems) {
-                system(*this);
-            }
-        }
+        Entity spawn_entity();
+        void erase(const std::size_t &entityIdx);
+        void run_systems(std::shared_ptr<IContext> ctx);
 
         EntityManager _entities;
 
       private:
-        std::vector<std::function<void(Registry &)>> _systems;
+        std::vector<std::function<void(Registry &, std::shared_ptr<ecs::IContext>)>> _systems;
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };

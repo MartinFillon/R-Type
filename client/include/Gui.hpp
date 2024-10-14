@@ -9,58 +9,38 @@
 #define GUI_HPP_
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
-#include "ComponentFactory.hpp"
-#include "GameClient.hpp"
-#include "IContext.hpp"
+
+#include "Game.hpp"
 #include "Menu.hpp"
 #include "Network.hpp"
-#include "Registry.hpp"
+#include "RegistryWrapper.hpp"
 
-#define HOST 1
-#define PORT 2
-#define NB_ARGS 3
+#define ERROR 84
 #define SUCCESS 0
 
-// #define ERROR 84
+#define WIN_WIDTH 1920
+#define WIN_HEIGHT 1080
 
-namespace rtype {
+namespace rtype::client {
 
-    class Gui : ecs::IContext {
+    class Gui {
 
       public:
         Gui();
 
-        int setupNetwork(const std::string server_ip, const std::string server_port);
-
-        std::shared_ptr<ecs::Registry> &getRegistry()
-        {
-            return _r;
-        };
-
-        Menu &getMenu()
-        {
-            return _menu;
-        }
-
         int run();
-        int runNetwork();
-
-        sf::RenderWindow &getWindow()
-        {
-            return _window;
-        }
 
       private:
         sf::RenderWindow _window;
-        std::shared_ptr<ecs::Registry> _r;
-        ecs::ComponentFactory _factory;
+
         Network _network;
+
         Menu _menu;
-        GameClient _game;
+        Game _game;
+
+        std::shared_ptr<RegistryWrapper> _registry;
     };
 
-}; // namespace rtype
-
+}; // namespace rtype::client
 #endif /* !GUI_HPP_ */

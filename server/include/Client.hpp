@@ -9,12 +9,10 @@
 #define CLIENT_HPP_
 
 #include <asio.hpp>
-#include <iostream>
-#include <thread>
 #include <vector>
 
-#include "Packet.hpp"
 #include "Clock.hpp"
+#include "IPacket.hpp"
 
 #define LOGIN 0x42
 #define DATA_MAX_SIZE 1024
@@ -22,7 +20,7 @@
 #define NEW_CLIENT(x) "New client [" << x << "]" << " connected"
 #define CLIENT_LEFT(x) "Client [" << x << "]" << " disconnected"
 
-namespace Rtype {
+namespace rtype::server {
 
     class Server;
 
@@ -47,7 +45,7 @@ namespace Rtype {
 
         /// @brief Sends the given `packet` to the client via its UDP socket.
         /// @param packet a `const Packet &` representing to packet to send to the client.
-        void send(const Packet &packet);
+        void send(const ecs::IPacket &packet);
         /// @brief Disconnects the client from the server.
         void disconnect();
         /// @brief Checks if the client is running or not.
@@ -74,6 +72,6 @@ namespace Rtype {
         Endpoint _endpoint;
     };
 
-}; // namespace Rtype
+}; // namespace rtype::server
 
 #endif /* !CLIENT_HPP_ */

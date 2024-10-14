@@ -7,11 +7,12 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include <filesystem>
+#include <iostream>
+#include <memory>
 
 #include "TextureManager.hpp"
 
-namespace rtype {
-
+namespace rtype::client {
     TextureManager::TextureManager()
     {
         for (const auto &entry : std::filesystem::directory_iterator(PATH_TO_ASSETS)) {
@@ -22,7 +23,7 @@ namespace rtype {
                     sf::Texture temp;
 
                     temp.loadFromFile(path);
-                    _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
+                    _textures[asstesPath] = std::make_shared<sf::Texture>(temp);
                 }
                 continue;
             }
@@ -31,13 +32,17 @@ namespace rtype {
             sf::Texture temp;
 
             temp.loadFromFile(path);
-            _textures[asstesPath] = std::make_unique<sf::Texture>(temp);
+            _textures[asstesPath] = std::make_shared<sf::Texture>(temp);
         }
     }
 
-    sf::Texture &TextureManager::getTexture(const std::string &pathToImage)
+    sf::Texture TextureManager::getTexture(const std::string &pathToImage)
     {
-        return *_textures[pathToImage];
+        if (_textures.find(pathToImage) == _textures.end()) {
+            std::cerr << "Texture not found" << pathToImage << std::endl;
+            return sf::Texture();
+        } else {
+            return *_textures[pathToImage].get();
+        }
     }
-
-} // namespace rtype
+} // namespace rtype::client
