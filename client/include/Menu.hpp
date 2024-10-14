@@ -54,6 +54,9 @@ namespace rtype::client {
         void setupIpButton();
         void setupRenderFont();
 
+        void menuCloseWindow(sf::Event &event);
+        std::string menuButtonPressed(sf::Event &event);
+
         std::string launchMenu();
 
       private:

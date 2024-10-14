@@ -96,6 +96,14 @@ namespace rtype::client {
         _menuDisplayInput.setFillColor(sf::Color::Black);
     }
 
+    void Menu::menuCloseWindow(sf::Event &event)
+    {
+        if (event.type == sf::Event::Closed) {
+            _win.close();
+            _isMenuOpen = false;
+        }
+    }
+
     std::string Menu::launchMenu()
     {
         sf::Shader parallaxShader;
@@ -113,12 +121,8 @@ namespace rtype::client {
         }
         while (_isMenuOpen && _win.isOpen()) {
             sf::Event event;
-            while (_win.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    _win.close();
-                    _isQuitPress = true;
-                    break;
-                }
+            while (_win.pollEvent(event) && _isMenuOpen) {
+                menuCloseWindow(event);
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(_win);
                     for (int i = 0; i < 3; i++) {
