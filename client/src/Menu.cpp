@@ -15,20 +15,9 @@ namespace rtype::client {
 
     void Menu::setupMenu()
     {
-        _backgroundTexture.loadFromFile(BG_PATH);
-        _backgroundTexture.setRepeated(true);
-        _backgroundSprite.setTexture(_backgroundTexture);
-        _backgroundSprite.setPosition(0, 0);
-        _bgScaleX = static_cast<float>(_win.getSize().x) / _backgroundTexture.getSize().x;
-        _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
-        _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
-
-        _fontTitle.loadFromFile(TITLE_FONT);
-        _fontText.loadFromFile(TEXT_FONT);
-
-        _ipRect = sf::RectangleShape(sf::Vector2f(RECT_SIZE_Y, RECT_SIZE_X));
-        _ipRect.setFillColor(sf::Color::White);
-        _ipRect.setPosition(LEFT_MARGE, IP_RECT_POS_X);
+        setupBackground();
+        setupMenuFont();
+        setupMenuInputRect();
 
         _menutitle[0].setString(BUTTON_PLAY);
         _menutitle[0].setFont(_fontTitle);
@@ -56,6 +45,30 @@ namespace rtype::client {
         _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
         _menuDisplayInput.setCharacterSize(FONT_SIZE_INPUT);
         _menuDisplayInput.setFillColor(sf::Color::Black);
+    }
+
+    void Menu::setupBackground()
+    {
+        _backgroundTexture.loadFromFile(BG_PATH);
+        _backgroundTexture.setRepeated(true);
+        _backgroundSprite.setTexture(_backgroundTexture);
+        _backgroundSprite.setPosition(0, 0);
+        _bgScaleX = static_cast<float>(_win.getSize().x) / _backgroundTexture.getSize().x;
+        _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
+        _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
+    }
+
+    void Menu::setupMenuFont()
+    {
+        _fontTitle.loadFromFile(TITLE_FONT);
+        _fontText.loadFromFile(TEXT_FONT);
+    }
+
+    void Menu::setupMenuInputRect()
+    {
+        _ipRect = sf::RectangleShape(sf::Vector2f(RECT_SIZE_Y, RECT_SIZE_X));
+        _ipRect.setFillColor(sf::Color::White);
+        _ipRect.setPosition(LEFT_MARGE, IP_RECT_POS_X);
     }
 
     std::string Menu::launchMenu()

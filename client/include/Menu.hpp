@@ -44,6 +44,9 @@ namespace rtype::client {
         Menu(sf::RenderWindow &window);
 
         void setupMenu();
+        void setupBackground();
+        void setupMenuFont();
+        void setupMenuInputRect();
         std::string launchMenu();
 
       private:
