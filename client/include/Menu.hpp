@@ -56,8 +56,16 @@ namespace rtype::client {
         void setupRenderFont();
 
         void menuCloseWindow(sf::Event &event);
-        std::string menuButtonPressed();
+        void menuEnterToPlay();
+        void menuTextEntered(sf::Event &event);
+        void menuShaderParams(sf::Shader &para);
 
+        int menuLoadShader();
+
+        void menuDrawtitles();
+        void menuDraw(sf::Shader &para);
+
+        std::string menuButtonPressed();
         std::string launchMenu();
 
       private:
@@ -86,6 +94,7 @@ namespace rtype::client {
         sf::Clock _menuClock;
         sf::Texture _backgroundTexture;
         sf::Sprite _backgroundSprite;
+        sf::Shader _para;
         float _bgScaleX;
         float _bgScaleY;
         float _bgOffset;

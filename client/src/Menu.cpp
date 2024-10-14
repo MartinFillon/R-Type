@@ -115,8 +115,7 @@ namespace rtype::client {
                         _isMenuOpen = false;
                         if (_menuClientInput.empty()) {
                             return EMPTY_ADRESS;
-                        }
-                        else
+                        } else
                             return _menuClientInput;
                     case 1:
                         break;
@@ -137,11 +136,52 @@ namespace rtype::client {
         return "";
     }
 
-    std::string Menu::launchMenu()
+    void Menu::menuEnterToPlay()
     {
-        sf::Shader parallaxShader;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_menuClientInput.empty()) {
+            _isMenuOpen = false;
+        }
+    }
 
-        if (!parallaxShader.loadFromMemory(
+    void Menu::menuTextEntered(sf::Event &event)
+    {
+        if (event.text.unicode < 128) {
+            _inputChar = static_cast<char>(event.text.unicode);
+            if (_inputChar == 8 && !_menuClientInput.empty()) {
+                _menuClientInput.pop_back();
+            } else if (_inputChar > 31 && _inputChar < 127) {
+                _menuClientInput += _inputChar;
+            }
+            _menuDisplayInput.setString(_menuClientInput);
+        }
+    }
+
+    void Menu::menuShaderParams(sf::Shader &para)
+    {
+        _bgOffset += _menuClock.restart().asSeconds() / PARA_SPEED;
+        para.setUniform(OFFSET, _bgOffset);
+    }
+
+    void Menu::menuDrawtitles()
+    {
+        for (int i = 0; i < 5; i++) {
+            _win.draw(_menutitle[i]);
+        }
+    }
+
+    void Menu::menuDraw(sf::Shader &para)
+    {
+        _win.clear();
+        _win.draw(_backgroundSprite, &para);
+        menuDrawtitles();
+        _win.draw(_ipRect);
+        _win.draw(_menuDisplayInput);
+        _win.display();
+    }
+
+    int Menu::menuLoadShader()
+    {
+       if (!_para.loadFromMemory(
                 "uniform float offset;"
                 "void main() {"
                 "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
@@ -151,8 +191,15 @@ namespace rtype::client {
                 "}",
                 sf::Shader::Vertex
             )) {
-            return "";
+                return EXIT_FAILURE;
         }
+        return EXIT_SUCCESS;
+    }
+
+    std::string Menu::launchMenu()
+    {
+        menuLoadShader();
+
         while (_isMenuOpen && _win.isOpen()) {
             sf::Event event;
             while (_win.pollEvent(event) && _isMenuOpen) {
@@ -161,39 +208,16 @@ namespace rtype::client {
                 if (event.type == sf::Event::MouseButtonPressed) {
                     _menuClientInput = menuButtonPressed();
                 }
-
                 if (_isWritting && event.type == sf::Event::TextEntered) {
-                    if (event.text.unicode < 128) {
-                        _inputChar = static_cast<char>(event.text.unicode);
-                        if (_inputChar == 8 && !_menuClientInput.empty()) {
-                            _menuClientInput.pop_back();
-                        } else if (_inputChar > 31 && _inputChar < 127) {
-                            _menuClientInput += _inputChar;
-                        }
-                        _menuDisplayInput.setString(_menuClientInput);
-                    }
+                    menuTextEntered(event);
                 }
 
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_menuClientInput.empty()) {
-                    _isMenuOpen = false;
-                    break;
-                }
+                menuEnterToPlay();
             }
 
-            _bgOffset += _menuClock.restart().asSeconds() / PARA_SPEED;
-            parallaxShader.setUniform(OFFSET, _bgOffset);
-            _win.clear();
-            _win.draw(_backgroundSprite, &parallaxShader);
-
-            for (int i = 0; i < 5; i++) {
-                _win.draw(_menutitle[i]);
-            }
-
-            _win.draw(_ipRect);
-            _win.draw(_menuDisplayInput);
-            _win.display();
+            menuShaderParams(_para);
+            menuDraw(_para);
         }
-
         return _menuClientInput;
     }
 } // namespace rtype::client
