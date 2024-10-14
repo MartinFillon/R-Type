@@ -198,11 +198,18 @@ namespace rtype::client {
 
     std::string Menu::launchMenu()
     {
-        menuLoadShader();
+        sf::SoundBuffer buffer;
+        sf::Sound menuMusic;
 
+        buffer.loadFromFile(MENU_MUSIC);
+        menuMusic.setBuffer(buffer);
+        menuMusic.setLoop(true);
+
+        menuLoadShader();
         while (_isMenuOpen && _win.isOpen()) {
             sf::Event event;
             while (_win.pollEvent(event) && _isMenuOpen) {
+                menuMusic.play();
                 menuCloseWindow(event);
 
                 if (event.type == sf::Event::MouseButtonPressed) {

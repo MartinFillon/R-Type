@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Audio.hpp>
 
 #define TITLE_FONT "assets/fonts/ARCADE_I.ttf"
 #define TEXT_FONT "assets/fonts/OpenSans-Semibold.ttf"
@@ -21,6 +22,7 @@
 #define BG_PATH "assets/sprites/Background/background_2.png"
 #define OFFSET "offset"
 #define EMPTY_ADRESS "empty adress"
+#define MENU_MUSIC "assets/musics/menuMusic.ogg"
 #define BG_POS_X 0
 #define BG_POS_Y 0
 #define NB_TITLES 5
@@ -82,6 +84,7 @@ namespace rtype::client {
       private:
         sf::RenderWindow &_win;
 
+        // font //
         sf::Font _fontTitle;
         sf::Font _fontText;
         sf::Text _menutitle[5];
