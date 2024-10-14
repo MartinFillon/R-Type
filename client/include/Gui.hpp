@@ -18,6 +18,7 @@
 
 #define ERROR 84
 #define SUCCESS 0
+#define QUIT_PRESS 0
 
 #define WIN_WIDTH 1920
 #define WIN_HEIGHT 1080
