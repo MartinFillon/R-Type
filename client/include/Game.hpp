@@ -8,11 +8,15 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#define SHOOT_SOUND "assets/musics/shotSound.ogg"
+#define GAME_MUSIC "assets/musics/gameMusic-Thrut.ogg"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
 #include <memory>
+
 
 #include "Clock.hpp"
 #include "Network.hpp"

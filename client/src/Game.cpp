@@ -29,8 +29,8 @@ namespace rtype::client {
 
     void Game::setupSound()
     {
-        _gameShotSoundBuffer.loadFromFile("assets/musics/shotSound.ogg");
-        _gameMusicBuffer.loadFromFile("assets/musics/gameMusic.ogg");
+        _gameShotSoundBuffer.loadFromFile(SHOOT_SOUND);
+        _gameMusicBuffer.loadFromFile(GAME_MUSIC);
 
         _shotSound.setBuffer(_gameShotSoundBuffer);
         _gameSound.setBuffer(_gameMusicBuffer);
@@ -74,17 +74,24 @@ namespace rtype::client {
                 _window.close();
             }
             launchMusic();
-            if (event.type == sf::Event::KeyPressed) {
-                if (moves.find(event.key.code) != moves.end()) {
-                    _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, moves[event.key.code]});
-                }
-
-                if (event.key.code == sf::Keyboard::X) {
-                    _shotSound.play();
-                    _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
-                }
-            }
         }
+        if (event.key.code == sf::Keyboard::X) {
+            _shotSound.play();
+            _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::UP});
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+        }
+
     }
 
     void Game::display()

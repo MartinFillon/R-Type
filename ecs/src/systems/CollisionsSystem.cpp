@@ -4,7 +4,6 @@
 ** File description:
 ** Collision system file
 */
-
 #include "Systems/CollisionsSystem.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Life.hpp"
@@ -80,6 +79,7 @@ namespace ecs {
                         )) {
                         continue;
                     }
+
                     if ((animation[i]->_object == component::Object::Weapon &&
                          animation[i]->_type == component::Type::None &&
                          animation[j]->_object == component::Object::Player) ||
@@ -109,8 +109,8 @@ namespace ecs {
                         }
 
                         if (animation[i]->_object == component::Object::Weapon) {
-                            r.erase(i);
                             sendDestroyedObject(ctx, i);
+                            r.erase(i);
                         } else {
                             if (life[i]->_life <= 0) {
                                 destroyable[i]->_destroyable = true;
@@ -120,8 +120,8 @@ namespace ecs {
                         }
 
                         if (animation[j]->_object == component::Object::Weapon) {
-                            r.erase(j);
                             sendDestroyedObject(ctx, j);
+                            r.erase(i);
                         } else {
                             if (life[j]->_life <= 0) {
                                 destroyable[j]->_destroyable = true;
