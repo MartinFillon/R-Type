@@ -21,6 +21,10 @@ namespace rtype::client {
         std::string ip = address.substr(0, address.find(':'));
         std::string port = address.substr(address.find(':') + 1);
 
+        if (ip.empty() || port.empty()) {
+            return QUIT_PRESS;
+        }
+
         if (_network.setup(ip, port) == ERROR) {
             return ERROR;
         }
