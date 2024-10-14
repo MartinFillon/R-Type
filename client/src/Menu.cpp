@@ -18,33 +18,12 @@ namespace rtype::client {
         setupBackground();
         setupMenuFont();
         setupMenuInputRect();
-
-        _menutitle[0].setString(BUTTON_PLAY);
-        _menutitle[0].setFont(_fontTitle);
-        _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
-
-        _menutitle[1].setString(BUTTON_OPTIONS);
-        _menutitle[1].setFont(_fontTitle);
-        _menutitle[1].setPosition(LEFT_MARGE, OPTIONS_POS_X);
-
-        _menutitle[2].setString(BUTTON_QUIT);
-        _menutitle[2].setFont(_fontTitle);
-        _menutitle[2].setPosition(LEFT_MARGE, QUIT_POS_X);
-
-        _menutitle[3].setString(MENU_TITLE);
-        _menutitle[3].setFont(_fontTitle);
-        _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
-        _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
-
-        _menutitle[4].setString(BUTTON_IP);
-        _menutitle[4].setFont(_fontText);
-        _menutitle[4].setPosition(LEFT_MARGE, IP_POS_X);
-        _menutitle[4].setCharacterSize(FONT_SIZE_IP);
-
-        _menuDisplayInput.setFont(_fontText);
-        _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
-        _menuDisplayInput.setCharacterSize(FONT_SIZE_INPUT);
-        _menuDisplayInput.setFillColor(sf::Color::Black);
+        setupPlayButton();
+        setupOptionsButton();
+        setupQuitButton();
+        setupMenuTitle();
+        setupIpButton();
+        setupRenderFont();
     }
 
     void Menu::setupBackground()
@@ -69,6 +48,52 @@ namespace rtype::client {
         _ipRect = sf::RectangleShape(sf::Vector2f(RECT_SIZE_Y, RECT_SIZE_X));
         _ipRect.setFillColor(sf::Color::White);
         _ipRect.setPosition(LEFT_MARGE, IP_RECT_POS_X);
+    }
+
+    void Menu::setupPlayButton()
+    {
+        _menutitle[0].setString(BUTTON_PLAY);
+        _menutitle[0].setFont(_fontTitle);
+        _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
+    }
+
+    void Menu::setupOptionsButton()
+    {
+        _menutitle[1].setString(BUTTON_OPTIONS);
+        _menutitle[1].setFont(_fontTitle);
+        _menutitle[1].setPosition(LEFT_MARGE, OPTIONS_POS_X);
+    }
+
+    void Menu::setupQuitButton()
+    {
+        _menutitle[2].setString(BUTTON_QUIT);
+        _menutitle[2].setFont(_fontTitle);
+        _menutitle[2].setPosition(LEFT_MARGE, QUIT_POS_X);
+    }
+
+    void Menu::setupMenuTitle()
+    {
+        _menutitle[3].setString(MENU_TITLE);
+        _menutitle[3].setFont(_fontTitle);
+        _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
+        _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
+    }
+
+    void Menu::setupIpButton()
+
+    {
+        _menutitle[4].setString(BUTTON_IP);
+        _menutitle[4].setFont(_fontText);
+        _menutitle[4].setPosition(LEFT_MARGE, IP_POS_X);
+        _menutitle[4].setCharacterSize(FONT_SIZE_IP);
+    }
+
+    void Menu::setupRenderFont()
+    {
+        _menuDisplayInput.setFont(_fontText);
+        _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
+        _menuDisplayInput.setCharacterSize(FONT_SIZE_INPUT);
+        _menuDisplayInput.setFillColor(sf::Color::Black);
     }
 
     std::string Menu::launchMenu()

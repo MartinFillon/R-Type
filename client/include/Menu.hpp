@@ -47,6 +47,13 @@ namespace rtype::client {
         void setupBackground();
         void setupMenuFont();
         void setupMenuInputRect();
+        void setupPlayButton();
+        void setupOptionsButton();
+        void setupQuitButton();
+        void setupMenuTitle();
+        void setupIpButton();
+        void setupRenderFont();
+
         std::string launchMenu();
 
       private:
