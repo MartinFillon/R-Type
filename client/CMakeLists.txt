@@ -44,3 +44,8 @@ endif()
 if(UNIX)
   add_compile_options(lX11)
 endif()
+
+add_custom_command(
+  TARGET r-type_client
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ..)
