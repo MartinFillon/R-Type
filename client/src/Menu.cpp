@@ -195,7 +195,7 @@ namespace rtype::client {
 
     int Menu::menuLoadShader()
     {
-       if (!_para.loadFromMemory(
+        if (!_para.loadFromMemory(
                 "uniform float offset;"
                 "void main() {"
                 "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
@@ -205,7 +205,7 @@ namespace rtype::client {
                 "}",
                 sf::Shader::Vertex
             )) {
-                return EXIT_FAILURE;
+            return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }

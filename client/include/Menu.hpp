@@ -8,9 +8,9 @@
 #ifndef MENU_HPP_
 #define MENU_HPP_
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Audio.hpp>
 
 #define TITLE_FONT "assets/fonts/ARCADE_I.ttf"
 #define TEXT_FONT "assets/fonts/OpenSans-Semibold.ttf"
@@ -87,7 +87,6 @@ namespace rtype::client {
         sf::RenderWindow &_win;
         sf::SoundBuffer _bufferMenuMusic;
         sf::Sound _menuMusic;
-
 
         // font //
         sf::Font _fontTitle;

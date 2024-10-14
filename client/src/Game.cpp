@@ -86,12 +86,11 @@ namespace rtype::client {
             _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
+            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
         }
-
     }
 
     void Game::display()

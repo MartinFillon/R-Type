@@ -19,3 +19,6 @@ endif()
 if(WIN32)
   add_compile_options(/Wall /W4)
 endif()
+
+install(TARGETS r-type_server r-type_client RUNTIME DESTINATION bin)
+include(CPack)
