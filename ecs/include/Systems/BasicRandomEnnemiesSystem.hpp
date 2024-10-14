@@ -4,7 +4,7 @@
 #include "IContext.hpp"
 #define ENNEMIES_TICK 2
 
-#define MAX_RANDOM_ENNEMIES 6
+#define MAX_RANDOM_ENNEMIES 4
 #define VALUE_SPAWN_ENNEMIES 2
 
 #define BASIC_POS_SPAWN_X 1944
