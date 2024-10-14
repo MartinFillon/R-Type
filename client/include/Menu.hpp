@@ -21,6 +21,13 @@
 #define BG_PATH "assets/sprites/Background/background_2.png"
 #define OFFSET "offset"
 #define EMPTY_ADRESS "empty adress"
+#define BG_POS_X 0
+#define BG_POS_Y 0
+#define NB_TITLES 5
+#define BORDER_RECT_PRESS 3.5
+#define ASCII_LIM 128
+#define NON_ASCII_CHAR 31
+#define DEL_BUTTON 8
 #define LEFT_MARGE 800
 #define PLAY_POS_X 400
 #define IP_POS_X 460

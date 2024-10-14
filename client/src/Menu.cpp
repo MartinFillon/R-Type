@@ -31,7 +31,7 @@ namespace rtype::client {
         _backgroundTexture.loadFromFile(BG_PATH);
         _backgroundTexture.setRepeated(true);
         _backgroundSprite.setTexture(_backgroundTexture);
-        _backgroundSprite.setPosition(0, 0);
+        _backgroundSprite.setPosition(BG_POS_X, BG_POS_Y);
         _bgScaleX = static_cast<float>(_win.getSize().x) / _backgroundTexture.getSize().x;
         _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
         _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
@@ -127,7 +127,7 @@ namespace rtype::client {
         }
         if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             _isWritting = true;
-            _ipRect.setOutlineThickness(3.5);
+            _ipRect.setOutlineThickness(BORDER_RECT_PRESS);
             _ipRect.setOutlineColor(sf::Color::Blue);
         } else {
             _isWritting = false;
@@ -145,11 +145,11 @@ namespace rtype::client {
 
     void Menu::menuTextEntered(sf::Event &event)
     {
-        if (event.text.unicode < 128) {
+        if (event.text.unicode < ASCII_LIM) {
             _inputChar = static_cast<char>(event.text.unicode);
-            if (_inputChar == 8 && !_menuClientInput.empty()) {
+            if (_inputChar == DEL_BUTTON && !_menuClientInput.empty()) {
                 _menuClientInput.pop_back();
-            } else if (_inputChar > 31 && _inputChar < 127) {
+            } else if (_inputChar > NON_ASCII_CHAR && _inputChar < ASCII_LIM) {
                 _menuClientInput += _inputChar;
             }
             _menuDisplayInput.setString(_menuClientInput);
@@ -164,7 +164,7 @@ namespace rtype::client {
 
     void Menu::menuDrawtitles()
     {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < NB_TITLES; i++) {
             _win.draw(_menutitle[i]);
         }
     }
