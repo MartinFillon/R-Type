@@ -67,6 +67,7 @@ namespace rtype::client {
         void setupMenuTitle();
         void setupIpButton();
         void setupRenderFont();
+        void setupMenuMusic();
 
         void menuCloseWindow(sf::Event &event);
         void menuEnterToPlay();
@@ -83,6 +84,9 @@ namespace rtype::client {
 
       private:
         sf::RenderWindow &_win;
+        sf::SoundBuffer _bufferMenuMusic;
+        sf::Sound _menuMusic;
+
 
         // font //
         sf::Font _fontTitle;

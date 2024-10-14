@@ -96,6 +96,13 @@ namespace rtype::client {
         _menuDisplayInput.setFillColor(sf::Color::Black);
     }
 
+    void Menu::setupMenuMusic()
+    {
+        _bufferMenuMusic.loadFromFile(MENU_MUSIC);
+        _menuMusic.setBuffer(_bufferMenuMusic);
+        _menuMusic.setLoop(true);
+    }
+
     void Menu::menuCloseWindow(sf::Event &event)
     {
         if (event.type == sf::Event::Closed) {
@@ -198,18 +205,12 @@ namespace rtype::client {
 
     std::string Menu::launchMenu()
     {
-        sf::SoundBuffer buffer;
-        sf::Sound menuMusic;
-
-        buffer.loadFromFile(MENU_MUSIC);
-        menuMusic.setBuffer(buffer);
-        menuMusic.setLoop(true);
-
+        setupMenuMusic();
         menuLoadShader();
         while (_isMenuOpen && _win.isOpen()) {
             sf::Event event;
             while (_win.pollEvent(event) && _isMenuOpen) {
-                menuMusic.play();
+                _menuMusic.play();
                 menuCloseWindow(event);
 
                 if (event.type == sf::Event::MouseButtonPressed) {
@@ -225,6 +226,7 @@ namespace rtype::client {
             menuShaderParams(_para);
             menuDraw(_para);
         }
+        _menuMusic.stop();
         return _menuClientInput;
     }
 } // namespace rtype::client
