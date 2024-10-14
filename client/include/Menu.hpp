@@ -25,6 +25,10 @@
 #define BG_POS_Y 0
 #define NB_TITLES 5
 #define BORDER_RECT_PRESS 3.5
+#define BORDER_RECT_NO_PRESS 0
+#define CASE_PLAY 0
+#define CASE_OPTIONS 1
+#define CASE_QUIT 2
 #define ASCII_LIM 128
 #define NON_ASCII_CHAR 31
 #define DEL_BUTTON 8

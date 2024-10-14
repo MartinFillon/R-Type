@@ -108,18 +108,18 @@ namespace rtype::client {
     {
         sf::Vector2i mousePos = sf::Mouse::getPosition(_win);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NB_TITLES; i++) {
             if (_menutitle[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 switch (i) {
-                    case 0:
+                    case CASE_PLAY:
                         _isMenuOpen = false;
                         if (_menuClientInput.empty()) {
                             return EMPTY_ADRESS;
                         } else
                             return _menuClientInput;
-                    case 1:
+                    case CASE_OPTIONS:
                         break;
-                    case 2:
+                    case CASE_QUIT:
                         _isMenuOpen = false;
                         return _menuClientInput;
                 }
@@ -131,7 +131,7 @@ namespace rtype::client {
             _ipRect.setOutlineColor(sf::Color::Blue);
         } else {
             _isWritting = false;
-            _ipRect.setOutlineThickness(0);
+            _ipRect.setOutlineThickness(BORDER_RECT_NO_PRESS);
         }
         return "";
     }
