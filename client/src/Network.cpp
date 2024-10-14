@@ -65,7 +65,6 @@ namespace rtype::client {
             int id = ecs::utils::bytesToInt(arguments);
             int type = arguments[4];
 
-            std::cerr << "New player " << id << " type " << type << std::endl;
             switch (type) {
                 case protocol::ObjectTypes::PLAYER_1:
                     factory.createEntity(id, "config/player0.json");
@@ -121,12 +120,8 @@ namespace rtype::client {
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
             auto &animations = r->register_if_not_exist<ecs::component::Animations>();
 
-            if (animations[id]->_object == ecs::component::Object::Weapon) {
-                r->erase(id);
-            } else {
-                destroyable[id]->_destroyable = true;
-                animations[id]->_object = ecs::component::Object::InDestroy;
-            }
+            destroyable[id]->_destroyable = true;
+            animations[id]->_object = ecs::component::Object::InDestroy;
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
