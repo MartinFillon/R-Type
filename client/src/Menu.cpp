@@ -104,9 +104,43 @@ namespace rtype::client {
         }
     }
 
+    std::string Menu::menuButtonPressed()
+    {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(_win);
+
+        for (int i = 0; i < 3; i++) {
+            if (_menutitle[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                switch (i) {
+                    case 0:
+                        _isMenuOpen = false;
+                        if (_menuClientInput.empty()) {
+                            return EMPTY_ADRESS;
+                        }
+                        else
+                            return _menuClientInput;
+                    case 1:
+                        break;
+                    case 2:
+                        _isMenuOpen = false;
+                        return _menuClientInput;
+                }
+            }
+        }
+        if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            _isWritting = true;
+            _ipRect.setOutlineThickness(3.5);
+            _ipRect.setOutlineColor(sf::Color::Blue);
+        } else {
+            _isWritting = false;
+            _ipRect.setOutlineThickness(0);
+        }
+        return "";
+    }
+
     std::string Menu::launchMenu()
     {
         sf::Shader parallaxShader;
+
         if (!parallaxShader.loadFromMemory(
                 "uniform float offset;"
                 "void main() {"
@@ -123,30 +157,9 @@ namespace rtype::client {
             sf::Event event;
             while (_win.pollEvent(event) && _isMenuOpen) {
                 menuCloseWindow(event);
+
                 if (event.type == sf::Event::MouseButtonPressed) {
-                    sf::Vector2i mousePos = sf::Mouse::getPosition(_win);
-                    for (int i = 0; i < 3; i++) {
-                        if (_menutitle[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                            switch (i) {
-                                case 0:
-                                    _isMenuOpen = false;
-                                    return _menuClientInput;
-                                case 1:
-                                    break;
-                                case 2:
-                                    _isMenuOpen = false;
-                                    return _menuClientInput;
-                            }
-                        }
-                    }
-                    if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        _isWritting = true;
-                        _ipRect.setOutlineThickness(3.5);
-                        _ipRect.setOutlineColor(sf::Color::Blue);
-                    } else {
-                        _isWritting = false;
-                        _ipRect.setOutlineThickness(0);
-                    }
+                    _menuClientInput = menuButtonPressed();
                 }
 
                 if (_isWritting && event.type == sf::Event::TextEntered) {

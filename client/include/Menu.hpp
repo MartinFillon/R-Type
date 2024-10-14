@@ -18,6 +18,9 @@
 #define BUTTON_QUIT "Quit"
 #define BUTTON_OPTIONS "Options"
 #define MENU_TITLE "R-Type by MR.PET"
+#define BG_PATH "assets/sprites/Background/background_2.png"
+#define OFFSET "offset"
+#define EMPTY_ADRESS "empty adress"
 #define LEFT_MARGE 800
 #define PLAY_POS_X 400
 #define IP_POS_X 460
@@ -32,9 +35,7 @@
 #define FONT_SIZE_INPUT 15
 #define RECT_SIZE_X 30
 #define RECT_SIZE_Y 300
-#define OFFSET "offset"
 #define PARA_SPEED 10.f
-#define BG_PATH "assets/sprites/Background/background_2.png"
 
 namespace rtype::client {
 
@@ -55,7 +56,7 @@ namespace rtype::client {
         void setupRenderFont();
 
         void menuCloseWindow(sf::Event &event);
-        std::string menuButtonPressed(sf::Event &event);
+        std::string menuButtonPressed();
 
         std::string launchMenu();
 
