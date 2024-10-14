@@ -6,36 +6,34 @@
 */
 
 #include "Gui.hpp"
-#include <SFML/Graphics/Rect.hpp>
+#include "RegistryWrapper.hpp"
 
-namespace rtype {
-
+namespace rtype::client {
     Gui::Gui()
-        : ecs::IContext(), _network(), _window(sf::VideoMode(1920, 1080), GAME_NAME),
-          _r(std::make_shared<ecs::Registry>()), _menu(_window), _game(_window, _r)
+        : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
     {
-        _menu.setupMenu();
-        _network.setRegistry(_r);
-    }
-
-    int Gui::setupNetwork(const std::string server_ip, const std::string server_port)
-    {
-        if (_network.setup(server_ip, server_port)) {
-            return EXIT_FAILURE;
-        }
-
-        return EXIT_SUCCESS;
+        _registry = std::make_shared<RegistryWrapper>();
     }
 
     int Gui::run()
     {
+        std::string address = _menu.launchMenu();
+        std::string ip = address.substr(0, address.find(':'));
+        std::string port = address.substr(address.find(':') + 1);
+
+        if (_network.setup(ip, port) == ERROR) {
+            return ERROR;
+        }
+
+        _game.setRegistry(_registry);
+        _network.setRegistry(_registry->getServerRegistry());
+
+        std::thread network = std::thread(&client::Network::run, std::ref(_network));
+
         _game.run();
-        return EXIT_SUCCESS;
-    }
 
-    int Gui::runNetwork()
-    {
-        return _network.run();
-    }
+        network.join();
 
-} // namespace rtype
+        return SUCCESS;
+    }
+} // namespace rtype::client

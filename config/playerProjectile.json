@@ -1,0 +1,39 @@
+{
+    "name": "projectile",
+    "active": [
+      "position",
+      "drawable",
+      "controllable",
+      "sprite",
+      "animations",
+      "size",
+      "life"
+    ],
+    "components": {
+      "life": 1,
+      "position": {
+          "x": 0,
+          "y": 0
+      },
+      "drawable": true,
+      "controllable": {
+          "controllable": true,
+          "speed": 5
+      },
+      "sprite": "r-typesheetGun.gif",
+      "animations": {
+          "width": 18,
+          "height": 12,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "type": "weapon",
+          "objectType": "none"
+      },
+      "size": {
+          "width": 3,
+          "height": 3
+      }
+    }
+  }
+  

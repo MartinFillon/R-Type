@@ -1,0 +1,40 @@
+{
+    "name": "ennemies",
+    "active": [
+      "position",
+      "drawable",
+      "controllable",
+      "sprite",
+      "animations",
+      "size",
+      "life",
+      "destroyable"
+    ],
+    "components": {
+      "life": 100,
+      "position": {
+          "x": 2000.0,
+          "y": 572.0
+        },
+      "destroyable": false,
+      "drawable": true,
+      "controllable": {
+          "controllable": false,
+          "speed": 5
+      },
+      "sprite": "r-typesheet32.gif",
+      "animations": {
+          "width": 255,
+          "height": 127,
+          "x": 260,
+          "y": 0,
+          "rotation": 0,
+          "type": "ennemies",
+        "objectType": "boss"
+      },
+      "size": {
+          "width": 4.0,
+          "height": 4.0
+      }
+    }
+}

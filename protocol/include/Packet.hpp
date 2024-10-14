@@ -8,17 +8,18 @@
 #ifndef PACKET_HPP_
 #define PACKET_HPP_
 
-#include <memory>
+#include <cstdint>
 #include <vector>
+#include "IPacket.hpp"
 
 #define MESSAGE_OPCODE 4
 #define MESSAGE_MIN_SIZE 5
 #define GET_MAGIC_NUMBER(x) (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3]
 
-namespace Rtype {
+namespace rtype::protocol {
 
     /// @brief Class to wrap all the utilities of the communication packets to send to the client.
-    class Packet {
+    class Packet : public ecs::IPacket {
 
         using Message = std::vector<uint8_t>;
         using Arguments = std::vector<uint8_t>;
@@ -39,20 +40,20 @@ namespace Rtype {
 
         /// @brief Checks if the packet is valid and ready to be sent or not.
         /// @return `true` if the packet is valid and ready to be sent to the client or `false` if not.
-        bool isValid() const;
+        bool isValid() const override final;
         /// @brief Get the operation code of the packet.
         /// @return `uint8_t` equal to a `protocol::Operations::*` if the operation code of the packet is valid or -1 if
         /// it's not.
-        uint8_t getOpcode() const;
+        uint8_t getOpcode() const override final;
         /// @brief Get the arguments of the packet.
         /// @return `Arguments` aka `std::vector<uint8_t>` of the packet. The returned value is always at least an empty
         /// vector.
-        Arguments getArguments() const;
+        Arguments getArguments() const override final;
 
         /// @brief Translates the packet to an understandable message for the upd socket aka the operation code
         /// concatenated with the arguments.
         /// @return `Message` aka `std::vector<uint8_t>` of the complete message.
-        Message toMessage() const;
+        Message toMessage() const override final;
 
       private:
         /// @brief Checks if the given operation code is in the `protocol::Operations` enum
@@ -72,6 +73,6 @@ namespace Rtype {
         Arguments _arguments;
     };
 
-}; // namespace Rtype
+}; // namespace rtype::protocol
 
 #endif /* !PACKET_HPP_ */

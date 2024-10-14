@@ -7,20 +7,23 @@
 
 #pragma once
 
-#include <string>
+#include <cstdint>
 
-namespace protocol {
+namespace rtype::protocol {
 
     enum ObjectTypes {
-        OBJECTSTYPES_FIRST = 0, // must be at the begining of the enum
+        OBJECTSTYPES_FIRST = -1, // must be at the begining of the enum
         PLAYER_1,
         PLAYER_2,
         PLAYER_3,
         PLAYER_4,
         ENEMY,
         BULLET,
+        PLAYER_BULLET,
         TEXT,
         BONUS,
+        MILESPATES,
+        BOSS,
         OBJECTSTYPES_LENGTH, // must be at the end of the enum
     };
 
@@ -30,12 +33,14 @@ namespace protocol {
         RIGHT,
         DOWN,
         LEFT,
+        Space,
         DIRECTION_LENGTH, // must be at the end of the enum
     };
 
     enum Operations {
-        OPERATIONS_FIRST = 0, // must be at the begining of the enum
+        OPERATIONS_FIRST = -1, // must be at the begining of the enum
         OBJECT_POSITION,
+        OBJECT_RECT,
         NEW_OBJECT,
         EVENT,
         GAME_SPEED,
@@ -61,4 +66,4 @@ namespace protocol {
         EVENTS_LENGTH, // must be at the end of the enum
     };
 
-}; // namespace protocol
+}; // namespace rtype::protocol
