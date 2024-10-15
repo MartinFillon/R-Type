@@ -14,7 +14,8 @@
 
 std::string getPathToAssets()
 {
-#if defined(DEBUG) && DEBUG == 1
+#ifndef RELEASE
+    std::cerr << "DEBUG MODE" << std::endl;
     std::string path = "./";
 #elif defined(__linux__) || defined(__APPLE__)
     std::string home = getEnvOrDefault("HOME", ".");

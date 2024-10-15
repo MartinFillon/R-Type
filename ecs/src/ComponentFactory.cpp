@@ -41,7 +41,7 @@ std::string getEnvOrDefault(const std::string &env, const std::string &def)
 
 std::string getPathToConfig()
 {
-#if defined(DEBUG) && DEBUG == 1
+#ifndef RELEASE
     std::string path = "./";
 #elif defined(__linux__) || defined(__APPLE__)
     std::string path = getEnvOrDefault("XDG_CONFIG_HOME", "~/.config/");
