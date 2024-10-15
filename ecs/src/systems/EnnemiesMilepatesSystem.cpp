@@ -83,7 +83,7 @@ namespace ecs::systems {
         int lastY = 80;
 
         for (std::size_t i = 0; i < NB_ENNEMIES; ++i) {
-            milespates.push_back(factory.createEntity("config/milepates.json"));
+            milespates.push_back(factory.createEntity(CONFIG_MILEPATES));
             r._entities.addEntity(milespates[i].getId());
             ctx->createMilespates(milespates[i].getId());
         }

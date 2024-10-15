@@ -105,7 +105,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std
     int randomPosY = uniformDistForY(randomEngine);
     int randomPosX = uniformDistForY(randomEngine);
 
-    Entity newEnnemies = cf.createEntity("config/ennemies.json");
+    Entity newEnnemies = cf.createEntity(CONFIG_ENNEMIES);
     auto &positions = r.register_if_not_exist<ecs::component::Position>();
     positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
 
