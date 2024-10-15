@@ -67,16 +67,16 @@ namespace rtype::client {
 
             switch (type) {
                 case protocol::ObjectTypes::PLAYER_1:
-                    factory.createEntity(id, "config/player0.json");
+                    factory.createEntity(id, CONFIG_PLAYER_0);
                     break;
                 case protocol::ObjectTypes::PLAYER_2:
-                    factory.createEntity(id, "config/player1.json");
+                    factory.createEntity(id, CONFIG_PLAYER_1);
                     break;
                 case protocol::ObjectTypes::PLAYER_3:
-                    factory.createEntity(id, "config/player2.json");
+                    factory.createEntity(id, CONFIG_PLAYER_2);
                     break;
                 case protocol::ObjectTypes::PLAYER_4:
-                    factory.createEntity(id, "config/player3.json");
+                    factory.createEntity(id, CONFIG_PLAYER_3);
                     break;
                 default:
                     break;
@@ -93,19 +93,19 @@ namespace rtype::client {
 
             switch (type) {
                 case protocol::ObjectTypes::ENEMY:
-                    factory.createEntity(id, "config/ennemies.json");
+                    factory.createEntity(id, CONFIG_ENNEMIES);
                     break;
                 case protocol::ObjectTypes::MILESPATES:
-                    factory.createEntity(id, "config/milepates.json");
+                    factory.createEntity(id, CONFIG_MILEPATES);
                     break;
                 case protocol::ObjectTypes::BOSS:
-                    factory.createEntity(id, "config/boss.json");
+                    factory.createEntity(id, CONFIG_BOSS);
                     break;
                 case protocol::ObjectTypes::BULLET:
-                    factory.createEntity(id, "config/projectile.json");
+                    factory.createEntity(id, CONFIG_PROJECTILE);
                     break;
                 case protocol::ObjectTypes::PLAYER_BULLET:
-                    factory.createEntity(id, "config/playerProjectile.json");
+                    factory.createEntity(id, CONFIG_PLAYER_PROJECTILE);
                     break;
                 default:
                     break;
@@ -119,6 +119,10 @@ namespace rtype::client {
 
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
             auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+
+            if (animations[id]->_object == ecs::component::Weapon) {
+                r->erase(id);
+            }
 
             destroyable[id]->_destroyable = true;
             animations[id]->_object = ecs::component::Object::InDestroy;

@@ -124,7 +124,7 @@ namespace rtype::server {
         auto &animations = _r->get_components<ecs::component::Animations>();
         int i = 0;
         ecs::ComponentFactory ctf(*_r, ecs::ComponentFactory::Mode::Client);
-        ecs::Entity e = ctf.createEntity("config/playerProjectile.json");
+        ecs::Entity e = ctf.createEntity(CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
         for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
