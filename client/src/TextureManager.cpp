@@ -8,14 +8,30 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <filesystem>
 #include <iostream>
-#include <memory>
 
+#include "ComponentFactory.hpp"
 #include "TextureManager.hpp"
+
+std::string getPathToAssets()
+{
+#if defined(DEBUG) && DEBUG == 1
+    std::string path = "./";
+#elif defined(__linux__) || defined(__APPLE__)
+    std::string home = getEnvOrDefault("HOME", ".");
+    std::string path = getEnvOrDefault("XDG_CONFIG_HOME", (home + "/.config/"));
+    path += "r-type/";
+#elif defined(_WIN32)
+    std::string path = getEnvOrDefault("APPDATA", "./");
+    path += "r-type/";
+#endif
+    return path + "assets/";
+}
 
 namespace rtype::client {
     TextureManager::TextureManager()
     {
-        for (const auto &entry : std::filesystem::directory_iterator(PATH_TO_ASSETS)) {
+        std::string path = getPathToAssets();
+        for (const auto &entry : std::filesystem::directory_iterator(path + "sprites/")) {
             if (entry.is_directory()) {
                 for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
                     std::string path(newEntry.path().generic_string().c_str());

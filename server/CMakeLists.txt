@@ -36,16 +36,4 @@ endif()
 add_custom_command(
   TARGET r-type_server
   POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/
-          $<TARGET_FILE_DIR:r-type_server>/../assets/)
-
-add_custom_command(
-  TARGET r-type_server
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/config/
-          $<TARGET_FILE_DIR:r-type_server>/../config/)
-
-add_custom_command(
-  TARGET r-type_server
-  POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_server> ..)

@@ -28,7 +28,7 @@ namespace rtype::client {
 
     void Menu::setupBackground()
     {
-        _backgroundTexture.loadFromFile(BG_PATH);
+        _backgroundTexture.loadFromFile(getPathToAssets() + BG_PATH);
         _backgroundTexture.setRepeated(true);
         _backgroundSprite.setTexture(_backgroundTexture);
         _backgroundSprite.setPosition(BG_POS_X, BG_POS_Y);
@@ -39,8 +39,8 @@ namespace rtype::client {
 
     void Menu::setupMenuFont()
     {
-        _fontTitle.loadFromFile(TITLE_FONT);
-        _fontText.loadFromFile(TEXT_FONT);
+        _fontTitle.loadFromFile(getPathToAssets() + TITLE_FONT);
+        _fontText.loadFromFile(getPathToAssets() + TEXT_FONT);
     }
 
     void Menu::setupMenuInputRect()
@@ -98,7 +98,7 @@ namespace rtype::client {
 
     void Menu::setupMenuMusic()
     {
-        _bufferMenuMusic.loadFromFile(MENU_MUSIC);
+        _bufferMenuMusic.loadFromFile(getPathToAssets() + MENU_MUSIC);
         _menuMusic.setBuffer(_bufferMenuMusic);
         _menuMusic.setLoop(true);
     }

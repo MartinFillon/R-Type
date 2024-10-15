@@ -41,6 +41,12 @@ if(WIN32)
     VERBATIM)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(r-type_client PRIVATE DEBUG=1)
+else()
+    target_compile_definitions(r-type_client PRIVATE DEBUG=0)
+endif()
+
 if(UNIX)
   add_compile_options(lX11)
 endif()

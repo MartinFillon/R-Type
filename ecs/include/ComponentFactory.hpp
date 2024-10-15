@@ -31,6 +31,8 @@
 #include <nlohmann/json_fwd.hpp>
 #include <unordered_map>
 
+std::string getEnvOrDefault(const std::string &env, const std::string &def);
+
 namespace ecs {
     class ComponentFactory {
       public:

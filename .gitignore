@@ -20,3 +20,4 @@ CTestTestfile.cmake
 .ignore/
 doc
 vgcore.*
+install_manifest.txt

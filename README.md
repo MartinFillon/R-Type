@@ -16,26 +16,19 @@ For linux users you will need to build the project by yourself using these comma
 mkdir build
 cd build
 cmake ..
-make
+make install
 ```
 
-This will create two binaries `r-type_server` and `r-type_client`
+This will create two binaries `r-type_server` and `r-type_client` and install the config and assets under `XDG_CONFIG_HOME`
 
 ## Running
 
-Running the client is simple and just requires to have the config dir and assets dir at the same place in order to get the game working.
+Running the client is simple and just requires to run the binary without any arguments.
 
 Running the server is the same process except you need to set the port as an argument eg:
 
 ```sh
-./r-type_server 4242
-```
-Your tree should look like that
-```sh
-config/
-assets/
-r-type_server
-r-type_client
+r-type_server 4242
 ```
 
 ## Devlopper Informations:
