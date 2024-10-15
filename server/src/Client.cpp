@@ -7,6 +7,7 @@
 
 #include "Client.hpp"
 #include <iostream>
+#include <string>
 #include "Server.hpp"
 
 namespace rtype::server {
@@ -21,6 +22,7 @@ namespace rtype::server {
         if (packet.isValid()) {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
         }
+        usleep(100);
     }
 
     void Client::disconnect()
