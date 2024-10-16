@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 
-add_library(position SHARED src/Position.cpp)
+add_library(position SHARED src/lib.cpp)
 target_include_directories(position PRIVATE ../../include)
 target_include_directories(position PRIVATE ../../../protocol/include)
 
