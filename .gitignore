@@ -21,3 +21,4 @@ CTestTestfile.cmake
 doc
 vgcore.*
 install_manifest.txt
+*.so
