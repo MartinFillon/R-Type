@@ -15,5 +15,5 @@ extern void register_component(ecs::Registry &registry, ecs::Entity &entity, con
 {
     auto &destroyables = registry.register_component<ecs::component::Destroyable>();
 
-    destroyables[entity.getId()] = {component};
+    destroyables[entity.getId()] = ecs::component::Destroyable{component};
 }

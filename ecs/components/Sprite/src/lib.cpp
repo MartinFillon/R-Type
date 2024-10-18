@@ -15,5 +15,5 @@ extern void register_component(ecs::Registry &registry, ecs::Entity &entity, con
 {
     auto &components = registry.register_component<ecs::component::Sprite>();
 
-    components[entity.getId()] = {component};
+    components[entity.getId()] = ecs::component::Sprite{component};
 }
