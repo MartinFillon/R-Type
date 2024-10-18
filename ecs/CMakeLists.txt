@@ -9,7 +9,7 @@ FetchContent_Declare(
   URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
-add_subdirectory(components/Position)
+add_subdirectory(components)
 
 add_library(
   ecs
