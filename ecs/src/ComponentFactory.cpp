@@ -19,6 +19,7 @@
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/FilledColor.hpp"
+#include "Components/Gravitable.hpp"
 #include "Components/Hover.hpp"
 #include "Components/Life.hpp"
 #include "Components/OutlinedColor.hpp"
@@ -32,6 +33,7 @@
 #include "Components/Velocity.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 std::string getEnvOrDefault(const std::string &env, const std::string &def)
 {
@@ -93,6 +95,7 @@ namespace ecs {
                 createOutlinedColorComponent(e, node);
             };
             functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
+            functions["gravitable"] = [this](const Entity e, const nlohmann::json &node) { createGravitableComponent(e, node); };
         }
 
         functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
@@ -279,6 +282,14 @@ namespace ecs {
         auto &velocity_array = _r.register_if_not_exist<component::Velocity>();
 
         velocity_array[e.getId()] = component::Velocity{node["x"], node["y"]};
+    }
+
+
+    void ComponentFactory::createGravitableComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &gravitable_array = _r.register_if_not_exist<component::Gravitable>();
+
+        gravitable_array[e.getId()] = component::Gravitable{node["value"], node["gravityFall"]};
     }
 
     void ComponentFactory::createLifeComponent(const Entity e, const nlohmann::json &node)
