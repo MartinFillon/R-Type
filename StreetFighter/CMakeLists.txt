@@ -16,7 +16,7 @@ add_executable(
   src/Main.cpp
   src/StreetFighter.cpp)
 
-target_link_libraries(street-fighter sfml-audio sfml-graphics)
+target_link_libraries(street-fighter sfml-audio sfml-graphics ecs)
 target_link_directories(street-fighter PUBLIC ../ecs/include)
 target_include_directories(street-fighter PUBLIC include ../ecs/include
                                                          ../protocol/include)
