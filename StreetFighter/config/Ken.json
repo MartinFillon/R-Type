@@ -1,0 +1,46 @@
+{
+    "name": "ken",
+    "active": [
+      "position",
+      "drawable",
+      "controllable",
+      "sprite",
+      "animations",
+      "size",
+      "destroyable",
+      "life",
+      "gravitable"
+    ],
+    "gravitable": {
+        "value": true,
+        "gravityFall": 5
+    },
+    "components": {
+      "life": 100,
+      "position": {
+          "x": 1800,
+          "y": 600
+      },
+      "destroyable": false,
+      "drawable": true,
+      "controllable": {
+          "controllable": true,
+          "speed": 1.2
+      },
+      "sprite": "Ken.png",
+      "animations": {
+          "width": 30,
+          "height": 70,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "type": "player",
+          "objectType": "none"
+      },
+      "size": {
+          "width": 3,
+          "height": 3
+      }
+    }
+  }
+  
