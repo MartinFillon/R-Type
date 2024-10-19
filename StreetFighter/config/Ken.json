@@ -11,11 +11,11 @@
       "life",
       "gravitable"
     ],
-    "gravitable": {
-        "value": true,
-        "gravityFall": 5
-    },
     "components": {
+      "gravitable": {
+          "value": true,
+          "gravityFall": 5
+      },
       "life": 100,
       "position": {
           "x": 1800,
@@ -27,7 +27,7 @@
           "controllable": true,
           "speed": 1.2
       },
-      "sprite": "Ken.png",
+      "sprite": "StreetFighter/assets/Ken.png",
       "animations": {
           "width": 30,
           "height": 70,

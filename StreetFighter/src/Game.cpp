@@ -35,7 +35,7 @@ street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
     try {
         _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Ken.json"));
     } catch (const std::exception &e) {
-        std::cout << e.what() << "\n";
+        std::cout << "Setup error on: " << e.what() << "\n";
         return;
     }
 }

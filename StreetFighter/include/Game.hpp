@@ -26,9 +26,9 @@ namespace street_fighter {
             /// @return an int for the error or good value
             int run();
 
+            ecs::Registry _r;
         private:
             ecs::ComponentFactory _factory;
-            ecs::Registry _r;
     };
 };
 
