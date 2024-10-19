@@ -14,7 +14,8 @@ FetchContent_MakeAvailable(SFML)
 add_executable(
   street-fighter
   src/Main.cpp
-  src/StreetFighter.cpp)
+  src/Game.cpp
+  src/Gui.cpp)
 
 target_link_libraries(street-fighter sfml-audio sfml-graphics ecs)
 target_link_directories(street-fighter PUBLIC ../ecs/include)

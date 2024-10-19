@@ -5,10 +5,13 @@
 ** Main
 */
 
-#include "../include/StreetFighter.hpp"
+#include "../include/Game.hpp"
+#include "Gui.hpp"
 
 int main()
 {
     street_fighter::Game game;
-    return game.run();
+    street_fighter::Gui gui(game);
+
+    return gui.run();
 }

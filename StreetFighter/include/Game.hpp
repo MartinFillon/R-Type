@@ -8,9 +8,10 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#define SECOND_GAME_NAME "Epitech Fighter"
+
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"
-
 
 /// @brief street_fighter namespace for all calsses that concern the Street Fighter Game
 namespace street_fighter {

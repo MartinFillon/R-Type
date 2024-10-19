@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "../include/StreetFighter.hpp"
+#include "../include/Game.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
@@ -20,7 +20,6 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
-#include "ZipperIterator.hpp"
 
 street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
 {
@@ -43,13 +42,6 @@ street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
 
 int street_fighter::Game::run()
 {
-    auto &positions = _r.get_components<ecs::component::Position>();
-    auto &animations = _r.get_components<ecs::component::Animations>();
-
-    for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
-        std::cout << "pos x: " << pos->_x << " y: " << pos->_y << "\n";
-        std::cout << "anim w: " << anim->_width << " h: " << anim->_height << " x: " << anim->_x << " y: " << anim->_y << " type: " << anim->_type << " obj: " << anim->_object << "\n";
-    }
-
+    _r.run_systems(nullptr);
     return EXIT_SUCCESS;
 }
