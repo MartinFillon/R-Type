@@ -13,6 +13,8 @@ namespace ecs {
         struct Gravitable {
             bool _value;
             int _gravityFall;
+            bool _isJumping;
+            bool _isFalling;
         };
     }; // namespace component
 }; // namespace ecs
