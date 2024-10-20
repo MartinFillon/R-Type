@@ -41,6 +41,19 @@ int street_fighter::Gui::handleEvents()
         if (event.key.code == sf::Keyboard::Up) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Up;
         }
+
+        if (event.key.code == sf::Keyboard::Down) {
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
+        }
+
+        if (event.key.code == sf::Keyboard::Left) {
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
+        }
+
+        if (event.key.code == sf::Keyboard::Right) {
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
+        }
+
     }
 
     return EXIT_SUCCESS;

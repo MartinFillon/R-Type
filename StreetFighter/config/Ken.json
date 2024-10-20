@@ -29,7 +29,7 @@
       "drawable": true,
       "controllable": {
           "controllable": true,
-          "speed": 1.2
+          "speed": 3
       },
       "sprite": "StreetFighter/assets/Ken.png",
       "animations": {
