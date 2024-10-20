@@ -11,12 +11,14 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <cstdlib>
 #include <iostream>
 #include "../include/Gui.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/KeyPressed.hpp"
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
@@ -29,10 +31,15 @@ street_fighter::Gui::Gui(Game &game): _game(game), _window(sf::VideoMode(1920, 1
 int street_fighter::Gui::handleEvents()
 {
     sf::Event event;
+    auto &keys = _game._r.get_components<ecs::component::KeyPressed>();
 
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             _window.close();
+        }
+
+        if (event.key.code == sf::Keyboard::Up) {
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Up;
         }
     }
 

@@ -8,6 +8,7 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include "Entity.hpp"
 #define SECOND_GAME_NAME "Epitech Fighter"
 
 #include "ComponentFactory.hpp"
@@ -25,6 +26,10 @@ namespace street_fighter {
             /// @brief run functions is running all systems and send it to the gui that run the game
             /// @return an int for the error or good value
             int run();
+
+            /// @brief findPlayerIndex functions find the current player index
+            /// @return it as an Entity 
+            ecs::Entity findPlayerIndex();
 
             ecs::Registry _r;
         private:

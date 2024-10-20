@@ -9,12 +9,16 @@
       "size",
       "destroyable",
       "life",
-      "gravitable"
+      "gravitable",
+      "key_pressed"
     ],
     "components": {
+      "key_pressed": "none",
       "gravitable": {
           "value": true,
-          "gravityFall": 5
+          "gravityFall": 10,
+          "is_jumping": false,
+          "is_falling": false
       },
       "life": 100,
       "position": {
@@ -35,7 +39,7 @@
           "y": 0,
           "rotation": 0,
           "type": "player",
-          "objectType": "none"
+          "objectType": "first"
       },
       "size": {
           "width": 8,
