@@ -28,6 +28,7 @@ add_library(
   src/systems/BossSystems.cpp
   src/systems/CollisionsSystem.cpp
   src/systems/GravitableMouvementSystem.cpp
+  src/systems/BasicMouvementSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
