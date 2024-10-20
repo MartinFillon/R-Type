@@ -21,6 +21,7 @@
 #include "Components/FilledColor.hpp"
 #include "Components/Gravitable.hpp"
 #include "Components/Hover.hpp"
+#include "Components/KeyPressed.hpp"
 #include "Components/Life.hpp"
 #include "Components/OutlinedColor.hpp"
 #include "Components/Parallax.hpp"
@@ -96,6 +97,7 @@ namespace ecs {
             };
             functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
             functions["gravitable"] = [this](const Entity e, const nlohmann::json &node) { createGravitableComponent(e, node); };
+            functions["key_pressed"] = [this](const Entity e, const nlohmann::json &node) { createKeyPressedComponent(e, node); };
         }
 
         functions["life"] = [this](const Entity e, const nlohmann::json &node) { createLifeComponent(e, node); };
@@ -180,14 +182,20 @@ namespace ecs {
         auto &animations_array = _r.register_if_not_exist<component::Animations>();
 
         component::Object type = component::Background;
-        component::Type ennemiesType = component::Type::None;
+        component::Type objectType = component::Type::None;
 
         if (node["objectType"] == "boss")
-            ennemiesType = component::Type::Boss;
+            objectType = component::Type::Boss;
         else if (node["objectType"] == "basic")
-            ennemiesType = component::Type::Basic;
+            objectType = component::Type::Basic;
         else if (node["objectType"] == "milepates")
-            ennemiesType = component::Type::Milespates;
+            objectType = component::Type::Milespates;
+        else if (node["objectType"] == "none")
+            objectType = component::Type::None;
+        else if (node["objectType"] == "first")
+            objectType = component::Type::First;
+        else if (node["objectType"] == "second")
+            objectType = component::Type::Second;
 
         if (node["type"] == "player")
             type = component::Player;
@@ -199,7 +207,7 @@ namespace ecs {
             type = component::Background;
 
         animations_array[e.getId()] = component::Animations{
-            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type, ennemiesType
+            ecs::Clock(), node["width"], node["height"], node["x"], node["y"], node["rotation"], type, objectType
         };
     }
 
@@ -289,7 +297,28 @@ namespace ecs {
     {
         auto &gravitable_array = _r.register_if_not_exist<component::Gravitable>();
 
-        gravitable_array[e.getId()] = component::Gravitable{node["value"], node["gravityFall"]};
+        gravitable_array[e.getId()] = component::Gravitable{node["value"], node["gravityFall"], node["is_jumping"], node["is_falling"]};
+    }
+
+    void ComponentFactory::createKeyPressedComponent(const Entity e, const nlohmann::json &node)
+    {
+        auto &key_pressed = _r.register_if_not_exist<ecs::component::KeyPressed>();
+        ecs::component::Key key = ecs::component::Key::NoneKey;
+
+        if (node == "up") {
+            key = ecs::component::Key::Up;
+        }
+        if (node == "down") {
+            key = ecs::component::Key::Down;
+        }
+        if (node == "left") {
+            key = ecs::component::Key::Left;
+        }
+        if (node == "right") {
+            key = ecs::component::Key::Right;
+        }
+
+        key_pressed[e.getId()] = component::KeyPressed{key};
     }
 
     void ComponentFactory::createLifeComponent(const Entity e, const nlohmann::json &node)

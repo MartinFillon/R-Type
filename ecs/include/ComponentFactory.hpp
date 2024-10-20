@@ -68,6 +68,7 @@ namespace ecs {
         void createVelocityComponent(const Entity e, const nlohmann::json &node);
         void createLifeComponent(const Entity e, const nlohmann::json &node);
         void createGravitableComponent(const Entity e, const nlohmann::json &node);
+        void createKeyPressedComponent(const Entity e, const nlohmann::json &node);
         std::unordered_map<std::string, std::function<void(const Entity, const nlohmann::json)>> functions;
     };
 
