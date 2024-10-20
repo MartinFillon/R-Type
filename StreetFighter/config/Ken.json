@@ -18,8 +18,8 @@
       },
       "life": 100,
       "position": {
-          "x": 1800,
-          "y": 600
+          "x": 0,
+          "y": 400
       },
       "destroyable": false,
       "drawable": true,
@@ -38,8 +38,8 @@
           "objectType": "none"
       },
       "size": {
-          "width": 3,
-          "height": 3
+          "width": 8,
+          "height": 8
       }
     }
   }
