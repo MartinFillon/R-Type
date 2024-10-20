@@ -22,6 +22,13 @@ namespace street_fighter {
             /// @return an int about the state if there is an error or not
             int run();
 
+            /// @brief handleEvents function handle all events of the game with an while pool events of the SFML 
+            /// @return an int about the state of the events, if there is error or not
+            int handleEvents();
+
+            /// @brief display function display all entities in the registry in the game that is "displayable"
+            void display();
+
         private:
             Game _game;
             sf::RenderWindow _window;

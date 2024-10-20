@@ -33,6 +33,7 @@ street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
     _r.register_if_not_exist<ecs::component::Life>();
     _r.register_if_not_exist<ecs::component::Gravitable>();
     try {
+        _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Background.json"));
         _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Ken.json"));
     } catch (const std::exception &e) {
         std::cout << "Setup error on: " << e.what() << "\n";
