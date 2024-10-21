@@ -7,7 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Components/Music.hpp"
+#include "Components/SoundEffect.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 

@@ -97,7 +97,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
 
 void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx)
 {
-    auto cf = ecs::ComponentFactory(r, ecs::ComponentFactory::Mode::Client);
+    auto cf = ecs::ComponentFactory(r);
     std::random_device randomPosition;
     std::default_random_engine randomEngine(randomPosition());
     std::uniform_int_distribution<int> uniformDistForY(100, 800);

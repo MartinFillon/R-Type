@@ -19,7 +19,7 @@ namespace rtype::client {
 
     void Game::setupBackground()
     {
-        ecs::ComponentFactory factory(*_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
+        ecs::ComponentFactory factory(*_registry->getClientRegistry());
         factory.createEntity(CONFIG_BACKGROUND_0);
         factory.createEntity(CONFIG_BACKGROUND_2);
         factory.createEntity(CONFIG_BACKGROUND_3);

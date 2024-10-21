@@ -77,7 +77,7 @@ namespace ecs::systems {
 
     void EnnemiesMilepatesSystem::createMilepates(Registry &r, std::shared_ptr<IContext> &ctx)
     {
-        auto factory = ecs::ComponentFactory(r, ecs::ComponentFactory::Mode::Client);
+        auto factory = ecs::ComponentFactory(r);
         std::vector<Entity> milespates;
         int lastX = 1944;
         int lastY = 80;

@@ -29,7 +29,7 @@
 
 namespace rtype::server {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(*_r, ecs::ComponentFactory::Mode::Client)
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(*_r)
     {
         _r->register_component<ecs::component::Position>();
         _r->register_component<ecs::component::Controllable>();
@@ -123,7 +123,7 @@ namespace rtype::server {
         auto &positions = _r->get_components<ecs::component::Position>();
         auto &animations = _r->get_components<ecs::component::Animations>();
         int i = 0;
-        ecs::ComponentFactory ctf(*_r, ecs::ComponentFactory::Mode::Client);
+        ecs::ComponentFactory ctf(*_r);
         ecs::Entity e = ctf.createEntity(CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 

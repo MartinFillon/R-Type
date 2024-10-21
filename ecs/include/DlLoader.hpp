@@ -11,7 +11,7 @@
 #include <string>
 
 namespace ecs {
-    template <typename T>
+    template <typename T, typename... Args>
     class DlLoader {
       public:
         class DlLoaderException : public std::exception {
@@ -27,7 +27,7 @@ namespace ecs {
             std::string _message;
         };
 
-        DlLoader(std::string &path, std::string &entryPoint)
+        DlLoader(std::string path, std::string entryPoint)
         {
             __handle = dlopen(path.c_str(), RTLD_LAZY);
             if (!__handle)
@@ -37,8 +37,7 @@ namespace ecs {
                 throw DlLoaderException(dlerror());
         }
 
-        template <typename... Args>
-        void operator()(Args &&...args)
+        void call(Args &&...args)
         {
             if (!_handle)
                 throw DlLoaderException("Missing handle");
@@ -54,6 +53,6 @@ namespace ecs {
       protected:
       private:
         void *__handle = nullptr;
-        T (*_handle)();
+        T (*_handle)(Args...);
     };
 } // namespace ecs
