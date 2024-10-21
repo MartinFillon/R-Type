@@ -10,6 +10,10 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "TextureManager.hpp"
 #include "ZipperIterator.hpp"
@@ -39,14 +43,16 @@ namespace rtype::client {
         std::shared_ptr<ecs::Registry> &registry
     )
     {
-        auto &sizes = registry->get_components<ecs::component::Size>();
-        auto &sprites = registry->get_components<ecs::component::Sprite>();
-        auto &drawables = registry->get_components<ecs::component::Drawable>();
-        auto &positions = registry->get_components<ecs::component::Position>();
-        auto &animations = registry->get_components<ecs::component::Animations>();
+        auto &sizes = registry->register_if_not_exist<ecs::component::Size>();
+        auto &sprites = registry->register_if_not_exist<ecs::component::Sprite>();
+        auto &drawables = registry->register_if_not_exist<ecs::component::Drawable>();
+        auto &positions = registry->register_if_not_exist<ecs::component::Position>();
+        auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
+
+        for (auto i = 0; i < sprites.size(); i++)
+            std::cerr << sprites[i]->_pathToSprite << std::endl;
 
         for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-
             if (!draw || !anim || !spri || !si || !pos) {
                 continue;
             }
@@ -54,7 +60,6 @@ namespace rtype::client {
             if (spri->_pathToSprite.empty()) {
                 continue;
             }
-
             sf::Sprite sprite;
 
             sprite.setPosition(pos->_x, pos->_y);

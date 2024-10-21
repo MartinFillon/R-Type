@@ -40,7 +40,7 @@ namespace rtype::client {
 
         void setRegistry(std::shared_ptr<ecs::Registry> registry);
 
-        void setFactory(std::shared_ptr<ecs::ComponentFactory> factory)
+        void setFactory(std::shared_ptr<ecs::ComponentFactory> &factory)
         {
             _cf = factory;
         }
@@ -68,7 +68,8 @@ namespace rtype::client {
         std::size_t _id;
         std::unordered_map<
             protocol::Operations,
-            std::function<void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &)>>
+            std::function<
+                void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &, std::shared_ptr<ecs::ComponentFactory> &)>>
             _updateRegistryFunctions;
     };
 

@@ -16,14 +16,6 @@
 #include <unordered_map>
 
 #include "ComponentFactory.hpp"
-#include "Components/Animations.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Destroyable.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Parallax.hpp"
-#include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"

@@ -12,17 +12,17 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#define TITLE_FONT "fonts/ARCADE_I.ttf"
-#define TEXT_FONT "fonts/OpenSans-Semibold.ttf"
+#define TITLE_FONT "./assets/fonts/ARCADE_I.ttf"
+#define TEXT_FONT "./assets/fonts/OpenSans-Semibold.ttf"
 #define BUTTON_PLAY "Play"
 #define BUTTON_IP "Enter IP Adress !"
 #define BUTTON_QUIT "Quit"
 #define BUTTON_OPTIONS "Options"
 #define MENU_TITLE "R-Type by MR.PET"
-#define BG_PATH "sprites/Background/background_2.png"
+#define BG_PATH "./assets/sprites/Background/background_2.png"
 #define OFFSET "offset"
 #define EMPTY_ADRESS "empty adress"
-#define MENU_MUSIC "musics/menuMusic.ogg"
+#define MENU_MUSIC "./assets/musics/menuMusic.ogg"
 #define BG_POS_X 0
 #define BG_POS_Y 0
 #define NB_TITLES 5

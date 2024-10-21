@@ -7,6 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "Components/Controllable.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 

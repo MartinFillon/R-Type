@@ -32,7 +32,6 @@ namespace ecs {
 
         DlLoader(std::string path, std::string entryPoint)
         {
-            std::cerr << "Loading " << path << std::endl;
             __handle = dlopen(path.c_str(), RTLD_LAZY);
             if (!__handle)
                 throw DlLoaderException(dlerror());
@@ -46,7 +45,6 @@ namespace ecs {
         {
             if (!_f)
                 throw DlLoaderException("Missing handle");
-            std::cerr << "Calling " << std::endl;
             _f(std::forward<Args>(args)...);
         }
 

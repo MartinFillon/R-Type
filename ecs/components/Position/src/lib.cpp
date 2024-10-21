@@ -7,6 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 

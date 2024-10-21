@@ -5,9 +5,9 @@
 ** Client
 */
 
-#include "Client.hpp"
 #include <iostream>
-#include <string>
+
+#include "Client.hpp"
 #include "Server.hpp"
 
 namespace rtype::server {

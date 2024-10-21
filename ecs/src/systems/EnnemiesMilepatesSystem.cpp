@@ -8,6 +8,8 @@
 #include <memory>
 
 #include "ComponentFactory.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Position.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
 #include "Systems/EnnemiesMilepatesSystem.hpp"
@@ -20,9 +22,9 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
-        auto &positions = r->get_components<ecs::component::Position>();
-        auto &animations = r->get_components<ecs::component::Animations>();
-        auto &controllable = r->get_components<ecs::component::Controllable>();
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
+        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
 
         if (countMilepates(r) == 0) {
             createMilepates(r, ctx, factory);
@@ -104,7 +106,7 @@ namespace ecs::systems {
 
     int EnnemiesMilepatesSystem::countMilepates(std::shared_ptr<Registry> &r)
     {
-        auto &animations = r->get_components<ecs::component::Animations>();
+        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
         int nbMilespates = 0;
 
         for (auto &&[anim] : ecs::custom_zip(animations)) {

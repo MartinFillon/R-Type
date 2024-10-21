@@ -9,30 +9,13 @@
 #include <filesystem>
 #include <iostream>
 
-#include "ComponentFactory.hpp"
 #include "TextureManager.hpp"
-
-std::string getPathToAssets()
-{
-#ifndef RELEASE
-    std::cerr << "DEBUG MODE" << std::endl;
-    std::string path = "./";
-#elif defined(__linux__) || defined(__APPLE__)
-    std::string home = getEnvOrDefault("HOME", ".");
-    std::string path = getEnvOrDefault("XDG_CONFIG_HOME", (home + "/.config/"));
-    path += "r-type/";
-#elif defined(_WIN32)
-    std::string path = getEnvOrDefault("APPDATA", "./");
-    path += "r-type/";
-#endif
-    return path + "assets/";
-}
 
 namespace rtype::client {
     TextureManager::TextureManager()
     {
-        std::string path = getPathToAssets();
-        for (const auto &entry : std::filesystem::directory_iterator(path + "sprites/")) {
+        std::string path = "assets/sprites/";
+        for (const auto &entry : std::filesystem::directory_iterator(path)) {
             if (entry.is_directory()) {
                 for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
                     std::string path(newEntry.path().generic_string().c_str());
@@ -46,6 +29,7 @@ namespace rtype::client {
             }
             std::string path(entry.path().generic_string().c_str());
             std::string asstesPath = path.substr(15, path.size());
+            std::cerr << path << " " << asstesPath << std::endl;
             sf::Texture temp;
 
             temp.loadFromFile(path);
@@ -55,6 +39,7 @@ namespace rtype::client {
 
     sf::Texture TextureManager::getTexture(const std::string &pathToImage)
     {
+        std::cerr << "Drawing: " << pathToImage << std::endl;
         if (_textures.find(pathToImage) == _textures.end()) {
             std::cerr << "Texture not found" << pathToImage << std::endl;
             return sf::Texture();

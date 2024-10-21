@@ -8,6 +8,8 @@
 #include "Systems/ParallaxSystem.hpp"
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Position.hpp"
 #include "ZipperIterator.hpp"
 
 void ecs::systems::ParalaxSystem::
@@ -17,9 +19,9 @@ operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, Componen
         return;
     }
     _clock.restart();
-    auto &paralax = r->get_components<ecs::component::Parallax>();
-    auto &positions = r->get_components<ecs::component::Position>();
-    auto &animation = r->get_components<ecs::component::Animations>();
+    auto &paralax = r->register_if_not_exist<ecs::component::Parallax>();
+    auto &positions = r->register_if_not_exist<ecs::component::Position>();
+    auto &animation = r->register_if_not_exist<ecs::component::Animations>();
 
     for (auto &&[pos, para, anim] : ecs::custom_zip(positions, paralax, animation)) {
         if (anim->_object == ecs::component::Object::Background && anim->_clock.getSeconds() > (int)(1 / 60)) {

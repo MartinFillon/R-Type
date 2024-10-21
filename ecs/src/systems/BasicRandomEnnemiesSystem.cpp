@@ -9,7 +9,12 @@
 #include <memory>
 #include <random>
 #include "ComponentFactory.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
 #include "Components/Life.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "IContext.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"

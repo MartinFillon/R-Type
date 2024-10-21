@@ -8,6 +8,8 @@
 #include "Systems/DestroySystem.hpp"
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
 

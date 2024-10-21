@@ -8,6 +8,7 @@
 #ifndef BOSSSYSTEMS_HPP_
 #define BOSSSYSTEMS_HPP_
 
+#include "Components/Position.hpp"
 #define BOSS_LIFE(x) 100 * x
 #define BOSS_SPEED 5
 #define BOSS_SPAWN_TIME 60

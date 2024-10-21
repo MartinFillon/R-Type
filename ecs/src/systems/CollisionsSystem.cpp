@@ -8,7 +8,11 @@
 #include <memory>
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
 #include "Components/Life.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
 #include "Registry.hpp"
 
 namespace ecs {

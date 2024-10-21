@@ -8,6 +8,10 @@
 #include "Systems/GunFireSystem.hpp"
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Position.hpp"
 #include "Registry.hpp"
 
 namespace ecs {
@@ -22,11 +26,11 @@ namespace ecs {
             return;
         }
         _clock.restart();
-        auto &positions = r->get_components<ecs::component::Position>();
-        auto &controllable = r->get_components<ecs::component::Controllable>();
-        auto &animations = r->get_components<ecs::component::Animations>();
-        auto &drawable = r->get_components<ecs::component::Drawable>();
-        auto &destroyable = r->get_components<ecs::component::Destroyable>();
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
+        auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &drawable = r->register_if_not_exist<ecs::component::Drawable>();
+        auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
         ecs::component::Position playerPos = {0, 0};
 
         for (std::size_t i = 0; i < positions.size(); ++i) {

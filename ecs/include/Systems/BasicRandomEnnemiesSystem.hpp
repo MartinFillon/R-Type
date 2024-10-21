@@ -2,6 +2,7 @@
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
 #include "ComponentFactory.hpp"
+#include "Components/Position.hpp"
 #include "IContext.hpp"
 #define ENNEMIES_TICK 2
 

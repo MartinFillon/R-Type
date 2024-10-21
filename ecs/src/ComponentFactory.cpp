@@ -5,6 +5,7 @@
 ** ComponentFactory
 */
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -15,26 +16,6 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-std::string getEnvOrDefault(const std::string &env, const std::string &def)
-{
-    const char *val = std::getenv(env.c_str());
-    return val ? val : def;
-}
-
-std::string getPathToConfig()
-{
-#ifndef RELEASE
-    std::string path = "./";
-#elif defined(__linux__) || defined(__APPLE__)
-    std::string path = getEnvOrDefault("XDG_CONFIG_HOME", "~/.config/");
-    path += "r-type/";
-#elif defined(_WIN32)
-    std::string path = getEnvOrDefault("APPDATA", "./");
-    path += "r-type/";
-#endif
-    return path;
-}
-
 namespace ecs {
     ComponentFactory::ComponentFactory()
     {
@@ -43,12 +24,10 @@ namespace ecs {
         for (const auto &entry : std::filesystem::directory_iterator(path)) {
             if (entry.is_regular_file()) {
                 std::string path = entry.path().string();
-                std::string name = entry.path().stem().string();
+                std::string name = entry.path().stem().string().substr(3);
                 registerComponent(name, path);
             }
         }
-
-        std::cerr << "Factory inited" << std::endl;
     }
 
     ComponentFactory::~ComponentFactory() {}
@@ -60,7 +39,7 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
-        std::ifstream f(getPathToConfig() + file);
+        std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = r->spawn_entity();
