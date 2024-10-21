@@ -14,7 +14,7 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
 
-#define FRAME_DURATION(x) (1 / x)
+#define FRAME_DURATION(x) (int)(1 / x)
 #define PATH_TO_STREET_FIGHTER_ASSETS "StreetFighter/assets"
 
 namespace street_fighter {

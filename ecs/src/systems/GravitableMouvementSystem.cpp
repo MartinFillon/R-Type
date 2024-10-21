@@ -25,15 +25,21 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
         if (!pos || !anim || !gravit || !key) {
             continue;
         }
+        if (anim->_clock.getSeconds() < 0.1) {
+            continue;
+        }
 
         if (key->_value == ecs::component::Key::Up && !gravit->_isJumping && !gravit->_isFalling && pos->_y == initialY) {
             gravit->_isJumping = true;
         }
 
-        if (gravit->_isJumping && pos->_y > targetY && anim->_clock.getSeconds() > 0.2) {
-            pos->_y -= gravit->_gravityFall;
-            anim->_x += anim->_width;
-            anim->_clock.restart();
+        anim->_clock.restart();
+        if (gravit->_isJumping && pos->_y > targetY) {
+            pos->_y -= (gravit->_gravityFall + GRAVITY_JUMP_PADDING);
+            if (anim->_x < END_SPRITE_SHEET) {
+                anim->_x += anim->_width - 5;
+                anim->_height -= 3;
+            }
         }
 
         if (gravit->_isJumping && pos->_y <= targetY) {
@@ -41,20 +47,21 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
             gravit->_isFalling = true;
         }
 
-        if (gravit->_isFalling && pos->_y < initialY && anim->_clock.getSeconds() > 0.2) {
-            pos->_y += gravit->_gravityFall + (gravit->_gravityFall - 1);
-            anim->_x -= anim->_width;
-            anim->_clock.restart();
+        if (gravit->_isFalling && (pos->_y + anim->_height) <= initialY) {
+            pos->_y += ((gravit->_gravityFall + 20) GRAVITY_DOWN_PADDING);
+            if (anim->_x < END_SPRITE_SHEET) {
+                anim->_x += (anim->_width - 17) + 2;
+                anim->_width -= 2;
+                anim->_height += 20;
+            }
         }
 
-        if (anim->_x > 1000) {
+        if (gravit->_isFalling && (pos->_y + anim->_height) >= initialY) {
+            pos->_y = INITIAL_Y;
             anim->_x = 0;
             anim->_y = 0;
             anim->_width = 100;
             anim->_height = 110;
-        }
-
-        if (gravit->_isFalling && pos->_y >= initialY) {
             pos->_y = initialY;
             gravit->_isFalling = false;
             key->_value = ecs::component::Key::NoneKey;

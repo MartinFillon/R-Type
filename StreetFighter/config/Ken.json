@@ -33,7 +33,7 @@
       },
       "sprite": "StreetFighter/assets/Ken.png",
       "animations": {
-          "width": 100,
+          "width": 105,
           "height": 110,
           "x": 0,
           "y": 0,

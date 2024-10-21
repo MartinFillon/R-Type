@@ -9,6 +9,9 @@
 #define GRAVITABLEMOUVEMENTSYSTEM_HPP_
 
 #define INITIAL_Y 500
+#define END_SPRITE_SHEET 900
+#define GRAVITY_JUMP_PADDING 40
+#define GRAVITY_DOWN_PADDING * 2
 #define MAX_Y (INITIAL_Y - 300)
 
 #include "ISystems.hpp"
