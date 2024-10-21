@@ -16,7 +16,6 @@ add_executable(
   src/Main.cpp
   src/Gui.cpp
   src/Network.cpp
-  src/TextureManager.cpp
   src/Menu.cpp
   src/Game.cpp
   src/RegistryWrapper.cpp)
