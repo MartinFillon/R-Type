@@ -10,11 +10,12 @@
 #include <iostream>
 #include "Context.hpp"
 #include "INetwork.hpp"
+#include "Network.hpp"
 #include "Server.hpp"
 
 std::shared_ptr<ecs::INetwork> create_network(int port)
 {
-    return std::make_shared<rtype::server::Server>(port);
+    return std::make_shared<rtype::server::Network>(port);
 }
 
 std::shared_ptr<ecs::IContext> create_context(std::shared_ptr<ecs::INetwork> &network)
