@@ -24,6 +24,7 @@
 #include "Entity.hpp"
 #include "Systems/BasicMouvementSystem.hpp"
 #include "Systems/GravitableMouvementSystem.hpp"
+#include "Systems/SitDownSystem.hpp"
 #include "ZipperIterator.hpp"
 
 street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
@@ -43,6 +44,7 @@ street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
         _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Ken.json"));
         _r.add_system(ecs::systems::GravitableMouvementSystem());
         _r.add_system(ecs::systems::BasicMouvementSystem());
+        _r.add_system(ecs::systems::SitDownSystem());
     } catch (const std::exception &e) {
         std::cout << "Setup error on: " << e.what() << "\n";
         return;

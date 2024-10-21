@@ -9,7 +9,16 @@
 #define GAME_HPP_
 
 #include "Entity.hpp"
+
 #define SECOND_GAME_NAME "Epitech Fighter"
+
+#define JUMP_ANIMATION_WIDTH 100
+#define JUMP_ANIMATION_HEIGHT 135
+#define JUMP_ANIMATION_X 0
+#define JUMP_ANIMATION_Y 650
+
+#define SIT_ANIMATION_X 0
+#define SIT_ANIMATION_Y 528
 
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"

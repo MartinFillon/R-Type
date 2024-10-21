@@ -22,7 +22,7 @@
           "controllable": false,
           "speed": 2
       },
-      "sprite": "r-typesheet5.gif",
+      "sprite": "assets/sprites/r-typesheet5.gif",
       "animations": {
           "width": 32,
           "height": 35,

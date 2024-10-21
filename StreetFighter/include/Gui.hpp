@@ -9,7 +9,13 @@
 #define GUI_HPP_
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include "Clock.hpp"
 #include "Game.hpp"
+#include "TextureManager.hpp"
+
+#define FRAME_DURATION(x) (1 / x)
+#define PATH_TO_STREET_FIGHTER_ASSETS "StreetFighter/assets"
 
 namespace street_fighter {
     /// @brief Gui Class is the class to handle the displayable at the screen, the game send him information and the Gui just display
@@ -31,6 +37,8 @@ namespace street_fighter {
 
         private:
             Game _game;
+            ecs::Clock _gameClock;
+            ecs::TextureManager<sf::Texture> _textureManager;
             sf::RenderWindow _window;
     };
 }

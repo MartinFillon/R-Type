@@ -20,7 +20,7 @@
           "controllable": true,
           "speed": 5
       },
-      "sprite": "r-typesheetGun.gif",
+      "sprite": "assets/sprites/r-typesheetGun.gif",
       "animations": {
           "width": 18,
           "height": 12,
