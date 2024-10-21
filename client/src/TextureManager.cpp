@@ -29,7 +29,6 @@ namespace rtype::client {
             }
             std::string path(entry.path().generic_string().c_str());
             std::string asstesPath = path.substr(15, path.size());
-            std::cerr << path << " " << asstesPath << std::endl;
             sf::Texture temp;
 
             temp.loadFromFile(path);
@@ -39,7 +38,6 @@ namespace rtype::client {
 
     sf::Texture TextureManager::getTexture(const std::string &pathToImage)
     {
-        std::cerr << "Drawing: " << pathToImage << std::endl;
         if (_textures.find(pathToImage) == _textures.end()) {
             std::cerr << "Texture not found" << pathToImage << std::endl;
             return sf::Texture();

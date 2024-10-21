@@ -8,7 +8,6 @@
 #pragma once
 
 #include <dlfcn.h>
-#include <iostream>
 #include <string>
 
 namespace ecs {
@@ -50,7 +49,6 @@ namespace ecs {
 
         ~DlLoader()
         {
-            std::cerr << "destroying: " << name << std::endl;
             if (__handle)
                 dlclose(__handle);
         }

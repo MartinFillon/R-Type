@@ -22,7 +22,7 @@
 #include "SparseArray.hpp"
 
 namespace ecs {
-    class Registry {
+    class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
         SparseArray<Component> &register_component()

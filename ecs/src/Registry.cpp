@@ -45,7 +45,7 @@ void ecs::Registry::erase(const std::size_t &entityIdx)
 
 void ecs::Registry::run_systems(ecs::ComponentFactory &f, std::shared_ptr<IContext> ctx = nullptr)
 {
-    std::shared_ptr<Registry> r = std::make_shared<Registry>(*this);
+    std::shared_ptr<Registry> r = this->shared_from_this();;
     for (auto &system : _systems) {
         system(r, ctx, f);
     }

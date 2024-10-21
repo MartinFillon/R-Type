@@ -74,6 +74,8 @@ namespace ecs {
     {
         if (components.find(component) != components.end()) {
             components[component]->call(r, e, node);
+        } else {
+            std::cerr << "Cannot find: " << component << std::endl;
         }
     }
 } // namespace ecs

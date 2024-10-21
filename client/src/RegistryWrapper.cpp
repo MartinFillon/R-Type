@@ -49,9 +49,6 @@ namespace rtype::client {
         auto &positions = registry->register_if_not_exist<ecs::component::Position>();
         auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
 
-        for (auto i = 0; i < sprites.size(); i++)
-            std::cerr << sprites[i]->_pathToSprite << std::endl;
-
         for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
             if (!draw || !anim || !spri || !si || !pos) {
                 continue;
