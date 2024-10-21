@@ -49,8 +49,8 @@ int street_fighter::Gui::handleEvents()
 
         if (event.key.code == sf::Keyboard::Down) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
-            // anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_Y;
-            // anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
+            anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_X;
+            anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {

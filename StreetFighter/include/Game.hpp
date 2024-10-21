@@ -18,7 +18,7 @@
 #define JUMP_ANIMATION_Y 650
 
 #define SIT_ANIMATION_X 0
-#define SIT_ANIMATION_Y 528
+#define SIT_ANIMATION_Y 520
 
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"

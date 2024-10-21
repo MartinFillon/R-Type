@@ -12,6 +12,7 @@
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
 
+
 void ecs::systems::SitDownSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
 {
     auto &keys = r.get_components<ecs::component::KeyPressed>();
@@ -30,8 +31,9 @@ void ecs::systems::SitDownSystem::operator()(Registry &r, std::shared_ptr<IConte
             break;
         }
 
-        if (anim->_clock.getSeconds() > 0.2) {
-            anim->_x += anim->_width;
+        if (anim->_clock.getSeconds() > 0.01) {
+            anim->_x += anim->_width + 5;
+            anim->_y += 2;
             anim->_clock.restart();
         }
 
