@@ -1,6 +1,7 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
+#include "ComponentFactory.hpp"
 #include "IContext.hpp"
 #define ENNEMIES_TICK 2
 
@@ -28,14 +29,23 @@ namespace ecs {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
             void createNewProjectile(
-                Registry &r,
+                std::shared_ptr<Registry> &r,
                 const ecs::component::Position &ennemiesPos,
                 std::shared_ptr<IContext> &ctx
             );
-            void createNewEnnemies(Registry &r, std::shared_ptr<IContext> &ctx);
-            int nbOfBasicEnnemies(Registry &r);
-            void shootRandomly(Registry &r, ecs::component::Position &enemyPos, std::shared_ptr<IContext> &ctx);
-            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
+            void createNewEnnemies(
+                std::shared_ptr<Registry> &r,
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
+            );
+            int nbOfBasicEnnemies(std::shared_ptr<Registry> &r);
+            void shootRandomly(
+                std::shared_ptr<Registry> &r,
+                ecs::component::Position &enemyPos,
+                std::shared_ptr<IContext> &ctx
+            );
+            void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+                override;
 
           private:
             Clock _clock;

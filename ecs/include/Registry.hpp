@@ -15,6 +15,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
@@ -67,12 +68,23 @@ namespace ecs {
 
         Entity spawn_entity();
         void erase(const std::size_t &entityIdx);
-        void run_systems(std::shared_ptr<IContext> ctx);
+        void run_systems(ComponentFactory &f, std::shared_ptr<IContext> ctx);
 
         EntityManager _entities;
 
+        Registry() {}
+
+        Registry(Registry &r)
+        {
+            _systems = r._systems;
+            _componentsArrays = r._componentsArrays;
+            _entityCount = r._entityCount;
+        }
+
       private:
-        std::vector<std::function<void(Registry &, std::shared_ptr<ecs::IContext>)>> _systems;
+        std::vector<
+            std::function<void(std::shared_ptr<Registry> &, std::shared_ptr<ecs::IContext>, ComponentFactory &r)>>
+            _systems;
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };

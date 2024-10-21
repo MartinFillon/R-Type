@@ -6,6 +6,8 @@
 */
 
 #include "Gui.hpp"
+#include <memory>
+#include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
 
 namespace rtype::client {
@@ -13,6 +15,7 @@ namespace rtype::client {
         : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
     {
         _registry = std::make_shared<RegistryWrapper>();
+        _cf = std::make_shared<ecs::ComponentFactory>();
     }
 
     int Gui::run()
@@ -30,7 +33,9 @@ namespace rtype::client {
         }
 
         _game.setRegistry(_registry);
+        _game.setFactory(_cf);
         _network.setRegistry(_registry->getServerRegistry());
+        _network.setFactory(_cf);
 
         std::thread network = std::thread(&client::Network::run, std::ref(_network));
 

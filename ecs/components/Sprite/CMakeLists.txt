@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 add_library(sprite SHARED src/lib.cpp)
 target_include_directories(sprite PRIVATE ../../include)
 target_include_directories(sprite PRIVATE ../../../protocol/include)
+target_link_libraries(sprite PUBLIC nlohmann_json::nlohmann_json)
 
 add_custom_command(
   TARGET sprite

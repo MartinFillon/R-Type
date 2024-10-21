@@ -11,9 +11,13 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-extern void register_component(ecs::Registry &registry, ecs::Entity &entity, const nlohmann::json &component)
+extern "C" void register_component(
+    std::shared_ptr<ecs::Registry> &registry,
+    ecs::Entity &entity,
+    const nlohmann::json &component
+)
 {
-    auto &destroyables = registry.register_component<ecs::component::Destroyable>();
+    auto &destroyables = registry->register_component<ecs::component::Destroyable>();
 
     destroyables[entity.getId()] = ecs::component::Destroyable{component};
 }

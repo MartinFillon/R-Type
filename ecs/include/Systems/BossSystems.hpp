@@ -31,17 +31,18 @@ namespace ecs {
     namespace systems {
         class BossSystems : public ISystems {
           public:
-            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
+            void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+                override;
 
             void createNewProjectile(
-                Registry &r,
+                std::shared_ptr<Registry> &r,
                 const ecs::component::Position &bossPos,
                 std::shared_ptr<IContext> ctx
             );
-            void createFirstBoss(Registry &r, std::shared_ptr<IContext> ctx);
-            bool isABoss(Registry &r);
+            void createFirstBoss(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx);
+            bool isABoss(std::shared_ptr<Registry> &r);
             void moveProjectileTowardsPlayer(
-                Registry &r,
+                std::shared_ptr<Registry> &r,
                 ecs::component::Position &projectilePos,
                 const std::size_t &idx,
                 std::shared_ptr<IContext> ctx
@@ -52,8 +53,8 @@ namespace ecs {
             ecs::Clock _shootingClock;
             ecs::Clock _projectileClock;
             std::size_t times = 0;
-            std::array<std::function<void(Registry &r, std::shared_ptr<IContext> ctx)>, 1> _bosses{
-                {[this](Registry &r, std::shared_ptr<IContext> ctx) { createFirstBoss(r, ctx); }},
+            std::array<std::function<void(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx)>, 1> _bosses{
+                {[this](std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx) { createFirstBoss(r, ctx); }},
             };
         };
     } // namespace systems

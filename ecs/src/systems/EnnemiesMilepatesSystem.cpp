@@ -14,14 +14,18 @@
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {
-    void EnnemiesMilepatesSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+    void EnnemiesMilepatesSystem::operator()(
+        std::shared_ptr<Registry> &r,
+        std::shared_ptr<IContext> ctx,
+        ComponentFactory &factory
+    )
     {
-        auto &positions = r.get_components<ecs::component::Position>();
-        auto &animations = r.get_components<ecs::component::Animations>();
-        auto &controllable = r.get_components<ecs::component::Controllable>();
+        auto &positions = r->get_components<ecs::component::Position>();
+        auto &animations = r->get_components<ecs::component::Animations>();
+        auto &controllable = r->get_components<ecs::component::Controllable>();
 
         if (countMilepates(r) == 0) {
-            createMilepates(r, ctx);
+            createMilepates(r, ctx, factory);
             return;
         }
 
@@ -75,29 +79,32 @@ namespace ecs::systems {
         }
     }
 
-    void EnnemiesMilepatesSystem::createMilepates(Registry &r, std::shared_ptr<IContext> &ctx)
+    void EnnemiesMilepatesSystem::createMilepates(
+        std::shared_ptr<Registry> &r,
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
+    )
     {
-        auto factory = ecs::ComponentFactory(r);
         std::vector<Entity> milespates;
         int lastX = 1944;
         int lastY = 80;
 
         for (std::size_t i = 0; i < NB_ENNEMIES; ++i) {
-            milespates.push_back(factory.createEntity(CONFIG_MILEPATES));
-            r._entities.addEntity(milespates[i].getId());
+            milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
+            r->_entities.addEntity(milespates[i].getId());
             ctx->createMilespates(milespates[i].getId());
         }
 
-        auto &positions = r.register_if_not_exist<ecs::component::Position>();
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
 
         for (const auto &i : milespates) {
             positions[i.getId()] = ecs::component::Position{lastX -= 20, lastY += 60, false};
         }
     }
 
-    int EnnemiesMilepatesSystem::countMilepates(Registry &r)
+    int EnnemiesMilepatesSystem::countMilepates(std::shared_ptr<Registry> &r)
     {
-        auto &animations = r.get_components<ecs::component::Animations>();
+        auto &animations = r->get_components<ecs::component::Animations>();
         int nbMilespates = 0;
 
         for (auto &&[anim] : ecs::custom_zip(animations)) {

@@ -6,7 +6,6 @@
 */
 
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <string>
 
@@ -29,7 +28,7 @@
 
 namespace rtype::server {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(*_r)
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf()
     {
         _r->register_component<ecs::component::Position>();
         _r->register_component<ecs::component::Controllable>();
@@ -62,7 +61,7 @@ namespace rtype::server {
         auto &animations = _r->get_components<ecs::component::Animations>();
 
         if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
-            _r->run_systems(ctx);
+            _r->run_systems(_cf, ctx);
             _systemClock.restart();
         }
 
@@ -89,8 +88,7 @@ namespace rtype::server {
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        std::cerr << file << std::endl;
-        ecs::Entity e = _cf.createEntity(file);
+        ecs::Entity e = _cf.createEntity(_r, file);
 
         _players_entities_ids[player_place] = e.getId();
 
@@ -123,8 +121,7 @@ namespace rtype::server {
         auto &positions = _r->get_components<ecs::component::Position>();
         auto &animations = _r->get_components<ecs::component::Animations>();
         int i = 0;
-        ecs::ComponentFactory ctf(*_r);
-        ecs::Entity e = ctf.createEntity(CONFIG_PLAYER_PROJECTILE);
+        ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
         for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {

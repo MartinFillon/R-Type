@@ -58,59 +58,58 @@ namespace rtype::client {
             anim[id] = ecs::component::Animations{ecs::Clock(), width, height, x, y};
         }};
 
-        _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(*r);
-            auto arguments = received_packet.getArguments();
-            int id = ecs::utils::bytesToInt(arguments);
-            int type = arguments[4];
+        _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {
+            [this](std::shared_ptr<ecs::Registry> &r, const protocol::Packet &received_packet) {
+                auto arguments = received_packet.getArguments();
+                int id = ecs::utils::bytesToInt(arguments);
+                int type = arguments[4];
 
-            switch (type) {
-                case protocol::ObjectTypes::PLAYER_1:
-                    factory.createEntity(id, CONFIG_PLAYER_0);
-                    break;
-                case protocol::ObjectTypes::PLAYER_2:
-                    factory.createEntity(id, CONFIG_PLAYER_1);
-                    break;
-                case protocol::ObjectTypes::PLAYER_3:
-                    factory.createEntity(id, CONFIG_PLAYER_2);
-                    break;
-                case protocol::ObjectTypes::PLAYER_4:
-                    factory.createEntity(id, CONFIG_PLAYER_3);
-                    break;
-                default:
-                    break;
+                switch (type) {
+                    case protocol::ObjectTypes::PLAYER_1:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_0);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_2:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_1);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_3:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_2);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_4:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_3);
+                        break;
+                    default:
+                        break;
+                }
             }
-        }};
+        };
 
-        _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(*r);
+        _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {
+            [this](std::shared_ptr<ecs::Registry> &r, const protocol::Packet &received_packet) {
+                auto arguments = received_packet.getArguments();
+                int id = ecs::utils::bytesToInt(arguments);
+                int type = arguments[4];
 
-            auto arguments = received_packet.getArguments();
-            int id = ecs::utils::bytesToInt(arguments);
-            int type = arguments[4];
-
-            switch (type) {
-                case protocol::ObjectTypes::ENEMY:
-                    factory.createEntity(id, CONFIG_ENNEMIES);
-                    break;
-                case protocol::ObjectTypes::MILESPATES:
-                    factory.createEntity(id, CONFIG_MILEPATES);
-                    break;
-                case protocol::ObjectTypes::BOSS:
-                    factory.createEntity(id, CONFIG_BOSS);
-                    break;
-                case protocol::ObjectTypes::BULLET:
-                    factory.createEntity(id, CONFIG_PROJECTILE);
-                    break;
-                case protocol::ObjectTypes::PLAYER_BULLET:
-                    factory.createEntity(id, CONFIG_PLAYER_PROJECTILE);
-                    break;
-                default:
-                    break;
+                switch (type) {
+                    case protocol::ObjectTypes::ENEMY:
+                        _cf->createEntity(r, id, CONFIG_ENNEMIES);
+                        break;
+                    case protocol::ObjectTypes::MILESPATES:
+                        _cf->createEntity(r, id, CONFIG_MILEPATES);
+                        break;
+                    case protocol::ObjectTypes::BOSS:
+                        _cf->createEntity(r, id, CONFIG_BOSS);
+                        break;
+                    case protocol::ObjectTypes::BULLET:
+                        _cf->createEntity(r, id, CONFIG_PROJECTILE);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_BULLET:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_PROJECTILE);
+                        break;
+                    default:
+                        break;
+                }
             }
-        }};
+        };
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
                                                                              const protocol::Packet &received_packet) {

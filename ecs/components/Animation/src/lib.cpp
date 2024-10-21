@@ -11,9 +11,13 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-extern void register_component(ecs::Registry &registry, ecs::Entity &entity, const nlohmann::json &component)
+extern "C" void register_component(
+    std::shared_ptr<ecs::Registry> &registry,
+    ecs::Entity &entity,
+    const nlohmann::json &component
+)
 {
-    auto &animations = registry.register_component<ecs::component::Animations>();
+    auto &animations = registry->register_component<ecs::component::Animations>();
 
     ecs::component::Object type = ecs::component::Background;
     ecs::component::Type ennemiesType = ecs::component::Type::None;

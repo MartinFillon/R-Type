@@ -6,10 +6,12 @@
 */
 
 #include <fstream>
-
+#include <iostream>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.hpp"
+#include "ComponentLoader.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 
@@ -34,50 +36,65 @@ std::string getPathToConfig()
 }
 
 namespace ecs {
-    ComponentFactory::ComponentFactory(Registry &r) : _r(r)
+    ComponentFactory::ComponentFactory()
     {
-        std::filesystem::path path = std::filesystem::current_path();
+        std::filesystem::path path = std::filesystem::current_path() / "components";
+
+        for (const auto &entry : std::filesystem::directory_iterator(path)) {
+            if (entry.is_regular_file()) {
+                std::string path = entry.path().string();
+                std::string name = entry.path().stem().string();
+                registerComponent(name, path);
+            }
+        }
+
+        std::cerr << "Factory inited" << std::endl;
     }
 
     ComponentFactory::~ComponentFactory() {}
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
-        // components[name] = DlLoader<void>(path, "register_component");
+        components[name] = std::make_shared<ComponentLoader>(path);
     }
 
-    Entity ComponentFactory::createEntity(const std::string &file)
+    Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
         std::ifstream f(getPathToConfig() + file);
         nlohmann::json config = nlohmann::json::parse(f);
 
-        Entity e = _r.spawn_entity();
-        _r._entities.addEntity(e.getId());
+        Entity e = r->spawn_entity();
+        r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-            createComponent(e, c, config["components"][c]);
+            createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }
 
-    Entity ComponentFactory::createEntity(int id, const std::string &file)
+    Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, int id, const std::string &file)
     {
         std::ifstream f(file);
         nlohmann::json config = nlohmann::json::parse(f);
 
         Entity e = Entity(id);
-        _r._entities.addEntity(e.getId());
+        r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-            createComponent(e, c, config["components"][c]);
+            createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }
 
-    void ComponentFactory::createComponent(const Entity e, const std::string &component, const nlohmann::json &node)
+    void ComponentFactory::createComponent(
+        std::shared_ptr<Registry> r,
+        Entity e,
+        const std::string &component,
+        const nlohmann::json &node
+    )
     {
-        // if (components.find(component) != components.end()) {
-        // components[component].call(std::ref(_r), std::ref(e), std::ref(node));
-        // }
+        if (components.find(component) != components.end()) {
+            components[component]->call(r, e, node);
+        }
     }
 } // namespace ecs

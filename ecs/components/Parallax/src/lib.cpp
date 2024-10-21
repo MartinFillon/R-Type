@@ -11,9 +11,13 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-extern void register_component(ecs::Registry &registry, ecs::Entity &entity, const nlohmann::json &component)
+extern "C" void register_component(
+    std::shared_ptr<ecs::Registry> &registry,
+    ecs::Entity &entity,
+    const nlohmann::json &component
+)
 {
-    auto &components = registry.register_component<ecs::component::Parallax>();
+    auto &components = registry->register_component<ecs::component::Parallax>();
 
     components[entity.getId()] =
         ecs::component::Parallax{component["active"], component["speed"], component["multiplier"]};

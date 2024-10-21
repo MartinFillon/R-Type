@@ -11,9 +11,13 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 
-extern void register_component(ecs::Registry &registry, ecs::Entity &entity, const nlohmann::json &component)
+extern "C" void register_component(
+    std::shared_ptr<ecs::Registry> &registry,
+    ecs::Entity &entity,
+    const nlohmann::json &component
+)
 {
-    auto &components = registry.register_component<ecs::component::Size>();
+    auto &components = registry->register_component<ecs::component::Size>();
 
     components[entity.getId()] = ecs::component::Size{component["width"], component["height"]};
 }

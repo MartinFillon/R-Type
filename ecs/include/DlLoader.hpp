@@ -8,6 +8,7 @@
 #pragma once
 
 #include <dlfcn.h>
+#include <iostream>
 #include <string>
 
 namespace ecs {
@@ -27,32 +28,39 @@ namespace ecs {
             std::string _message;
         };
 
+        DlLoader() {}
+
         DlLoader(std::string path, std::string entryPoint)
         {
+            std::cerr << "Loading " << path << std::endl;
             __handle = dlopen(path.c_str(), RTLD_LAZY);
             if (!__handle)
                 throw DlLoaderException(dlerror());
-            _handle = (T(*)())dlsym(__handle, entryPoint.c_str());
-            if (!_handle)
+            _f = (T(*)(Args && ...)) dlsym(__handle, entryPoint.c_str());
+            if (!_f)
                 throw DlLoaderException(dlerror());
+            name = path;
         }
 
         void call(Args &&...args)
         {
-            if (!_handle)
+            if (!_f)
                 throw DlLoaderException("Missing handle");
-            _handle(std::forward<Args>(args)...);
+            std::cerr << "Calling " << std::endl;
+            _f(std::forward<Args>(args)...);
         }
 
         ~DlLoader()
         {
+            std::cerr << "destroying: " << name << std::endl;
             if (__handle)
                 dlclose(__handle);
         }
 
       protected:
       private:
+        std::string name = "";
         void *__handle = nullptr;
-        T (*_handle)(Args...);
+        T (*_f)(Args...) = nullptr;
     };
 } // namespace ecs

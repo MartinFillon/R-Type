@@ -28,7 +28,6 @@ int main(int ac, char **av)
         std::cerr << SERVER_MISSING_PORT << std::endl;
         return R_TYPE_ERROR;
     }
-
     std::shared_ptr<ecs::INetwork> server;
     std::shared_ptr<ecs::IContext> ctx;
 
