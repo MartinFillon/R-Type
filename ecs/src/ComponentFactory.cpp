@@ -8,7 +8,6 @@
 #include <fstream>
 #include <functional>
 #include <nlohmann/json.hpp>
-
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"

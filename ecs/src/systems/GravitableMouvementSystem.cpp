@@ -30,8 +30,10 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
             gravit->_isJumping = true;
         }
 
-        if (gravit->_isJumping && pos->_y > targetY) {
+        if (gravit->_isJumping && pos->_y > targetY && anim->_clock.getSeconds() > 0.2) {
             pos->_y -= gravit->_gravityFall;
+            anim->_x += anim->_width;
+            anim->_clock.restart();
         }
 
         if (gravit->_isJumping && pos->_y <= targetY) {
@@ -39,8 +41,17 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
             gravit->_isFalling = true;
         }
 
-        if (gravit->_isFalling && pos->_y < initialY) {
-            pos->_y += gravit->_gravityFall;
+        if (gravit->_isFalling && pos->_y < initialY && anim->_clock.getSeconds() > 0.2) {
+            pos->_y += gravit->_gravityFall + (gravit->_gravityFall - 1);
+            anim->_x -= anim->_width;
+            anim->_clock.restart();
+        }
+
+        if (anim->_x > 1000) {
+            anim->_x = 0;
+            anim->_y = 0;
+            anim->_width = 100;
+            anim->_height = 110;
         }
 
         if (gravit->_isFalling && pos->_y >= initialY) {
@@ -50,4 +61,3 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
         }
     }
 }
-

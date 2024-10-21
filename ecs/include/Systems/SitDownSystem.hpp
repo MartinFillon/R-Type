@@ -2,20 +2,16 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** GravitableMouvementSystem
+** SitDownSystem
 */
 
-#ifndef GRAVITABLEMOUVEMENTSYSTEM_HPP_
-#define GRAVITABLEMOUVEMENTSYSTEM_HPP_
-
-#define INITIAL_Y 500
-#define MAX_Y (INITIAL_Y - 300)
-
+#ifndef SITDOWNSYSTEM_HPP_
+#define SITDOWNSYSTEM_HPP_
 #include "ISystems.hpp"
 
 namespace ecs {
     namespace systems {
-        class GravitableMouvementSystem : public ISystems {
+        class SitDownSystem : public ISystems {
           public:
             void operator()(Registry &r, std::shared_ptr<IContext> ctx) override;
 
@@ -23,4 +19,4 @@ namespace ecs {
     }; // namespace systems
 }; // namespace ecs
 
-#endif /* !GRAVITABLEMOUVEMENTSYSTEM_HPP_ */
+#endif /* !SITDOWNSYSTEM_HPP_ */
