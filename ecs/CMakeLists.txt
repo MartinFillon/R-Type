@@ -2,12 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-include(FetchContent)
-
-FetchContent_Declare(
-  json
-  URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
-FetchContent_MakeAvailable(json)
+find_package(Json REQUIRED)
 
 add_subdirectory(components)
 
