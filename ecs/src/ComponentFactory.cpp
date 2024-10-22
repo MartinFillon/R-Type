@@ -33,7 +33,7 @@ namespace ecs {
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
-        components[name] = std::make_shared<ComponentLoader>(path);
+        components[name] = std::make_shared<ComponentLoader>(path, "register_component");
     }
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
