@@ -57,7 +57,7 @@ void rtype::server::TCPConnection::readClient()
 
 bool rtype::server::TCPConnection::createLobby(const std::string &name)
 {
-    if (_lobby.size() == MAX_LOBBIES) {
+    if (_lobbies.size() == MAX_LOBBIES) {
         writeToClient("Too many lobbies created.");
         return false;
     }
@@ -71,7 +71,7 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 
     _lobbies.push_back(std::make_shared<Lobby>(name));
 
-    writeToClient("Lobby: " + name + " created!");
+    writeToClient("Lobby: " + name + " created!" + std::to_string(_lobbies.size()));
 
     return true;
 }
