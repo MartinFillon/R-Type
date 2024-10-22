@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include "TCPConnection.hpp"
 
 #include "Network.hpp"
 
@@ -21,21 +22,26 @@ int rtype::server::Network::run(std::shared_ptr<ecs::IContext> &context)
 
 int rtype::server::Network::start(std::shared_ptr<ecs::IContext> &context)
 {
-    std::cout << SERVER_START(_port) << std::endl;
+    std::cout << NETWORK_START(_port) << std::endl;
 
     std::thread contextThread([&]() { _context.run(); });
 
-    for (;;) {
-        TCP::socket socket(_context);
-        _acceptor.accept(socket);
-
-        std::string message("Salut!");
-
-        std::error_code error;
-        asio:write(socket, asio::buffer(message), error);
-    }
-
+    acceptConnection();
     contextThread.detach();
 
     return EXIT_SUCCESS;
+}
+
+void rtype::server::Network::acceptConnection()
+{
+    while (_running) {
+        _acceptor.async_accept([this](std::error_code ec, TCP::socket socket) {
+            if (!ec) {
+                asio::write(socket, asio::buffer("Welcome!"), ec);
+                std::make_shared<TCPConnection>(std::move(socket), _lobbies)->start();
+            } else {
+                std::cerr << "Erreur d'acceptation: " << ec.message() << std::endl;
+            }
+        });
+    }
 }

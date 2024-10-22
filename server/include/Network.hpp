@@ -8,13 +8,14 @@
 #ifndef NETWORK_HPP_
     #define NETWORK_HPP_
 
-    #include <thread>
     #include <asio.hpp>
 
+    #include "Lobby.hpp"
     #include "IContext.hpp"
     #include "INetwork.hpp"
+    #include "TCPConnection.hpp"
 
-    #define SERVER_START(x) "Server started at port " << x << "."
+    #define NETWORK_START(x) "Server started at port " << x << "."
 
 namespace rtype::server {
 
@@ -33,9 +34,12 @@ namespace rtype::server {
         private:
 
             int start(std::shared_ptr<ecs::IContext> &context);
+            void acceptConnection();
     
             int _port;
             bool _running;
+
+            std::vector<std::shared_ptr<Lobby>> _lobbies;
 
             asio::io_context _context;
             TCP::acceptor _acceptor;
