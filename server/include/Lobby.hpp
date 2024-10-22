@@ -30,6 +30,16 @@ namespace rtype::server {
             int assign(std::shared_ptr<TCPConnection> &client);
             int unassign(std::shared_ptr<TCPConnection> &client);
 
+            std::string getName() const
+            {
+                return _name;
+            };
+
+            size_t getNumberConnections() const
+            {
+                return _clients.size();
+            };
+
         private:
 
             std::string _name;

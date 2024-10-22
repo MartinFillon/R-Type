@@ -37,7 +37,7 @@ void rtype::server::Network::acceptConnection()
     while (_running) {
         _acceptor.async_accept([this](std::error_code ec, TCP::socket socket) {
             if (!ec) {
-                asio::write(socket, asio::buffer("Welcome!"), ec);
+                asio::write(socket, asio::buffer("Welcome!\n"), ec);
                 std::make_shared<TCPConnection>(std::move(socket), _lobbies)->start();
             } else {
                 std::cerr << "Erreur d'acceptation: " << ec.message() << std::endl;

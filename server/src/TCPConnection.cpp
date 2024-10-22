@@ -6,6 +6,8 @@
 */
 
 #include <iostream>
+#include <string>
+#include <variant>
 
 #include "TCPConnection.hpp"
 
@@ -34,20 +36,51 @@ void rtype::server::TCPConnection::readClient()
         [this, self](std::error_code ec, std::size_t length) {
 
             if (!ec) {
-                std::string message = _data.substr(0, length);
 
-                if (message.find("Create")) {
-                    _lobbies.push_back(std::make_shared<Lobby>("name"));
-                    std::cout << "client has created a lobby\n";
+                std::string message = _data.substr(0, length - 1);
+
+                if (message.find("CREATE") != std::string::npos) {
+                    createLobby(message.substr(7));
                 }
-                std::cout << "from client #" << ": " << _data.substr(0, length) << std::endl;
-                writeToClient(message);
+
+                if (message.find("LIST") != std::string::npos) {
+                    getLobbies();
+                }
+
             } else {
                 std::cerr << ec.message() << std::endl;
             }
 
         }
     );
+}
+
+bool rtype::server::TCPConnection::createLobby(const std::string &name)
+{
+    if (_lobby.size() == MAX_LOBBIES) {
+        writeToClient("Too many lobbies created.");
+        return false;
+    }
+
+    for (auto &lobby: _lobbies) {
+        if (lobby->getName() == name) {
+            writeToClient("Name already used.");
+            return false;
+        }
+    }
+
+    _lobbies.push_back(std::make_shared<Lobby>(name));
+
+    writeToClient("Lobby: " + name + " created!");
+
+    return true;
+}
+
+void rtype::server::TCPConnection::getLobbies()
+{
+    for (auto &lobby: _lobbies) {
+        writeToClient(lobby->getName() + " => " + std::to_string(lobby->getNumberConnections()) + " / 4");
+    }
 }
 
 void rtype::server::TCPConnection::writeToClient(const std::string &message)

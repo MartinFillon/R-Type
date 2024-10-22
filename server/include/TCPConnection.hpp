@@ -12,6 +12,8 @@
 
     #include "Lobby.hpp"
 
+    #define MAX_LOBBIES 4
+
 namespace rtype::server {
 
     class Lobby;
@@ -27,6 +29,9 @@ namespace rtype::server {
             void start();
 
             void setLobby(const std::string &lobby);
+
+            bool createLobby(const std::string &name);
+            void getLobbies();
 
         private:
 
