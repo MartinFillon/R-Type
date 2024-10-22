@@ -8,7 +8,8 @@
 #ifndef LOBBY_HPP_
     #define LOBBY_HPP_
 
-    #include <vector>
+    #include <functional>
+#include <vector>
 
     #include "Server.hpp"
     #include "IContext.hpp"
@@ -27,8 +28,8 @@ namespace rtype::server {
             Lobby(const std::string &name);
 
             void start();
-            int assign(std::shared_ptr<TCPConnection> &client);
-            int unassign(std::shared_ptr<TCPConnection> &client);
+            bool assign(TCPConnection &client);
+            bool unassign(TCPConnection &client);
 
             std::string getName() const
             {
@@ -43,7 +44,7 @@ namespace rtype::server {
         private:
 
             std::string _name;
-            std::vector<std::shared_ptr<TCPConnection>> _clients;
+            std::vector<std::reference_wrapper<TCPConnection>> _clients;
 
             std::shared_ptr<Server> _server;
 

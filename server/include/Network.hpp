@@ -29,8 +29,8 @@ namespace rtype::server {
 
             void broadcast(const ecs::IPacket &packet) {(void)packet;};
             int run(std::shared_ptr<ecs::IContext> &context);
+            unsigned int generateClientId(const TCP::endpoint &endpoint);
     
-
         private:
 
             int start(std::shared_ptr<ecs::IContext> &context);

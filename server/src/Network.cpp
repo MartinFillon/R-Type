@@ -32,13 +32,24 @@ int rtype::server::Network::start(std::shared_ptr<ecs::IContext> &context)
     return EXIT_SUCCESS;
 }
 
+unsigned int rtype::server::Network::generateClientId(const TCP::endpoint &endpoint)
+{
+        std::hash<std::string> hashFunction;
+
+        std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
+
+        return static_cast<unsigned int>(hashFunction(id));
+}
+
 void rtype::server::Network::acceptConnection()
 {
     while (_running) {
         _acceptor.async_accept([this](std::error_code ec, TCP::socket socket) {
             if (!ec) {
                 asio::write(socket, asio::buffer("Welcome!\n"), ec);
-                std::make_shared<TCPConnection>(std::move(socket), _lobbies)->start();
+                unsigned int id = generateClientId(_acceptor.local_endpoint());
+                std::make_shared<TCPConnection>(std::move(socket), id, _lobbies)->start();
+
             } else {
                 std::cerr << "Erreur d'acceptation: " << ec.message() << std::endl;
             }

@@ -16,24 +16,26 @@ void rtype::server::Lobby::start()
 {
 }
 
-int rtype::server::Lobby::assign(std::shared_ptr<TCPConnection> &client)
+bool rtype::server::Lobby::assign(TCPConnection &client)
 {
     if (_clients.size() == LOBBY_SIZE_MAX) {
-        return EXIT_FAILURE;
+        return false;
     }
 
-    _clients.push_back(std::move(client));
-    client->setLobby(_name);
-    return EXIT_SUCCESS;
+    _clients.push_back(client);
+    client.setLobby(_name);
+    return true;
 }
 
-int rtype::server::Lobby::unassign(std::shared_ptr<TCPConnection> &client)
+bool rtype::server::Lobby::unassign(TCPConnection &client)
 {
-    for (size_t i = 0; _clients[i]; i++) {
-        if (client == _clients[i]) {
-            _clients.erase(_clients.begin() + 1);
+    for (int i = 0; i < _clients.size(); i++) {
+        if (_clients[i].get().getId() == client.getId()) {
+            _clients.erase(_clients.begin() + i);
+            client.setLobby("");
+            return true;
         }
     }
-    client->setLobby("");
-    return EXIT_SUCCESS;
-}
+
+    return false;
+};

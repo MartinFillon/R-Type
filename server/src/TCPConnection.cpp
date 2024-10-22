@@ -6,12 +6,13 @@
 */
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <variant>
 
 #include "TCPConnection.hpp"
 
-rtype::server::TCPConnection::TCPConnection(TCP::socket socket, std::vector<std::shared_ptr<Lobby>> &lobbies): _socket(std::move(socket)), _lobbies(lobbies)
+rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<std::shared_ptr<Lobby>> &lobbies): _socket(std::move(socket)), _id(id), _lobbies(lobbies)
 {
 }
 
@@ -46,6 +47,12 @@ void rtype::server::TCPConnection::readClient()
                 if (message.find("LIST") != std::string::npos) {
                     getLobbies();
                 }
+                if (message.find("JOIN") != std::string::npos) {
+                    joinLobby(message.substr(5));
+                }
+                //if (message.find("QUIT") != std::string::npos) {
+                //    quitLobby(message.substr(5));
+                //}
 
             } else {
                 std::cerr << ec.message() << std::endl;
@@ -82,6 +89,40 @@ void rtype::server::TCPConnection::getLobbies()
         writeToClient(lobby->getName() + " => " + std::to_string(lobby->getNumberConnections()) + " / 4");
     }
 }
+
+bool rtype::server::TCPConnection::joinLobby(const std::string &name)
+{
+     for (auto &lobby: _lobbies) {
+        if (lobby->getName() == name) {
+            if (!lobby->assign(*this)) {
+                writeToClient("Lobby is full.");
+                return false;
+            }
+            writeToClient("Join successfully");
+            return true;
+        }
+    }
+    writeToClient("Lobby not found.");
+    return false;
+}
+
+//bool rtype::server::TCPConnection::quitLobby(const std::string &name)
+//{
+//     for (auto &lobby: _lobbies) {
+//        if (lobby->getName() == name) {
+//            if (!lobby->unassign(*this)) {
+//                writeToClient("You're not in this lobby");
+//                return false;
+//            }
+//            writeToClient("You quit lobby: " + name);
+//            return true;
+//        }
+//    }
+//    writeToClient("Lobby not found.");
+//    return false;
+//}
+
+
 
 void rtype::server::TCPConnection::writeToClient(const std::string &message)
 {
