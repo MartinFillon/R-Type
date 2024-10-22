@@ -7,6 +7,13 @@
 
 #ifndef SITDOWNSYSTEM_HPP_
 #define SITDOWNSYSTEM_HPP_
+
+#define X_MAX_SIT_ANIMATION 500
+#define SPEED_SIT_ANIMATION 0.01
+
+#define WIDTH_PADDING 5
+#define Y_PADDING 2
+
 #include "ISystems.hpp"
 
 namespace ecs {

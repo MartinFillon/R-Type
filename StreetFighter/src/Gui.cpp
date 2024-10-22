@@ -22,6 +22,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
+#include "Game.hpp"
 #include "ZipperIterator.hpp"
 
 street_fighter::Gui::Gui(Game &game): _game(game), _textureManager([this](std::string path){sf::Texture texture; texture.loadFromFile(path); return std::make_shared<sf::Texture>(texture); }, PATH_TO_STREET_FIGHTER_ASSETS), _window(sf::VideoMode(1920, 1080), SECOND_GAME_NAME)
@@ -55,10 +56,18 @@ int street_fighter::Gui::handleEvents()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
+            anim[_game.findPlayerIndex().getId()]->_width = INIT_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = INIT_HEIGHT;
+            anim[_game.findPlayerIndex().getId()]->_x = INIT_X;
+            anim[_game.findPlayerIndex().getId()]->_y = INIT_Y;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
+            anim[_game.findPlayerIndex().getId()]->_width = INIT_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = INIT_HEIGHT;
+            anim[_game.findPlayerIndex().getId()]->_x = INIT_X;
+            anim[_game.findPlayerIndex().getId()]->_y = INIT_Y;
         }
 
     }

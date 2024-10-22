@@ -12,6 +12,11 @@
 
 #define SECOND_GAME_NAME "Epitech Fighter"
 
+#define INIT_WIDTH 105
+#define INIT_HEIGHT 110
+#define INIT_X 0
+#define INIT_Y 0
+
 #define JUMP_ANIMATION_WIDTH 100
 #define JUMP_ANIMATION_HEIGHT 135
 #define JUMP_ANIMATION_X 0
