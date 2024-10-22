@@ -5,19 +5,30 @@
 ** Collision system file
 */
 #include "Systems/CollisionsSystem.hpp"
+#include <memory>
+#include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
 #include "Components/Life.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Registry.hpp"
 
 namespace ecs {
     namespace systems {
-        void CollisionsSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+        void CollisionsSystem::operator()(
+            std::shared_ptr<Registry> &r,
+            std::shared_ptr<IContext> ctx,
+            ComponentFactory &factory
+        )
         {
-            auto &position = r.register_if_not_exist<component::Position>();
-            auto &drawable = r.register_if_not_exist<component::Drawable>();
-            auto &animation = r.register_if_not_exist<component::Animations>();
-            auto &destroyable = r.register_if_not_exist<component::Destroyable>();
-            auto &life = r.register_if_not_exist<component::Life>();
-            auto &size = r.register_if_not_exist<component::Size>();
+            auto &position = r->register_if_not_exist<component::Position>();
+            auto &drawable = r->register_if_not_exist<component::Drawable>();
+            auto &animation = r->register_if_not_exist<component::Animations>();
+            auto &destroyable = r->register_if_not_exist<component::Destroyable>();
+            auto &life = r->register_if_not_exist<component::Life>();
+            auto &size = r->register_if_not_exist<component::Size>();
 
             for (std::size_t i = 0; i < position.size(); ++i) {
                 if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] ||
@@ -36,7 +47,7 @@ namespace ecs {
                 if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
                     (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
                     if (animation[i]->_object == component::Object::Weapon) {
-                        r.erase(i);
+                        r->erase(i);
                     } else {
                         destroyable[i]->_destroyable = true;
                         animation[i]->_object = component::Object::InDestroy;
@@ -57,7 +68,7 @@ namespace ecs {
                     if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
                         (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
                         if (animation[j]->_object == component::Object::Weapon) {
-                            r.erase(j);
+                            r->erase(j);
                         } else {
                             destroyable[j]->_destroyable = true;
                             animation[j]->_object = component::Object::InDestroy;
@@ -110,7 +121,7 @@ namespace ecs {
 
                         if (animation[i]->_object == component::Object::Weapon) {
                             sendDestroyedObject(ctx, i);
-                            r.erase(i);
+                            r->erase(i);
                         } else {
                             if (life[i]->_life <= 0) {
                                 destroyable[i]->_destroyable = true;
@@ -121,7 +132,7 @@ namespace ecs {
 
                         if (animation[j]->_object == component::Object::Weapon) {
                             sendDestroyedObject(ctx, j);
-                            r.erase(i);
+                            r->erase(i);
                         } else {
                             if (life[j]->_life <= 0) {
                                 destroyable[j]->_destroyable = true;

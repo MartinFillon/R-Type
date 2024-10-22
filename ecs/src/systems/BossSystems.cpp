@@ -6,15 +6,25 @@
 */
 
 #include "Systems/BossSystems.hpp"
-#include <iostream>
 #include <memory>
+#include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
 #include "Components/Life.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "IContext.hpp"
-#include "Packet.hpp"
+#include "Registry.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::IContext> ctx)
+void ecs::systems::BossSystems::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<ecs::IContext> ctx,
+    ComponentFactory &factory
+)
 {
     bool isBoss = isABoss(r);
 
@@ -27,11 +37,11 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
         times += 1;
     }
 
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &controllables = r.get_components<ecs::component::Controllable>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &lifes = r.get_components<ecs::component::Life>();
-    auto &destroyables = r.get_components<ecs::component::Destroyable>();
+    auto &positions = r->register_if_not_exist<ecs::component::Position>();
+    auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
+    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+    auto &lifes = r->register_if_not_exist<ecs::component::Life>();
+    auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
     int idx = 0;
 
     for (auto &&[pos, control, anim, life, destroyable] :
@@ -71,21 +81,21 @@ void ecs::systems::BossSystems::operator()(Registry &r, std::shared_ptr<ecs::ICo
 }
 
 void ecs::systems::BossSystems::createNewProjectile(
-    Registry &r,
+    std::shared_ptr<Registry> &r,
     const ecs::component::Position &bossPos,
     std::shared_ptr<IContext> ctx
 )
 {
-    Entity newProjectile = r.spawn_entity();
-    r._entities.addEntity(newProjectile);
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &drawables = r.get_components<ecs::component::Drawable>();
-    auto &controllables = r.get_components<ecs::component::Controllable>();
-    auto &sprites = r.get_components<ecs::component::Sprite>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &sizes = r.get_components<ecs::component::Size>();
-    auto &destroyable = r.get_components<ecs::component::Destroyable>();
-    auto &life = r.get_components<ecs::component::Life>();
+    Entity newProjectile = r->spawn_entity();
+    r->_entities.addEntity(newProjectile);
+    auto &positions = r->register_if_not_exist<ecs::component::Position>();
+    auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
+    auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
+    auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
+    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+    auto &sizes = r->register_if_not_exist<ecs::component::Size>();
+    auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
+    auto &life = r->register_if_not_exist<ecs::component::Life>();
 
     life[newProjectile.getId()] = ecs::component::Life{1};
     positions[newProjectile.getId()] = ecs::component::Position{bossPos._x, bossPos._y, false};
@@ -100,19 +110,19 @@ void ecs::systems::BossSystems::createNewProjectile(
     ctx->createBossProjectile(newProjectile.getId(), rtype::protocol::BULLET);
 }
 
-void ecs::systems::BossSystems::createFirstBoss(Registry &r, std::shared_ptr<IContext> ctx)
+void ecs::systems::BossSystems::createFirstBoss(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx)
 {
-    Entity bossEntity = r.spawn_entity();
-    r._entities.addEntity(bossEntity);
+    Entity bossEntity = r->spawn_entity();
+    r->_entities.addEntity(bossEntity);
 
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &drawables = r.get_components<ecs::component::Drawable>();
-    auto &controllables = r.get_components<ecs::component::Controllable>();
-    auto &sprites = r.get_components<ecs::component::Sprite>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &sizes = r.get_components<ecs::component::Size>();
-    auto &destroyable = r.get_components<ecs::component::Destroyable>();
-    auto &life = r.get_components<ecs::component::Life>();
+    auto &positions = r->register_if_not_exist<ecs::component::Position>();
+    auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
+    auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
+    auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
+    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+    auto &sizes = r->register_if_not_exist<ecs::component::Size>();
+    auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
+    auto &life = r->register_if_not_exist<ecs::component::Life>();
 
     positions[bossEntity.getId()] = ecs::component::Position{2000, 1080 - 127 * 4, false};
     drawables[bossEntity.getId()] = ecs::component::Drawable{true};
@@ -127,9 +137,9 @@ void ecs::systems::BossSystems::createFirstBoss(Registry &r, std::shared_ptr<ICo
     ctx->createBoss(bossEntity.getId());
 }
 
-bool ecs::systems::BossSystems::isABoss(Registry &r)
+bool ecs::systems::BossSystems::isABoss(std::shared_ptr<Registry> &r)
 {
-    auto &animations = r.get_components<ecs::component::Animations>();
+    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
 
     for (auto &&[anim] : custom_zip(animations)) {
         if (!anim) {
@@ -144,18 +154,18 @@ bool ecs::systems::BossSystems::isABoss(Registry &r)
 }
 
 void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
-    Registry &r,
+    std::shared_ptr<Registry> &r,
     ecs::component::Position &projectilePos,
     const std::size_t &idx,
     std::shared_ptr<IContext> ctx
 )
 {
-    auto &positions = r.get_components<ecs::component::Position>();
+    auto &positions = r->register_if_not_exist<ecs::component::Position>();
     ecs::component::Position playerPos = {0, 0};
 
     for (std::size_t i = 0; i < positions.size(); ++i) {
         if (positions[i] &&
-            r.get_components<ecs::component::Animations>()[i]->_object == ecs::component::Object::Player) {
+            r->register_if_not_exist<ecs::component::Animations>()[i]->_object == ecs::component::Object::Player) {
             playerPos._x = positions[i]->_x;
             playerPos._y = positions[i]->_y;
             break;
@@ -170,7 +180,7 @@ void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
         std::sqrt(std::pow(projectilePos._x - playerPos._x, 2) + std::pow(projectilePos._y - playerPos._y, 2));
 
     if (distance <= PROJECTILE_CLOSE) {
-        auto &destroyables = r.get_components<ecs::component::Destroyable>();
+        auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
         destroyables[idx]->_destroyable = true;
         ctx->destroyObject(idx);
         return;

@@ -23,7 +23,8 @@ namespace ecs {
     namespace systems {
         class CollisionsSystem : public ISystems {
           public:
-            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
+            void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+                override;
 
           private:
             void sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i);

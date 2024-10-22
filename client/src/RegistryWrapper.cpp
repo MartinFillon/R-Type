@@ -9,6 +9,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
+#include "ComponentFactory.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "TextureManager.hpp"
 #include "ZipperIterator.hpp"
@@ -38,14 +43,13 @@ namespace rtype::client {
         std::shared_ptr<ecs::Registry> &registry
     )
     {
-        auto &sizes = registry->get_components<ecs::component::Size>();
-        auto &sprites = registry->get_components<ecs::component::Sprite>();
-        auto &drawables = registry->get_components<ecs::component::Drawable>();
-        auto &positions = registry->get_components<ecs::component::Position>();
-        auto &animations = registry->get_components<ecs::component::Animations>();
+        auto &sizes = registry->register_if_not_exist<ecs::component::Size>();
+        auto &sprites = registry->register_if_not_exist<ecs::component::Sprite>();
+        auto &drawables = registry->register_if_not_exist<ecs::component::Drawable>();
+        auto &positions = registry->register_if_not_exist<ecs::component::Position>();
+        auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
 
         for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-
             if (!draw || !anim || !spri || !si || !pos) {
                 continue;
             }
@@ -53,7 +57,6 @@ namespace rtype::client {
             if (spri->_pathToSprite.empty()) {
                 continue;
             }
-
             sf::Sprite sprite;
 
             sprite.setPosition(pos->_x, pos->_y);
@@ -71,10 +74,10 @@ namespace rtype::client {
         drawRegistry(window, textureManager, _server);
     }
 
-    void RegistryWrapper::run_systems(std::shared_ptr<ecs::IContext> ctx)
+    void RegistryWrapper::run_systems(ecs::ComponentFactory &f, std::shared_ptr<ecs::IContext> ctx)
     {
-        _client->run_systems(ctx);
-        _server->run_systems(ctx);
+        _client->run_systems(f, ctx);
+        _server->run_systems(f, ctx);
     }
 
 } // namespace rtype::client

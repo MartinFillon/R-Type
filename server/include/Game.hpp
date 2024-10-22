@@ -9,7 +9,7 @@
 #define GAME_HPP_
 
 #include <memory>
-#include "Components/Animations.hpp"
+#include "Components/Position.hpp"
 #include "Entity.hpp"
 #include "IContext.hpp"
 #define UNUSED __attribute__((unused))

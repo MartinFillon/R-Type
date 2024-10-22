@@ -31,3 +31,6 @@ if(UNIX)
   endif()
 endif()
 include(CPack)
+
+file(COPY config DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

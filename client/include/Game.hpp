@@ -8,6 +8,7 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include "ComponentFactory.hpp"
 #define SHOOT_SOUND "assets/musics/shotSound.ogg"
 #define GAME_MUSIC "assets/musics/gameMusic-Thrut.ogg"
 
@@ -32,6 +33,11 @@ namespace rtype::client {
 
         void setRegistry(std::shared_ptr<RegistryWrapper> &registry);
 
+        void setFactory(std::shared_ptr<ecs::ComponentFactory> &cf)
+        {
+            _cf = cf;
+        }
+
         int run();
 
       private:
@@ -45,6 +51,7 @@ namespace rtype::client {
 
         sf::RenderWindow &_window;
         std::shared_ptr<RegistryWrapper> _registry;
+        std::shared_ptr<ecs::ComponentFactory> _cf;
 
         ecs::Clock _clock;
         TextureManager _textureManager;

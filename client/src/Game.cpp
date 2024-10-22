@@ -19,11 +19,10 @@ namespace rtype::client {
 
     void Game::setupBackground()
     {
-        ecs::ComponentFactory factory(*_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
-        factory.createEntity(CONFIG_BACKGROUND_0);
-        factory.createEntity(CONFIG_BACKGROUND_2);
-        factory.createEntity(CONFIG_BACKGROUND_3);
-        factory.createEntity(CONFIG_BACKGROUND_4);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_0);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_2);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
         _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
     }
 
@@ -51,7 +50,7 @@ namespace rtype::client {
         while (_window.isOpen()) {
             event();
             display();
-            _registry->run_systems(nullptr);
+            _registry->run_systems(*_cf, nullptr);
         }
         _network.send(protocol::Operations::LEAVING, {});
         _network.stop();
