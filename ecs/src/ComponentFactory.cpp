@@ -12,7 +12,6 @@
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.hpp"
-#include "ComponentLoader.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 
