@@ -31,11 +31,11 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
             continue;
         }
 
+        anim->_clock.restart();
         if (key->_value == ecs::component::Key::Up && !gravit->_isJumping && !gravit->_isFalling && pos->_y == initialY) {
             gravit->_isJumping = true;
         }
 
-        anim->_clock.restart();
         if (gravit->_isJumping && pos->_y > targetY) {
             pos->_y -= (gravit->_gravityFall + GRAVITY_JUMP_PADDING);
             if (anim->_x < END_SPRITE_SHEET) {

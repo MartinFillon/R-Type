@@ -2,23 +2,17 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** SitDownSystem
+** PunchSystem
 */
 
-#ifndef SITDOWNSYSTEM_HPP_
-#define SITDOWNSYSTEM_HPP_
-
-#define X_MAX_SIT_ANIMATION 500
-#define SPEED_SIT_ANIMATION 0.01
-
-#define WIDTH_PADDING 5
-#define Y_PADDING 2
+#ifndef PUNCHSYSTEM_HPP_
+#define PUNCHSYSTEM_HPP_
 
 #include "ISystems.hpp"
 
 namespace ecs {
     namespace systems {
-        class SitDownSystem : public ISystems {
+        class PunchSystem : public ISystems {
           public:
             void operator()(Registry &r, std::shared_ptr<IContext> ctx) override;
 
@@ -26,4 +20,4 @@ namespace ecs {
     }; // namespace systems
 }; // namespace ecs
 
-#endif /* !SITDOWNSYSTEM_HPP_ */
+#endif /* !PUNCHSYSTEM_HPP_ */

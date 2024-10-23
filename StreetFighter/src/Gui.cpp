@@ -34,6 +34,7 @@ int street_fighter::Gui::handleEvents()
     sf::Event event;
     auto &keys = _game._r.get_components<ecs::component::KeyPressed>();
     auto &anim = _game._r.get_components<ecs::component::Animations>();
+    auto &pos = _game._r.get_components<ecs::component::Position>();
 
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -46,20 +47,38 @@ int street_fighter::Gui::handleEvents()
             anim[_game.findPlayerIndex().getId()]->_height = JUMP_ANIMATION_HEIGHT;
             anim[_game.findPlayerIndex().getId()]->_x = JUMP_ANIMATION_X;
             anim[_game.findPlayerIndex().getId()]->_y = JUMP_ANIMATION_Y;
+            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
         }
 
         if (event.key.code == sf::Keyboard::Down) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
             anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_X;
             anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
+            anim[_game.findPlayerIndex().getId()]->_width = SIT_ANIMATION_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = SIT_ANIMATION_HEIGHT;
+            pos[_game.findPlayerIndex().getId()]->_y = SIT_POSITION_Y;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        if(event.key.code == sf::Keyboard::X) {
+            if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
+
+                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
+            }
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
+            anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
+            anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
+            anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
+        }
+
+        if (event.key.code == sf::Keyboard::Left) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
+            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        if (event.key.code == sf::Keyboard::Right) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
+            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
         }
 
     }

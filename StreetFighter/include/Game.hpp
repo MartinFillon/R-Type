@@ -12,10 +12,7 @@
 
 #define SECOND_GAME_NAME "Epitech Fighter"
 
-#define INIT_WIDTH 105
-#define INIT_HEIGHT 110
-#define INIT_X 0
-#define INIT_Y 0
+#define NORMAL_Y_POSITION 500
 
 #define JUMP_ANIMATION_WIDTH 65
 #define JUMP_ANIMATION_HEIGHT 80
@@ -23,7 +20,15 @@
 #define JUMP_ANIMATION_Y 640
 
 #define SIT_ANIMATION_X 0
-#define SIT_ANIMATION_Y 720
+#define SIT_ANIMATION_Y 740
+#define SIT_ANIMATION_WIDTH 65
+#define SIT_ANIMATION_HEIGHT 65
+#define SIT_POSITION_Y 600
+
+#define PUNCH_ANIMATION_X 0
+#define PUNCH_ANIMATION_Y 160
+#define PUNCH_ANIMATION_WIDTH 65
+#define PUNCH_ANIMATION_HEIGHT 80
 
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"
