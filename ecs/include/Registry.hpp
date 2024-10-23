@@ -15,21 +15,14 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Components/Animations.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Destroyable.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Parallax.hpp"
-#include "Components/Position.hpp"
-#include "Components/Size.hpp"
-#include "Components/Sprite.hpp"
+#include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"
 #include "SparseArray.hpp"
 
 namespace ecs {
-    class Registry {
+    class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
         SparseArray<Component> &register_component()
@@ -67,12 +60,23 @@ namespace ecs {
 
         Entity spawn_entity();
         void erase(const std::size_t &entityIdx);
-        void run_systems(std::shared_ptr<IContext> ctx);
+        void run_systems(ComponentFactory &f, std::shared_ptr<IContext> ctx);
 
         EntityManager _entities;
 
+        Registry() {}
+
+        Registry(Registry &r)
+        {
+            _systems = r._systems;
+            _componentsArrays = r._componentsArrays;
+            _entityCount = r._entityCount;
+        }
+
       private:
-        std::vector<std::function<void(Registry &, std::shared_ptr<ecs::IContext>)>> _systems;
+        std::vector<
+            std::function<void(std::shared_ptr<Registry> &, std::shared_ptr<ecs::IContext>, ComponentFactory &r)>>
+            _systems;
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };

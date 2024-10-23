@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+#include "ComponentFactory.hpp"
 #include "Game.hpp"
 #include "Menu.hpp"
 #include "Network.hpp"
@@ -41,6 +42,7 @@ namespace rtype::client {
         Game _game;
 
         std::shared_ptr<RegistryWrapper> _registry;
+        std::shared_ptr<ecs::ComponentFactory> _cf;
     };
 
 }; // namespace rtype::client

@@ -10,6 +10,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <memory>
+#include "ComponentFactory.hpp"
 #include "Registry.hpp"
 #include "TextureManager.hpp"
 
@@ -31,7 +32,7 @@ namespace rtype::client {
             return _client;
         }
 
-        void run_systems(std::shared_ptr<ecs::IContext> ctx);
+        void run_systems(ecs::ComponentFactory &f, std::shared_ptr<ecs::IContext> ctx);
 
       protected:
       private:

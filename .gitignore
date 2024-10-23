@@ -22,3 +22,4 @@ doc
 vgcore.*
 install_manifest.txt
 street-fighter
+*.so

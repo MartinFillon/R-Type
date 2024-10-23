@@ -12,6 +12,9 @@
 #include <vector>
 
 #include "Components/Animations.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
@@ -267,11 +270,11 @@ namespace rtype::server {
             ecs::Entity e = _game.createPlayer(id);
 
             auto r = _game.getRegistry();
-            auto &positions = r->get_components<ecs::component::Position>();
-            auto &animations = r->get_components<ecs::component::Animations>();
-            auto &drawables = r->get_components<ecs::component::Drawable>();
-            auto &sprites = r->get_components<ecs::component::Sprite>();
-            auto &sizes = r->get_components<ecs::component::Size>();
+            auto &positions = r->register_if_not_exist<ecs::component::Position>();
+            auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+            auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
+            auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
+            auto &sizes = r->register_if_not_exist<ecs::component::Size>();
 
             for (std::size_t i = 0; i < r->_entities.size(); ++i) {
                 if (!positions[i] || !animations[i] || !drawables[i] || !sprites[i] || !sizes[i]) {

@@ -6,17 +6,26 @@
 */
 
 #include "Systems/DestroySystem.hpp"
+#include <memory>
+#include "ComponentFactory.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Sprite.hpp"
+#include "Registry.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::DestroySystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+void ecs::systems::DestroySystem::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<IContext> ctx,
+    ComponentFactory &factory
+)
 {
     if (_clock.getMiliSeconds() < DESTROY_TICK) {
         return;
     }
     _clock.restart();
-    auto &destroyables = r.register_if_not_exist<ecs::component::Destroyable>();
-    auto &animations = r.register_if_not_exist<ecs::component::Animations>();
-    auto &sprites = r.register_if_not_exist<ecs::component::Sprite>();
+    auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
+    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+    auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
     int idx = 0;
 
     for (auto &&[anim, destroy, sprite] : ecs::custom_zip(animations, destroyables, sprites)) {
@@ -36,7 +45,7 @@ void ecs::systems::DestroySystem::operator()(Registry &r, std::shared_ptr<IConte
         }
 
         if (anim->_x > 315) {
-            r.erase(idx);
+            r->erase(idx);
         }
 
         if (anim->_clock.getSeconds() > DESTROY_ANIMATION) {
