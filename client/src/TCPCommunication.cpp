@@ -17,10 +17,10 @@ client::TCPCommunication::TCPCommunication(const std::string &host, const std::s
     asio::connect(_socket, _endpoints);
 }
 
-void run()
+void client::TCPCommunication::run()
 {
     //std::thread reader(&Zappy::Client::readServ, this);
-
+    readServ();
     //reader.join();
     //display.join();
 }
@@ -32,29 +32,30 @@ void client::TCPCommunication::startGame()
 
 void client::TCPCommunication::readServ()
 {
-    //try {
-    //    std::istream is(&_buff);
-    //    while (true) {
-    //        asio::error_code error;
-    //        asio::read_until(_socket, _buff, '\n', error);
-    //        if (error == asio::error::eof) {
-    //            exit(EXIT_SUCCESS);
-    //        }
-    //        if (error) {
-    //            throw asio::system_error(error);
-    //        }
-    //        std::string line;
-    //        std::getline(is, line);
-    //        if (!line.empty() && line.back() == '\r') {
-    //            line.pop_back();
-    //        }
-    //        if (!line.compare("Welcome!")) {
-    //            asio::write(_socket, asio::buffer("test"));
-    //        }
-    //    }
-    //} catch (std::exception &e) {
-    //    std::cerr << e.what() << "\n";
-    //}
+      try {
+          std::istream is(&_buff);
+          while (true) {
+              asio::error_code error;
+              asio::read_until(_socket, _buff, '\n', error);
+              if (error == asio::error::eof) {
+                  exit(EXIT_SUCCESS);
+              }
+              if (error) {
+                  throw asio::system_error(error);
+              }
+              std::string line;
+              std::getline(is, line);
+              if (!line.empty() && line.back() == '\r') {
+                  line.pop_back();
+              }
+              if (!line.compare("Welcome!")) {
+                //writeToServ();
+                asio::write(_socket, asio::buffer("CREATE tim\n"));
+              }
+          }
+      } catch (std::exception &e) {
+          std::cerr << e.what() << "\n";
+      }
 }
 
 void client::TCPCommunication::writeToServ()
