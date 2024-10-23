@@ -5,6 +5,7 @@
 ** ComponentFactory
 */
 
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -29,6 +30,11 @@ namespace ecs {
                 registerComponent(name, path);
             }
         }
+
+        std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
+
+        _schema = nlohmann::json::parse(s);
+        _validator.set_root_schema(_schema);
     }
 
     ComponentFactory::~ComponentFactory() {}
@@ -40,30 +46,38 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
-        std::ifstream f(file);
-        nlohmann::json config = nlohmann::json::parse(f);
+        try {
+            std::ifstream f(file);
+            nlohmann::json config = nlohmann::json::parse(f);
+            _validator.validate(config);
+            Entity e = r->spawn_entity();
+            r->_entities.addEntity(e.getId());
 
-        Entity e = r->spawn_entity();
-        r->_entities.addEntity(e.getId());
-
-        for (auto &c : config["active"]) {
-            createComponent(r, e, c, config["components"][c]);
+            for (auto &c : config["active"]) {
+                createComponent(r, e, c, config["components"][c]);
+            }
+            return e;
+        } catch (const std::exception &e) {
+            throw ComponentNotCreated(file);
         }
-        return e;
     }
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, int id, const std::string &file)
     {
-        std::ifstream f(file);
-        nlohmann::json config = nlohmann::json::parse(f);
+        try {
+            std::ifstream f(file);
+            nlohmann::json config = nlohmann::json::parse(f);
 
-        Entity e = Entity(id);
-        r->_entities.addEntity(e.getId());
+            Entity e = Entity(id);
+            r->_entities.addEntity(e.getId());
 
-        for (auto &c : config["active"]) {
-            createComponent(r, e, c, config["components"][c]);
+            for (auto &c : config["active"]) {
+                createComponent(r, e, c, config["components"][c]);
+            }
+            return e;
+        } catch (const std::exception &e) {
+            throw ComponentNotCreated(file);
         }
-        return e;
     }
 
     void ComponentFactory::createComponent(

@@ -4,6 +4,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 find_package(Json REQUIRED)
 find_package(SpdLog REQUIRED)
+find_package(JsonSchemaValidator REQUIRED)
 
 add_subdirectory(components)
 
@@ -31,6 +32,7 @@ target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(ecs PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(ecs PUBLIC nlohmann_json_schema_validator)
 
 # option(ENABLE_TESTS "Build tests along with the library" ON)
 

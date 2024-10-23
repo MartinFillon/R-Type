@@ -15,13 +15,14 @@
 #include <vector>
 #include <unordered_map>
 
-#include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"
 #include "SparseArray.hpp"
 
 namespace ecs {
+    class ComponentFactory;
+
     class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
