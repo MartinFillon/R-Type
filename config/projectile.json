@@ -1,4 +1,5 @@
 {
+  "$schema": "../schema/entity.json",
   "name": "projectile",
   "active": [
     "position",
@@ -12,27 +13,27 @@
   "components": {
     "life": 1,
     "position": {
-        "x": 0,
-        "y": 0
+      "x": 0,
+      "y": 0
     },
     "drawable": true,
     "controllable": {
-        "controllable": true,
-        "speed": 5
+      "controllable": true,
+      "speed": 5
     },
     "sprite": "r-typesheetEnnemiesShoot.gif",
     "animations": {
-        "width": 18,
-        "height": 12,
-        "x": 0,
-        "y": 0,
-        "rotation": 0,
-        "type": "weapon",
-        "objectType": "basic"
+      "width": 18,
+      "height": 12,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "type": "weapon",
+      "objectType": "basic"
     },
     "size": {
-        "width": 3,
-        "height": 3
+      "width": 3,
+      "height": 3
     }
   }
 }

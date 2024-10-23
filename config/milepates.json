@@ -1,4 +1,5 @@
 {
+  "$schema": "../schema/entity.json",
   "name": "milepates",
   "active": [
     "position",

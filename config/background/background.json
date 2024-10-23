@@ -1,6 +1,15 @@
 {
+  "$schema": "../../schema/entity.json",
   "name": "background",
-  "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life"],
+  "active": [
+    "position",
+    "drawable",
+    "sprite",
+    "animations",
+    "parallax",
+    "size",
+    "life"
+  ],
   "components": {
     "position": {
       "x": 0,
