@@ -18,25 +18,25 @@ namespace rtype::client {
     int Gui::run()
     {
         std::string address = _menu.launchMenu();
-        std::string ip = address.substr(0, address.find(':'));
-        std::string port = address.substr(address.find(':') + 1);
-
-        if (ip.empty() || port.empty()) {
-            return QUIT_PRESS;
-        }
-
-        if (_network.setup(ip, port) == ERROR) {
-            return ERROR;
-        }
-
-        _game.setRegistry(_registry);
-        _network.setRegistry(_registry->getServerRegistry());
-
-        std::thread network = std::thread(&client::Network::run, std::ref(_network));
-
-        _game.run();
-
-        network.join();
+        //std::string ip = address.substr(0, address.find(':'));
+        //std::string port = address.substr(address.find(':') + 1);
+//
+        //if (ip.empty() || port.empty()) {
+        //    return QUIT_PRESS;
+        //}
+//
+        //if (_network.setup(ip, port) == ERROR) {
+        //    return ERROR;
+        //}
+//
+        //_game.setRegistry(_registry);
+        //_network.setRegistry(_registry->getServerRegistry());
+//
+        //std::thread network = std::thread(&client::Network::run, std::ref(_network));
+//
+        //_game.run();
+//
+        //network.join();
 
         return SUCCESS;
     }
