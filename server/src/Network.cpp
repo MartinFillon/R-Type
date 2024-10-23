@@ -49,7 +49,6 @@ void rtype::server::Network::acceptConnection()
                 asio::write(socket, asio::buffer("Welcome!\n"), ec);
                 unsigned int id = generateClientId(_acceptor.local_endpoint());
                 std::make_shared<TCPConnection>(std::move(socket), id, _lobbies)->start();
-
             } else {
                 std::cerr << "Erreur d'acceptation: " << ec.message() << std::endl;
             }

@@ -9,6 +9,7 @@
     #define NETWORK_HPP_
 
     #include <asio.hpp>
+#include <functional>
 
     #include "Lobby.hpp"
     #include "IContext.hpp"
@@ -39,7 +40,7 @@ namespace rtype::server {
             int _port;
             bool _running;
 
-            std::vector<std::shared_ptr<Lobby>> _lobbies;
+            std::vector<Lobby> _lobbies;
 
             asio::io_context _context;
             TCP::acceptor _acceptor;

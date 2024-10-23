@@ -9,6 +9,7 @@
     #define TCPCONNECTION_HPP_
 
     #include <asio.hpp>
+#include <functional>
 
     #include "Lobby.hpp"
 
@@ -24,7 +25,7 @@ namespace rtype::server {
 
         public:
 
-            TCPConnection(TCP::socket socket, unsigned int id, std::vector<std::shared_ptr<rtype::server::Lobby>> &lobbies);
+            TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies);
 
             void start();
 
@@ -48,7 +49,7 @@ namespace rtype::server {
             unsigned int _id;
 
             std::string _lobby;
-            std::vector<std::shared_ptr<Lobby>> _lobbies;
+            std::vector<Lobby> &_lobbies;
 
             TCP::socket _socket;
             std::string _data;

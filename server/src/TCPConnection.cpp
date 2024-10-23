@@ -5,6 +5,7 @@
 ** Network
 */
 
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -12,7 +13,7 @@
 
 #include "TCPConnection.hpp"
 
-rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<std::shared_ptr<Lobby>> &lobbies): _socket(std::move(socket)), _id(id), _lobbies(lobbies)
+rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies): _socket(std::move(socket)), _id(id), _lobbies(lobbies)
 {
 }
 
@@ -68,13 +69,13 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
     }
 
     for (auto &lobby: _lobbies) {
-        if (lobby->getName() == name) {
+        if (lobby.getName() == name) {
             writeToClient("Name already used.");
             return false;
         }
     }
 
-    _lobbies.push_back(std::make_shared<Lobby>(name));
+    _lobbies.push_back(Lobby(name));
 
     writeToClient("Lobby: " + name + " created!" + std::to_string(_lobbies.size()));
 
@@ -88,19 +89,25 @@ void rtype::server::TCPConnection::dumpLobbies()
         return;
     }
     for (auto &lobby: _lobbies) {
-        writeToClient(lobby->getName() + " => " + std::to_string(lobby->getNumberConnections()) + " / 4");
+        writeToClient(lobby.getName() + " => " + std::to_string(lobby.getNumberConnections()) + " / 4");
     }
 }
 
 bool rtype::server::TCPConnection::joinLobby(const std::string &name)
 {
-     for (auto &lobby: _lobbies) {
-        if (lobby->getName() == name) {
-            if (!lobby->assign(*this)) {
+    if (!_lobby.empty()) {
+        writeToClient("You're already on a lobby");
+        return false;
+    }
+
+    for (auto &lobby: _lobbies) {
+        if (lobby.getName() == name) {
+            if (!lobby.assign(*this)) {
                 writeToClient("Lobby is full.");
                 return false;
             }
             writeToClient("Join successfully");
+            setLobby(name);
             return true;
         }
     }
@@ -110,13 +117,19 @@ bool rtype::server::TCPConnection::joinLobby(const std::string &name)
 
 bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 {
-     for (auto &lobby: _lobbies) {
-        if (lobby->getName() == name) {
-            if (!lobby->unassign(*this)) {
+    if (_lobby.empty()) {
+        writeToClient("You're not in this lobby");
+        return false;
+    }
+
+    for (auto &lobby: _lobbies) {
+        if (lobby.getName() == name) {
+            if (!lobby.unassign(*this)) {
                 writeToClient("You're not in this lobby");
                 return false;
             }
             writeToClient("You quit lobby: " + name);
+            setLobby("");
             return true;
         }
     }

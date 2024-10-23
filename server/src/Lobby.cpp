@@ -8,7 +8,7 @@
 #include "Lobby.hpp"
 #include <cstdlib>
 
-rtype::server::Lobby::Lobby(const std::string &name): _name(name), _running(false)
+rtype::server::Lobby::Lobby(const std::string &name): _name(name), _clients({}), _running(false)
 {
 }
 
