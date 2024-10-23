@@ -10,7 +10,7 @@
 
 namespace ecs {
     namespace component {
-        enum Key { NoneKey, Up, Down, Right, Left };
+        enum Key { NoneKey, Up, Down, Right, Left, Punch, Kick };
         struct KeyPressed {
             Key _value;
         };

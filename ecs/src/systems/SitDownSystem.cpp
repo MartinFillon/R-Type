@@ -30,11 +30,11 @@ void ecs::systems::SitDownSystem::operator()(Registry &r, std::shared_ptr<IConte
             break;
         }
 
-        if (anim->_clock.getSeconds() > SPEED_SIT_ANIMATION) {
-            anim->_x += anim->_width + WIDTH_PADDING;
-            anim->_y += Y_PADDING;
-            anim->_clock.restart();
-        }
+        // if (anim->_clock.getSeconds() > SPEED_SIT_ANIMATION) {
+        //     anim->_x += anim->_width + WIDTH_PADDING;
+        //     anim->_y += Y_PADDING;
+        //     anim->_clock.restart();
+        // }
 
     }
 }

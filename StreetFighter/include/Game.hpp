@@ -17,13 +17,13 @@
 #define INIT_X 0
 #define INIT_Y 0
 
-#define JUMP_ANIMATION_WIDTH 100
-#define JUMP_ANIMATION_HEIGHT 135
+#define JUMP_ANIMATION_WIDTH 65
+#define JUMP_ANIMATION_HEIGHT 80
 #define JUMP_ANIMATION_X 0
-#define JUMP_ANIMATION_Y 650
+#define JUMP_ANIMATION_Y 640
 
 #define SIT_ANIMATION_X 0
-#define SIT_ANIMATION_Y 520
+#define SIT_ANIMATION_Y 720
 
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"

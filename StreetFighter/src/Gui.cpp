@@ -56,18 +56,10 @@ int street_fighter::Gui::handleEvents()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
-            anim[_game.findPlayerIndex().getId()]->_width = INIT_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = INIT_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = INIT_X;
-            anim[_game.findPlayerIndex().getId()]->_y = INIT_Y;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
-            anim[_game.findPlayerIndex().getId()]->_width = INIT_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = INIT_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = INIT_X;
-            anim[_game.findPlayerIndex().getId()]->_y = INIT_Y;
         }
 
     }

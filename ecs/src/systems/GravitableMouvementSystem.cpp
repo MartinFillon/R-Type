@@ -5,6 +5,8 @@
 ** GravitableMouvementSystem
 */
 
+#include <iostream>
+
 #include "Systems/GravitableMouvementSystem.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Gravitable.hpp"
@@ -37,8 +39,7 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
         if (gravit->_isJumping && pos->_y > targetY) {
             pos->_y -= (gravit->_gravityFall + GRAVITY_JUMP_PADDING);
             if (anim->_x < END_SPRITE_SHEET) {
-                anim->_x += anim->_width - 5;
-                anim->_height -= 3;
+                anim->_x += anim->_width + 5;
             }
         }
 
@@ -50,18 +51,12 @@ void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::share
         if (gravit->_isFalling && (pos->_y + anim->_height) <= initialY) {
             pos->_y += ((gravit->_gravityFall + 20) GRAVITY_DOWN_PADDING);
             if (anim->_x < END_SPRITE_SHEET) {
-                anim->_x += (anim->_width - 17) + 2;
-                anim->_width -= 2;
-                anim->_height += 20;
+                anim->_x += anim->_width + 5;
             }
         }
 
         if (gravit->_isFalling && (pos->_y + anim->_height) >= initialY) {
             pos->_y = INITIAL_Y;
-            anim->_x = 0;
-            anim->_y = 0;
-            anim->_width = 100;
-            anim->_height = 110;
             pos->_y = initialY;
             gravit->_isFalling = false;
             key->_value = ecs::component::Key::NoneKey;
