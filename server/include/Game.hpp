@@ -31,7 +31,6 @@ namespace rtype::server {
 
       public:
         /// @brief Generate a `Game` creating in the process the ECS's registry `_r` and initializing all the game.
-        /// @param ctx a `std::shared_ptr<ecs::IContext>` representing the reference to the global context of the game.
         Game();
 
         /// @brief Runs the updating loop of the game and add all the updated informations to the packet queue.
