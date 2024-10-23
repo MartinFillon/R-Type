@@ -1,40 +1,41 @@
 {
-    "name": "ennemies",
-    "active": [
-      "position",
-      "drawable",
-      "controllable",
-      "sprite",
-      "animations",
-      "size",
-      "life",
-      "destroyable"
-    ],
-    "components": {
-      "life": 1,
-      "position": {
-          "x": 1944.0,
-          "y": 500.0
-      },
-      "destroyable": false,
-      "drawable": true,
-      "controllable": {
-          "controllable": false,
-          "speed": 2
-      },
-      "sprite": "assets/sprites/r-typesheet5.gif",
-      "animations": {
-          "width": 32,
-          "height": 35,
-          "x": 224,
-          "y": 0,
-          "rotation": 0,
-          "type": "ennemies",
-        "objectType": "basic"
-      },
-      "size": {
-          "width": 3.8,
-          "height": 3.8
-      }
+  "$schema": "../schema/entity.json",
+  "name": "ennemies",
+  "active": [
+    "position",
+    "drawable",
+    "controllable",
+    "sprite",
+    "animations",
+    "size",
+    "life",
+    "destroyable"
+  ],
+  "components": {
+    "life": 1,
+    "position": {
+      "x": 1944.0,
+      "y": 500.0
+    },
+    "destroyable": false,
+    "drawable": true,
+    "controllable": {
+      "controllable": false,
+      "speed": 2
+    },
+    "sprite": "r-typesheet5.gif",
+    "animations": {
+      "width": 32,
+      "height": 35,
+      "x": 224,
+      "y": 0,
+      "rotation": 0,
+      "type": "ennemies",
+      "objectType": "basic"
+    },
+    "size": {
+      "width": 3.8,
+      "height": 3.8
     }
   }
+}
