@@ -24,14 +24,14 @@ void ecs::systems::KickSystem::operator()(Registry &r, std::shared_ptr<IContext>
             continue;
         }
 
-        if (anim->_clock.getSeconds() < 0.09) {
+        if (anim->_clock.getSeconds() < KICK_ANIMATION) {
             continue;
         }
         anim->_clock.restart();
 
-        if (anim->_x < 280) {
-            anim->_x += anim->_width + 5;
-            anim->_width += 2;
+        if (anim->_x < END_OF_KICK_ANIMATION) {
+            anim->_x += anim->_width + WIDTH_KICK_PADDING;
+            anim->_width += WIDTH_ADD_PADDING;
         }
     }
 }

@@ -8,6 +8,11 @@
 #ifndef KICKSYSTEM_HPP_
 #define KICKSYSTEM_HPP_
 
+#define KICK_ANIMATION 0.09
+#define END_OF_KICK_ANIMATION 280
+#define WIDTH_KICK_PADDING 5
+#define WIDTH_ADD_PADDING 2
+
 #include "ISystems.hpp"
 
 namespace ecs {
