@@ -9,11 +9,12 @@
 #define ISYSTEMS_HPP_
 
 #include <memory>
-#include "ComponentFactory.hpp"
 #include "IContext.hpp"
-#include "Registry.hpp"
 
 namespace ecs {
+    class Registry;
+    class ComponentFactory;
+
     namespace systems {
         class ISystems {
           public:

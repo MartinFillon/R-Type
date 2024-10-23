@@ -23,6 +23,10 @@
 namespace ecs {
     class ComponentFactory;
 
+    namespace systems {
+        class SystemsManager;
+    }
+
     class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
@@ -65,7 +69,7 @@ namespace ecs {
 
         EntityManager _entities;
 
-        Registry() {}
+        Registry() : _systemsManager(std::make_shared<systems::SystemsManager>("./config/systems.json")) {}
 
         Registry(Registry &r)
         {
@@ -75,6 +79,7 @@ namespace ecs {
         }
 
       private:
+        std::shared_ptr<systems::SystemsManager> _systemsManager;
         std::vector<
             std::function<void(std::shared_ptr<Registry> &, std::shared_ptr<ecs::IContext>, ComponentFactory &r)>>
             _systems;

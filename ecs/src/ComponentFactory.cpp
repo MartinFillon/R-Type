@@ -16,7 +16,7 @@
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory()

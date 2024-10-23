@@ -27,7 +27,8 @@ add_library(
   src/systems/GunFireSystem.cpp
   src/systems/InvincibilitySystem.cpp
   src/Registry.cpp
-  src/Utils.cpp)
+  src/Utils.cpp
+  src/SystemsManager.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
