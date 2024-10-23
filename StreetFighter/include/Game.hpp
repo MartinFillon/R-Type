@@ -30,6 +30,11 @@
 #define PUNCH_ANIMATION_WIDTH 65
 #define PUNCH_ANIMATION_HEIGHT 80
 
+#define KICK_ANIMATION_X 0
+#define KICK_ANIMATION_Y 480
+#define KICK_ANIMATION_WIDTH 65
+#define KICK_ANIMATION_HEIGHT 80
+
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"
 

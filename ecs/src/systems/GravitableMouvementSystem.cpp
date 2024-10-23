@@ -5,8 +5,6 @@
 ** GravitableMouvementSystem
 */
 
-#include <iostream>
-
 #include "Systems/GravitableMouvementSystem.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Gravitable.hpp"

@@ -59,18 +59,6 @@ int street_fighter::Gui::handleEvents()
             pos[_game.findPlayerIndex().getId()]->_y = SIT_POSITION_Y;
         }
 
-        if(event.key.code == sf::Keyboard::X) {
-            if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
-
-                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-            }
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
-            anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
-            anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
-        }
-
         if (event.key.code == sf::Keyboard::Left) {
             keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
             pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
@@ -81,6 +69,24 @@ int street_fighter::Gui::handleEvents()
             pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
         }
 
+        if (event.key.code == sf::Keyboard::X) {
+            if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
+                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
+            }
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
+            anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
+            anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
+            anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
+        }
+
+        if (event.key.code == sf::Keyboard::W) {
+            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Kick;
+            anim[_game.findPlayerIndex().getId()]->_width = KICK_ANIMATION_WIDTH;
+            anim[_game.findPlayerIndex().getId()]->_height = KICK_ANIMATION_HEIGHT;
+            anim[_game.findPlayerIndex().getId()]->_x = KICK_ANIMATION_X;
+            anim[_game.findPlayerIndex().getId()]->_y = KICK_ANIMATION_Y;
+        }
     }
 
     return EXIT_SUCCESS;

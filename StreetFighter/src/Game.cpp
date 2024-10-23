@@ -24,6 +24,7 @@
 #include "Entity.hpp"
 #include "Systems/BasicMouvementSystem.hpp"
 #include "Systems/GravitableMouvementSystem.hpp"
+#include "Systems/KickSystem.hpp"
 #include "Systems/PunchSystem.hpp"
 #include "ZipperIterator.hpp"
 
@@ -45,6 +46,7 @@ street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
         _r.add_system(ecs::systems::GravitableMouvementSystem());
         _r.add_system(ecs::systems::BasicMouvementSystem());
         _r.add_system(ecs::systems::PunchSystem());
+        _r.add_system(ecs::systems::KickSystem());
     } catch (const std::exception &e) {
         std::cout << "Setup error on: [" << e.what() << "]\n";
         return;

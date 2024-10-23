@@ -2,21 +2,17 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** PunchSystem
+** KickSystem
 */
 
-#ifndef PUNCHSYSTEM_HPP_
-#define PUNCHSYSTEM_HPP_
-
-#define END_OF_PUNCH_ANIMATION 130
-#define SPEED_PUNCH_ANIMATION 0.09
-#define WIDTH_PADDING 5
+#ifndef KICKSYSTEM_HPP_
+#define KICKSYSTEM_HPP_
 
 #include "ISystems.hpp"
 
 namespace ecs {
     namespace systems {
-        class PunchSystem : public ISystems {
+        class KickSystem : public ISystems {
           public:
             void operator()(Registry &r, std::shared_ptr<IContext> ctx) override;
 
@@ -24,4 +20,4 @@ namespace ecs {
     }; // namespace systems
 }; // namespace ecs
 
-#endif /* !PUNCHSYSTEM_HPP_ */
+#endif /* !KICKSYSTEM_HPP_ */
