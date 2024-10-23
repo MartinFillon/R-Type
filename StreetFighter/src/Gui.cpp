@@ -15,7 +15,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <cstdlib>
 
-#include "../include/Gui.hpp"
+#include "Gui.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/KeyPressed.hpp"

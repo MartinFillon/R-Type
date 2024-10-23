@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "../include/Game.hpp"
+#include "Game.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"

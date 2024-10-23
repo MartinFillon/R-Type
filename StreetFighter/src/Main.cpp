@@ -5,7 +5,7 @@
 ** Main
 */
 
-#include "../include/Game.hpp"
+#include "Game.hpp"
 #include "Gui.hpp"
 
 int main()
