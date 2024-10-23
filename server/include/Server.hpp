@@ -137,8 +137,8 @@ namespace rtype::server {
         /// client's player is found, -1 else.
         int getPlayerPlace(int client_id);
 
-        /// @brief Count the number of the player stored in the game/registry
-        /// @return the number of the current player in the game/registry
+        /// @brief Counts the current number of players connected to the server.
+        /// @return `int` representing the count of players currently connected to the server.
         int countCurrentPlayer();
 
         /// @brief The global context of the backend server.
