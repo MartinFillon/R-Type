@@ -146,9 +146,13 @@ namespace rtype::server {
 
         /// @brief The ports on which the server is listening for new clients connections.
         int _port;
+
         /// @brief `true` if the server is connected and running, `false` otherwise.
         bool _running;
+
+        /// @brief The server's clock.
         ecs::Clock _clock;
+
         /// @brief The game wrapper.
         rtype::server::Game _game;
 
@@ -157,8 +161,10 @@ namespace rtype::server {
 
         /// @brief The server's mutex for locking threads.
         std::mutex _mutex;
+
         /// @brief The map of the clients `Client` indexed by the clients ids.
         std::unordered_map<int, Client> _clients;
+
         /// @brief The map of the players UDP clients ids indexed by the players places.
         std::unordered_map<int, std::optional<int>> _players_clients_ids;
     };
