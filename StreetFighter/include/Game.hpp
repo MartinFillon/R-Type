@@ -8,7 +8,10 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include <memory>
 #include "Entity.hpp"
+#include "ComponentFactory.hpp"
+#include "Registry.hpp"
 
 #define SECOND_GAME_NAME "Epitech Fighter"
 
@@ -35,9 +38,6 @@
 #define KICK_ANIMATION_WIDTH 65
 #define KICK_ANIMATION_HEIGHT 80
 
-#include "ComponentFactory.hpp"
-#include "Registry.hpp"
-
 /// @brief street_fighter namespace for all calsses that concern the Street Fighter Game
 namespace street_fighter {
     class Game {
@@ -55,7 +55,7 @@ namespace street_fighter {
             /// @return it as an Entity 
             ecs::Entity findPlayerIndex();
 
-            ecs::Registry _r;
+            std::shared_ptr<ecs::Registry> _r;
         private:
             ecs::ComponentFactory _factory;
     };

@@ -8,6 +8,7 @@
 #include <exception>
 #include <iostream>
 #include <cstdlib>
+#include <memory>
 
 #include "Game.hpp"
 #include "ComponentFactory.hpp"
@@ -28,34 +29,35 @@
 #include "Systems/PunchSystem.hpp"
 #include "ZipperIterator.hpp"
 
-street_fighter::Game::Game(): _factory(_r, ecs::ComponentFactory::Mode::Client)
+street_fighter::Game::Game()
 {
-    _r.register_if_not_exist<ecs::component::Position>();
-    _r.register_if_not_exist<ecs::component::Animations>();
-    _r.register_if_not_exist<ecs::component::Drawable>();
-    _r.register_if_not_exist<ecs::component::Controllable>();
-    _r.register_if_not_exist<ecs::component::Sprite>();
-    _r.register_if_not_exist<ecs::component::Size>();
-    _r.register_if_not_exist<ecs::component::Destroyable>();
-    _r.register_if_not_exist<ecs::component::Life>();
-    _r.register_if_not_exist<ecs::component::Gravitable>();
-    _r.register_if_not_exist<ecs::component::KeyPressed>();
+    _r = std::make_shared<ecs::Registry>();
+    _r->register_if_not_exist<ecs::component::Position>();
+    _r->register_if_not_exist<ecs::component::Animations>();
+    _r->register_if_not_exist<ecs::component::Drawable>();
+    _r->register_if_not_exist<ecs::component::Controllable>();
+    _r->register_if_not_exist<ecs::component::Sprite>();
+    _r->register_if_not_exist<ecs::component::Size>();
+    _r->register_if_not_exist<ecs::component::Destroyable>();
+    _r->register_if_not_exist<ecs::component::Life>();
+    _r->register_if_not_exist<ecs::component::Gravitable>();
+    _r->register_if_not_exist<ecs::component::KeyPressed>();
     try {
-        _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Background.json"));
-        _r._entities.addEntity(_factory.createEntity("StreetFighter/config/Ken.json"));
-        _r.add_system(ecs::systems::GravitableMouvementSystem());
-        _r.add_system(ecs::systems::BasicMouvementSystem());
-        _r.add_system(ecs::systems::PunchSystem());
-        _r.add_system(ecs::systems::KickSystem());
+        _factory.createEntity(_r, "StreetFighter/config/Background.json");
+        _factory.createEntity(_r, "StreetFighter/config/Ken.json");
+        _r->add_system(ecs::systems::GravitableMouvementSystem());
+        _r->add_system(ecs::systems::BasicMouvementSystem());
+        _r->add_system(ecs::systems::PunchSystem());
+        _r->add_system(ecs::systems::KickSystem());
     } catch (const std::exception &e) {
-        std::cout << "Setup error on: [" << e.what() << "]\n";
+        std::cerr << "Setup error on: [" << e.what() << "]\n";
         return;
     }
 }
 
 ecs::Entity street_fighter::Game::findPlayerIndex()
 {
-    auto &animations = _r.get_components<ecs::component::Animations>();
+    auto &animations = _r->get_components<ecs::component::Animations>();
     int idx = 0;
 
     for (auto &&[anim] : ecs::custom_zip(animations)) {
@@ -74,6 +76,6 @@ ecs::Entity street_fighter::Game::findPlayerIndex()
 
 int street_fighter::Game::run()
 {
-    _r.run_systems(nullptr);
+    _r->run_systems(_factory, nullptr);
     return EXIT_SUCCESS;
 }

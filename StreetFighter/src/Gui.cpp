@@ -32,9 +32,9 @@ street_fighter::Gui::Gui(Game &game): _game(game), _textureManager([this](std::s
 int street_fighter::Gui::handleEvents()
 {
     sf::Event event;
-    auto &keys = _game._r.get_components<ecs::component::KeyPressed>();
-    auto &anim = _game._r.get_components<ecs::component::Animations>();
-    auto &pos = _game._r.get_components<ecs::component::Position>();
+    auto &keys = _game._r->get_components<ecs::component::KeyPressed>();
+    auto &anim = _game._r->get_components<ecs::component::Animations>();
+    auto &pos = _game._r->get_components<ecs::component::Position>();
 
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -98,11 +98,11 @@ void street_fighter::Gui::display()
         return;
     }
     _gameClock.restart();
-    auto &positions = _game._r.get_components<ecs::component::Position>();
-    auto &animations = _game._r.get_components<ecs::component::Animations>();
-    auto &sprites = _game._r.get_components<ecs::component::Sprite>();
-    auto &drawable = _game._r.get_components<ecs::component::Drawable>();
-    auto &sizes = _game._r.get_components<ecs::component::Size>();
+    auto &positions = _game._r->get_components<ecs::component::Position>();
+    auto &animations = _game._r->get_components<ecs::component::Animations>();
+    auto &sprites = _game._r->get_components<ecs::component::Sprite>();
+    auto &drawable = _game._r->get_components<ecs::component::Drawable>();
+    auto &sizes = _game._r->get_components<ecs::component::Size>();
 
     for (auto &&[pos, anim, spri, draw, size] : ecs::custom_zip(positions, animations, sprites, drawable, sizes)) {
         if (!pos || !anim || !spri || !draw || !size || !draw->_drawable) {

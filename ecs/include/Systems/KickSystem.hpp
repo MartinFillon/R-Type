@@ -19,7 +19,7 @@ namespace ecs {
     namespace systems {
         class KickSystem : public ISystems {
           public:
-            void operator()(Registry &r, std::shared_ptr<IContext> ctx) override;
+            void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory) override;
 
         };
     }; // namespace systems

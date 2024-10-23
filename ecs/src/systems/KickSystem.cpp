@@ -10,10 +10,10 @@
 #include "Components/KeyPressed.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::KickSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+void ecs::systems::KickSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
 {
-    auto &keys = r.get_components<ecs::component::KeyPressed>();
-    auto &animations = r.get_components<ecs::component::Animations>();
+    auto &keys = r->get_components<ecs::component::KeyPressed>();
+    auto &animations = r->get_components<ecs::component::Animations>();
 
     for (auto &&[key, anim] : custom_zip(keys, animations)) {
         if (!key || !anim) {

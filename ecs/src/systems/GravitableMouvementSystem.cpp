@@ -12,12 +12,12 @@
 #include "Components/Position.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::GravitableMouvementSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+void ecs::systems::GravitableMouvementSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
 {
-    auto &positions = r.get_components<ecs::component::Position>();
-    auto &animations = r.get_components<ecs::component::Animations>();
-    auto &gravitables = r.get_components<ecs::component::Gravitable>();
-    auto &keys = r.get_components<ecs::component::KeyPressed>();
+    auto &positions = r->get_components<ecs::component::Position>();
+    auto &animations = r->get_components<ecs::component::Animations>();
+    auto &gravitables = r->get_components<ecs::component::Gravitable>();
+    auto &keys = r->get_components<ecs::component::KeyPressed>();
     int initialY = INITIAL_Y;
     int targetY = MAX_Y;
 
