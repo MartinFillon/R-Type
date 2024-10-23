@@ -25,6 +25,8 @@ namespace ecs {
             Basic,
             Milespates,
             Boss,
+            First,
+            Second
         };
 
         struct Animations {
