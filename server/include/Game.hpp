@@ -85,10 +85,15 @@ namespace rtype::server {
         /// @param entity_id an `int` representing the player's entity id.
         void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
 
+        /// @brief Setups the destroy logic
         void setupDestroy();
+        /// @brief Setups the collisions logic
         void setupCollisons();
+        /// @brief Setups the bosses logic
         void setupBosses();
+        /// @brief Setups the base ennemies logic
         void setupBasicEnnemies();
+        /// @brief Setups the background logic
         void setupBackground();
 
       private:
