@@ -9,13 +9,18 @@
 
 #include <memory>
 #include <vector>
+#include <nlohmann/json-schema.hpp>
 
-#include "ComponentFactory.hpp"
 #include "IContext.hpp"
-#include "Registry.hpp"
 #include "Systems/ISystems.hpp"
 
+namespace ecs {
+    class Registry;
+    class ComponentFactory;
+} // namespace ecs
+
 namespace ecs::systems {
+
     class SystemsManager {
       public:
         SystemsManager(const std::string config_file);
@@ -25,6 +30,8 @@ namespace ecs::systems {
 
       protected:
       private:
+        void add_system(const std::string name);
+
         std::vector<std::shared_ptr<ISystems>> __systems;
     };
 }; // namespace ecs::systems

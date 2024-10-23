@@ -15,6 +15,7 @@
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory()

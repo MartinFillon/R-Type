@@ -33,6 +33,7 @@
 
 #include "DlLoader.hpp"
 #include "Entity.hpp"
+#include "SystemsManager.hpp"
 
 std::string getEnvOrDefault(const std::string &env, const std::string &def);
 
