@@ -31,7 +31,6 @@ namespace rtype::server {
 
       public:
         /// @brief Generate a `Game` creating in the process the ECS's registry `_r` and initializing all the game.
-        /// @param ctx a `std::shared_ptr<ecs::IContext>` representing the reference to the global context of the game.
         Game();
 
         /// @brief Runs the updating loop of the game and add all the updated informations to the packet queue.
@@ -39,6 +38,7 @@ namespace rtype::server {
         /// created, `false` otherwise.
         /// @param ctx a `std::shared_ptr<ecs::IContext>` representing the reference to the global context of the game.
         void update(bool are_any_clients_connected, std::shared_ptr<ecs::IContext> &ctx);
+
         /// @brief Handles the case when a player leaves the game and disconnects from the server by removing its entity
         /// and opening its occupied place for new players to join.
         /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and
@@ -51,21 +51,50 @@ namespace rtype::server {
         /// the `MAX_PLAYER_PLACES`.
         /// @return an `ecs::Entity` representing the newly created player entity.
         ecs::Entity createPlayer(const unsigned int player_place);
+
         /// @brief Moves the player at the `player_place` in the direction `dir` in the ECS's registry `_r`.
-        /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and
+        /// @param player_place a `const int` representing the player's place between `FIRST_PLAYER_PLACE` and
         /// the `MAX_PLAYER_PLACES`.
         /// @param dir a `const int` representing the player's direction in the `protocol::Direction` enum.
         void movePlayer(const int player_place, const int dir);
+
         /// @brief Makes the player at the `player_place` shoot a projectile in the ECS's registry `_r`.
-        /// @param player_place a `const unsigned int` representing the player's place between `FIRST_PLAYER_PLACE` and
+        /// @param player_place a `const int` representing the player's place between `FIRST_PLAYER_PLACE` and
         /// the `MAX_PLAYER_PLACES`.
         void makePlayerShoot(const int player_place);
 
+        /// @brief Get the ECS registry of the server managing the game.
+        /// @return a `std::shared_ptr<ecs::Registry>` representing the registry of the server managing the game.
         std::shared_ptr<ecs::Registry> getRegistry();
 
+        /// @brief Get the player's entity id by the given `player_place`.
+        /// @param player_place a `const int` representing the player's place between `FIRST_PLAYER_PLACE` and
+        /// the `MAX_PLAYER_PLACES`.
+        /// @return `const int` representing the player's entity id.
         const int getPlayerEntityIdByPlace(const int player_place);
 
-        const int getEntityById(int id);
+        /// @brief Get the player's place by the given `player_entity_id`.
+        /// @param player_entity_id a `const int` representing the player's entity id.
+        /// @return `const int` representing the player's place between `FIRST_PLAYER_PLACE` and
+        /// the `MAX_PLAYER_PLACES`.
+        const int getPlaceByPlayerEntityId(const int player_entity_id);
+
+        /// @brief Creates a `Packet` of the player movement to be queued in the `_packetsToSend` queue.
+        /// @param p a `const std::optional<ecs::component::Position> &` representing the reference to the player's
+        /// entity position component.
+        /// @param entity_id an `int` representing the player's entity id.
+        void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
+
+        /// @brief Setups the destroy logic
+        void setupDestroy();
+        /// @brief Setups the collisions logic
+        void setupCollisons();
+        /// @brief Setups the bosses logic
+        void setupBosses();
+        /// @brief Setups the base ennemies logic
+        void setupBasicEnnemies();
+        /// @brief Setups the background logic
+        void setupBackground();
 
       private:
         /// @brief The ECS's registry which stores and interacts with all entities and components.
@@ -75,20 +104,10 @@ namespace rtype::server {
         /// @brief The map of the players entities ids indexed by the players places.
         std::unordered_map<int, int> _players_entities_ids;
 
+        /// @brief The ECS's context managing all the said ECS.
         std::shared_ptr<ecs::IContext> _ctx;
 
-        /// @brief Creates a `Packet` of the player movement to be queued in the `_packetsToSend` queue.
-        /// @param p a `const std::optional<ecs::component::Position> &` representing the reference to the player's
-        /// entity position component.
-        /// @param entity_id an `int` representing the player's entity id.
-        void preparePosition(const std::optional<ecs::component::Position> &p, int entity_id);
-
-        void setupDestroy();
-        void setupCollisons();
-        void setupBosses();
-        void setupBasicEnnemies();
-        void setupBackground();
-
+        /// @brief The game's clock which counts ticks.
         ecs::Clock _systemClock;
     };
 

@@ -176,10 +176,10 @@ namespace rtype::server {
         return _players_entities_ids[player_place];
     }
 
-    const int Game::getEntityById(int id)
+    const int Game::getPlaceByPlayerEntityId(const int player_entity_id)
     {
         for (size_t i = 0; i < _players_entities_ids.size(); i++) {
-            if (_players_entities_ids[i] == id) {
+            if (_players_entities_ids[i] == player_entity_id) {
                 return i;
             }
         }

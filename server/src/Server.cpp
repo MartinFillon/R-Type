@@ -291,7 +291,8 @@ namespace rtype::server {
                 if (animations[i]->_object == ecs::component::Object::Player) {
                     auto arguments = ecs::utils::intToBytes(i);
 
-                    arguments.push_back(static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))
+                    arguments.push_back(
+                        static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getPlaceByPlayerEntityId(i)))
                     );
 
                     sendToClient(client_id, protocol::Packet(protocol::NEW_PLAYER, arguments));
