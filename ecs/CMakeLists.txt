@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 find_package(Json REQUIRED)
+find_package(JsonSchemaValidator REQUIRED)
 
 add_subdirectory(components)
 
@@ -24,6 +25,7 @@ add_library(
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(ecs PUBLIC nlohmann_json_schema_validator)
 
 # option(ENABLE_TESTS "Build tests along with the library" ON)
 

@@ -9,9 +9,20 @@
 #include <fstream>
 #include <memory>
 #include <nlohmann/json.hpp>
-#include "Systems/ISystems.hpp"
 
+#include "Systems/ISystems.hpp"
 #include "SystemsManager.hpp"
+
+static const nlohmann::json schema = R"({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "name": "a system",
+    "properties": {
+        "name": {
+            "description": "the system name",
+            "type": "string"
+        }
+    }
+})"_json;
 
 namespace ecs::systems {
     SystemsManager::SystemsManager(const std::string config)
