@@ -22,7 +22,7 @@
         "controllable": true,
         "speed": 1.2
     },
-    "sprite": "r-typesheet42.gif",
+    "sprite": "assets/sprites/r-typesheet42.gif",
     "animations": {
         "width": 33,
         "height": 20,

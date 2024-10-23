@@ -8,6 +8,7 @@
 #include "RegistryWrapper.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <memory>
 #include "ComponentFactory.hpp"
 #include "Components/Drawable.hpp"
@@ -39,7 +40,7 @@ namespace rtype::client {
 
     static void drawRegistry(
         sf::RenderWindow &window,
-        TextureManager &textureManager,
+        ecs::TextureManager<sf::Texture> &textureManager,
         std::shared_ptr<ecs::Registry> &registry
     )
     {
@@ -62,13 +63,13 @@ namespace rtype::client {
             sprite.setPosition(pos->_x, pos->_y);
             sprite.setScale(si->_width, si->_height);
             auto texture = textureManager.getTexture(spri->_pathToSprite);
-            sprite.setTexture(texture);
+            sprite.setTexture(*texture);
             sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
             window.draw(sprite);
         }
     }
 
-    void RegistryWrapper::draw(sf::RenderWindow &window, TextureManager &textureManager)
+    void RegistryWrapper::draw(sf::RenderWindow &window, ecs::TextureManager<sf::Texture> &textureManager)
     {
         drawRegistry(window, textureManager, _client);
         drawRegistry(window, textureManager, _server);

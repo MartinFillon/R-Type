@@ -20,7 +20,7 @@
         "controllable": true,
         "speed": 5
     },
-    "sprite": "r-typesheetEnnemiesShoot.gif",
+    "sprite": "assets/sprites/r-typesheetEnnemiesShoot.gif",
     "animations": {
         "width": 18,
         "height": 12,

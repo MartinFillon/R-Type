@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <memory>
 #include "ComponentFactory.hpp"
 #include "Registry.hpp"
@@ -19,7 +20,7 @@ namespace rtype::client {
         RegistryWrapper();
         ~RegistryWrapper();
 
-        void draw(sf::RenderWindow &, TextureManager &);
+        void draw(sf::RenderWindow &, ecs::TextureManager<sf::Texture> &);
 
         std::shared_ptr<ecs::Registry> &getServerRegistry()
         {

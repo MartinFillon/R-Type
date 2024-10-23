@@ -8,7 +8,7 @@
 #ifndef DESTROYSYSTEM_HPP_
 #define DESTROYSYSTEM_HPP_
 
-#define DESTROY_SPRITE "r-typesheet-explosion.gif"
+#define DESTROY_SPRITE "assets/sprites/r-typesheet-explosion.gif"
 
 #define DESTROY_ANIMATION 0.1
 #define DESTROY_TICK 1

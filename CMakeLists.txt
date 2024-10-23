@@ -11,6 +11,7 @@ add_subdirectory(ecs)
 add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(protocol)
+add_subdirectory(StreetFighter)
 
 if(UNIX)
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)

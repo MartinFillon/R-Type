@@ -28,6 +28,10 @@ extern "C" void register_component(
         ennemiesType = ecs::component::Type::Basic;
     else if (component["objectType"] == "milepates")
         ennemiesType = ecs::component::Type::Milespates;
+    else if (component["objectType"] == "first")
+        ennemiesType = ecs::component::Type::First;
+    else if (component["objectType"] == "first")
+        ennemiesType = ecs::component::Type::Second;
 
     if (component["type"] == "player")
         type = ecs::component::Player;
