@@ -43,17 +43,15 @@ void rtype::server::TCPConnection::readClient()
                 if (message.find("CREATE") != std::string::npos) {
                     createLobby(message.substr(7));
                 }
-
                 if (message.find("LIST") != std::string::npos) {
-                    getLobbies();
+                    dumpLobbies();
                 }
                 if (message.find("JOIN") != std::string::npos) {
                     joinLobby(message.substr(5));
                 }
-                //if (message.find("QUIT") != std::string::npos) {
-                //    quitLobby(message.substr(5));
-                //}
-
+                if (message.find("QUIT") != std::string::npos) {
+                    quitLobby(message.substr(5));
+                }
             } else {
                 std::cerr << ec.message() << std::endl;
             }
@@ -83,8 +81,12 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
     return true;
 }
 
-void rtype::server::TCPConnection::getLobbies()
+void rtype::server::TCPConnection::dumpLobbies()
 {
+    if (_lobbies.empty()) {
+        writeToClient("No current lobbies");
+        return;
+    }
     for (auto &lobby: _lobbies) {
         writeToClient(lobby->getName() + " => " + std::to_string(lobby->getNumberConnections()) + " / 4");
     }
@@ -106,23 +108,21 @@ bool rtype::server::TCPConnection::joinLobby(const std::string &name)
     return false;
 }
 
-//bool rtype::server::TCPConnection::quitLobby(const std::string &name)
-//{
-//     for (auto &lobby: _lobbies) {
-//        if (lobby->getName() == name) {
-//            if (!lobby->unassign(*this)) {
-//                writeToClient("You're not in this lobby");
-//                return false;
-//            }
-//            writeToClient("You quit lobby: " + name);
-//            return true;
-//        }
-//    }
-//    writeToClient("Lobby not found.");
-//    return false;
-//}
-
-
+bool rtype::server::TCPConnection::quitLobby(const std::string &name)
+{
+     for (auto &lobby: _lobbies) {
+        if (lobby->getName() == name) {
+            if (!lobby->unassign(*this)) {
+                writeToClient("You're not in this lobby");
+                return false;
+            }
+            writeToClient("You quit lobby: " + name);
+            return true;
+        }
+    }
+    writeToClient("Lobby not found.");
+    return false;
+}
 
 void rtype::server::TCPConnection::writeToClient(const std::string &message)
 {

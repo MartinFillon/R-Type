@@ -12,7 +12,6 @@
 #include <vector>
 
     #include "Server.hpp"
-    #include "IContext.hpp"
     #include "TCPConnection.hpp"
 
     #define LOBBY_SIZE_MAX 4

@@ -31,10 +31,10 @@ namespace rtype::server {
             void setLobby(const std::string &lobby);
 
             bool createLobby(const std::string &name);
-            void getLobbies();
             bool joinLobby(const std::string &name);
-            //bool quitLobby(const std::string &name);
+            bool quitLobby(const std::string &name);
 
+            void dumpLobbies();
             unsigned int getId() const
             {
                 return _id;
