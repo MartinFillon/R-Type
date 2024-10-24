@@ -9,7 +9,8 @@
     #define LOBBY_HPP_
 
     #include <functional>
-#include <vector>
+    #include <vector>
+    #include <map>
 
     #include "Server.hpp"
     #include "TCPConnection.hpp"
@@ -22,13 +23,15 @@ namespace rtype::server {
 
     class Lobby {
 
+        using TCP = asio::ip::tcp;
+
         public:
 
             Lobby(const std::string &name);
 
             void start();
-            bool assign(TCPConnection &client);
-            bool unassign(TCPConnection &client);
+            bool assign(unsigned int id);
+            bool unassign(unsigned int id);
 
             std::string getName() const
             {
@@ -40,10 +43,15 @@ namespace rtype::server {
                 return _clients.size();
             };
 
+            std::vector<unsigned int> getClients() const
+            {
+                return _clients;
+            };
+
         private:
 
             std::string _name;
-            std::vector<std::reference_wrapper<TCPConnection>> _clients;
+            std::vector<unsigned int> _clients;
 
             std::shared_ptr<Server> _server;
 

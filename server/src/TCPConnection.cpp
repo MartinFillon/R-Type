@@ -10,6 +10,11 @@
 #include <memory>
 #include <string>
 #include <variant>
+#include "asio/buffer.hpp"
+#include "asio/read.hpp"
+#include "asio/write.hpp"
+#include "asio/error_code.hpp"
+#include "asio/read_until.hpp"
 
 #include "TCPConnection.hpp"
 
@@ -29,36 +34,33 @@ void rtype::server::TCPConnection::setLobby(const std::string &lobby)
 
 void rtype::server::TCPConnection::readClient()
 {
-    auto self(shared_from_this());
+    while (true) {
 
-    asio::async_read_until(
-        _socket,
-        asio::dynamic_buffer(_data),
-        '\n',
-        [this, self](std::error_code ec, std::size_t length) {
+        asio::error_code error;
+        size_t length = asio::read_until(_socket, asio::dynamic_buffer(_data), '\n', error);
 
-            if (!ec) {
-
-                std::string message = _data.substr(0, length - 1);
-
-                if (message.find("CREATE") != std::string::npos) {
-                    createLobby(message.substr(7));
-                }
-                if (message.find("LIST") != std::string::npos) {
-                    dumpLobbies();
-                }
-                if (message.find("JOIN") != std::string::npos) {
-                    joinLobby(message.substr(5));
-                }
-                if (message.find("QUIT") != std::string::npos) {
-                    quitLobby(message.substr(5));
-                }
-            } else {
-                std::cerr << ec.message() << std::endl;
-            }
-
+        if (error) {
+            continue;
         }
-    );
+
+        std::string message = _data.substr(0, length - 1);
+
+        if (message.find("CREATE") != std::string::npos) {
+            createLobby(message.substr(7));
+        }
+        if (message.find("LIST") != std::string::npos) {
+            dumpLobbies();
+        }
+        if (message.find("JOIN") != std::string::npos) {
+            joinLobby(message.substr(5));
+        }
+        if (message.find("QUIT") != std::string::npos) {
+            quitLobby(message.substr(5));
+        }
+
+        _data.clear();
+
+    }
 }
 
 bool rtype::server::TCPConnection::createLobby(const std::string &name)
@@ -77,7 +79,7 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 
     _lobbies.push_back(Lobby(name));
 
-    writeToClient("Lobby: " + name + " created!" + std::to_string(_lobbies.size()));
+    writeToClient("Lobby: " + name + " created!");
 
     return true;
 }
@@ -96,17 +98,17 @@ void rtype::server::TCPConnection::dumpLobbies()
 bool rtype::server::TCPConnection::joinLobby(const std::string &name)
 {
     if (!_lobby.empty()) {
-        writeToClient("You're already on a lobby");
+        writeToClient("No lobbby.");
         return false;
     }
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
-            if (!lobby.assign(*this)) {
+            if (!lobby.assign(_id)) {
                 writeToClient("Lobby is full.");
                 return false;
             }
-            writeToClient("Join successfully");
+            writeToClient("Join successfully.");
             setLobby(name);
             return true;
         }
@@ -124,8 +126,8 @@ bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
-            if (!lobby.unassign(*this)) {
-                writeToClient("You're not in this lobby");
+            if (!lobby.unassign(_id)) {
+                writeToClient("You're not in this lobby.");
                 return false;
             }
             writeToClient("You quit lobby: " + name);
@@ -139,15 +141,5 @@ bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 
 void rtype::server::TCPConnection::writeToClient(const std::string &message)
 {
-    auto self(shared_from_this());
-
-    asio::async_write(_socket, asio::buffer(message + "\n"), [this, self](std::error_code ec, std::size_t) {
-        if (!ec) {
-            _data.clear();
-            readClient();
-        } else {
-            std::cerr << "Erreur d'écriture: " << ec.message() << std::endl;
-            _socket.close();
-        }
-    });
+    asio::write(_socket, asio::buffer(message + "\n"));
 }

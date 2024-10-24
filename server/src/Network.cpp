@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include "TCPConnection.hpp"
 
 #include "Network.hpp"
@@ -44,14 +45,24 @@ unsigned int rtype::server::Network::generateClientId(const TCP::endpoint &endpo
 void rtype::server::Network::acceptConnection()
 {
     while (_running) {
-        _acceptor.async_accept([this](std::error_code ec, TCP::socket socket) {
-            if (!ec) {
-                asio::write(socket, asio::buffer("Welcome!\n"), ec);
-                unsigned int id = generateClientId(_acceptor.local_endpoint());
-                std::make_shared<TCPConnection>(std::move(socket), id, _lobbies)->start();
-            } else {
-                std::cerr << "Erreur d'acceptation: " << ec.message() << std::endl;
-            }
-        });
+        TCP::socket socket = _acceptor.accept();
+        _threads.push_back(std::thread(&Network::runClient, this, std::move(socket)));
     }
+}
+
+void rtype::server::Network::runClient(TCP::socket socket)
+{
+    static unsigned int index = 0;
+
+    asio::write(socket, asio::buffer("Welcome!\n"));
+
+    unsigned int id = generateClientId(socket.local_endpoint()) + index;
+
+    index += 1;
+
+    std::cout << "NEW client: " << id << "\n";
+
+    TCPConnection client(std::move(socket), id, _lobbies);
+
+    client.start();
 }

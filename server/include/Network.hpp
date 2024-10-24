@@ -31,16 +31,21 @@ namespace rtype::server {
             void broadcast(const ecs::IPacket &packet) {(void)packet;};
             int run(std::shared_ptr<ecs::IContext> &context);
             unsigned int generateClientId(const TCP::endpoint &endpoint);
-    
+
         private:
 
             int start(std::shared_ptr<ecs::IContext> &context);
             void acceptConnection();
+
+            void runClient(TCP::socket socket);
     
             int _port;
             bool _running;
 
             std::vector<Lobby> _lobbies;
+
+            std::vector<std::shared_ptr<TCPConnection>> _clients;
+            std::vector<std::thread> _threads;
 
             asio::io_context _context;
             TCP::acceptor _acceptor;
