@@ -4,8 +4,8 @@
 ** File description:
 ** Collision system file
 */
+
 #include "Systems/CollisionsSystem.hpp"
-#include <iostream>
 #include <memory>
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
@@ -41,7 +41,7 @@ namespace ecs {
                 }
 
                 if (attribut[i]->_entity_type == component::Attributes::EntityType::Background ||
-                    attribut[i]->_entity_type == component::Attributes::EntityType::InDestroy) {
+                    destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) {
                     continue;
                 }
 
@@ -50,19 +50,14 @@ namespace ecs {
 
                 if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
                     (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
-                    if (attribut[i]->_entity_type == component::Attributes::EntityType::Weapon) {
-                        r->erase(i);
-                    } else {
-                        destroyable[i]->_destroyable = true;
-                        attribut[i]->_entity_type = component::Attributes::EntityType::InDestroy;
-                    }
-                    sendDestroyedObject(ctx, i);
+                    destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
                     continue;
                 }
 
                 for (std::size_t j = i + 1; j < position.size(); ++j) {
-                    if (!attribut[i] || !position[j] || !size[j] || !life[j] || i == j ||
-                        attribut[i]->_entity_type == attribut[j]->_entity_type) {
+                    if (!attribut[i] || !position[j] || !size[j] || !destroyable[j] ||
+                        destroyable[j]->_state != ecs::component::Destroyable::DestroyState::ALIVE || !life[j] ||
+                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type) {
                         continue;
                     }
 
@@ -71,19 +66,13 @@ namespace ecs {
 
                     if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
                         (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
-                        if (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) {
-                            r->erase(j);
-                        } else {
-                            destroyable[j]->_destroyable = true;
-                            attribut[j]->_entity_type = component::Attributes::EntityType::InDestroy;
-                        }
-                        sendDestroyedObject(ctx, j);
+                        destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
                         continue;
                     }
 
                     if ((attribut[i]->_ennemy_type == component::Attributes::EnnemyType::Milespates &&
-                         attribut[i]->_entity_type == component::Attributes::EntityType::InDestroy) ||
-                        (attribut[j]->_entity_type == component::Attributes::EntityType::InDestroy &&
+                         destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) ||
+                        (destroyable[j]->_state == component::Destroyable::DestroyState::ALIVE &&
                          attribut[j]->_ennemy_type == component::Attributes::EnnemyType::Milespates)) {
                         continue;
                     }
@@ -137,37 +126,16 @@ namespace ecs {
                             invincibility[j]->_clock.restart();
                         }
 
-                        if (attribut[i]->_entity_type == component::Attributes::EntityType::Weapon) {
-                            sendDestroyedObject(ctx, i);
-                            r->erase(i);
-                        } else {
-                            if (life[i]->_life <= 0) {
-                                destroyable[i]->_destroyable = true;
-                                attribut[i]->_entity_type = component::Attributes::EntityType::InDestroy;
-                                sendDestroyedObject(ctx, i);
-                            }
+                        if (life[i]->_life <= 0) {
+                            destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
+                        }
+                        if (life[j]->_life <= 0) {
+                            destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
                         }
 
-                        if (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) {
-                            sendDestroyedObject(ctx, j);
-                            r->erase(i);
-                        } else {
-                            if (life[j]->_life <= 0) {
-                                destroyable[j]->_destroyable = true;
-                                attribut[j]->_entity_type = component::Attributes::EntityType::InDestroy;
-                                sendDestroyedObject(ctx, j);
-                            }
-                        }
                         continue;
                     }
                 }
-            }
-        }
-
-        void CollisionsSystem::sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i)
-        {
-            if (ctx) {
-                ctx->destroyObject(i);
             }
         }
     } // namespace systems

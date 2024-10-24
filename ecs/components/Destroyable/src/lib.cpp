@@ -19,5 +19,6 @@ extern "C" void register_component(
 {
     auto &destroyables = registry->register_component<ecs::component::Destroyable>();
 
-    destroyables[entity.getId()] = ecs::component::Destroyable{component};
+    destroyables[entity.getId()] =
+        ecs::component::Destroyable{ecs::component::Destroyable::DestroyState::ALIVE, component["animate"]};
 }

@@ -6,6 +6,7 @@
 */
 
 #include "Systems/InvincibilitySystem.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Invincibility.hpp"
 #include "SystemsManager.hpp"
 
@@ -18,12 +19,17 @@ namespace ecs {
         )
         {
             auto &invincibility = r->register_if_not_exist<component::Invincibility>();
+            auto &destroyable = r->register_if_not_exist<component::Destroyable>();
 
             for (std::size_t i = 0; i < invincibility.size(); ++i) {
                 if (!invincibility[i].has_value()) {
                     continue;
                 }
                 if (!invincibility[i]->_invincible) {
+                    continue;
+                }
+                if (!destroyable[i] || !destroyable[i]->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
+                    invincibility[i]->_invincible = false;
                     continue;
                 }
                 if (invincibility[i]->_clock.getMiliSeconds() < invincibility[i]->_time_in_ms) {

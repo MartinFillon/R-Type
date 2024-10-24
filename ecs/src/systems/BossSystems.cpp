@@ -48,7 +48,8 @@ void ecs::systems::BossSystems::operator()(
 
     for (auto &&[atr, pos, control, anim, life, destroyable] :
          custom_zip(attributes, positions, controllables, animations, lifes, destroyables)) {
-        if (!atr || !pos || !control || !anim || !life || !destroyable) {
+        if (!atr || !pos || !control || !anim || !life || !destroyable ||
+            destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
             idx += 1;
             continue;
         }
@@ -71,7 +72,7 @@ void ecs::systems::BossSystems::operator()(
         }
 
         if (life->_life <= 0) {
-            destroyable->_destroyable = true;
+            destroyable->_state = component::Destroyable::DestroyState::WAITING;
             break;
         }
 
@@ -153,8 +154,8 @@ void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
 
     if (distance <= PROJECTILE_CLOSE) {
         auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
-        destroyables[idx]->_destroyable = true;
-        ctx->destroyObject(idx);
+
+        destroyables[idx]->_state = component::Destroyable::DestroyState::WAITING;
         return;
     }
 

@@ -54,7 +54,8 @@ namespace ecs {
                 continue;
             }
             if (pos && contr && anim && atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
-                atr->_ennemy_type == ecs::component::Attributes::EnnemyType::None) {
+                atr->_ennemy_type == ecs::component::Attributes::EnnemyType::None && destroyable &&
+                destroyable->_state == ecs::component::Destroyable::DestroyState::ALIVE) {
                 if (anim->_x < 30) {
                     pos = playerPos;
                 }

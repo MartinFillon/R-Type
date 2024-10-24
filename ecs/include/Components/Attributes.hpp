@@ -18,7 +18,6 @@ namespace ecs {
                 Player,
                 Weapon,
                 Ennemy,
-                InDestroy,
             };
 
             enum EnnemyType { None, Basic, Milespates, Boss, First, Second };

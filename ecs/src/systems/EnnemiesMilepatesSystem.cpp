@@ -10,6 +10,7 @@
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Position.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
@@ -26,7 +27,8 @@ namespace ecs::systems {
         auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
-        auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+        auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
+        auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
 
         if (countMilepates(r) == 0) {
             createMilepates(r, ctx, factory);
@@ -35,9 +37,10 @@ namespace ecs::systems {
 
         int i = 0;
 
-        for (auto &&[atr, pos, anim, control] : custom_zip(attributes, positions, animations, controllable)) {
+        for (auto &&[atr, pos, anim, control, destroyable] :
+             custom_zip(attributes, positions, animations, controllables, destroyables)) {
             if (!atr || !pos || !anim || !control ||
-                atr->_entity_type == ecs::component::Attributes::EntityType::InDestroy ||
+                destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE ||
                 atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Milespates) {
                 continue;
             }

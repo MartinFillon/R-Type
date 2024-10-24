@@ -105,6 +105,12 @@ namespace rtype::server {
     {
         const int player_entity_id = _players_entities_ids[player_place];
 
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
+            return;
+        }
+
         auto &position = _r->register_if_not_exist<ecs::component::Position>()[player_entity_id];
         auto &controllable = _r->register_if_not_exist<ecs::component::Controllable>()[player_entity_id];
 
@@ -124,8 +130,16 @@ namespace rtype::server {
 
     void Game::makePlayerShoot(int player_place)
     {
+        const int player_entity_id = _players_entities_ids[player_place];
+
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE)
+            return;
+
         auto &positions = _r->register_if_not_exist<ecs::component::Position>();
         auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
+
         int i = 0;
         ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);

@@ -41,9 +41,12 @@ void ecs::systems::BasicRandomEnnemiesSystem::operator()(
     auto &animations = r->register_if_not_exist<ecs::component::Animations>();
     auto &positions = r->register_if_not_exist<ecs::component::Position>();
     auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+    auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
 
-    for (auto &&[atr, anim, pos, ctrl] : ecs::custom_zip(attributes, animations, positions, controllable)) {
-        if (!atr || !anim || !pos || !ctrl || atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Basic) {
+    for (auto &&[atr, anim, pos, ctrl, destroyable] :
+         ecs::custom_zip(attributes, animations, positions, controllable, destroyables)) {
+        if (!atr || !anim || !pos || !ctrl || atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Basic ||
+            !destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
             continue;
         }
 
@@ -103,7 +106,7 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
     std::random_device randomPosition;
     std::default_random_engine randomEngine(randomPosition());
     std::uniform_int_distribution<int> uniformDistForY(100, 800);
-    std::uniform_int_distribution<int> uniformDistForX(0, 500);
+    std::uniform_int_distribution<int> uniformDistForX(0, 50);
     int randomPosY = uniformDistForY(randomEngine);
     int randomPosX = uniformDistForY(randomEngine);
 

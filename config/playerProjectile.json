@@ -9,7 +9,8 @@
     "sprite",
     "animations",
     "size",
-    "life"
+    "life",
+    "destroyable"
   ],
   "components": {
     "attributes": {
@@ -20,6 +21,9 @@
     "position": {
       "x": 0,
       "y": 0
+    },
+    "destroyable": {
+      "animate": false
     },
     "drawable": true,
     "controllable": {

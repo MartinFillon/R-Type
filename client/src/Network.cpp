@@ -128,14 +128,9 @@ namespace rtype::client {
             int id = ecs::utils::bytesToInt(arguments);
 
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
-            auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
-            if (attributes[id]->_entity_type == ecs::component::Attributes::EntityType::Weapon) {
-                r->erase(id);
-            }
-
-            destroyable[id]->_destroyable = true;
-            attributes[id]->_entity_type = ecs::component::Attributes::EntityType::InDestroy;
+            if (destroyable[id])
+                destroyable[id]->_state = ecs::component::Destroyable::DestroyState::WAITING;
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
@@ -145,7 +140,10 @@ namespace rtype::client {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
 
-            r->erase(id);
+            auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
+
+            if (destroyable[id])
+                destroyable[id]->_state = ecs::component::Destroyable::DestroyState::WAITING;
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,

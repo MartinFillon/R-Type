@@ -22,7 +22,9 @@
         "x": 100,
         "y": 100
     },
-    "destroyable": false,
+    "destroyable": {
+      "animate": true
+    },
     "drawable": true,
     "controllable": {
         "controllable": true,

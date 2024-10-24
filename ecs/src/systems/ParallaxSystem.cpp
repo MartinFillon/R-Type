@@ -19,7 +19,9 @@ operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, Componen
     if (_clock.getMiliSeconds() < BACKGROUND_TICK) {
         return;
     }
+
     _clock.restart();
+
     auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
     auto &parallax = r->register_if_not_exist<ecs::component::Parallax>();
     auto &positions = r->register_if_not_exist<ecs::component::Position>();

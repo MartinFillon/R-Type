@@ -25,15 +25,15 @@ ecs::Entity ecs::Registry::spawn_entity()
 
 void ecs::Registry::erase(const std::size_t &entityIdx)
 {
-    auto &attributes = register_component<ecs::component::Attributes>();
-    auto &positions = register_component<ecs::component::Position>();
-    auto &drawable = register_component<ecs::component::Drawable>();
-    auto &sprite = register_component<ecs::component::Sprite>();
-    auto &animation = register_component<ecs::component::Animations>();
-    auto &parallax = register_component<ecs::component::Parallax>();
-    auto &size = register_component<ecs::component::Size>();
-    auto &controllable = register_component<ecs::component::Controllable>();
-    auto &destroyable = register_component<ecs::component::Destroyable>();
+    auto &attributes = register_if_not_exist<ecs::component::Attributes>();
+    auto &positions = register_if_not_exist<ecs::component::Position>();
+    auto &drawable = register_if_not_exist<ecs::component::Drawable>();
+    auto &sprite = register_if_not_exist<ecs::component::Sprite>();
+    auto &animation = register_if_not_exist<ecs::component::Animations>();
+    auto &parallax = register_if_not_exist<ecs::component::Parallax>();
+    auto &size = register_if_not_exist<ecs::component::Size>();
+    auto &controllable = register_if_not_exist<ecs::component::Controllable>();
+    auto &destroyable = register_if_not_exist<ecs::component::Destroyable>();
 
     attributes.erase(entityIdx);
     destroyable.erase(entityIdx);
