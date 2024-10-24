@@ -23,7 +23,7 @@
       "controllable": false,
       "speed": 3.5
     },
-    "sprite": "r-typesheet8.gif",
+    "sprite": "assets/sprites/r-typesheet8.gif",
     "animations": {
       "width": 30,
       "height": 30,

@@ -10,10 +10,12 @@
 #include "Components/Animations.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/Invincibility.hpp"
 #include "Components/Life.hpp"
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
+#include <iostream>
 
 namespace ecs {
     namespace systems {
@@ -29,6 +31,7 @@ namespace ecs {
             auto &destroyable = r->register_if_not_exist<component::Destroyable>();
             auto &life = r->register_if_not_exist<component::Life>();
             auto &size = r->register_if_not_exist<component::Size>();
+            auto &invincibility = r->register_if_not_exist<component::Invincibility>();
 
             for (std::size_t i = 0; i < position.size(); ++i) {
                 if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] ||
@@ -106,17 +109,22 @@ namespace ecs {
                          )) &&
                         animation[i]->_object != animation[j]->_object) {
 
-                        life[i]->_life -= 1;
-                        life[j]->_life -= 1;
-
-                        if (animation[i]->_object == component::Object::Player && life[i]->_life > 0) {
-                            position[i]->_x = 100;
-                            position[i]->_y = 100;
+                        if (!invincibility[i].has_value()) {
+                            life[i]->_life = life[i]->_life - 1;
+                        }
+                        if (!invincibility[j].has_value()) {
+                            life[j]->_life = life[j]->_life - 1;
                         }
 
-                        if (animation[j]->_object == component::Object::Player && life[j]->_life > 0) {
-                            position[j]->_x = 100;
-                            position[j]->_y = 100;
+                        if (invincibility[i].has_value() && !invincibility[i]->_invincible) {
+                            life[i]->_life = life[i]->_life - 1;
+                            invincibility[i]->_invincible = true;
+                            invincibility[i]->_clock.restart();
+                        }
+                        if (invincibility[j].has_value() && !invincibility[j]->_invincible) {
+                            life[j]->_life = life[j]->_life - 1;
+                            invincibility[j]->_invincible = true;
+                            invincibility[j]->_clock.restart();
                         }
 
                         if (animation[i]->_object == component::Object::Weapon) {

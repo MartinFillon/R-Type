@@ -5,7 +5,9 @@
 ** Game file
 */
 
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <memory>
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
@@ -13,9 +15,12 @@
 #include "RegistryWrapper.hpp"
 #include "Systems/DestroySystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
+#include "TextureManager.hpp"
 
 namespace rtype::client {
-    Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _network(network) {}
+    Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _textureManager([this](std::string path){sf::Texture texture; texture.loadFromFile(path); return std::make_shared<sf::Texture>(texture); }, PATH_TO_ASSETS), _network(network)
+    {
+    }
 
     void Game::setupBackground()
     {

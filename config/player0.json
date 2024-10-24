@@ -9,7 +9,8 @@
     "animations",
     "size",
     "destroyable",
-    "life"
+    "life",
+    "invincibility"
   ],
   "components": {
     "life": 3,
@@ -23,7 +24,7 @@
         "controllable": true,
         "speed": 1.2
     },
-    "sprite": "r-typesheet42.gif",
+    "sprite": "assets/sprites/r-typesheet42.gif",
     "animations": {
         "width": 33,
         "height": 20,
@@ -36,6 +37,7 @@
     "size": {
         "width": 3,
         "height": 3
-    }
+    },
+    "invincibility": 1000
   }
 }
