@@ -9,7 +9,6 @@
     #define NETWORK_HPP_
 
     #include <asio.hpp>
-#include <functional>
 
     #include "Lobby.hpp"
     #include "IContext.hpp"
@@ -34,7 +33,7 @@ namespace rtype::server {
 
         private:
 
-            int start(std::shared_ptr<ecs::IContext> &context);
+            int start();
             void acceptConnection();
 
             void runClient(TCP::socket socket);
@@ -43,6 +42,8 @@ namespace rtype::server {
             bool _running;
 
             std::vector<Lobby> _lobbies;
+
+            std::shared_ptr<ecs::IContext> _gameContext;
 
             std::vector<std::shared_ptr<TCPConnection>> _clients;
             std::vector<std::thread> _threads;

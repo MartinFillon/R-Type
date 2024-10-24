@@ -18,10 +18,11 @@ rtype::server::Network::Network(int port): _port(port), _running(true), _context
 
 int rtype::server::Network::run(std::shared_ptr<ecs::IContext> &context)
 {
-    return start(context);
+    _gameContext = std::move(context);
+    return start();
 }
 
-int rtype::server::Network::start(std::shared_ptr<ecs::IContext> &context)
+int rtype::server::Network::start()
 {
     std::cout << NETWORK_START(_port) << std::endl;
 
@@ -64,5 +65,5 @@ void rtype::server::Network::runClient(TCP::socket socket)
 
     TCPConnection client(std::move(socket), id, _lobbies);
 
-    client.start();
+    client.start(_gameContext);
 }

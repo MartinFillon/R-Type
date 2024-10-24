@@ -18,12 +18,13 @@
 
 #include "TCPConnection.hpp"
 
-rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies): _socket(std::move(socket)), _id(id), _lobbies(lobbies)
+rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies): _socket(std::move(socket)), _id(id), _ready(false), _lobbies(lobbies)
 {
 }
 
-void rtype::server::TCPConnection::start()
+void rtype::server::TCPConnection::start(std::shared_ptr<ecs::IContext> &context)
 {
+    _gameContext = std::move(context);
     readClient();
 }
 
@@ -56,6 +57,15 @@ void rtype::server::TCPConnection::readClient()
         }
         if (message.find("QUIT") != std::string::npos) {
             quitLobby(message.substr(5));
+        }
+        if (message.find("READY") != std::string::npos) {
+            ready();
+        }
+        if (message.find("UNREADY") != std::string::npos) {
+            unready();
+        }
+        if (message.find("START") != std::string::npos) {
+            startLobby();
         }
 
         _data.clear();
@@ -104,12 +114,13 @@ bool rtype::server::TCPConnection::joinLobby(const std::string &name)
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
-            if (!lobby.assign(_id)) {
+            if (!lobby.assign(*this)) {
                 writeToClient("Lobby is full.");
                 return false;
             }
             writeToClient("Join successfully.");
             setLobby(name);
+            _ready = false;
             return true;
         }
     }
@@ -126,16 +137,70 @@ bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
-            if (!lobby.unassign(_id)) {
+            if (!lobby.unassign(*this)) {
                 writeToClient("You're not in this lobby.");
                 return false;
             }
             writeToClient("You quit lobby: " + name);
             setLobby("");
+            _ready = false;
             return true;
         }
     }
     writeToClient("Lobby not found.");
+    return false;
+}
+
+bool rtype::server::TCPConnection::ready()
+{
+    if (_lobby.empty()) {
+        writeToClient("You are not in a lobby.");
+        return false;
+    }
+
+    if (_ready) {
+        writeToClient("Already ready.");
+        return false;
+    }
+
+    _ready = true;
+
+    writeToClient("Ready!");
+    return true;
+}
+
+bool rtype::server::TCPConnection::unready()
+{
+    if (_lobby.empty()) {
+        writeToClient("You are not in a lobby.");
+        return false;
+    }
+
+    if (!_ready) {
+        writeToClient("You are not ready.");
+        return false;
+    }
+
+    _ready = false;
+
+    writeToClient("Not ready!");
+    return true;
+}
+
+bool rtype::server::TCPConnection::startLobby()
+{
+    for (auto &lobby: _lobbies) {
+        if (lobby.getName() == _lobby) {
+            if (!lobby.start(_gameContext)) {
+                writeToClient("All clients are not ready.");
+                return false;
+            }
+            return true;
+        }
+
+    }
+
+    writeToClient("You are not in a lobby.");
     return false;
 }
 

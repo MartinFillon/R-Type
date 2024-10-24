@@ -29,9 +29,9 @@ namespace rtype::server {
 
             Lobby(const std::string &name);
 
-            void start();
-            bool assign(unsigned int id);
-            bool unassign(unsigned int id);
+            bool start(std::shared_ptr<ecs::IContext> &context);
+            bool assign(TCPConnection &client);
+            bool unassign(TCPConnection &client);
 
             std::string getName() const
             {
@@ -43,15 +43,10 @@ namespace rtype::server {
                 return _clients.size();
             };
 
-            std::vector<unsigned int> getClients() const
-            {
-                return _clients;
-            };
-
         private:
 
             std::string _name;
-            std::vector<unsigned int> _clients;
+            std::vector<std::reference_wrapper<TCPConnection>> _clients;
 
             std::shared_ptr<Server> _server;
 

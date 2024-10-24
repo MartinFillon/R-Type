@@ -6,31 +6,42 @@
 */
 
 #include "Lobby.hpp"
+#include "Server.hpp"
 #include <cstdlib>
 
 rtype::server::Lobby::Lobby(const std::string &name): _name(name), _running(false)
 {
 }
 
-void rtype::server::Lobby::start()
+bool rtype::server::Lobby::start(std::shared_ptr<ecs::IContext> &context)
 {
+    for (auto &client: _clients) {
+        if (!client.get().isReady()) {
+            return false;
+        }
+    }
+
+    int portUdp = 1234;
+
+    _server = std::make_shared<Server>(portUdp);
+    return _server->run(context);
 }
 
-bool rtype::server::Lobby::assign(unsigned int id)
+bool rtype::server::Lobby::assign(TCPConnection &client)
 {
     if (_clients.size() == LOBBY_SIZE_MAX) {
         return false;
     }
 
-    _clients.push_back(id);
+    _clients.push_back(client);
 
     return true;
 }
 
-bool rtype::server::Lobby::unassign(unsigned int id)
+bool rtype::server::Lobby::unassign(TCPConnection &client)
 {
     for (size_t i = 0; i < _clients.size(); i++) {
-        if (_clients[i] == id) {
+        if (_clients[i].get().getId() == client.getId()) {
             _clients.erase(_clients.begin() + i);
             return true;
         }
