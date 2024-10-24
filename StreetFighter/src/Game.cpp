@@ -5,12 +5,12 @@
 ** StreetFighter
 */
 
+#include <cstdlib>
 #include <exception>
 #include <iostream>
-#include <cstdlib>
 #include <memory>
+#include <spdlog/spdlog.h>
 
-#include "Game.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Cinematic.hpp"
@@ -24,6 +24,7 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
+#include "Game.hpp"
 #include "Systems/BasicMouvementSystem.hpp"
 #include "Systems/CinematicsSystem.hpp"
 #include "Systems/GravitableMouvementSystem.hpp"
@@ -55,7 +56,7 @@ street_fighter::Game::Game()
         _r->add_system(ecs::systems::PunchSystem());
         _r->add_system(ecs::systems::KickSystem());
     } catch (const std::exception &e) {
-        std::cerr << "Setup error on: [" << e.what() << "]\n";
+        spdlog::error("Setup error on: [{}]", e.what());
         return;
     }
 }

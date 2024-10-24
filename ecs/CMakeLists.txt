@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 find_package(Json REQUIRED)
+find_package(SpdLog REQUIRED)
 
 add_subdirectory(components)
 
@@ -24,11 +25,13 @@ add_library(
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
+  src/systems/InvincibilitySystem.cpp
   src/Registry.cpp
   src/Utils.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(ecs PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
 # option(ENABLE_TESTS "Build tests along with the library" ON)
 
