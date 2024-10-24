@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
@@ -75,7 +76,7 @@ namespace ecs {
         if (components.find(component) != components.end()) {
             components[component]->call(r, e, node);
         } else {
-            std::cerr << "Cannot find: " << component << std::endl;
+            spdlog::warn("Cannot find: {}", component);
         }
     }
 } // namespace ecs
