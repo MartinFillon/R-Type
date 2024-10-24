@@ -19,6 +19,7 @@ add_library(
   src/systems/GravitableMouvementSystem.cpp
   src/systems/PunchSystem.cpp
   src/systems/KickSystem.cpp
+  src/systems/CinematicsSystem.cpp
   src/systems/BasicMouvementSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
