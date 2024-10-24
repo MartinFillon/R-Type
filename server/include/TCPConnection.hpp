@@ -12,6 +12,7 @@
 #include <functional>
 
     #include "Lobby.hpp"
+#include <unordered_map>
 
     #define MAX_LOBBIES 4
 

@@ -80,6 +80,11 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
         return false;
     }
 
+    if (name.find(':') != std::string::npos) {
+        writeToClient("No ':' on the name please.");
+        return false;
+    }
+
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
             writeToClient("Name already used.");
@@ -96,13 +101,10 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 
 void rtype::server::TCPConnection::dumpLobbies()
 {
-    if (_lobbies.empty()) {
-        writeToClient("No current lobbies");
-        return;
-    }
     for (auto &lobby: _lobbies) {
-        writeToClient(lobby.getName() + " => " + std::to_string(lobby.getNumberConnections()) + " / 4");
+        asio::write(_socket, asio::buffer(lobby.getName() + "\n"));
     }
+    asio::write(_socket, asio::buffer("200\n"));
 }
 
 bool rtype::server::TCPConnection::joinLobby(const std::string &name)

@@ -6,6 +6,8 @@
 */
 
 #include "Lobby.hpp"
+#include "IContext.hpp"
+#include "Context.hpp"
 #include "Server.hpp"
 #include <cstdlib>
 
@@ -21,10 +23,15 @@ bool rtype::server::Lobby::start(std::shared_ptr<ecs::IContext> &context)
         }
     }
 
-    int portUdp = 1234;
+    (void)context;
+
+    static int portUdp = 1234;
 
     _server = std::make_shared<Server>(portUdp);
-    return _server->run(context);
+    portUdp++;
+    std::shared_ptr<ecs::IContext> vraiContext = std::make_shared<rtype::server::Context>(_server);
+    _running = true;
+    return _server->run(vraiContext);
 }
 
 bool rtype::server::Lobby::assign(TCPConnection &client)

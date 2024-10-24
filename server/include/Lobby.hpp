@@ -42,6 +42,11 @@ namespace rtype::server {
             {
                 return _clients.size();
             };
+            
+            bool isRunning() const
+            {
+                return _running;
+            };
 
         private:
 

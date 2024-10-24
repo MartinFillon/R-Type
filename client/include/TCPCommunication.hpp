@@ -8,28 +8,31 @@
 #ifndef TCPCOMMUNICATION_HPP_
     #define TCPCOMMUNICATION_HPP_
 
-#include <asio.hpp>
-#include <string>
+    #include <asio.hpp>
+    #include <string>
 
-namespace client {
+    #define ERROR 84
+    #define SUCCESS 0
+
+namespace rtype::client {
     class TCPCommunication {
         public:
 
-            TCPCommunication(const std::string &host, const std::string &port);
+            TCPCommunication();
+
+            int setup(const std::string &host, const std::string &port);
 
             void run();
             void startGame();
 
-        private:
+            void send(const std::string &data);
+            std::string read();
 
-            void readServ();
-            void writeToServ();
-            // void startDisplay(); à voir pour +
+        private:
 
             asio::io_context _ioContext;
             asio::ip::tcp::socket _socket;
             asio::ip::tcp::resolver::results_type _endpoints;
-            asio::streambuf _buff;
 
     };
 }

@@ -5,69 +5,58 @@
 ** tcp connection file
 */
 
+#include <cstdlib>
+#include <iostream>
+#include <spdlog/spdlog.h>
+
 #include "TCPCommunication.hpp"
 #include "asio/buffer.hpp"
-#include <iostream>
+#include "asio/read.hpp"
+#include "asio/error_code.hpp"
 
-client::TCPCommunication::TCPCommunication(const std::string &host, const std::string &port)
-    : _socket(_ioContext)
+rtype::client::TCPCommunication::TCPCommunication(): _ioContext(), _socket(_ioContext) {}
+
+int rtype::client::TCPCommunication::setup(const std::string &host, const std::string &port)
 {
-    asio::ip::tcp::resolver resolver(_ioContext);
-    _endpoints = resolver.resolve(host, port);
-    asio::connect(_socket, _endpoints);
+    try {
+
+        asio::ip::tcp::resolver resolver(_ioContext);
+        _endpoints = resolver.resolve(host, port);
+
+        _socket = asio::ip::tcp::socket(_ioContext);
+        asio::connect(_socket, _endpoints);
+
+        std::cout << read() << "\n";
+
+    } catch (const std::exception &e) {
+        spdlog::error("{}", e.what());
+        return ERROR;
+    }
+
+    return SUCCESS;
 }
 
-void client::TCPCommunication::run()
+std::string rtype::client::TCPCommunication::read()
 {
-    //std::thread reader(&Zappy::Client::readServ, this);
-    readServ();
-    //reader.join();
-    //display.join();
+    std::string data;
+    asio::error_code error;
+    size_t length = asio::read_until(_socket, asio::dynamic_buffer(data), '\n', error);
+
+    if (error) {
+        std::cerr << error.message() << std::endl;
+    }
+
+    std::cout << "data received: [" << data << "]" << std::endl;
+    std::cout << "data received after: " << data.substr(0, length - 1) << std::endl;
+    return data.substr(0, length - 1);
 }
 
-void client::TCPCommunication::startGame()
+void rtype::client::TCPCommunication::send(const std::string &data)
 {
-    //siwth au jeu ou, on peut fiare de la transition ici.
-}
+    asio::error_code error;
+    asio::write(_socket, asio::buffer(data), error);
 
-void client::TCPCommunication::readServ()
-{
-      try {
-          std::istream is(&_buff);
-          while (true) {
-              asio::error_code error;
-              asio::read_until(_socket, _buff, '\n', error);
-              if (error == asio::error::eof) {
-                  exit(EXIT_SUCCESS);
-              }
-              if (error) {
-                  throw asio::system_error(error);
-              }
-              std::string line;
-              std::getline(is, line);
-              if (!line.empty() && line.back() == '\r') {
-                  line.pop_back();
-              }
-              if (!line.compare("Welcome!")) {
-                //writeToServ();
-                asio::write(_socket, asio::buffer("CREATE tim\n"));
-              }
-          }
-      } catch (std::exception &e) {
-          std::cerr << e.what() << "\n";
-      }
-}
-
-void client::TCPCommunication::writeToServ()
-{
-    while (true) {
-
-        std::string command;
-        std::getline(std::cin, command);
-        if (command.empty()) {
-            continue;
-        }
-        command += "\n";
-        asio::write(_socket, asio::buffer(command));
+    if (error) {
+        std::cerr << error.message() << std::endl;
     }
 }

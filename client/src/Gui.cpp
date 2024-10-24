@@ -6,14 +6,17 @@
 */
 
 #include "Gui.hpp"
+
 #include <memory>
 #include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
+#include "TCPCommunication.hpp"
 
 namespace rtype::client {
     Gui::Gui()
-        : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
+        : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _lobby(_window), _game(_window, _network)
     {
+        _tcpCommunication = std::make_shared<TCPCommunication>();
         _registry = std::make_shared<RegistryWrapper>();
         _cf = std::make_shared<ecs::ComponentFactory>();
     }
@@ -27,6 +30,12 @@ namespace rtype::client {
         if (ip.empty() || port.empty()) {
             return QUIT_PRESS;
         }
+
+        if (_tcpCommunication.get()->setup(ip, port) == ERROR) {
+            return ERROR;
+        }
+
+        int UDPport = _lobby.launchLobby(_tcpCommunication);
 
         if (_network.setup(ip, port) == ERROR) {
             return ERROR;
