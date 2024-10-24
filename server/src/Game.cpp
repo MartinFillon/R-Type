@@ -28,6 +28,7 @@
 #include "Systems/DestroySystem.hpp"
 #include "Systems/EnnemiesMilepatesSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
+#include "Systems/InvincibilitySystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace rtype::server {
@@ -153,6 +154,7 @@ namespace rtype::server {
     {
         _r->add_system(ecs::systems::CollisionsSystem());
         _r->add_system(ecs::systems::GunFireSystem());
+        _r->add_system(ecs::systems::InvincibilitySystem());
     }
 
     void Game::setupBosses()

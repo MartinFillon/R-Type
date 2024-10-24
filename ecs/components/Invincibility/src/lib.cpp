@@ -7,10 +7,9 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Components/Life.hpp"
+#include "Components/Invincibility.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
-#include <iostream>
 
 extern "C" void register_component(
     std::shared_ptr<ecs::Registry> &registry,
@@ -18,7 +17,7 @@ extern "C" void register_component(
     const nlohmann::json &component
 )
 {
-    auto &components = registry->register_component<ecs::component::Life>();
+    auto &components = registry->register_component<ecs::component::Invincibility>();
 
-    components[entity.getId()] = ecs::component::Life{component};
+    components[entity.getId()] = ecs::component::Invincibility{false, component, ecs::Clock()};
 }

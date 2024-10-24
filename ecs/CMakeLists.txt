@@ -23,6 +23,7 @@ add_library(
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
+  src/systems/InvincibilitySystem.cpp
   src/Registry.cpp
   src/Utils.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)

@@ -8,7 +8,8 @@
     "animations",
     "size",
     "destroyable",
-    "life"
+    "life",
+    "invincibility"
   ],
   "components": {
     "life": 3,
