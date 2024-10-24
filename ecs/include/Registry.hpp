@@ -66,7 +66,7 @@ namespace ecs {
 
         EntityManager _entities;
 
-        Registry() : _systemsManager(std::make_shared<systems::SystemsManager>("./config/systems.json")) {}
+        Registry() {}
 
         Registry(Registry &r)
         {

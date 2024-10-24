@@ -13,6 +13,7 @@
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
@@ -33,6 +34,7 @@
 street_fighter::Game::Game()
 {
     _r = std::make_shared<ecs::Registry>();
+    _r->register_if_not_exist<ecs::component::Attributes>();
     _r->register_if_not_exist<ecs::component::Position>();
     _r->register_if_not_exist<ecs::component::Animations>();
     _r->register_if_not_exist<ecs::component::Drawable>();
@@ -58,15 +60,16 @@ street_fighter::Game::Game()
 
 ecs::Entity street_fighter::Game::findPlayerIndex()
 {
-    auto &animations = _r->get_components<ecs::component::Animations>();
+    auto &attributs = _r->get_components<ecs::component::Attributes>();
     int idx = 0;
 
-    for (auto &&[anim] : ecs::custom_zip(animations)) {
-        if (!anim) {
+    for (auto &&[atr] : ecs::custom_zip(attributs)) {
+        if (!atr) {
             idx += 1;
             continue;
         }
-        if (anim->_object == ecs::component::Player && anim->_type == ecs::component::Type::First) {
+        if (atr->_entity_type == ecs::component::Attributes::EntityType::Player &&
+            atr->_ennemy_type == ecs::component::Attributes::EnnemyType::First) {
             break;
         }
         idx += 1;

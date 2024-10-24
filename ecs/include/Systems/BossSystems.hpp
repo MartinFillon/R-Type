@@ -38,9 +38,14 @@ namespace ecs {
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,
                 const ecs::component::Position &bossPos,
-                std::shared_ptr<IContext> ctx
+                std::shared_ptr<IContext> ctx,
+                ComponentFactory &factory
             );
-            void createFirstBoss(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx);
+            void createFirstBoss(
+                std::shared_ptr<Registry> &r,
+                std::shared_ptr<IContext> ctx,
+                ComponentFactory &factory
+            );
             bool isABoss(std::shared_ptr<Registry> &r);
             void moveProjectileTowardsPlayer(
                 std::shared_ptr<Registry> &r,
@@ -54,9 +59,15 @@ namespace ecs {
             ecs::Clock _shootingClock;
             ecs::Clock _projectileClock;
             std::size_t times = 0;
-            std::array<std::function<void(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx)>, 1> _bosses{
-                {[this](std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx) { createFirstBoss(r, ctx); }},
-            };
+            std::array<
+                std::function<
+                    void(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)>,
+                1>
+                _bosses{
+                    {[this](std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory) {
+                        createFirstBoss(r, ctx, factory);
+                    }},
+                };
         };
     } // namespace systems
 } // namespace ecs

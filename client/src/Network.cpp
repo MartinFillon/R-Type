@@ -14,7 +14,7 @@
 
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
-#include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Position.hpp"
 #include "Network.hpp"
@@ -128,14 +128,14 @@ namespace rtype::client {
             int id = ecs::utils::bytesToInt(arguments);
 
             auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
-            auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+            auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
-            if (animations[id]->_object == ecs::component::Weapon) {
+            if (attributes[id]->_entity_type == ecs::component::Attributes::EntityType::Weapon) {
                 r->erase(id);
             }
 
             destroyable[id]->_destroyable = true;
-            animations[id]->_object = ecs::component::Object::InDestroy;
+            attributes[id]->_entity_type = ecs::component::Attributes::EntityType::InDestroy;
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,

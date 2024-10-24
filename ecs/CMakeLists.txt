@@ -10,7 +10,6 @@ add_subdirectory(components)
 
 add_library(
   ecs
-  src/ImageResolver.cpp
   src/ComponentFactory.cpp
   src/systems/BasicRandomEnnemiesSystem.cpp
   src/systems/BossSystems.cpp
@@ -43,7 +42,7 @@ if(ENABLE_TESTS)
   enable_testing()
   add_executable(
     test_ecs test/EntityTest.cpp test/EntityManagerTest.cpp
-             test/ImageResolverTest.cpp test/ZipperIteratorTest.cpp)
+             test/ZipperIteratorTest.cpp)
 
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 

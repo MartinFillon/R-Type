@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "ComponentFactory.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
 #include "IContext.hpp"
@@ -22,6 +23,7 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
         auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
@@ -33,9 +35,10 @@ namespace ecs::systems {
 
         int i = 0;
 
-        for (auto &&[pos, anim, control] : custom_zip(positions, animations, controllable)) {
-            if (!pos || !anim || !control || anim->_object == ecs::component::InDestroy ||
-                anim->_type != ecs::component::Type::Milespates) {
+        for (auto &&[atr, pos, anim, control] : custom_zip(attributes, positions, animations, controllable)) {
+            if (!atr || !pos || !anim || !control ||
+                atr->_entity_type == ecs::component::Attributes::EntityType::InDestroy ||
+                atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Milespates) {
                 continue;
             }
 
@@ -93,7 +96,6 @@ namespace ecs::systems {
 
         for (std::size_t i = 0; i < NB_ENNEMIES; ++i) {
             milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
-            r->_entities.addEntity(milespates[i].getId());
             ctx->createMilespates(milespates[i].getId());
         }
 
@@ -106,15 +108,15 @@ namespace ecs::systems {
 
     int EnnemiesMilepatesSystem::countMilepates(std::shared_ptr<Registry> &r)
     {
-        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         int nbMilespates = 0;
 
-        for (auto &&[anim] : ecs::custom_zip(animations)) {
-            if (!anim) {
+        for (auto &&[atr] : ecs::custom_zip(attributes)) {
+            if (!atr) {
                 continue;
             }
 
-            if (anim->_type == ecs::component::Type::Milespates) {
+            if (atr->_ennemy_type == ecs::component::Attributes::EnnemyType::Milespates) {
                 nbMilespates += 1;
             }
         }

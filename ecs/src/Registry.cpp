@@ -8,6 +8,7 @@
 #include "Registry.hpp"
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
@@ -24,6 +25,7 @@ ecs::Entity ecs::Registry::spawn_entity()
 
 void ecs::Registry::erase(const std::size_t &entityIdx)
 {
+    auto &attributes = register_component<ecs::component::Attributes>();
     auto &positions = register_component<ecs::component::Position>();
     auto &drawable = register_component<ecs::component::Drawable>();
     auto &sprite = register_component<ecs::component::Sprite>();
@@ -33,6 +35,7 @@ void ecs::Registry::erase(const std::size_t &entityIdx)
     auto &controllable = register_component<ecs::component::Controllable>();
     auto &destroyable = register_component<ecs::component::Destroyable>();
 
+    attributes.erase(entityIdx);
     destroyable.erase(entityIdx);
     positions.erase(entityIdx);
     drawable.erase(entityIdx);

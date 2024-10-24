@@ -2,6 +2,7 @@
   "$schema": "../schema/entity.json",
   "name": "projectile",
   "active": [
+    "attributes",
     "position",
     "drawable",
     "controllable",
@@ -11,6 +12,10 @@
     "life"
   ],
   "components": {
+    "attributes": {
+      "entityType": "weapon",
+      "ennemyType": "basic"
+    },
     "life": 1,
     "position": {
       "x": 0,
@@ -27,9 +32,7 @@
       "height": 12,
       "x": 0,
       "y": 0,
-      "rotation": 0,
-      "type": "weapon",
-      "objectType": "basic"
+      "rotation": 0
     },
     "size": {
       "width": 3,

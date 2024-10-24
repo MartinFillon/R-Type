@@ -19,7 +19,7 @@
 #define BUTTON_QUIT "Quit"
 #define BUTTON_OPTIONS "Options"
 #define MENU_TITLE "R-Type by MR.PET"
-#define BG_PATH "./assets/sprites/Background/background_2.png"
+#define BG_PATH "assets/sprites/Background/background_2.png"
 #define OFFSET "offset"
 #define EMPTY_ADRESS "empty adress"
 #define MENU_MUSIC "./assets/musics/menuMusic.ogg"

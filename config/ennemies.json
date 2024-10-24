@@ -2,6 +2,7 @@
   "$schema": "../schema/entity.json",
   "name": "ennemies",
   "active": [
+    "attributes",
     "position",
     "drawable",
     "controllable",
@@ -12,6 +13,10 @@
     "destroyable"
   ],
   "components": {
+    "attributes": {
+      "entityType": "ennemy",
+      "ennemyType": "basic"
+    },
     "life": 1,
     "position": {
       "x": 1944.0,
@@ -23,15 +28,13 @@
       "controllable": false,
       "speed": 2
     },
-    "sprite": "r-typesheet5.gif",
+    "sprite": "assets/sprites/r-typesheet5.gif",
     "animations": {
       "width": 32,
       "height": 35,
       "x": 224,
       "y": 0,
-      "rotation": 0,
-      "type": "ennemies",
-      "objectType": "basic"
+      "rotation": 0
     },
     "size": {
       "width": 3.8,
