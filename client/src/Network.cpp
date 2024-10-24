@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <stdexcept>
 
 #include "Clock.hpp"
@@ -34,7 +35,6 @@ namespace rtype::client {
             [](std::shared_ptr<ecs::Registry> &r,
                const protocol::Packet &received_packet,
                std::shared_ptr<ecs::ComponentFactory> &_cf) {
-
                 auto arguments = received_packet.getArguments();
                 int id = ecs::utils::bytesToInt(arguments);
                 auto &pos = r->register_if_not_exist<ecs::component::Position>();
@@ -171,14 +171,8 @@ namespace rtype::client {
             _socket.open(UDP::v4());
             _socket.non_blocking(true);
 
-        } catch (const std::runtime_error &e) {
-
-            std::cerr << e.what() << std::endl;
-            return ERROR;
-
         } catch (const std::exception &e) {
-
-            std::cerr << e.what() << std::endl;
+            spdlog::error("{}", e.what());
             return ERROR;
         }
 
@@ -220,7 +214,7 @@ namespace rtype::client {
             }
 
             if (packet.getOpcode() == protocol::Operations::REFUSED) {
-                std::cerr << "Server full\n";
+                spdlog::error("Server full");
                 return EXIT_FAILURE;
             }
 

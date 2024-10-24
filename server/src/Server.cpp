@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <spdlog/spdlog.h>
 #include <vector>
 
 #include "Components/Animations.hpp"
@@ -43,7 +44,7 @@ namespace rtype::server {
 
     void Server::start(std::shared_ptr<ecs::IContext> &ctx)
     {
-        std::cout << SERVER_START(_port) << std::endl;
+        spdlog::info("Server started at port {}...", _port);
 
         std::thread context([&]() { _context.run(); });
 
@@ -61,7 +62,7 @@ namespace rtype::server {
         _running = false;
         _socket.close();
 
-        std::cout << SERVER_STOP << std::endl;
+        spdlog::info("Server stoped...");
     }
 
     void Server::broadcast(const ecs::IPacket &packet)
@@ -91,8 +92,6 @@ namespace rtype::server {
     void Server::handleMessage(const unsigned int client_id, const Message &message)
     {
         protocol::Packet packet(message);
-
-        std::cout << MESSAGE_RECEIVED(client_id) << std::endl;
 
         processAction(client_id, packet);
     }
@@ -239,7 +238,7 @@ namespace rtype::server {
     void Server::processAction(const unsigned int client_id, const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
-            std::cout << INVALID_PACKET(client_id) << std::endl;
+            spdlog::warn("Invalid packet from client [{}]", client_id);
             return;
         }
 
@@ -318,7 +317,7 @@ namespace rtype::server {
             return;
         }
 
-        std::cout << VALID_PACKET(client_id) << std::endl;
+        spdlog::debug("Valid packet from client [{}]", client_id);
     }
 
     void Server::handleEvents(const unsigned int client_id, const ecs::IPacket &packet)
