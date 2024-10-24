@@ -36,6 +36,9 @@ int street_fighter::Gui::handleEvents()
     auto &anim = _game._r->get_components<ecs::component::Animations>();
     auto &pos = _game._r->get_components<ecs::component::Position>();
 
+    if (_game.getIsCinematic()) {
+        return EXIT_SUCCESS;
+    }
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             _window.close();

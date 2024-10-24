@@ -1,0 +1,18 @@
+{
+    "name": "firstCinematic",
+    "active": [
+        "cinematic"
+    ],
+    "components": {
+        "cinematic": {
+            "xStart": -20,
+            "yStart": 500,
+            "xEnd": 500,
+            "yEnd": 500,
+            "objectType": "player",
+            "type": "first",
+            "state": true,
+            "speed": 1
+        }
+    }
+}

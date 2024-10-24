@@ -13,6 +13,7 @@
 #include "Game.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Cinematic.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
@@ -24,6 +25,7 @@
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "Systems/BasicMouvementSystem.hpp"
+#include "Systems/CinematicsSystem.hpp"
 #include "Systems/GravitableMouvementSystem.hpp"
 #include "Systems/KickSystem.hpp"
 #include "Systems/PunchSystem.hpp"
@@ -42,9 +44,12 @@ street_fighter::Game::Game()
     _r->register_if_not_exist<ecs::component::Life>();
     _r->register_if_not_exist<ecs::component::Gravitable>();
     _r->register_if_not_exist<ecs::component::KeyPressed>();
+    _r->register_if_not_exist<ecs::component::Cinematic>();
     try {
+        _factory.createEntity(_r, "StreetFighter/config/firstCinematic.json");
         _factory.createEntity(_r, "StreetFighter/config/Background.json");
         _factory.createEntity(_r, "StreetFighter/config/Ken.json");
+        _r->add_system(ecs::systems::CinematicsSystem());
         _r->add_system(ecs::systems::GravitableMouvementSystem());
         _r->add_system(ecs::systems::BasicMouvementSystem());
         _r->add_system(ecs::systems::PunchSystem());
@@ -53,6 +58,28 @@ street_fighter::Game::Game()
         std::cerr << "Setup error on: [" << e.what() << "]\n";
         return;
     }
+}
+
+bool street_fighter::Game::getIsCinematic() const
+{
+    return _isCinematic;
+}
+
+void street_fighter::Game::isCinematicPlaying()
+{
+    auto &cinematic = _r->get_components<ecs::component::Cinematic>();
+
+    for (auto &&[cine] : ecs::custom_zip(cinematic)) {
+        if (!cine) {
+            continue;
+        }
+        if (cine->_state == true) {
+            _isCinematic = true;
+            return;
+        }
+    }
+
+    _isCinematic = false;
 }
 
 ecs::Entity street_fighter::Game::findPlayerIndex()
@@ -77,5 +104,6 @@ ecs::Entity street_fighter::Game::findPlayerIndex()
 int street_fighter::Game::run()
 {
     _r->run_systems(_factory, nullptr);
+    isCinematicPlaying();
     return EXIT_SUCCESS;
 }
