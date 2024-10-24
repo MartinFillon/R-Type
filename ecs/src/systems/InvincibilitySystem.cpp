@@ -6,7 +6,8 @@
 */
 
 #include "Systems/InvincibilitySystem.hpp"
-#include <iostream>
+#include "Components/Invincibility.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
     namespace systems {

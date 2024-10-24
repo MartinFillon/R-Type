@@ -10,9 +10,15 @@
 #include "Components/Gravitable.hpp"
 #include "Components/KeyPressed.hpp"
 #include "Components/Position.hpp"
+#include "Registry.hpp"
+#include "SystemsManager.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::BasicMouvementSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+void ecs::systems::BasicMouvementSystem::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<IContext> ctx,
+    ComponentFactory &factory
+)
 {
     auto &positions = r->get_components<ecs::component::Position>();
     auto &animations = r->get_components<ecs::component::Animations>();
@@ -36,6 +42,5 @@ void ecs::systems::BasicMouvementSystem::operator()(std::shared_ptr<Registry> &r
         if (key->_value == ecs::component::Key::Right) {
             pos->_x += ctrl->_speed;
         }
-
     }
 }

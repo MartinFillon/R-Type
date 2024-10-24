@@ -19,13 +19,10 @@
 #include "EntityManager.hpp"
 #include "IContext.hpp"
 #include "SparseArray.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
     class ComponentFactory;
-
-    namespace systems {
-        class SystemsManager;
-    }
 
     class Registry : public std::enable_shared_from_this<Registry> {
       public:

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <nlohmann/json-schema.hpp>
 
 #include "Registry.hpp"
 #include "SystemsManager.hpp"

@@ -9,7 +9,6 @@
 
 #include <memory>
 #include <vector>
-#include <nlohmann/json-schema.hpp>
 
 #include "IContext.hpp"
 #include "Systems/ISystems.hpp"
