@@ -1,0 +1,32 @@
+{
+    "name": "background",
+    "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life"],
+    "components": {
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "life": 1,
+      "drawable": true,
+      "sprite": "StreetFighter/assets/background.gif",
+      "animations": {
+        "width": 1920,
+        "height": 1080,
+        "x": 110,
+        "y": 0,
+        "rotation": 0,
+        "type": "background",
+        "objectType": "none"
+      },
+      "parallax": {
+        "active": true,
+        "speed": 3,
+        "multiplier": 1
+      },
+      "size": {
+        "width": 4,
+        "height": 4
+      }
+    }
+  }
+  

@@ -9,12 +9,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <stdexcept>
 
 #include "Clock.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Destroyable.hpp"
+#include "Components/Position.hpp"
 #include "Network.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
@@ -26,86 +28,92 @@ namespace rtype::client {
     Network::Network() : _context(), _resolver(_context), _socket(_context)
     {
         _updateRegistryFunctions[protocol::Operations::WELCOME] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                      const protocol::Packet &received_packet) {}};
+                                                                      const protocol::Packet &received_packet,
+                                                                      std::shared_ptr<ecs::ComponentFactory> &_cf) {}};
 
-        _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                              const protocol::Packet &received_packet) {
-            auto arguments = received_packet.getArguments();
-            int id = ecs::utils::bytesToInt(arguments);
-            auto &pos = r->get_components<ecs::component::Position>();
+        _updateRegistryFunctions[protocol::Operations::OBJECT_POSITION] = {
+            [](std::shared_ptr<ecs::Registry> &r,
+               const protocol::Packet &received_packet,
+               std::shared_ptr<ecs::ComponentFactory> &_cf) {
+                auto arguments = received_packet.getArguments();
+                int id = ecs::utils::bytesToInt(arguments);
+                auto &pos = r->register_if_not_exist<ecs::component::Position>();
 
-            if (id > pos.size()) {
-                return;
+                if (id > pos.size()) {
+                    return;
+                }
+
+                int x = (arguments[4] << 8) + (arguments[5]);
+                int y = (arguments[6] << 8) + (arguments[7]);
+
+                pos[id]->_x = x;
+                pos[id]->_y = y;
             }
-
-            int x = (arguments[4] << 8) + (arguments[5]);
-            int y = (arguments[6] << 8) + (arguments[7]);
-
-            pos[id]->_x = x;
-            pos[id]->_y = y;
-        }};
+        };
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_RECT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                          const protocol::Packet &received_packet) {
+                                                                          const protocol::Packet &received_packet,
+                                                                          std::shared_ptr<ecs::ComponentFactory> &_cf) {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
             int width = (received_packet.getArguments()[4] << 8) + (received_packet.getArguments()[5]);
             int height = (received_packet.getArguments()[6] << 8) + (received_packet.getArguments()[7]);
             int x = (received_packet.getArguments()[8] << 8) + (received_packet.getArguments()[9]);
             int y = (received_packet.getArguments()[10] << 8) + (received_packet.getArguments()[11]);
-            auto &anim = r->get_components<ecs::component::Animations>();
+            auto &anim = r->register_if_not_exist<ecs::component::Animations>();
 
             anim[id] = ecs::component::Animations{ecs::Clock(), width, height, x, y};
         }};
 
-        _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
-            auto arguments = received_packet.getArguments();
-            int id = ecs::utils::bytesToInt(arguments);
-            int type = arguments[4];
+        _updateRegistryFunctions[protocol::Operations::NEW_PLAYER] = {
+            [](std::shared_ptr<ecs::Registry> &r,
+               const protocol::Packet &received_packet,
+               std::shared_ptr<ecs::ComponentFactory> &_cf) {
+                auto arguments = received_packet.getArguments();
+                int id = ecs::utils::bytesToInt(arguments);
+                int type = arguments[4];
 
-            switch (type) {
-                case protocol::ObjectTypes::PLAYER_1:
-                    factory.createEntity(id, CONFIG_PLAYER_0);
-                    break;
-                case protocol::ObjectTypes::PLAYER_2:
-                    factory.createEntity(id, CONFIG_PLAYER_1);
-                    break;
-                case protocol::ObjectTypes::PLAYER_3:
-                    factory.createEntity(id, CONFIG_PLAYER_2);
-                    break;
-                case protocol::ObjectTypes::PLAYER_4:
-                    factory.createEntity(id, CONFIG_PLAYER_3);
-                    break;
-                default:
-                    break;
-            }
-        }};
+                switch (type) {
+                    case protocol::ObjectTypes::PLAYER_1:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_0);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_2:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_1);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_3:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_2);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_4:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_3);
+                        break;
+                    default:
+                        break;
+                }
+            },
+        };
 
         _updateRegistryFunctions[protocol::Operations::NEW_OBJECT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                         const protocol::Packet &received_packet) {
-            ecs::ComponentFactory factory(*r, ecs::ComponentFactory::Mode::Client);
-
+                                                                         const protocol::Packet &received_packet,
+                                                                         std::shared_ptr<ecs::ComponentFactory> &_cf) {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
             int type = arguments[4];
 
             switch (type) {
                 case protocol::ObjectTypes::ENEMY:
-                    factory.createEntity(id, CONFIG_ENNEMIES);
+                    _cf->createEntity(r, id, CONFIG_ENNEMIES);
                     break;
                 case protocol::ObjectTypes::MILESPATES:
-                    factory.createEntity(id, CONFIG_MILEPATES);
+                    _cf->createEntity(r, id, CONFIG_MILEPATES);
                     break;
                 case protocol::ObjectTypes::BOSS:
-                    factory.createEntity(id, CONFIG_BOSS);
+                    _cf->createEntity(r, id, CONFIG_BOSS);
                     break;
                 case protocol::ObjectTypes::BULLET:
-                    factory.createEntity(id, CONFIG_PROJECTILE);
+                    _cf->createEntity(r, id, CONFIG_PROJECTILE);
                     break;
                 case protocol::ObjectTypes::PLAYER_BULLET:
-                    factory.createEntity(id, CONFIG_PLAYER_PROJECTILE);
+                    _cf->createEntity(r, id, CONFIG_PLAYER_PROJECTILE);
                     break;
                 default:
                     break;
@@ -113,7 +121,9 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::OBJECT_REMOVED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                             const protocol::Packet &received_packet) {
+                                                                             const protocol::Packet &received_packet,
+                                                                             std::shared_ptr<ecs::ComponentFactory> &_cf
+                                                                          ) {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
 
@@ -129,7 +139,9 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_CRASHED] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                             const protocol::Packet &received_packet) {
+                                                                             const protocol::Packet &received_packet,
+                                                                             std::shared_ptr<ecs::ComponentFactory> &_cf
+                                                                          ) {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
 
@@ -137,7 +149,8 @@ namespace rtype::client {
         }};
 
         _updateRegistryFunctions[protocol::Operations::PLAYER_LEFT] = {[](std::shared_ptr<ecs::Registry> &r,
-                                                                          const protocol::Packet &received_packet) {
+                                                                          const protocol::Packet &received_packet,
+                                                                          std::shared_ptr<ecs::ComponentFactory> &_cf) {
             auto arguments = received_packet.getArguments();
             int id = ecs::utils::bytesToInt(arguments);
 
@@ -158,14 +171,8 @@ namespace rtype::client {
             _socket.open(UDP::v4());
             _socket.non_blocking(true);
 
-        } catch (const std::runtime_error &e) {
-
-            std::cerr << e.what() << std::endl;
-            return ERROR;
-
         } catch (const std::exception &e) {
-
-            std::cerr << e.what() << std::endl;
+            spdlog::error("{}", e.what());
             return ERROR;
         }
 
@@ -176,7 +183,7 @@ namespace rtype::client {
     {
         for (auto &[id, func] : _updateRegistryFunctions) {
             if (received_packet.getOpcode() == id) {
-                func(_registry, received_packet);
+                func(_registry, received_packet, _cf);
             }
         }
     }
@@ -207,7 +214,7 @@ namespace rtype::client {
             }
 
             if (packet.getOpcode() == protocol::Operations::REFUSED) {
-                std::cerr << "Server full\n";
+                spdlog::error("Server full");
                 return EXIT_FAILURE;
             }
 

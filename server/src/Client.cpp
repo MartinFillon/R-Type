@@ -5,16 +5,17 @@
 ** Client
 */
 
-#include "Client.hpp"
 #include <iostream>
-#include <string>
+#include <spdlog/spdlog.h>
+
+#include "Client.hpp"
 #include "Server.hpp"
 
 namespace rtype::server {
     Client::Client(const unsigned int client_id, Server &server, const Endpoint &endpoint, Socket &socket)
         : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
     {
-        std::cout << NEW_CLIENT(_id) << std::endl;
+        spdlog::info("New client [{}] connected", _id);
     };
 
     void Client::send(const ecs::IPacket &packet)
@@ -27,7 +28,7 @@ namespace rtype::server {
 
     void Client::disconnect()
     {
-        std::cout << CLIENT_LEFT(_id) << std::endl;
+        spdlog::info("Client [{}] disconnected", _id);
         _running = false;
     }
 

@@ -5,19 +5,33 @@
 ** Collision system file
 */
 #include "Systems/CollisionsSystem.hpp"
+#include <memory>
+#include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Invincibility.hpp"
 #include "Components/Life.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Registry.hpp"
+#include <iostream>
 
 namespace ecs {
     namespace systems {
-        void CollisionsSystem::operator()(Registry &r, std::shared_ptr<IContext> ctx)
+        void CollisionsSystem::operator()(
+            std::shared_ptr<Registry> &r,
+            std::shared_ptr<IContext> ctx,
+            ComponentFactory &factory
+        )
         {
-            auto &position = r.register_if_not_exist<component::Position>();
-            auto &drawable = r.register_if_not_exist<component::Drawable>();
-            auto &animation = r.register_if_not_exist<component::Animations>();
-            auto &destroyable = r.register_if_not_exist<component::Destroyable>();
-            auto &life = r.register_if_not_exist<component::Life>();
-            auto &size = r.register_if_not_exist<component::Size>();
+            auto &position = r->register_if_not_exist<component::Position>();
+            auto &drawable = r->register_if_not_exist<component::Drawable>();
+            auto &animation = r->register_if_not_exist<component::Animations>();
+            auto &destroyable = r->register_if_not_exist<component::Destroyable>();
+            auto &life = r->register_if_not_exist<component::Life>();
+            auto &size = r->register_if_not_exist<component::Size>();
+            auto &invincibility = r->register_if_not_exist<component::Invincibility>();
 
             for (std::size_t i = 0; i < position.size(); ++i) {
                 if (!position[i] || !size[i] || !destroyable[i] || !life[i] || !animation[i] ||
@@ -36,7 +50,7 @@ namespace ecs {
                 if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
                     (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
                     if (animation[i]->_object == component::Object::Weapon) {
-                        r.erase(i);
+                        r->erase(i);
                     } else {
                         destroyable[i]->_destroyable = true;
                         animation[i]->_object = component::Object::InDestroy;
@@ -57,7 +71,7 @@ namespace ecs {
                     if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
                         (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
                         if (animation[j]->_object == component::Object::Weapon) {
-                            r.erase(j);
+                            r->erase(j);
                         } else {
                             destroyable[j]->_destroyable = true;
                             animation[j]->_object = component::Object::InDestroy;
@@ -95,22 +109,27 @@ namespace ecs {
                          )) &&
                         animation[i]->_object != animation[j]->_object) {
 
-                        life[i]->_life -= 1;
-                        life[j]->_life -= 1;
-
-                        if (animation[i]->_object == component::Object::Player && life[i]->_life > 0) {
-                            position[i]->_x = 100;
-                            position[i]->_y = 100;
+                        if (!invincibility[i].has_value()) {
+                            life[i]->_life = life[i]->_life - 1;
+                        }
+                        if (!invincibility[j].has_value()) {
+                            life[j]->_life = life[j]->_life - 1;
                         }
 
-                        if (animation[j]->_object == component::Object::Player && life[j]->_life > 0) {
-                            position[j]->_x = 100;
-                            position[j]->_y = 100;
+                        if (invincibility[i].has_value() && !invincibility[i]->_invincible) {
+                            life[i]->_life = life[i]->_life - 1;
+                            invincibility[i]->_invincible = true;
+                            invincibility[i]->_clock.restart();
+                        }
+                        if (invincibility[j].has_value() && !invincibility[j]->_invincible) {
+                            life[j]->_life = life[j]->_life - 1;
+                            invincibility[j]->_invincible = true;
+                            invincibility[j]->_clock.restart();
                         }
 
                         if (animation[i]->_object == component::Object::Weapon) {
                             sendDestroyedObject(ctx, i);
-                            r.erase(i);
+                            r->erase(i);
                         } else {
                             if (life[i]->_life <= 0) {
                                 destroyable[i]->_destroyable = true;
@@ -121,7 +140,7 @@ namespace ecs {
 
                         if (animation[j]->_object == component::Object::Weapon) {
                             sendDestroyedObject(ctx, j);
-                            r.erase(i);
+                            r->erase(i);
                         } else {
                             if (life[j]->_life <= 0) {
                                 destroyable[j]->_destroyable = true;

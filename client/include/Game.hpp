@@ -8,6 +8,8 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include <SFML/Graphics/Texture.hpp>
+#include "ComponentFactory.hpp"
 #define SHOOT_SOUND "assets/musics/shotSound.ogg"
 #define GAME_MUSIC "assets/musics/gameMusic-Thrut.ogg"
 
@@ -23,6 +25,7 @@
 #include "RegistryWrapper.hpp"
 #include "TextureManager.hpp"
 
+#define PATH_TO_ASSETS "assets/sprites/"
 #define FRAME_PER_SECONDS(x) (int)(1 / x)
 
 namespace rtype::client {
@@ -31,6 +34,11 @@ namespace rtype::client {
         Game(sf::RenderWindow &window, Network &network);
 
         void setRegistry(std::shared_ptr<RegistryWrapper> &registry);
+
+        void setFactory(std::shared_ptr<ecs::ComponentFactory> &cf)
+        {
+            _cf = cf;
+        }
 
         int run();
 
@@ -45,9 +53,10 @@ namespace rtype::client {
 
         sf::RenderWindow &_window;
         std::shared_ptr<RegistryWrapper> _registry;
+        std::shared_ptr<ecs::ComponentFactory> _cf;
 
         ecs::Clock _clock;
-        TextureManager _textureManager;
+        ecs::TextureManager<sf::Texture> _textureManager;
 
         sf::SoundBuffer _gameShotSoundBuffer;
         sf::Sound _shotSound;

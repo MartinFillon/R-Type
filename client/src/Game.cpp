@@ -5,7 +5,9 @@
 ** Game file
 */
 
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <memory>
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
@@ -13,17 +15,19 @@
 #include "RegistryWrapper.hpp"
 #include "Systems/DestroySystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
+#include "TextureManager.hpp"
 
 namespace rtype::client {
-    Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _network(network) {}
+    Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _textureManager([this](std::string path){sf::Texture texture; texture.loadFromFile(path); return std::make_shared<sf::Texture>(texture); }, PATH_TO_ASSETS), _network(network)
+    {
+    }
 
     void Game::setupBackground()
     {
-        ecs::ComponentFactory factory(*_registry->getClientRegistry(), ecs::ComponentFactory::Mode::Client);
-        factory.createEntity(CONFIG_BACKGROUND_0);
-        factory.createEntity(CONFIG_BACKGROUND_2);
-        factory.createEntity(CONFIG_BACKGROUND_3);
-        factory.createEntity(CONFIG_BACKGROUND_4);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_0);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_2);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
+        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
         _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
     }
 
@@ -51,7 +55,7 @@ namespace rtype::client {
         while (_window.isOpen()) {
             event();
             display();
-            _registry->run_systems(nullptr);
+            _registry->run_systems(*_cf, nullptr);
         }
         _network.send(protocol::Operations::LEAVING, {});
         _network.stop();

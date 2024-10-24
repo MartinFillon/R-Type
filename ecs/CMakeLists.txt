@@ -2,20 +2,10 @@ cmake_minimum_required(VERSION 3.27)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-include(FetchContent)
+find_package(Json REQUIRED)
+find_package(SpdLog REQUIRED)
 
-FetchContent_Declare(
-  SFML
-  GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 2.6.x
-  GIT_SHALLOW ON
-  EXCLUDE_FROM_ALL SYSTEM)
-FetchContent_MakeAvailable(SFML)
-
-FetchContent_Declare(
-  json
-  URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
-FetchContent_MakeAvailable(json)
+add_subdirectory(components)
 
 add_library(
   ecs
@@ -27,27 +17,20 @@ add_library(
   src/systems/DestroySystem.cpp
   src/systems/BossSystems.cpp
   src/systems/CollisionsSystem.cpp
+  src/systems/GravitableMouvementSystem.cpp
+  src/systems/PunchSystem.cpp
+  src/systems/KickSystem.cpp
+  src/systems/BasicMouvementSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
+  src/systems/InvincibilitySystem.cpp
   src/Registry.cpp
   src/Utils.cpp)
 target_compile_features(ecs PRIVATE cxx_std_17)
 target_include_directories(ecs PUBLIC include ../protocol/include)
 target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
-target_link_libraries(ecs PUBLIC sfml-graphics)
-
-if(WIN32)
-  add_custom_command(
-    TARGET ecs
-    COMMENT "Copy OpenAL DLL"
-    PRE_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy
-      ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll
-      $<TARGET_FILE_DIR:ecs>
-    VERBATIM)
-endif()
+target_link_libraries(ecs PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
 # option(ENABLE_TESTS "Build tests along with the library" ON)
 

@@ -6,8 +6,9 @@
 */
 
 #include <memory>
+#include <spdlog/cfg/env.h>
+#include <spdlog/spdlog.h>
 
-#include <iostream>
 #include "Context.hpp"
 #include "INetwork.hpp"
 #include "Network.hpp"
@@ -25,11 +26,12 @@ std::shared_ptr<ecs::IContext> create_context(std::shared_ptr<ecs::INetwork> &ne
 
 int main(int ac, char **av)
 {
+    spdlog::cfg::load_env_levels();
+
     if (ac != NB_ARGS_REQUIRED) {
-        std::cerr << SERVER_MISSING_PORT << std::endl;
+        spdlog::error("{}", SERVER_MISSING_PORT);
         return R_TYPE_ERROR;
     }
-
     std::shared_ptr<ecs::INetwork> server;
     std::shared_ptr<ecs::IContext> ctx;
 
@@ -39,7 +41,7 @@ int main(int ac, char **av)
         server = create_network(port);
         ctx = create_context(server);
     } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        spdlog::error("{}", e.what());
         return R_TYPE_ERROR;
     }
 

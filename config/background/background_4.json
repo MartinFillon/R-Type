@@ -8,7 +8,7 @@
     },
     "life": 1,
     "drawable": true,
-    "sprite": "Background/background_4.png",
+    "sprite": "assets/sprites/Background/background_4.png",
     "animations": {
       "width": 1920,
       "height": 1080,

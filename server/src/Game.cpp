@@ -6,14 +6,17 @@
 */
 
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <string>
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
 #include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
@@ -25,11 +28,12 @@
 #include "Systems/DestroySystem.hpp"
 #include "Systems/EnnemiesMilepatesSystem.hpp"
 #include "Systems/GunFireSystem.hpp"
+#include "Systems/InvincibilitySystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace rtype::server {
 
-    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf(*_r, ecs::ComponentFactory::Mode::Client)
+    Game::Game() : _r(std::make_shared<ecs::Registry>()), _cf()
     {
         _r->register_component<ecs::component::Position>();
         _r->register_component<ecs::component::Controllable>();
@@ -58,11 +62,11 @@ namespace rtype::server {
         if (_ctx == nullptr) {
             _ctx = ctx;
         }
-        auto &positions = _r->get_components<ecs::component::Position>();
-        auto &animations = _r->get_components<ecs::component::Animations>();
+        auto &positions = _r->register_if_not_exist<ecs::component::Position>();
+        auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
 
         if (_systemClock.getSeconds() > FRAME_PER_SECONDS(20)) {
-            _r->run_systems(ctx);
+            _r->run_systems(_cf, ctx);
             _systemClock.restart();
         }
 
@@ -84,13 +88,12 @@ namespace rtype::server {
 
     ecs::Entity Game::createPlayer(const unsigned int player_place)
     {
-        std::string file = "config/player";
+        std::string file = "./config/player";
 
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        std::cerr << file << std::endl;
-        ecs::Entity e = _cf.createEntity(file);
+        ecs::Entity e = _cf.createEntity(_r, file);
 
         _players_entities_ids[player_place] = e.getId();
 
@@ -101,8 +104,8 @@ namespace rtype::server {
     {
         const int player_entity_id = _players_entities_ids[player_place];
 
-        auto &position = _r->get_components<ecs::component::Position>()[player_entity_id];
-        auto &controllable = _r->get_components<ecs::component::Controllable>()[player_entity_id];
+        auto &position = _r->register_if_not_exist<ecs::component::Position>()[player_entity_id];
+        auto &controllable = _r->register_if_not_exist<ecs::component::Controllable>()[player_entity_id];
 
         if (dir == protocol::Direction::UP) {
             position->_y -= controllable->_speed;
@@ -120,11 +123,10 @@ namespace rtype::server {
 
     void Game::makePlayerShoot(int player_place)
     {
-        auto &positions = _r->get_components<ecs::component::Position>();
-        auto &animations = _r->get_components<ecs::component::Animations>();
+        auto &positions = _r->register_if_not_exist<ecs::component::Position>();
+        auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
         int i = 0;
-        ecs::ComponentFactory ctf(*_r, ecs::ComponentFactory::Mode::Client);
-        ecs::Entity e = ctf.createEntity(CONFIG_PLAYER_PROJECTILE);
+        ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
         for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
@@ -152,6 +154,7 @@ namespace rtype::server {
     {
         _r->add_system(ecs::systems::CollisionsSystem());
         _r->add_system(ecs::systems::GunFireSystem());
+        _r->add_system(ecs::systems::InvincibilitySystem());
     }
 
     void Game::setupBosses()
@@ -175,10 +178,10 @@ namespace rtype::server {
         return _players_entities_ids[player_place];
     }
 
-    const int Game::getEntityById(int id)
+    const int Game::getPlaceByPlayerEntityId(const int player_entity_id)
     {
         for (size_t i = 0; i < _players_entities_ids.size(); i++) {
-            if (_players_entities_ids[i] == id) {
+            if (_players_entities_ids[i] == player_entity_id) {
                 return i;
             }
         }

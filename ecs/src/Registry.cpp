@@ -7,6 +7,14 @@
 
 #include "Registry.hpp"
 #include <memory>
+#include "ComponentFactory.hpp"
+#include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Parallax.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "IContext.hpp"
 
 ecs::Entity ecs::Registry::spawn_entity()
@@ -35,9 +43,10 @@ void ecs::Registry::erase(const std::size_t &entityIdx)
     controllable.erase(entityIdx);
 }
 
-void ecs::Registry::run_systems(std::shared_ptr<IContext> ctx = nullptr)
+void ecs::Registry::run_systems(ecs::ComponentFactory &f, std::shared_ptr<IContext> ctx = nullptr)
 {
+    std::shared_ptr<Registry> r = this->shared_from_this();
     for (auto &system : _systems) {
-        system(*this, ctx);
+        system(r, ctx, f);
     }
 }

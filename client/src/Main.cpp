@@ -5,15 +5,14 @@
 ** main
 */
 
+#include <spdlog/cfg/env.h>
+
 #include "Gui.hpp"
 //#include "TCPCommunication.hpp"
 
 int main()
 {
-    //client::TCPCommunication tcp("127.0.0.1", "4242");
-    // on va mettre un port en dure au debut pour le TCP (change après crea lobby et autre)
-    //tcp.run();
-
+    spdlog::cfg::load_env_levels();
     rtype::client::Gui gui;
 
     return gui.run();
