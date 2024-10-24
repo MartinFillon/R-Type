@@ -181,7 +181,11 @@ namespace rtype::server {
     void Game::setupBasicEnnemies()
     {
         _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+
+        std::ifstream f("config/systems/basic_random_ennemies.json");
+        nlohmann::json config = nlohmann::json::parse(f);
+
+        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem(config));
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

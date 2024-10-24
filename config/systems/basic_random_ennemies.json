@@ -3,7 +3,7 @@
   "ennemies_tick": 2,
   "max_random_ennemies": 4,
   "value_spawn_ennemies": 2,
-  "basic_pos_swawn_x": 1944,
+  "basic_pos_spawn_x": 1944,
   "max_spawn_x": 2500,
   "shooting_elapsed_time": 0.2,
   "basic_ennemies_animation_speed": 0.24,
