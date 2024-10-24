@@ -4,22 +4,6 @@
 #include "ComponentFactory.hpp"
 #include "Components/Position.hpp"
 #include "IContext.hpp"
-#define ENNEMIES_TICK 2
-
-#define MAX_RANDOM_ENNEMIES 4
-#define VALUE_SPAWN_ENNEMIES 2
-
-#define BASIC_POS_SPAWN_X 1944
-#define MAX_SPAWN_X 2500
-
-#define SHOOTING_ELAPSED_TIME 0.2
-
-#define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
-#define BASIC_ENNEMIES_SPEED 1.8
-#define BASIC_ENNEMIES_PROJECTILE_SPEED 10
-#define BASIC_PROJECTILE_SPEED_TICK 0.3
-#define CENTERED_SHOOT 15
-#define BASIC_ENNEMIES_SPEED_TICK 8
 
 #include "Clock.hpp"
 #include "ISystems.hpp"
@@ -29,6 +13,8 @@ namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
+            BasicRandomEnnemiesSystem(const nlohmann::json &j);
+
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,
                 const ecs::component::Position &ennemiesPos,
@@ -51,6 +37,20 @@ namespace ecs {
           private:
             Clock _clock;
             Clock _shootingClock;
+            int _maxNbOfEnnemies;
+            int _ennemiesTick;
+            int _valueSpawnEnnemies;
+            int _basicPosSpawnX;
+            int _maxSpawnX;
+            int _shootingElapsedTime;
+            int _basicEnnemiesAnimationSpeed;
+            int _basicEnnemiesSpeed;
+            double _basicEnnemiesProjectileSpeed;
+            int _basicProjectileSpeedTick;
+            int _centeredShoot;
+            int _basicEnnemiesSpeedTick;
+            std::string _enemmiesConfigFile;
+            std::string _projectileConfigFile;
         };
     }; // namespace systems
 }; // namespace ecs
