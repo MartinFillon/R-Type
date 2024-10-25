@@ -5,6 +5,8 @@
 ** LOBBY
 */
 
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <iostream>
 
 #include "LobbyMenu.hpp"
@@ -121,5 +123,39 @@ void rtype::client::LobbyMenu::display()
 
 void rtype::client::LobbyMenu::displayLobbies()
 {
+    for (int i = 0; i < _lobbies.size(); i++) {
 
+        sf::RectangleShape rectangle;
+
+        rectangle.setFillColor(sf::Color::Black);
+        rectangle.setOutlineColor(sf::Color::White);
+        rectangle.setOutlineThickness(3);
+        rectangle.setSize({300, 50});
+        rectangle.setPosition({800, 400 + (float)i * 75});
+
+        sf::Text text;
+
+        text.setPosition({820, 415 + (float)i * 75});
+        text.setString(_lobbies[i].name);
+        text.setFillColor(sf::Color::White);
+        text.setCharacterSize(15);
+
+        sf::Text nbPlayers;
+
+        nbPlayers.setPosition({1050, 415 + (float)i * 75});
+        nbPlayers.setString(std::to_string(_lobbies[i].nbPlayers) + " / 4");
+        nbPlayers.setFillColor(_lobbies[i].nbPlayers < 4 ? sf::Color::Green : sf::Color::Red);
+        nbPlayers.setCharacterSize(15);
+
+        sf::Font font;
+
+        font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
+        text.setFont(font);
+        nbPlayers.setFont(font);
+
+        _window.draw(rectangle);
+        _window.draw(text);
+        _window.draw(nbPlayers);
+
+    }
 }
