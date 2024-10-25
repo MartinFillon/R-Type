@@ -1,0 +1,4 @@
+{
+  "$schema": "../schema/systems.json",
+  "systems": ["test"]
+}

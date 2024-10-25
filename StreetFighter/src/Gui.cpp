@@ -15,7 +15,6 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <cstdlib>
 
-#include "Gui.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/KeyPressed.hpp"
@@ -23,9 +22,19 @@
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
 #include "Game.hpp"
+#include "Gui.hpp"
 #include "ZipperIterator.hpp"
 
-street_fighter::Gui::Gui(Game &game): _game(game), _textureManager([this](std::string path){sf::Texture texture; texture.loadFromFile(path); return std::make_shared<sf::Texture>(texture); }, PATH_TO_STREET_FIGHTER_ASSETS), _window(sf::VideoMode(1920, 1080), SECOND_GAME_NAME)
+street_fighter::Gui::Gui()
+    : _game(), _textureManager(
+                   [this](std::string path) {
+                       sf::Texture texture;
+                       texture.loadFromFile(path);
+                       return std::make_shared<sf::Texture>(texture);
+                   },
+                   PATH_TO_STREET_FIGHTER_ASSETS
+               ),
+      _window(sf::VideoMode(1920, 1080), SECOND_GAME_NAME)
 {
 }
 
@@ -36,6 +45,9 @@ int street_fighter::Gui::handleEvents()
     auto &anim = _game._r->get_components<ecs::component::Animations>();
     auto &pos = _game._r->get_components<ecs::component::Position>();
 
+    if (_game.getIsCinematic()) {
+        return EXIT_SUCCESS;
+    }
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             _window.close();

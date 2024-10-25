@@ -5,6 +5,7 @@
 ** ComponentFactory
 */
 
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -16,6 +17,7 @@
 #include "Registry.hpp"
 #include "nlohmann/detail/value_t.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory()
@@ -33,6 +35,11 @@ namespace ecs {
         } catch (const std::filesystem::__cxx11::filesystem_error &error) {
             spdlog::error("Error on searching path: {}", error.what());
         }
+
+        std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
+
+        _schema = nlohmann::json::parse(s);
+        _validator.set_root_schema(_schema);
     }
 
     ComponentFactory::~ComponentFactory() {}
@@ -57,7 +64,7 @@ namespace ecs {
         r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-            createComponent(r, e, c, config["components"][c]);
+             createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }
@@ -73,12 +80,11 @@ namespace ecs {
         if (config == nlohmann::detail::value_t::discarded) {
             throw ComponentFactoryException(ERROR_PARSING_ERROR(file));
         }
-
         Entity e = Entity(id);
         r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-            createComponent(r, e, c, config["components"][c]);
+             createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }

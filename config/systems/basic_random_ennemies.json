@@ -1,0 +1,17 @@
+{
+  "$schema": "../../schema/BasicRandomEnnemiesSystem.json",
+  "ennemies_tick": 2,
+  "max_random_ennemies": 4,
+  "value_spawn_ennemies": 2,
+  "basic_pos_spawn_x": 1944,
+  "max_spawn_x": 2500,
+  "shooting_elapsed_time": 0.2,
+  "basic_ennemies_animation_speed": 0.24,
+  "basic_ennemies_speed": 1.8,
+  "basic_ennemies_projectile_speed": 10,
+  "basic_projectile_speed_tick": 0.3,
+  "centered_shoot": 15,
+  "basic_ennemies_speed_tick": 8,
+  "ennemies_config_file": "config/ennemies.json",
+  "projectile_config_file": "config/projectile.json"
+}

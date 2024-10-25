@@ -9,9 +9,14 @@
 #include "Components/Animations.hpp"
 #include "Components/KeyPressed.hpp"
 #include "Registry.hpp"
+#include "SystemsManager.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::PunchSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+void ecs::systems::PunchSystem::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<IContext> ctx,
+    ComponentFactory &factory
+)
 {
     auto &keys = r->get_components<ecs::component::KeyPressed>();
     auto &animations = r->get_components<ecs::component::Animations>();

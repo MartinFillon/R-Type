@@ -9,7 +9,7 @@
 #define INVINCIBILITYSYSTEM_HPP_
 
 #include "ISystems.hpp"
-#include "Components/Invincibility.hpp"
+#include "Registry.hpp"
 
 namespace ecs {
     namespace systems {
@@ -17,7 +17,6 @@ namespace ecs {
           public:
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
-
         };
     }; // namespace systems
 }; // namespace ecs

@@ -11,7 +11,15 @@
 namespace ecs {
     namespace component {
         struct Destroyable {
-            bool _destroyable;
+            enum DestroyState {
+                ALIVE,
+                WAITING,
+                DESTROYING,
+                DESTROYED
+            };
+
+            DestroyState _state;
+            bool _animate;
         };
     }; // namespace component
 }; // namespace ecs

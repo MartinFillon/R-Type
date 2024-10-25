@@ -9,6 +9,12 @@
 #include <random>
 #include <iostream>
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include <Components/Attributes.hpp>
+#include <fstream>
+#include <memory>
+#include <random>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
@@ -20,56 +26,108 @@
 #include "Protocol.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
+#include <nlohmann/json-schema.hpp>
 
-void ecs::systems::BasicRandomEnnemiesSystem::operator()(
-    std::shared_ptr<Registry> &r,
-    std::shared_ptr<IContext> ctx,
-    ComponentFactory &factory
-)
-{
-    if (_clock.getMiliSeconds() < ENNEMIES_TICK) {
-        return;
+namespace ecs::systems {
+
+    BasicRandomEnnemiesSystem::BasicRandomEnnemiesSystem(const nlohmann::json &config)
+    {
+        std::ifstream schemaFile("schema/BasicRandomEnnemiesSystem.json");
+
+        const nlohmann::json schema = nlohmann::json::parse(schemaFile);
+
+        nlohmann::json_schema::json_validator validator(schema);
+
+        validator.set_root_schema(schema);
+        validator.validate(config);
+
+        _ennemiesTick = config["ennemies_tick"];
+        _maxNbOfEnnemies = config["max_random_ennemies"];
+        _valueSpawnEnnemies = config["value_spawn_ennemies"];
+        _basicPosSpawnX = config["basic_pos_spawn_x"];
+        _maxSpawnX = config["max_spawn_x"];
+        _shootingElapsedTime = config["shooting_elapsed_time"];
+        _basicEnnemiesAnimationSpeed = config["basic_ennemies_animation_speed"];
+        _basicEnnemiesSpeed = config["basic_ennemies_speed"];
+        _basicEnnemiesProjectileSpeed = config["basic_ennemies_projectile_speed"];
+        _basicProjectileSpeedTick = config["basic_projectile_speed_tick"];
+        _centeredShoot = config["centered_shoot"];
+        _basicEnnemiesSpeedTick = config["basic_ennemies_speed_tick"];
+        _enemmiesConfigFile = config["ennemies_config_file"];
+        _projectileConfigFile = config["projectile_config_file"];
     }
-    if (nbOfBasicEnnemies(r) < MAX_RANDOM_ENNEMIES) {
-        createNewEnnemies(r, ctx, factory);
-        return;
+
+    void BasicRandomEnnemiesSystem::operator()(
+        std::shared_ptr<Registry> &r,
+        std::shared_ptr<IContext> ctx,
+        ComponentFactory &factory
+    )
+    {
+        if (_clock.getMiliSeconds() < _ennemiesTick) {
+            return;
+        }
+        if (nbOfBasicEnnemies(r) < _maxNbOfEnnemies) {
+            createNewEnnemies(r, ctx, factory);
+            return;
+        }
+        _clock.restart();
+
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
+        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
+        auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+
+        for (auto &&[atr, anim, pos, ctrl] : ecs::custom_zip(attributes, animations, positions, controllable)) {
+            if (!atr || !anim || !pos || !ctrl ||
+                atr->_secondary_type != ecs::component::Attributes::SecondaryType::Basic) {
+                continue;
+            }
+
+            if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                anim->_clock.getMiliSeconds() > 5) {
+                pos->_x -= ctrl->_speed;
+                anim->_clock.restart();
+                continue;
+            }
+
+            if (atr->_entity_type != ecs::component::Attributes::EntityType::Ennemy) {
+                continue;
+            }
+
+            if (anim->_x <= 0 && anim->_x != 224) {
+                anim->_x = 224;
+            }
+
+            if (anim->_x > 0 && anim->_clock.getSeconds() > _basicEnnemiesAnimationSpeed) {
+                anim->_x -= anim->_width;
+                anim->_clock.restart();
+            }
+
+            if (anim->_clock.getMiliSeconds() > _basicEnnemiesSpeedTick) {
+                pos->_x -= ctrl->_speed;
+            }
+
+            if (anim->_clock.getSeconds() > _basicEnnemiesSpeed) {
+                shootRandomly(r, *pos, ctx, factory);
+            }
+        }
     }
-    _clock.restart();
 
-    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
-    auto &positions = r->register_if_not_exist<ecs::component::Position>();
-    auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+    void BasicRandomEnnemiesSystem::createNewProjectile(
+        std::shared_ptr<Registry> &r,
+        const ecs::component::Position &ennemiesPos,
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
+    )
+    {
+        Entity newProjectile = factory.createEntity(r, CONFIG_ENNEMIES);
 
-    for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
-        if (!anim || !pos || !ctrl || anim->_type != ecs::component::Type::Basic) {
-            continue;
-        }
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
 
-        if (anim->_object == ecs::component::Object::Weapon && anim->_clock.getMiliSeconds() > 5) {
-            pos->_x -= ctrl->_speed;
-            anim->_clock.restart();
-            continue;
-        }
+        positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + _centeredShoot};
 
-        if (anim->_object != ecs::component::Object::Ennemies) {
-            continue;
-        }
-
-        if (anim->_x <= 0 && anim->_x != 224) {
-            anim->_x = 224;
-        }
-
-        if (anim->_x > 0 && anim->_clock.getSeconds() > BASIC_PROJECTILE_SPEED_TICK) {
-            anim->_x -= anim->_width;
-            anim->_clock.restart();
-        }
-
-        if (anim->_clock.getMiliSeconds() > BASIC_ENNEMIES_SPEED_TICK) {
-            pos->_x -= ctrl->_speed;
-        }
-
-        if (anim->_clock.getSeconds() > SHOOTING_ELAPSED_TIME) {
-            shootRandomly(r, *pos, ctx);
+        if (ctx) {
+            ctx->createProjectile(newProjectile.getId(), rtype::protocol::BULLET);
         }
     }
 }
@@ -120,9 +178,9 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
     int randomPosX = uniformDistForY(randomEngine);
 
     try {
-        Entity newEnnemies = factory.createEntity(r, CONFIG_ENNEMIES);
+        Entity newEnnemies = factory.createEntity(r, _enemmiesConfigFile);
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
-        positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
+        positions[newEnnemies.getId()] = ecs::component::Position{_basicPosSpawnX + randomPosX, randomPosY, false};
 
         if (ctx) {
             ctx->createEnemy(newEnnemies.getId());
@@ -132,31 +190,34 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
     }
 }
 
-int ecs::systems::BasicRandomEnnemiesSystem::nbOfBasicEnnemies(std::shared_ptr<Registry> &r)
-{
-    int nbOfEnnemies = 0;
-    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+    int BasicRandomEnnemiesSystem::nbOfBasicEnnemies(std::shared_ptr<Registry> &r)
+    {
+        int nbOfEnnemies = 0;
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
-    for (std::size_t i = 0; i < animations.size(); ++i) {
-        if (animations[i] && animations[i]->_type == ecs::component::Type::Basic) {
-            nbOfEnnemies += 1;
+        for (std::size_t i = 0; i < attributes.size(); ++i) {
+            if (attributes[i] && attributes[i]->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
+                nbOfEnnemies += 1;
+            }
+        }
+
+        return nbOfEnnemies;
+    }
+
+    void BasicRandomEnnemiesSystem::shootRandomly(
+        std::shared_ptr<Registry> &r,
+        ecs::component::Position &enemyPos,
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
+    )
+    {
+        std::random_device randomDevice;
+        std::default_random_engine randomEngine(randomDevice());
+        std::uniform_int_distribution<int> shootChance(0, 100);
+
+        if (shootChance(randomEngine) < 1) {
+            createNewProjectile(r, enemyPos, ctx, factory);
         }
     }
 
-    return nbOfEnnemies;
-}
-
-void ecs::systems::BasicRandomEnnemiesSystem::shootRandomly(
-    std::shared_ptr<Registry> &r,
-    ecs::component::Position &enemyPos,
-    std::shared_ptr<IContext> &ctx
-)
-{
-    std::random_device randomDevice;
-    std::default_random_engine randomEngine(randomDevice());
-    std::uniform_int_distribution<int> shootChance(0, 100);
-
-    if (shootChance(randomEngine) < 1) {
-        createNewProjectile(r, enemyPos, ctx);
-    }
-}
+} // namespace ecs::systems
