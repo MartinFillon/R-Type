@@ -150,7 +150,7 @@ namespace rtype::server {
                 continue;
             }
             if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
-                atr->_ennemy_type == ecs::component::Attributes::EnnemyType::None) {
+                atr->_secondary_type == ecs::component::Attributes::SecondaryType::None) {
                 break;
             }
             i += 1;

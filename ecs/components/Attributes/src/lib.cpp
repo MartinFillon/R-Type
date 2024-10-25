@@ -25,13 +25,13 @@ extern "C" void register_component(
         {"ennemy", ecs::component::Attributes::EntityType::Ennemy},
         {"background", ecs::component::Attributes::EntityType::Background},
     };
-    std::unordered_map<std::string, ecs::component::Attributes::EnnemyType> ennemies_types = {
-        {"none", ecs::component::Attributes::EnnemyType::None},
-        {"basic", ecs::component::Attributes::EnnemyType::Basic},
-        {"milepates", ecs::component::Attributes::EnnemyType::Milespates},
-        {"boss", ecs::component::Attributes::EnnemyType::Boss},
-        {"first", ecs::component::Attributes::EnnemyType::First},
-        {"second", ecs::component::Attributes::EnnemyType::Second},
+    std::unordered_map<std::string, ecs::component::Attributes::SecondaryType> ennemies_types = {
+        {"none", ecs::component::Attributes::SecondaryType::None},
+        {"basic", ecs::component::Attributes::SecondaryType::Basic},
+        {"milepates", ecs::component::Attributes::SecondaryType::Milespates},
+        {"boss", ecs::component::Attributes::SecondaryType::Boss},
+        {"first", ecs::component::Attributes::SecondaryType::First},
+        {"second", ecs::component::Attributes::SecondaryType::Second},
     };
 
     if (entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Ennemy ||
@@ -41,7 +41,7 @@ extern "C" void register_component(
         };
     } else {
         attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ecs::component::Attributes::EnnemyType::None
+            entities_types[component["entityType"]], ecs::component::Attributes::SecondaryType::None
         };
     }
 }

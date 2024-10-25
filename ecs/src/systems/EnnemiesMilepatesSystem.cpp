@@ -41,7 +41,7 @@ namespace ecs::systems {
              custom_zip(attributes, positions, animations, controllables, destroyables)) {
             if (!atr || !pos || !anim || !control ||
                 destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE ||
-                atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Milespates) {
+                atr->_secondary_type != ecs::component::Attributes::SecondaryType::Milespates) {
                 continue;
             }
 
@@ -119,7 +119,7 @@ namespace ecs::systems {
                 continue;
             }
 
-            if (atr->_ennemy_type == ecs::component::Attributes::EnnemyType::Milespates) {
+            if (atr->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates) {
                 nbMilespates += 1;
             }
         }

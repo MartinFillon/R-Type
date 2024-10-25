@@ -74,7 +74,8 @@ namespace ecs::systems {
         auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
 
         for (auto &&[atr, anim, pos, ctrl] : ecs::custom_zip(attributes, animations, positions, controllable)) {
-            if (!atr || !anim || !pos || !ctrl || atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Basic) {
+            if (!atr || !anim || !pos || !ctrl ||
+                atr->_secondary_type != ecs::component::Attributes::SecondaryType::Basic) {
                 continue;
             }
 
@@ -154,7 +155,7 @@ namespace ecs::systems {
         auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
         for (std::size_t i = 0; i < attributes.size(); ++i) {
-            if (attributes[i] && attributes[i]->_ennemy_type == ecs::component::Attributes::EnnemyType::Basic) {
+            if (attributes[i] && attributes[i]->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
                 nbOfEnnemies += 1;
             }
         }

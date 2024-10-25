@@ -21,10 +21,10 @@ namespace ecs {
                 Ennemy,
             };
 
-            enum class EnnemyType { None, Basic, Milespates, Boss, First, Second };
+            enum class SecondaryType { None, Basic, Milespates, Boss, First, Second };
 
             EntityType _entity_type;
-            EnnemyType _ennemy_type;
+            SecondaryType _secondary_type;
         };
     }; // namespace component
 }; // namespace ecs

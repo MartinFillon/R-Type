@@ -101,7 +101,7 @@ ecs::Entity street_fighter::Game::findPlayerIndex()
             continue;
         }
         if (atr->_entity_type == ecs::component::Attributes::EntityType::Player &&
-            atr->_ennemy_type == ecs::component::Attributes::EnnemyType::First) {
+            atr->_secondary_type == ecs::component::Attributes::SecondaryType::First) {
             break;
         }
         idx += 1;

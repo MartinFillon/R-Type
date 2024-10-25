@@ -70,34 +70,34 @@ namespace ecs {
                         continue;
                     }
 
-                    if ((attribut[i]->_ennemy_type == component::Attributes::EnnemyType::Milespates &&
+                    if ((attribut[i]->_secondary_type == component::Attributes::SecondaryType::Milespates &&
                          destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) ||
                         (destroyable[j]->_state == component::Destroyable::DestroyState::ALIVE &&
-                         attribut[j]->_ennemy_type == component::Attributes::EnnemyType::Milespates)) {
+                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Milespates)) {
                         continue;
                     }
 
                     if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon ||
                          attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) &&
-                        (attribut[j]->_ennemy_type != component::Attributes::EnnemyType::None &&
-                         attribut[i]->_ennemy_type != component::Attributes::EnnemyType::None)) {
+                        (attribut[j]->_secondary_type != component::Attributes::SecondaryType::None &&
+                         attribut[i]->_secondary_type != component::Attributes::SecondaryType::None)) {
                         continue;
                     }
 
                     if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[i]->_ennemy_type == component::Attributes::EnnemyType::None &&
+                         attribut[i]->_secondary_type == component::Attributes::SecondaryType::None &&
                          attribut[j]->_entity_type == component::Attributes::EntityType::Player) ||
                         (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[j]->_ennemy_type == component::Attributes::EnnemyType::None &&
+                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::None &&
                          attribut[i]->_entity_type == component::Attributes::EntityType::Player)) {
                         continue;
                     }
 
                     if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[i]->_ennemy_type == component::Attributes::EnnemyType::Basic &&
+                         attribut[i]->_secondary_type == component::Attributes::SecondaryType::Basic &&
                          attribut[j]->_entity_type == component::Attributes::EntityType::Ennemy) ||
                         (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[j]->_ennemy_type == component::Attributes::EnnemyType::Basic &&
+                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Basic &&
                          attribut[i]->_entity_type == component::Attributes::EntityType::Ennemy)) {
                         continue;
                     }

@@ -21,7 +21,7 @@ extern "C" void register_component(
 {
     auto &cinematics = registry->register_component<ecs::component::Cinematic>();
     ecs::component::Attributes::EntityType entity_type = ecs::component::Attributes::EntityType::None;
-    ecs::component::Attributes::EnnemyType ennemy_type = ecs::component::Attributes::EnnemyType::None;
+    ecs::component::Attributes::SecondaryType ennemy_type = ecs::component::Attributes::SecondaryType::None;
     ecs::component::Position startPos{0, 0, false};
     ecs::component::Position endPos{0, 0, false};
     ecs::component::Attributes atr;
@@ -45,26 +45,26 @@ extern "C" void register_component(
     }
 
     if (component["type"] == "basic") {
-        ennemy_type = ecs::component::Attributes::EnnemyType::Basic;
+        ennemy_type = ecs::component::Attributes::SecondaryType::Basic;
     }
     if (component["type"] == "milespates") {
-        ennemy_type = ecs::component::Attributes::EnnemyType::Milespates;
+        ennemy_type = ecs::component::Attributes::SecondaryType::Milespates;
     }
     if (component["type"] == "boss") {
-        ennemy_type = ecs::component::Attributes::EnnemyType::Boss;
+        ennemy_type = ecs::component::Attributes::SecondaryType::Boss;
     }
     if (component["type"] == "first") {
-        ennemy_type = ecs::component::Attributes::EnnemyType::First;
+        ennemy_type = ecs::component::Attributes::SecondaryType::First;
     }
     if (component["type"] == "second") {
-        ennemy_type = ecs::component::Attributes::EnnemyType::Second;
+        ennemy_type = ecs::component::Attributes::SecondaryType::Second;
     }
 
     atr._entity_type = entity_type;
-    atr._ennemy_type = ennemy_type;
+    atr._secondary_type = ennemy_type;
 
     bool state = component["state"];
     int speed = component["speed"];
 
-    cinematics[entity.getId()] = ecs::component::Cinematic{startPos, endPos, atr, state, speed };
+    cinematics[entity.getId()] = ecs::component::Cinematic{startPos, endPos, atr, state, speed};
 }

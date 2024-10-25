@@ -54,7 +54,7 @@ void ecs::systems::BossSystems::operator()(
             continue;
         }
 
-        if (atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Boss) {
+        if (atr->_secondary_type != ecs::component::Attributes::SecondaryType::Boss) {
             idx += 1;
             continue;
         }
@@ -117,7 +117,7 @@ bool ecs::systems::BossSystems::isABoss(std::shared_ptr<Registry> &r)
         if (!atr) {
             continue;
         }
-        if (atr->_ennemy_type == ecs::component::Attributes::EnnemyType::Boss) {
+        if (atr->_secondary_type == ecs::component::Attributes::SecondaryType::Boss) {
             return true;
         }
     }
