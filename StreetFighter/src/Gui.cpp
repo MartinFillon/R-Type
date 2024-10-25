@@ -14,6 +14,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <cstdlib>
+#include <spdlog/spdlog.h>
 
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"

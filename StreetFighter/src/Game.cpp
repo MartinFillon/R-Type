@@ -64,7 +64,8 @@ street_fighter::Game::Game()
         _r->add_system(ecs::systems::KickSystem());
     } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
         spdlog::error("Setup error on: [{}]", error.what());
-        return;
+    } catch (const std::exception &e) {
+        spdlog::error(e.what());
     }
 }
 
