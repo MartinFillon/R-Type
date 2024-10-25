@@ -13,6 +13,7 @@
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Cinematic.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
@@ -35,6 +36,7 @@
 street_fighter::Game::Game()
 {
     _r = std::make_shared<ecs::Registry>();
+    _r->register_if_not_exist<ecs::component::Attributes>();
     _r->register_if_not_exist<ecs::component::Position>();
     _r->register_if_not_exist<ecs::component::Animations>();
     _r->register_if_not_exist<ecs::component::Drawable>();
@@ -52,7 +54,12 @@ street_fighter::Game::Game()
         _factory.createEntity(_r, "StreetFighter/config/Ken.json");
         _r->add_system(ecs::systems::CinematicsSystem());
         _r->add_system(ecs::systems::GravitableMouvementSystem());
-        _r->add_system(ecs::systems::BasicMouvementSystem());
+
+        std::ifstream f("config/systems/basic_mouvement_system.json");
+        nlohmann::json config = nlohmann::json::parse(f);
+
+        _r->add_system(ecs::systems::BasicMouvementSystem(config));
+
         _r->add_system(ecs::systems::PunchSystem());
         _r->add_system(ecs::systems::KickSystem());
     } catch (const std::exception &e) {
@@ -85,15 +92,16 @@ void street_fighter::Game::isCinematicPlaying()
 
 ecs::Entity street_fighter::Game::findPlayerIndex()
 {
-    auto &animations = _r->get_components<ecs::component::Animations>();
+    auto &attributs = _r->get_components<ecs::component::Attributes>();
     int idx = 0;
 
-    for (auto &&[anim] : ecs::custom_zip(animations)) {
-        if (!anim) {
+    for (auto &&[atr] : ecs::custom_zip(attributs)) {
+        if (!atr) {
             idx += 1;
             continue;
         }
-        if (anim->_object == ecs::component::Player && anim->_type == ecs::component::Type::First) {
+        if (atr->_entity_type == ecs::component::Attributes::EntityType::Player &&
+            atr->_secondary_type == ecs::component::Attributes::SecondaryType::First) {
             break;
         }
         idx += 1;

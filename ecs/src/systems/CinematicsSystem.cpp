@@ -6,18 +6,22 @@
 */
 
 #include "Systems/CinematicsSystem.hpp"
-#include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Cinematic.hpp"
 #include "Components/Position.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::CinematicsSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+void ecs::systems::CinematicsSystem::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<IContext> ctx,
+    ComponentFactory &factory
+)
 {
+    auto &attributes = r->get_components<ecs::component::Attributes>();
     auto &cinematics = r->get_components<ecs::component::Cinematic>();
-    auto &animations = r->get_components<ecs::component::Animations>();
     auto &animPositions = r->get_components<ecs::component::Position>();
 
-    for (auto &&[cine]: custom_zip(cinematics)) {
+    for (auto &&[cine] : custom_zip(cinematics)) {
         if (!cine) {
             continue;
         }
@@ -26,13 +30,12 @@ void ecs::systems::CinematicsSystem::operator()(std::shared_ptr<Registry> &r, st
             continue;
         }
 
-        for (auto &&[anim, animPos]: custom_zip(animations, animPositions)) {
-            if (!anim || !animPos) {
+        for (auto &&[atr, animPos] : custom_zip(attributes, animPositions)) {
+            if (!atr || !animPos) {
                 continue;
             }
 
-            if (anim->_object != cine->_anim._object &&
-                anim->_type != cine->_anim._type) {
+            if (atr->_entity_type != cine->_atr._entity_type && atr->_secondary_type != cine->_atr._secondary_type) {
                 continue;
             }
 

@@ -12,7 +12,7 @@
 #include <spdlog/spdlog.h>
 #include <vector>
 
-#include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
@@ -270,24 +270,24 @@ namespace rtype::server {
 
             auto r = _game.getRegistry();
             auto &positions = r->register_if_not_exist<ecs::component::Position>();
-            auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+            auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
             auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
             auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
             auto &sizes = r->register_if_not_exist<ecs::component::Size>();
 
             for (std::size_t i = 0; i < r->_entities.size(); ++i) {
-                if (!positions[i] || !animations[i] || !drawables[i] || !sprites[i] || !sizes[i]) {
+                if (!positions[i] || !attributes[i] || !drawables[i] || !sprites[i] || !sizes[i]) {
                     continue;
                 }
 
-                if (animations[i]->_object == ecs::component::Object::Ennemies) {
+                if (attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Ennemy) {
                     auto arguments = ecs::utils::intToBytes(i);
 
                     arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
                     sendToClient(client_id, protocol::Packet(protocol::NEW_OBJECT, arguments));
                 }
 
-                if (animations[i]->_object == ecs::component::Object::Player) {
+                if (attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Player) {
                     auto arguments = ecs::utils::intToBytes(i);
 
                     arguments.push_back(

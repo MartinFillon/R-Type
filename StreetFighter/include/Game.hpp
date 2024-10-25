@@ -9,8 +9,8 @@
 #define GAME_HPP_
 
 #include <memory>
-#include "Entity.hpp"
 #include "ComponentFactory.hpp"
+#include "Entity.hpp"
 #include "Registry.hpp"
 
 #define SECOND_GAME_NAME "Epitech Fighter"
@@ -41,33 +41,34 @@
 /// @brief street_fighter namespace for all calsses that concern the Street Fighter Game
 namespace street_fighter {
     class Game {
-        public:
-            /// @brief Game constructor that setup all entities of the street fighter with the component
-            /// factory and add it to his registry
-            Game();
-            ~Game() = default;
+      public:
+        /// @brief Game constructor that setup all entities of the street fighter with the component
+        /// factory and add it to his registry
+        Game();
+        ~Game() = default;
 
-            /// @brief run functions is running all systems and send it to the gui that run the game
-            /// @return an int for the error or good value
-            int run();
+        /// @brief run functions is running all systems and send it to the gui that run the game
+        /// @return an int for the error or good value
+        int run();
 
-            /// @brief findPlayerIndex functions find the current player index
-            /// @return it as an Entity 
-            ecs::Entity findPlayerIndex();
+        /// @brief findPlayerIndex functions find the current player index
+        /// @return it as an Entity
+        ecs::Entity findPlayerIndex();
 
-            /// @brief check if there is a cinematic in running, if yes, it turns the boolean isCinematic at true
-            /// and blocked the time of the cinematic the key mouvement 
-            void isCinematicPlaying();
+        /// @brief check if there is a cinematic in running, if yes, it turns the boolean isCinematic at true
+        /// and blocked the time of the cinematic the key mouvement
+        void isCinematicPlaying();
 
-            /// @brief return the value of the cinematic to the GUI to let or not the GUI handle the key
-            /// @return the value of _isCinematic
-            bool getIsCinematic() const;
+        /// @brief return the value of the cinematic to the GUI to let or not the GUI handle the key
+        /// @return the value of _isCinematic
+        bool getIsCinematic() const;
 
-            std::shared_ptr<ecs::Registry> _r;
-        private:
-            ecs::ComponentFactory _factory;
-            bool _isCinematic = false;
+        std::shared_ptr<ecs::Registry> _r;
+
+      private:
+        ecs::ComponentFactory _factory;
+        bool _isCinematic = false;
     };
-};
+}; // namespace street_fighter
 
 #endif /* !GAME_HPP_ */

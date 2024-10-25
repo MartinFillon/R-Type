@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "Basic Random Ennemies System Configuration Schema",
+  "properties": {
+    "ennemies_tick": {
+      "type": "number"
+    },
+    "max_random_ennemies": {
+      "type": "number"
+    },
+    "value_spawn_ennemies": {
+      "type": "number"
+    },
+    "basic_pos_spawn_x": {
+      "type": "number"
+    },
+    "max_spawn_x": {
+      "type": "number"
+    },
+    "shooting_elapsed_time": {
+      "type": "number"
+    },
+    "basic_ennemies_animation_speed": {
+      "type": "number"
+    },
+    "basic_ennemies_speed": {
+      "type": "number"
+    },
+    "basic_ennemies_projectile_speed": {
+      "type": "number"
+    },
+    "basic_projectile_speed_tick": {
+      "type": "number"
+    },
+    "centered_shoot": {
+      "type": "number"
+    },
+    "basic_ennemies_speed_tick": {
+      "type": "number"
+    },
+    "ennemies_config_file": {
+      "type": "string"
+    },
+    "projectile_config_file": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "ennemies_tick",
+    "max_random_ennemies",
+    "value_spawn_ennemies",
+    "basic_pos_spawn_x",
+    "max_spawn_x",
+    "shooting_elapsed_time",
+    "basic_ennemies_animation_speed",
+    "basic_ennemies_speed",
+    "basic_ennemies_projectile_speed",
+    "basic_projectile_speed_tick",
+    "centered_shoot",
+    "basic_ennemies_speed_tick",
+    "ennemies_config_file",
+    "projectile_config_file"
+  ]
+}

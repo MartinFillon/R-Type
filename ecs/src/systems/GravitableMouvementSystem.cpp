@@ -10,9 +10,15 @@
 #include "Components/Gravitable.hpp"
 #include "Components/KeyPressed.hpp"
 #include "Components/Position.hpp"
+#include "Registry.hpp"
+#include "SystemsManager.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::GravitableMouvementSystem::operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+void ecs::systems::GravitableMouvementSystem::operator()(
+    std::shared_ptr<Registry> &r,
+    std::shared_ptr<IContext> ctx,
+    ComponentFactory &factory
+)
 {
     auto &positions = r->get_components<ecs::component::Position>();
     auto &animations = r->get_components<ecs::component::Animations>();
@@ -30,7 +36,8 @@ void ecs::systems::GravitableMouvementSystem::operator()(std::shared_ptr<Registr
         }
 
         anim->_clock.restart();
-        if (key->_value == ecs::component::Key::Up && !gravit->_isJumping && !gravit->_isFalling && pos->_y == initialY) {
+        if (key->_value == ecs::component::Key::Up && !gravit->_isJumping && !gravit->_isFalling &&
+            pos->_y == initialY) {
             gravit->_isJumping = true;
         }
 

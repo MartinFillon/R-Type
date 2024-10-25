@@ -15,13 +15,15 @@
 #include <vector>
 #include <unordered_map>
 
-#include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"
 #include "SparseArray.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
+    class ComponentFactory;
+
     class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
@@ -74,6 +76,7 @@ namespace ecs {
         }
 
       private:
+        std::shared_ptr<systems::SystemsManager> _systemsManager;
         std::vector<
             std::function<void(std::shared_ptr<Registry> &, std::shared_ptr<ecs::IContext>, ComponentFactory &r)>>
             _systems;

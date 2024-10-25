@@ -8,6 +8,7 @@
 #ifndef COMPONENTFACTORY_HPP_
 #define COMPONENTFACTORY_HPP_
 
+#include <exception>
 #define CONFIG_BACKGROUND_0 "./config/background/background.json"
 #define CONFIG_BACKGROUND_2 "./config/background/background_2.json"
 #define CONFIG_BACKGROUND_3 "./config/background/background_3.json"
@@ -25,12 +26,14 @@
 #define CONFIG_PLAYER_PROJECTILE "./config/playerProjectile.json"
 
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json-schema.hpp>
 #include <unordered_map>
 
 #include "DlLoader.hpp"
 #include "Entity.hpp"
+#include "SystemsManager.hpp"
 
 std::string getEnvOrDefault(const std::string &env, const std::string &def);
 
@@ -39,7 +42,31 @@ namespace ecs {
 
     class ComponentFactory {
       public:
+        class Error : public std::exception {
+          public:
+            virtual ~Error() = default;
+
+            virtual const char *what() const noexcept = 0;
+        };
+
+        class ComponentNotCreated : public Error {
+          public:
+            ComponentNotCreated(const std::string &file)
+            {
+                _error = "Component for " + file + " not created";
+            };
+
+            const char *what() const noexcept override
+            {
+                return _error.c_str();
+            }
+
+          private:
+            std::string _error;
+        };
+
         using ComponentLoader = DlLoader<void, std::shared_ptr<Registry> &, Entity &, const nlohmann::json &>;
+
         ComponentFactory();
         ~ComponentFactory();
 
@@ -56,6 +83,8 @@ namespace ecs {
       protected:
       private:
         std::unordered_map<std::string, std::shared_ptr<ComponentLoader>> components;
+        nlohmann::json _schema;
+        nlohmann::json_schema::json_validator _validator;
     };
 
 } // namespace ecs

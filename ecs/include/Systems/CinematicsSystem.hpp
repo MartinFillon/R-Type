@@ -9,6 +9,7 @@
 #define CINEMATICSSYSTEM_HPP_
 
 #include "ISystems.hpp"
+#include "Registry.hpp"
 
 namespace ecs {
     namespace systems {

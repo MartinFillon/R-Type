@@ -10,15 +10,15 @@
 
 #include <string>
 
-#define PLAYER_SPRITE "r-typesheet42.gif"
-#define WEAPON_SPRITE "r-typesheetGun.gif"
-#define ENNEMIES_WEAPON_SPRITE "r-typesheetEnnemiesShoot.gif"
-#define BASIC_ENNEMIES_SPRITE "r-typesheet5.gif"
-#define FIRST_BOSS_SPRITE "r-typesheet32.gif"
-#define BACKGROUND1_SPRITE "Background/background_1.png"
-#define BACKGROUND2_SPRITE "Background/background_2.png"
-#define BACKGROUND3_SPRITE "Background/background_3.png"
-#define BACKGROUND4_SPRITE "Background/background_4.png"
+#define PLAYER_SPRITE "assets/sprites/r-typesheet42.gif"
+#define WEAPON_SPRITE "assets/sprites/r-typesheetGun.gif"
+#define ENNEMIES_WEAPON_SPRITE "assets/sprites/r-typesheetEnnemiesShoot.gif"
+#define BASIC_ENNEMIES_SPRITE "assets/sprites/r-typesheet5.gif"
+#define FIRST_BOSS_SPRITE "assets/sprites/r-typesheet32.gif"
+#define BACKGROUND1_SPRITE "assets/sprites/Background/background_1.png"
+#define BACKGROUND2_SPRITE "assets/sprites/Background/background_2.png"
+#define BACKGROUND3_SPRITE "assets/sprites/Background/background_3.png"
+#define BACKGROUND4_SPRITE "assets/sprites/Background/background_4.png"
 
 namespace ecs {
     namespace component {
