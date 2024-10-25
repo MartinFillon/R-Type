@@ -9,7 +9,7 @@
     #define LOBBYMENU_HPP_
 
     #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+    #include <SFML/Graphics/RectangleShape.hpp>
 
     #include "TCPCommunication.hpp"
 
@@ -25,6 +25,7 @@ namespace rtype::client {
         std::string name;
         int nbPlayers;
         int running;
+        sf::RectangleShape rectangle;
     };
 
     class LobbyMenu {
@@ -55,6 +56,12 @@ namespace rtype::client {
             std::vector<Lobby> _lobbies;
 
             std::shared_ptr<TCPCommunication> _server;
+
+            /* CREATE LOBBY BUTTON */
+
+            sf::RectangleShape _lobbyCreate;
+            std::string _newLobbyName;
+            bool _createActivate;
 
             /* BACKGROUND MENU */
 
