@@ -37,11 +37,11 @@ extern "C" void register_component(
     if (entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Ennemy ||
         entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Weapon) {
         attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ennemies_types[component["ennemyType"]]
+            entities_types[component["entityType"]], ennemies_types[component["ennemyType"]], entity.getId()
         };
     } else {
         attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ecs::component::Attributes::SecondaryType::None
+            entities_types[component["entityType"]], ecs::component::Attributes::SecondaryType::None, entity.getId()
         };
     }
 }

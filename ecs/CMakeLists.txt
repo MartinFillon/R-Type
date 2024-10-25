@@ -35,7 +35,7 @@ target_link_libraries(ecs PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(ecs PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(ecs PUBLIC nlohmann_json_schema_validator)
 
-# option(ENABLE_TESTS "Build tests along with the library" ON)
+option(ENABLE_TESTS "Build tests along with the library" ON)
 
 if(ENABLE_TESTS)
   find_package(Criterion REQUIRED)

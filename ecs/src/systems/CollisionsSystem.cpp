@@ -7,6 +7,7 @@
 
 #include "Systems/CollisionsSystem.hpp"
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
@@ -16,6 +17,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -25,112 +27,155 @@ namespace ecs {
             ComponentFactory &factory
         )
         {
-            auto &attribut = r->register_if_not_exist<component::Attributes>();
-            auto &position = r->register_if_not_exist<component::Position>();
-            auto &drawable = r->register_if_not_exist<component::Drawable>();
-            auto &animation = r->register_if_not_exist<component::Animations>();
-            auto &destroyable = r->register_if_not_exist<component::Destroyable>();
-            auto &life = r->register_if_not_exist<component::Life>();
-            auto &size = r->register_if_not_exist<component::Size>();
-            auto &invincibility = r->register_if_not_exist<component::Invincibility>();
+            auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
+            auto &positions = r->register_if_not_exist<ecs::component::Position>();
+            auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
+            auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+            auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
+            auto &lifes = r->register_if_not_exist<ecs::component::Life>();
+            auto &sizes = r->register_if_not_exist<ecs::component::Size>();
+            auto &invincibilities = r->register_if_not_exist<ecs::component::Invincibility>();
 
-            for (std::size_t i = 0; i < position.size(); ++i) {
-                if (!attribut[i] || !position[i] || !animation[i] || !size[i] || !destroyable[i] || !life[i] ||
-                    (drawable[i] && !drawable[i]->_drawable)) {
+            for (auto
+                     &&[attribute_i,
+                        position_i,
+                        drawable_i,
+                        animation_i,
+                        destroyable_i,
+                        life_i,
+                        size_i,
+                        invincibility_i] :
+                 ecs::custom_zip(
+                     attributes, positions, drawables, animations, destroyables, lifes, sizes, invincibilities
+                 )) {
+                if (!attribute_i || !position_i || !animation_i || !size_i || !destroyable_i || !life_i ||
+                    (drawable_i && !drawable_i->_drawable)) {
+                    spdlog::debug(
+                        "{}, {}, {}, {}, {}, {}, {}, {}, {}",
+                        attribute_i.has_value(),
+                        position_i.has_value(),
+                        animation_i.has_value(),
+                        size_i.has_value(),
+                        destroyable_i.has_value(),
+                        life_i.has_value(),
+                        drawable_i.has_value(),
+                        drawable_i->_drawable
+                    );
                     continue;
                 }
 
-                if (attribut[i]->_entity_type == component::Attributes::EntityType::Background ||
-                    destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) {
+                spdlog::info(
+                    "{}, {}, {}, {}, {}, {}, {}, {}, {}",
+                    attribute_i.has_value(),
+                    position_i.has_value(),
+                    animation_i.has_value(),
+                    size_i.has_value(),
+                    destroyable_i.has_value(),
+                    life_i.has_value(),
+                    drawable_i.has_value(),
+                    drawable_i->_drawable
+                );
+
+                if (attribute_i->_entity_type == ecs::component::Attributes::EntityType::Background ||
+                    destroyable_i->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
                     continue;
                 }
 
-                double i_width = animation[i]->_width * (size[i] ? size[i]->_width : 1.0);
-                double i_height = animation[i]->_height * (size[i] ? size[i]->_height : 1.0);
+                double i_width = animation_i->_width * (size_i ? size_i->_width : 1.0);
+                double i_height = animation_i->_height * (size_i ? size_i->_height : 1.0);
 
-                if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
-                    (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
-                    destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
+                if ((position_i->_x > WIDTH_MAX_LIMIT || position_i->_x < WIDTH_MIN_LIMIT) ||
+                    (position_i->_y > HEIGHT_MAX_LIMIT || position_i->_y < HEIGHT_MIN_LIMIT)) {
+                    destroyable_i->_state = ecs::component::Destroyable::DestroyState::WAITING;
                     continue;
                 }
 
-                for (std::size_t j = i + 1; j < position.size(); ++j) {
-                    if (!attribut[i] || !position[j] || !size[j] || !destroyable[j] ||
-                        destroyable[j]->_state != ecs::component::Destroyable::DestroyState::ALIVE || !life[j] ||
-                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type) {
+                for (auto
+                         &&[attribute_j,
+                            position_j,
+                            drawable_j,
+                            animation_j,
+                            destroyable_j,
+                            life_j,
+                            size_j,
+                            invincibility_j] :
+                     ecs::custom_zip(
+                         attributes, positions, drawables, animations, destroyables, lifes, sizes, invincibilities
+                     )) {
+                    if (!attribute_j || !position_j || !animation_j || !size_j || !destroyable_j || !life_j ||
+                        (drawable_j && !drawable_j->_drawable)) {
                         continue;
                     }
 
-                    double j_width = animation[j]->_width * (size[j] ? size[j]->_width : 1.0);
-                    double j_height = animation[j]->_height * (size[j] ? size[j]->_height : 1.0);
-
-                    if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
-                        (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
-                        destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
+                    if (attribute_j->_entity_type == ecs::component::Attributes::EntityType::Background ||
+                        destroyable_j->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
                         continue;
                     }
 
-                    if ((attribut[i]->_secondary_type == component::Attributes::SecondaryType::Milespates &&
-                         destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) ||
-                        (destroyable[j]->_state == component::Destroyable::DestroyState::ALIVE &&
-                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Milespates)) {
+                    if (attribute_i->_identifyer == attribute_j->_identifyer) {
                         continue;
                     }
 
-                    if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon ||
-                         attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) &&
-                        (attribut[j]->_secondary_type != component::Attributes::SecondaryType::None &&
-                         attribut[i]->_secondary_type != component::Attributes::SecondaryType::None)) {
+                    double j_width = animation_j->_width * (size_j ? size_j->_width : 1.0);
+                    double j_height = animation_j->_height * (size_j ? size_j->_height : 1.0);
+
+                    if ((position_j->_x > WIDTH_MAX_LIMIT || position_j->_x < WIDTH_MIN_LIMIT) ||
+                        (position_j->_y > HEIGHT_MAX_LIMIT || position_j->_y < HEIGHT_MIN_LIMIT)) {
+                        destroyable_j->_state = ecs::component::Destroyable::DestroyState::WAITING;
                         continue;
                     }
 
-                    if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[i]->_secondary_type == component::Attributes::SecondaryType::None &&
-                         attribut[j]->_entity_type == component::Attributes::EntityType::Player) ||
-                        (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::None &&
-                         attribut[i]->_entity_type == component::Attributes::EntityType::Player)) {
+                    if (attribute_i->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates &&
+                        attribute_j->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates) {
                         continue;
                     }
 
-                    if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[i]->_secondary_type == component::Attributes::SecondaryType::Basic &&
-                         attribut[j]->_entity_type == component::Attributes::EntityType::Ennemy) ||
-                        (attribut[j]->_entity_type == component::Attributes::EntityType::Weapon &&
-                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Basic &&
-                         attribut[i]->_entity_type == component::Attributes::EntityType::Ennemy)) {
+                    if ((attribute_i->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                         attribute_i->_secondary_type == ecs::component::Attributes::SecondaryType::None &&
+                         attribute_j->_entity_type == ecs::component::Attributes::EntityType::Player) ||
+                        (attribute_j->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                         attribute_j->_secondary_type == ecs::component::Attributes::SecondaryType::None &&
+                         attribute_i->_entity_type == ecs::component::Attributes::EntityType::Player)) {
                         continue;
                     }
 
-                    if (((position[i]->_x + i_width >= position[j]->_x && position[i]->_x <= position[j]->_x + j_width
-                         ) &&
-                         (position[i]->_y + i_height >= position[j]->_y && position[i]->_y <= position[j]->_y + j_height
-                         )) &&
-                        attribut[i]->_entity_type != attribut[j]->_entity_type) {
+                    if ((attribute_i->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                         attribute_i->_secondary_type == ecs::component::Attributes::SecondaryType::Basic &&
+                         attribute_j->_entity_type == ecs::component::Attributes::EntityType::Ennemy) ||
+                        (attribute_j->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                         attribute_j->_secondary_type == ecs::component::Attributes::SecondaryType::Basic &&
+                         attribute_i->_entity_type == ecs::component::Attributes::EntityType::Ennemy)) {
+                        continue;
+                    }
 
-                        if (!invincibility[i].has_value()) {
-                            life[i]->_life = life[i]->_life - 1;
+                    if (((position_i->_x + i_width >= position_j->_x && position_i->_x <= position_j->_x + j_width) &&
+                         (position_i->_y + i_height >= position_j->_y && position_i->_y <= position_j->_y + j_height)
+                        ) &&
+                        attribute_i->_entity_type != attribute_j->_entity_type) {
+
+                        if (!invincibility_i.has_value()) {
+                            life_i->_life = life_i->_life - 1;
                         }
-                        if (!invincibility[j].has_value()) {
-                            life[j]->_life = life[j]->_life - 1;
-                        }
-
-                        if (invincibility[i].has_value() && !invincibility[i]->_invincible) {
-                            life[i]->_life = life[i]->_life - 1;
-                            invincibility[i]->_invincible = true;
-                            invincibility[i]->_clock.restart();
-                        }
-                        if (invincibility[j].has_value() && !invincibility[j]->_invincible) {
-                            life[j]->_life = life[j]->_life - 1;
-                            invincibility[j]->_invincible = true;
-                            invincibility[j]->_clock.restart();
+                        if (!invincibility_j.has_value()) {
+                            life_j->_life = life_j->_life - 1;
                         }
 
-                        if (life[i]->_life <= 0) {
-                            destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
+                        if (invincibility_i.has_value() && !invincibility_i->_invincible) {
+                            life_i->_life = life_i->_life - 1;
+                            invincibility_i->_invincible = true;
+                            invincibility_i->_clock.restart();
                         }
-                        if (life[j]->_life <= 0) {
-                            destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
+                        if (invincibility_j.has_value() && !invincibility_j->_invincible) {
+                            life_j->_life = life_j->_life - 1;
+                            invincibility_j->_invincible = true;
+                            invincibility_j->_clock.restart();
+                        }
+
+                        if (life_i->_life <= 0) {
+                            destroyable_i->_state = ecs::component::Destroyable::DestroyState::WAITING;
+                        }
+                        if (life_j->_life <= 0) {
+                            destroyable_j->_state = ecs::component::Destroyable::DestroyState::WAITING;
                         }
 
                         continue;

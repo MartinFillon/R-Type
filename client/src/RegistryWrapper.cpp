@@ -50,22 +50,23 @@ namespace rtype::client {
         auto &positions = registry->register_if_not_exist<ecs::component::Position>();
         auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
 
-        for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-            if (!draw || !anim || !spri || !si || !pos) {
+        for (auto &&[drawable, animation, sprite, size, position] :
+             ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+            if (!drawable || !animation || !sprite || !size || !position) {
                 continue;
             }
 
-            if (spri->_pathToSprite.empty()) {
+            if (sprite->_pathToSprite.empty()) {
                 continue;
             }
-            sf::Sprite sprite;
+            sf::Sprite _sprite;
 
-            sprite.setPosition(pos->_x, pos->_y);
-            sprite.setScale(si->_width, si->_height);
-            auto texture = textureManager.getTexture(spri->_pathToSprite);
-            sprite.setTexture(*texture);
-            sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-            window.draw(sprite);
+            _sprite.setPosition(position->_x, position->_y);
+            _sprite.setScale(size->_width, size->_height);
+            auto texture = textureManager.getTexture(sprite->_pathToSprite);
+            _sprite.setTexture(*texture);
+            _sprite.setTextureRect(sf::IntRect(animation->_x, animation->_y, animation->_width, animation->_height));
+            window.draw(_sprite);
         }
     }
 

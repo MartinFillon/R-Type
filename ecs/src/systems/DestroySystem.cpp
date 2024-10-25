@@ -6,14 +6,14 @@
 */
 
 #include "Systems/DestroySystem.hpp"
+#include <iostream>
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Sprite.hpp"
-#include "Components/Attributes.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
-#include <iostream>
 
 void ecs::systems::DestroySystem::operator()(
     std::shared_ptr<Registry> &r,
@@ -32,59 +32,60 @@ void ecs::systems::DestroySystem::operator()(
     auto &animations = r->register_if_not_exist<ecs::component::Animations>();
     auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
 
-    for (size_t i = 0; i < destroyables.size(); i++) {
-        if (!destroyables[i] || destroyables[i]->_state == ecs::component::Destroyable::DestroyState::ALIVE) {
+    for (auto &&[attribute, destroyable, animation, sprite] :
+         ecs::custom_zip(attributes, destroyables, animations, sprites)) {
+        if (!destroyable || destroyable->_state == ecs::component::Destroyable::DestroyState::ALIVE) {
             continue;
         }
 
-        destroyables[i]->_state = ecs::component::Destroyable::DestroyState::DESTROYING;
+        destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYING;
 
-        if (!destroyables[i]->_animate) {
-            destroyables[i]->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
-            r->erase(i);
+        if (!destroyable->_animate) {
+            destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+            r->erase(attribute->_identifyer);
 
             if (ctx) {
-                ctx->destroyObject(i);
+                ctx->destroyObject(attribute->_identifyer);
             }
 
             continue;
         }
 
-        if (destroyables[i]->_animate) {
-            if (!animations[i] || !sprites[i]) {
-                destroyables[i]->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
-                r->erase(i);
+        if (destroyable->_animate) {
+            if (!animation || !sprite) {
+                destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+                r->erase(attribute->_identifyer);
 
                 if (ctx) {
-                    ctx->destroyObject(i);
+                    ctx->destroyObject(attribute->_identifyer);
                 }
 
                 continue;
             }
 
-            if (sprites[i]->_pathToSprite != DESTROY_SPRITE) {
-                sprites[i]->_pathToSprite = DESTROY_SPRITE;
-                animations[i]->_x = 0;
-                animations[i]->_y = 0;
-                animations[i]->_width = 65;
-                animations[i]->_height = 65;
+            if (sprite->_pathToSprite != DESTROY_SPRITE) {
+                sprite->_pathToSprite = DESTROY_SPRITE;
+                animation->_x = 0;
+                animation->_y = 0;
+                animation->_width = 65;
+                animation->_height = 65;
                 continue;
             }
 
-            if (animations[i]->_x > 315) {
-                destroyables[i]->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
-                r->erase(i);
+            if (animation->_x > 315) {
+                destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+                r->erase(attribute->_identifyer);
 
                 if (ctx) {
-                    ctx->destroyObject(i);
+                    ctx->destroyObject(attribute->_identifyer);
                 }
 
                 continue;
             }
 
-            if (animations[i]->_clock.getSeconds() > DESTROY_ANIMATION) {
-                animations[i]->_x += animations[i]->_width;
-                animations[i]->_clock.restart();
+            if (animation->_clock.getSeconds() > DESTROY_ANIMATION) {
+                animation->_x += animation->_width;
+                animation->_clock.restart();
             }
         }
     }

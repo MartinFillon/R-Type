@@ -132,15 +132,14 @@ void ecs::systems::BossSystems::moveProjectileTowardsPlayer(
     std::shared_ptr<IContext> ctx
 )
 {
+    auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
     auto &positions = r->register_if_not_exist<ecs::component::Position>();
     ecs::component::Position playerPos = {0, 0};
 
-    for (std::size_t i = 0; i < positions.size(); ++i) {
-        if (positions[i] &&
-            r->register_if_not_exist<ecs::component::Attributes>()[i]->_entity_type ==
-                ecs::component::Attributes::EntityType::Player) {
-            playerPos._x = positions[i]->_x;
-            playerPos._y = positions[i]->_y;
+    for (auto &&[attribut, position] : ecs::custom_zip(attributes, positions)) {
+        if (position && attribut->_entity_type == ecs::component::Attributes::EntityType::Player) {
+            playerPos._x = position->_x;
+            playerPos._y = position->_y;
             break;
         }
     }
