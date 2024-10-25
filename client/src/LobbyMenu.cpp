@@ -223,7 +223,7 @@ void rtype::client::LobbyMenu::displayLobbies()
         _lobbies[i].start.setOutlineColor(sf::Color::Green);
         _lobbies[i].start.setOutlineThickness(2);
         _lobbies[i].start.setSize({160, 80});
-        _lobbies[i].start.setPosition({420, 240 + (float)i * 140});
+        _lobbies[i].start.setPosition({400, 240 + (float)i * 140});
 
         _lobbies[i].join.setFillColor(sf::Color::Black);
         _lobbies[i].join.setOutlineColor(_lobby.empty() ? sf::Color::Green : sf::Color::Red);
@@ -235,7 +235,7 @@ void rtype::client::LobbyMenu::displayLobbies()
         _lobbies[i].buttonReady.setOutlineColor(_ready ? sf::Color::Green : sf::Color::Red);
         _lobbies[i].buttonReady.setOutlineThickness(2);
         _lobbies[i].buttonReady.setSize({160, 80});
-        _lobbies[i].buttonReady.setPosition({1400, 240 + (float)i * 140});
+        _lobbies[i].buttonReady.setPosition({1407, 240 + (float)i * 140});
 
         sf::Text text;
 
@@ -246,7 +246,7 @@ void rtype::client::LobbyMenu::displayLobbies()
 
         sf::Text textStart;
 
-        textStart.setPosition({430, 250 + (float)i * 140});
+        textStart.setPosition({417, 250 + (float)i * 140});
         textStart.setString("START");
         textStart.setFillColor(sf::Color::Green);
         textStart.setCharacterSize(42);
@@ -260,7 +260,7 @@ void rtype::client::LobbyMenu::displayLobbies()
 
         sf::Text textReady;
 
-        textReady.setPosition({1412, 250 + (float)i * 140});
+        textReady.setPosition({1422, 250 + (float)i * 140});
         textReady.setString("READY");
         textReady.setFillColor(_ready ? sf::Color::Green: sf::Color::Red);
         textReady.setCharacterSize(42);
