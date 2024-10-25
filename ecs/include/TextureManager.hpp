@@ -21,16 +21,20 @@ namespace ecs {
         template <typename Function>
         TextureManager(Function &&f, const std::string &path)
         {
-            for (const auto &entry : std::filesystem::directory_iterator(path)) {
-                if (entry.is_directory()) {
-                    for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
-                        std::string path(newEntry.path().generic_string().c_str());
-                        _textures[path] = f(path);
+            try {
+                for (const auto &entry : std::filesystem::directory_iterator(path)) {
+                    if (entry.is_directory()) {
+                        for (const auto &newEntry : std::filesystem::directory_iterator(entry.path())) {
+                            std::string path(newEntry.path().generic_string().c_str());
+                            _textures[path] = f(path);
+                        }
+                        continue;
                     }
-                    continue;
+                    std::string path(entry.path().generic_string().c_str());
+                    _textures[path] = f(path);
                 }
-                std::string path(entry.path().generic_string().c_str());
-                _textures[path] = f(path);
+            } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+                spdlog::error("Error on searching path: {}", error.what());
             }
         }
 

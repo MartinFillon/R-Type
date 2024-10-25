@@ -20,14 +20,18 @@
 namespace ecs {
     ComponentFactory::ComponentFactory()
     {
-        std::filesystem::path path = std::filesystem::current_path() / "components";
+        try {
+            std::filesystem::path path = std::filesystem::current_path() / "components";
 
-        for (const auto &entry : std::filesystem::directory_iterator(path)) {
-            if (entry.is_regular_file()) {
-                std::string path = entry.path().string();
-                std::string name = entry.path().stem().string().substr(3);
-                registerComponent(name, path);
+            for (const auto &entry : std::filesystem::directory_iterator(path)) {
+                if (entry.is_regular_file()) {
+                    std::string path = entry.path().string();
+                    std::string name = entry.path().stem().string().substr(3);
+                    registerComponent(name, path);
+                }
             }
+        } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+            spdlog::error("Error on searching path: {}", error.what());
         }
     }
 
