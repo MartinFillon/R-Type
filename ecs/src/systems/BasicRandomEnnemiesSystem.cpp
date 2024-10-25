@@ -5,9 +5,10 @@
 ** BasicRandomEnnemiesSystem
 */
 
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include <memory>
 #include <random>
+#include <iostream>
+#include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
@@ -118,12 +119,16 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
     int randomPosY = uniformDistForY(randomEngine);
     int randomPosX = uniformDistForY(randomEngine);
 
-    Entity newEnnemies = factory.createEntity(r, CONFIG_ENNEMIES);
-    auto &positions = r->register_if_not_exist<ecs::component::Position>();
-    positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
+    try {
+        Entity newEnnemies = factory.createEntity(r, CONFIG_ENNEMIES);
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
+        positions[newEnnemies.getId()] = ecs::component::Position{BASIC_POS_SPAWN_X + randomPosX, randomPosY, false};
 
-    if (ctx) {
-        ctx->createEnemy(newEnnemies.getId());
+        if (ctx) {
+            ctx->createEnemy(newEnnemies.getId());
+        }
+    } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+        std::cerr << error.what() << std::endl;
     }
 }
 

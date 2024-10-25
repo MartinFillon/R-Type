@@ -11,6 +11,7 @@
 #include <exception>
 #include <memory>
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
 #include "Protocol.hpp"
@@ -32,9 +33,8 @@ namespace rtype::client {
             _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
             _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
             _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
-        } catch (const std::exception &e) {
-            std::cerr << "Error on setup Background\n";
-            std::cerr << e.what() << std::endl;
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            spdlog::error("Error on setup Background {}", error.what());
         }
     }
 
@@ -49,8 +49,7 @@ namespace rtype::client {
 
             _gameSound.setLoop(true);
         } catch (const std::exception &e) {
-            std::cerr << "Error on setup Sound\n";
-            std::cerr << e.what() << std::endl;
+            spdlog::error("Error on setup Sound {}", e.what());
         }
     }
 

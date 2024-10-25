@@ -73,21 +73,25 @@ namespace rtype::client {
                 int id = ecs::utils::bytesToInt(arguments);
                 int type = arguments[4];
 
-                switch (type) {
-                    case protocol::ObjectTypes::PLAYER_1:
-                        _cf->createEntity(r, id, CONFIG_PLAYER_0);
-                        break;
-                    case protocol::ObjectTypes::PLAYER_2:
-                        _cf->createEntity(r, id, CONFIG_PLAYER_1);
-                        break;
-                    case protocol::ObjectTypes::PLAYER_3:
-                        _cf->createEntity(r, id, CONFIG_PLAYER_2);
-                        break;
-                    case protocol::ObjectTypes::PLAYER_4:
-                        _cf->createEntity(r, id, CONFIG_PLAYER_3);
-                        break;
-                    default:
-                        break;
+                try {
+                    switch (type) {
+                        case protocol::ObjectTypes::PLAYER_1:
+                            _cf->createEntity(r, id, CONFIG_PLAYER_0);
+                            break;
+                        case protocol::ObjectTypes::PLAYER_2:
+                            _cf->createEntity(r, id, CONFIG_PLAYER_1);
+                            break;
+                        case protocol::ObjectTypes::PLAYER_3:
+                            _cf->createEntity(r, id, CONFIG_PLAYER_2);
+                            break;
+                        case protocol::ObjectTypes::PLAYER_4:
+                            _cf->createEntity(r, id, CONFIG_PLAYER_3);
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+                    spdlog::error("Setup error on Player: {}", error.what());
                 }
             },
         };
@@ -99,24 +103,28 @@ namespace rtype::client {
             int id = ecs::utils::bytesToInt(arguments);
             int type = arguments[4];
 
-            switch (type) {
-                case protocol::ObjectTypes::ENEMY:
-                    _cf->createEntity(r, id, CONFIG_ENNEMIES);
-                    break;
-                case protocol::ObjectTypes::MILESPATES:
-                    _cf->createEntity(r, id, CONFIG_MILEPATES);
-                    break;
-                case protocol::ObjectTypes::BOSS:
-                    _cf->createEntity(r, id, CONFIG_BOSS);
-                    break;
-                case protocol::ObjectTypes::BULLET:
-                    _cf->createEntity(r, id, CONFIG_PROJECTILE);
-                    break;
-                case protocol::ObjectTypes::PLAYER_BULLET:
-                    _cf->createEntity(r, id, CONFIG_PLAYER_PROJECTILE);
-                    break;
-                default:
-                    break;
+            try {
+                switch (type) {
+                    case protocol::ObjectTypes::ENEMY:
+                        _cf->createEntity(r, id, CONFIG_ENNEMIES);
+                        break;
+                    case protocol::ObjectTypes::MILESPATES:
+                        _cf->createEntity(r, id, CONFIG_MILEPATES);
+                        break;
+                    case protocol::ObjectTypes::BOSS:
+                        _cf->createEntity(r, id, CONFIG_BOSS);
+                        break;
+                    case protocol::ObjectTypes::BULLET:
+                        _cf->createEntity(r, id, CONFIG_PROJECTILE);
+                        break;
+                    case protocol::ObjectTypes::PLAYER_BULLET:
+                        _cf->createEntity(r, id, CONFIG_PLAYER_PROJECTILE);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+                spdlog::error("Create entity error on :{}", error.what());
             }
         }};
 

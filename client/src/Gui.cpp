@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "Gui.hpp"
 #include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
@@ -19,8 +20,7 @@ namespace rtype::client {
             _registry = std::make_shared<RegistryWrapper>();
             _cf = std::make_shared<ecs::ComponentFactory>();
         } catch (const std::bad_alloc &e) {
-            std::cerr << "Bad allocation on registry and component factory of the GUI\n";
-            std::cerr << e.what() << std::endl;
+            spdlog::error("Bad allocation on registry and component factory of the GUI {}", e.what());
         }
     }
 

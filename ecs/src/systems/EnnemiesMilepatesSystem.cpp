@@ -6,7 +6,7 @@
 */
 
 #include <memory>
-
+#include <iostream>
 #include "ComponentFactory.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Position.hpp"
@@ -92,9 +92,13 @@ namespace ecs::systems {
         int lastY = 80;
 
         for (std::size_t i = 0; i < NB_ENNEMIES; ++i) {
-            milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
-            r->_entities.addEntity(milespates[i].getId());
-            ctx->createMilespates(milespates[i].getId());
+            try {
+                milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
+                r->_entities.addEntity(milespates[i].getId());
+                ctx->createMilespates(milespates[i].getId());
+            } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+                std::cerr << error.what() << std::endl;
+            }
         }
 
         auto &positions = r->register_if_not_exist<ecs::component::Position>();

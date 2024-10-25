@@ -7,7 +7,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
@@ -15,6 +14,7 @@
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
+#include "nlohmann/detail/value_t.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 namespace ecs {
@@ -41,8 +41,14 @@ namespace ecs {
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
         std::ifstream f(file);
-        nlohmann::json config = nlohmann::json::parse(f);
+        if (!std::filesystem::exists(file)) {
+            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+        }
 
+        nlohmann::json config = nlohmann::json::parse(f);
+        if (config == nlohmann::detail::value_t::discarded) {
+            throw ComponentFactoryException(ERROR_PARSING_ERROR(file));
+        }
         Entity e = r->spawn_entity();
         r->_entities.addEntity(e.getId());
 
@@ -55,7 +61,14 @@ namespace ecs {
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, int id, const std::string &file)
     {
         std::ifstream f(file);
+        if (!std::filesystem::exists(file)) {
+            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+        }
+
         nlohmann::json config = nlohmann::json::parse(f);
+        if (config == nlohmann::detail::value_t::discarded) {
+            throw ComponentFactoryException(ERROR_PARSING_ERROR(file));
+        }
 
         Entity e = Entity(id);
         r->_entities.addEntity(e.getId());

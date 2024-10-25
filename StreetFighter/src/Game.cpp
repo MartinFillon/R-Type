@@ -50,8 +50,8 @@ street_fighter::Game::Game()
         _r->add_system(ecs::systems::BasicMouvementSystem());
         _r->add_system(ecs::systems::PunchSystem());
         _r->add_system(ecs::systems::KickSystem());
-    } catch (const std::exception &e) {
-        spdlog::error("Setup error on: [{}]", e.what());
+    } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+        spdlog::error("Setup error on: [{}]", error.what());
         return;
     }
 }

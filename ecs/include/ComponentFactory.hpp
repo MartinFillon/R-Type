@@ -24,6 +24,9 @@
 #define CONFIG_PROJECTILE "./config/projectile.json"
 #define CONFIG_PLAYER_PROJECTILE "./config/playerProjectile.json"
 
+#define ERROR_FILE_NOT_FOUND(file) "File not found on: [" + file + "]"
+#define ERROR_PARSING_ERROR(file) "Parsing Error on : [" + file + "]"
+
 #include <memory>
 #include <string>
 #include <nlohmann/json_fwd.hpp>
@@ -42,6 +45,18 @@ namespace ecs {
         using ComponentLoader = DlLoader<void, std::shared_ptr<Registry> &, Entity &, const nlohmann::json &>;
         ComponentFactory();
         ~ComponentFactory();
+
+        class ComponentFactoryException {
+            public:
+              ComponentFactoryException(const std::string &error): _what(error) {}
+              ~ComponentFactoryException() = default;
+
+              const char *what() const noexcept {
+                return _what.c_str();
+              }
+            private:
+              std::string _what;
+        };
 
         void registerComponent(std::string &name, std::string &path);
         Entity createEntity(std::shared_ptr<Registry> r, const std::string &file);
