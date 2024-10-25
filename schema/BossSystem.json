@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "boss_life": {
+      "type": "number"
+    },
+    "boss_speed": {
+      "type": "number"
+    },
+    "boss_spawn_time": {
+      "type": "number"
+    },
+    "boss_projectile_speed": {
+      "type": "number"
+    },
+    "moving_projectile_speed": {
+      "type": "number"
+    },
+    "boss_projectile_spawn_time": {
+      "type": "number"
+    },
+    "boss_shooting_elapsed_time": {
+      "type": "number"
+    },
+    "projectile_close": {
+      "type": "number"
+    },
+    "projectile_padding": {
+      "type": "number"
+    },
+    "config_boss": {
+      "type": "string"
+    },
+    "config_projectile": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "boss_life",
+    "boss_speed",
+    "boss_spawn_time",
+    "boss_projectile_speed",
+    "moving_projectile_speed",
+    "boss_projectile_spawn_time",
+    "boss_shooting_elapsed_time",
+    "projectile_close",
+    "projectile_padding",
+    "config_boss",
+    "config_projectile"
+  ]
+}

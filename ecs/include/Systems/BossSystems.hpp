@@ -8,7 +8,6 @@
 #ifndef BOSSSYSTEMS_HPP_
 #define BOSSSYSTEMS_HPP_
 
-#include "Components/Position.hpp"
 #define BOSS_LIFE(x) 100 * x
 #define BOSS_SPEED 5
 #define BOSS_SPAWN_TIME 60
@@ -20,11 +19,16 @@
 #define PROJECTILE_CLOSE 200
 #define PROJECTILE_PADDING 100
 
+/**
+
+ */
+
 #include <array>
 #include <cmath>
 #include <functional>
 
 #include "Clock.hpp"
+#include "Components/Position.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -32,6 +36,8 @@ namespace ecs {
     namespace systems {
         class BossSystems : public ISystems {
           public:
+            BossSystems(const nlohmann::json &config);
+
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
@@ -68,6 +74,17 @@ namespace ecs {
                         createFirstBoss(r, ctx, factory);
                     }},
                 };
+            int _bossLife;
+            int _bossSpeed;
+            int _bossProjectileSpeed;
+            int _movingProjectileSpeed;
+            int _bossProjectileSpawnTime;
+            int _bossShootingElapsedTime;
+            int _projectileClose;
+            int _projectilePadding;
+            int _bossSpawnTime;
+            std::string _bossConfig;
+            std::string _projectileConfig;
         };
     } // namespace systems
 } // namespace ecs
