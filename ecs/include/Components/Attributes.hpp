@@ -13,14 +13,15 @@ namespace ecs {
 
         struct Attributes {
 
-            enum EntityType {
+            enum class EntityType {
+                None,
                 Background,
                 Player,
                 Weapon,
                 Ennemy,
             };
 
-            enum EnnemyType { None, Basic, Milespates, Boss, First, Second };
+            enum class EnnemyType { None, Basic, Milespates, Boss, First, Second };
 
             EntityType _entity_type;
             EnnemyType _ennemy_type;

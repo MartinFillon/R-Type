@@ -7,7 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Cinematic.hpp"
 #include "Components/Position.hpp"
 #include "Entity.hpp"
@@ -20,11 +20,11 @@ extern "C" void register_component(
 )
 {
     auto &cinematics = registry->register_component<ecs::component::Cinematic>();
-    ecs::component::Object objectType = ecs::component::Object::InDestroy;
-    ecs::component::Type type = ecs::component::Type::None;
+    ecs::component::Attributes::EntityType entity_type = ecs::component::Attributes::EntityType::None;
+    ecs::component::Attributes::EnnemyType ennemy_type = ecs::component::Attributes::EnnemyType::None;
     ecs::component::Position startPos{0, 0, false};
     ecs::component::Position endPos{0, 0, false};
-    ecs::component::Animations anim;
+    ecs::component::Attributes atr;
     startPos._x = component["xStart"];
     startPos._y = component["yStart"];
 
@@ -32,38 +32,39 @@ extern "C" void register_component(
     endPos._y = component["yEnd"];
 
     if (component["objectType"] == "background") {
-        objectType = ecs::component::Object::Background;
+        entity_type = ecs::component::Attributes::EntityType::Background;
     }
     if (component["objectType"] == "player") {
-        objectType = ecs::component::Object::Player;
+        entity_type = ecs::component::Attributes::EntityType::Player;
     }
     if (component["objectType"] == "weapon") {
-        objectType = ecs::component::Object::Weapon;
+        entity_type = ecs::component::Attributes::EntityType::Weapon;
     }
     if (component["objectType"] == "ennemies") {
-        objectType = ecs::component::Object::Ennemies;
+        entity_type = ecs::component::Attributes::EntityType::Ennemy;
     }
 
     if (component["type"] == "basic") {
-        type = ecs::component::Type::Basic;
+        ennemy_type = ecs::component::Attributes::EnnemyType::Basic;
     }
     if (component["type"] == "milespates") {
-        type = ecs::component::Type::Milespates;
+        ennemy_type = ecs::component::Attributes::EnnemyType::Milespates;
     }
     if (component["type"] == "boss") {
-        type = ecs::component::Type::Boss;
+        ennemy_type = ecs::component::Attributes::EnnemyType::Boss;
     }
     if (component["type"] == "first") {
-        type = ecs::component::Type::First;
+        ennemy_type = ecs::component::Attributes::EnnemyType::First;
     }
     if (component["type"] == "second") {
-        type = ecs::component::Type::Second;
+        ennemy_type = ecs::component::Attributes::EnnemyType::Second;
     }
 
-    anim._object = objectType;
-    anim._type = type;
+    atr._entity_type = entity_type;
+    atr._ennemy_type = ennemy_type;
+
     bool state = component["state"];
     int speed = component["speed"];
 
-    cinematics[entity.getId()] = ecs::component::Cinematic{startPos, endPos, anim, state, speed };
+    cinematics[entity.getId()] = ecs::component::Cinematic{startPos, endPos, atr, state, speed };
 }

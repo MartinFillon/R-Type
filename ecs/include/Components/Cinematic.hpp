@@ -9,6 +9,7 @@
 #define CINEMATIC_HPP_
 
 #include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Position.hpp"
 
 namespace ecs {
@@ -16,7 +17,7 @@ namespace ecs {
         struct Cinematic {
             Position _start;
             Position _end;
-            Animations _anim;
+            Attributes _atr;
             bool _state;
             int _speed;
         };
