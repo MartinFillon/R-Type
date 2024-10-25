@@ -10,6 +10,7 @@
 
     #include <SFML/Graphics.hpp>
     #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window/Event.hpp>
 
     #include "TCPCommunication.hpp"
 
@@ -45,6 +46,7 @@ namespace rtype::client {
             void displayLobbies();
 
             void event();
+            void createNewLobby(sf::Event &event);
 
             void update();
             void updateBackground();

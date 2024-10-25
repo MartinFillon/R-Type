@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <string>
 #include "TCPCommunication.hpp"
+#include "asio/write.hpp"
 
 rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window)
 {
@@ -65,6 +66,25 @@ void rtype::client::LobbyMenu::setupBackground()
     );
 }
 
+void rtype::client::LobbyMenu::createNewLobby(sf::Event &event)
+{
+    char _inputChar;
+
+    if (event.text.unicode < 128) {
+        _inputChar = static_cast<char>(event.text.unicode);
+        if (_inputChar == 8 && !_newLobbyName.empty()) {
+            _newLobbyName.pop_back();
+        } else if (_inputChar > 31 && _inputChar < 128) {
+            _newLobbyName += _inputChar;
+        }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_newLobbyName.empty()) {
+        _server.get()->send("CREATE " + _newLobbyName + "\n");
+        _server.get()->read();
+        _newLobbyName.clear();
+    }
+}
+
 void rtype::client::LobbyMenu::event()
 {
     sf::Event event;
@@ -85,7 +105,9 @@ void rtype::client::LobbyMenu::event()
             }
 
         }
-
+        if (_createActivate && event.type == sf::Event::TextEntered) {
+            createNewLobby(event);
+        }
     }
 }
 
@@ -104,7 +126,7 @@ void rtype::client::LobbyMenu::updateLobbies()
     _lobbies.clear();
 
     while (lobby.find("200") == std::string::npos) {
-    
+
         std::string name = lobby.substr(0, lobby.find(':'));
         std::string running = lobby.substr(lobby.find(':') + 1, 1);
         std::string nbPlayers = lobby.substr(lobby.find(':') + 3, 1);
