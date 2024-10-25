@@ -5,8 +5,10 @@
 ** Gui
 */
 
-#include "Gui.hpp"
 #include <memory>
+#include <iostream>
+#include <spdlog/spdlog.h>
+#include "Gui.hpp"
 #include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
 
@@ -14,8 +16,12 @@ namespace rtype::client {
     Gui::Gui()
         : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
     {
-        _registry = std::make_shared<RegistryWrapper>();
-        _cf = std::make_shared<ecs::ComponentFactory>();
+        try {
+            _registry = std::make_shared<RegistryWrapper>();
+            _cf = std::make_shared<ecs::ComponentFactory>();
+        } catch (const std::bad_alloc &e) {
+            spdlog::error("Bad allocation on registry and component factory of the GUI {}", e.what());
+        }
     }
 
     int Gui::run()

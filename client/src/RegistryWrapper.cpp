@@ -10,6 +10,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Position.hpp"
@@ -62,10 +63,14 @@ namespace rtype::client {
 
             sprite.setPosition(pos->_x, pos->_y);
             sprite.setScale(si->_width, si->_height);
-            auto texture = textureManager.getTexture(spri->_pathToSprite);
-            sprite.setTexture(*texture);
-            sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-            window.draw(sprite);
+            try {
+                auto texture = textureManager.getTexture(spri->_pathToSprite);
+                sprite.setTexture(*texture);
+                sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
+                window.draw(sprite);
+            } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
+                spdlog::error("Could not display {}", error.what());
+            }
         }
     }
 

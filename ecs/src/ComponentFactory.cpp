@@ -8,7 +8,6 @@
 #include <exception>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
@@ -16,19 +15,25 @@
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
+#include "nlohmann/detail/value_t.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "SystemsManager.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory()
     {
-        std::filesystem::path path = std::filesystem::current_path() / "components";
+        try {
+            std::filesystem::path path = std::filesystem::current_path() / "components";
 
-        for (const auto &entry : std::filesystem::directory_iterator(path)) {
-            if (entry.is_regular_file()) {
-                std::string path = entry.path().string();
-                std::string name = entry.path().stem().string().substr(3);
-                registerComponent(name, path);
+            for (const auto &entry : std::filesystem::directory_iterator(path)) {
+                if (entry.is_regular_file()) {
+                    std::string path = entry.path().string();
+                    std::string name = entry.path().stem().string().substr(3);
+                    registerComponent(name, path);
+                }
             }
+        } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+            spdlog::error("Error on searching path: {}", error.what());
         }
 
         std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
@@ -46,38 +51,42 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
-        try {
-            std::ifstream f(file);
-            nlohmann::json config = nlohmann::json::parse(f);
-            _validator.validate(config);
-            Entity e = r->spawn_entity();
-            r->_entities.addEntity(e.getId());
-
-            for (auto &c : config["active"]) {
-                createComponent(r, e, c, config["components"][c]);
-            }
-            return e;
-        } catch (const std::exception &e) {
-            throw ComponentNotCreated(file);
+        std::ifstream f(file);
+        if (!std::filesystem::exists(file)) {
+            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
         }
+
+        nlohmann::json config = nlohmann::json::parse(f);
+        if (config == nlohmann::detail::value_t::discarded) {
+            throw ComponentFactoryException(ERROR_PARSING_ERROR(file));
+        }
+        Entity e = r->spawn_entity();
+        r->_entities.addEntity(e.getId());
+
+        for (auto &c : config["active"]) {
+             createComponent(r, e, c, config["components"][c]);
+        }
+        return e;
     }
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, int id, const std::string &file)
     {
-        try {
-            std::ifstream f(file);
-            nlohmann::json config = nlohmann::json::parse(f);
-
-            Entity e = Entity(id);
-            r->_entities.addEntity(e.getId());
-
-            for (auto &c : config["active"]) {
-                createComponent(r, e, c, config["components"][c]);
-            }
-            return e;
-        } catch (const std::exception &e) {
-            throw ComponentNotCreated(file);
+        std::ifstream f(file);
+        if (!std::filesystem::exists(file)) {
+            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
         }
+
+        nlohmann::json config = nlohmann::json::parse(f);
+        if (config == nlohmann::detail::value_t::discarded) {
+            throw ComponentFactoryException(ERROR_PARSING_ERROR(file));
+        }
+        Entity e = Entity(id);
+        r->_entities.addEntity(e.getId());
+
+        for (auto &c : config["active"]) {
+             createComponent(r, e, c, config["components"][c]);
+        }
+        return e;
     }
 
     void ComponentFactory::createComponent(
