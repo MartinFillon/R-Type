@@ -12,6 +12,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Window.hpp>
 #include <cstdlib>
+#include <string>
 #include "TCPCommunication.hpp"
 
 rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window)
@@ -87,12 +88,21 @@ void rtype::client::LobbyMenu::updateLobbies()
 
     std::string lobby = _server.get()->read();
 
+    _lobbies.clear();
+
     while (lobby.find("200") == std::string::npos) {
-        std::cout << "[" << lobby << "]" << "\n";
+    
+        std::string name = lobby.substr(0, lobby.find(':'));
+        std::string running = lobby.substr(lobby.find(':') + 1, 1);
+        std::string nbPlayers = lobby.substr(lobby.find(':') + 3, 1);
+
+        struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running) };
+
+        _lobbies.push_back(newLobby);
+
         lobby.clear();
         lobby = _server.get()->read();
     }
-    std::cout << "FINISHED\n";
 }
 
 void rtype::client::LobbyMenu::updateBackground()
@@ -105,5 +115,11 @@ void rtype::client::LobbyMenu::display()
 {
     _window.clear();
     _window.draw(_backgroundSprite, &_shader);
+    displayLobbies();
     _window.display();
+}
+
+void rtype::client::LobbyMenu::displayLobbies()
+{
+
 }

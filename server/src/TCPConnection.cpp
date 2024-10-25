@@ -102,7 +102,7 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 void rtype::server::TCPConnection::dumpLobbies()
 {
     for (auto &lobby: _lobbies) {
-        asio::write(_socket, asio::buffer(lobby.getName() + "\n"));
+        asio::write(_socket, asio::buffer(lobby.getName() + ":" + std::to_string(lobby.isRunning()) + ":" + std::to_string(lobby.getNumberConnections()) + "\n"));
     }
     asio::write(_socket, asio::buffer("200\n"));
 }

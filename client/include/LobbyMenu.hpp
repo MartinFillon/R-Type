@@ -22,9 +22,9 @@
 namespace rtype::client {
 
     struct Lobby {
-        char *name;
+        std::string name;
         int nbPlayers;
-        bool running;
+        int running;
     };
 
     class LobbyMenu {
@@ -41,6 +41,8 @@ namespace rtype::client {
             void setupBackground();
 
             void display();
+            void displayLobbies();
+
             void event();
 
             void update();

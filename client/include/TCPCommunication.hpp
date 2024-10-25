@@ -10,6 +10,7 @@
 
     #include <asio.hpp>
     #include <string>
+#include "asio/streambuf.hpp"
 
     #define ERROR 84
     #define SUCCESS 0
@@ -33,6 +34,8 @@ namespace rtype::client {
             asio::io_context _ioContext;
             asio::ip::tcp::socket _socket;
             asio::ip::tcp::resolver::results_type _endpoints;
+
+            asio::streambuf _buffer;
 
     };
 }

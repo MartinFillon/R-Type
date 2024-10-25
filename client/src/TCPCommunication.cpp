@@ -38,17 +38,17 @@ int rtype::client::TCPCommunication::setup(const std::string &host, const std::s
 
 std::string rtype::client::TCPCommunication::read()
 {
-    std::string data;
     asio::error_code error;
-    size_t length = asio::read_until(_socket, asio::dynamic_buffer(data), '\n', error);
+    asio::read_until(_socket, _buffer, '\n', error);
 
     if (error) {
         std::cerr << error.message() << std::endl;
     }
 
-    std::cout << "data received: [" << data << "]" << std::endl;
-    std::cout << "data received after: " << data.substr(0, length - 1) << std::endl;
-    return data.substr(0, length - 1);
+    std::istream is(&_buffer);
+    std::string line;
+    std::getline(is, line);
+    return line;
 }
 
 void rtype::client::TCPCommunication::send(const std::string &data)
