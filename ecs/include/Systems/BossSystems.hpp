@@ -8,21 +8,6 @@
 #ifndef BOSSSYSTEMS_HPP_
 #define BOSSSYSTEMS_HPP_
 
-#define BOSS_LIFE(x) 100 * x
-#define BOSS_SPEED 5
-#define BOSS_SPAWN_TIME 60
-#define BOSS_PROJECTILE_SPEED 5
-#define MOVING_PROJECTILE_SPEED 0.01
-#define BOSS_PROJECTILE_SPAWN_TIME 3
-#define BOSS_SHOOTING_ELAPSED_TIME 0.5
-
-#define PROJECTILE_CLOSE 200
-#define PROJECTILE_PADDING 100
-
-/**
-
- */
-
 #include <array>
 #include <cmath>
 #include <functional>
@@ -83,6 +68,7 @@ namespace ecs {
             int _projectileClose;
             int _projectilePadding;
             int _bossSpawnTime;
+            int _bossMaxX;
             std::string _bossConfig;
             std::string _projectileConfig;
         };

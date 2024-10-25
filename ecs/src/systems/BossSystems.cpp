@@ -20,13 +20,21 @@
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {
-    BossSystems::BossSystems(const nlohmann::json &config) {
+    BossSystems::BossSystems(const nlohmann::json &config)
+    {
         _bossLife = config["boss_life"];
         _bossSpeed = config["boss_speed"];
         _bossProjectileSpeed = config["boss_projectile_speed"];
         _movingProjectileSpeed = config["moving_projectile_speed"];
         _bossConfig = config["config_boss"];
-
+        _projectileConfig = config["config_projectile"];
+        _bossProjectileSpawnTime = config["boss_projectile_spawn_time"];
+        _bossShootingElapsedTime = config["boss_shooting_elapsed_time"];
+        _projectileClose = config["projectile_close"];
+        _projectilePadding = config["projectile_padding"];
+        _bossSpawnTime = config["boss_spawn_time"];
+        _bossProjectileSpeed = config["boss_projectile_speed"];
+        _bossMaxX = config["boss_max_x"];
     }
 
     void BossSystems::operator()(
@@ -37,7 +45,7 @@ namespace ecs::systems {
     {
         bool isBoss = isABoss(r);
 
-        if (_bossClock.getSeconds() < BOSS_SPAWN_TIME && !isBoss) {
+        if (_bossClock.getSeconds() < _bossSpawnTime && !isBoss) {
             return;
         }
         if (!isBoss && times < _bosses.size()) {
@@ -52,6 +60,7 @@ namespace ecs::systems {
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
         auto &lifes = r->register_if_not_exist<ecs::component::Life>();
         auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
+        auto &atr = r->register_if_not_exist<ecs::component::Attributes>();
         int idx = 0;
 
         for (auto &&[atr, pos, control, anim, life, destroyable] :
@@ -62,19 +71,19 @@ namespace ecs::systems {
                 continue;
             }
 
-            if (atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Boss) {
+            if (atr->_secondary_type != ecs::component::Attributes::SecondaryType::Boss) {
                 idx += 1;
                 continue;
             }
 
             if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
-                _projectileClock.getSeconds() > MOVING_PROJECTILE_SPEED) {
+                _projectileClock.getSeconds() > _movingProjectileSpeed) {
                 moveProjectileTowardsPlayer(r, *pos, idx, ctx);
                 _projectileClock.restart();
                 continue;
             }
 
-            if (_shootingClock.getSeconds() > BOSS_PROJECTILE_SPAWN_TIME) {
+            if (_shootingClock.getSeconds() > _bossProjectileSpawnTime) {
                 createNewProjectile(r, *pos, ctx, factory);
                 _shootingClock.restart();
             }
@@ -84,7 +93,7 @@ namespace ecs::systems {
                 break;
             }
 
-            if (anim->_clock.getMiliSeconds() > 10 && pos->_x >= 1000) {
+            if (anim->_clock.getMiliSeconds() > 10 && pos->_x >= _bossMaxX) {
                 pos->_x -= control->_speed;
                 anim->_clock.restart();
             }
@@ -99,7 +108,7 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
-        Entity newProjectile = factory.createEntity(r, CONFIG_PROJECTILE);
+        Entity newProjectile = factory.createEntity(r, _projectileConfig);
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
 
         positions[newProjectile.getId()] = ecs::component::Position{bossPos._x, bossPos._y, false};
@@ -112,7 +121,7 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
-        Entity bossEntity = factory.createEntity(r, CONFIG_BOSS);
+        Entity bossEntity = factory.createEntity(r, _bossConfig);
 
         ctx->createBoss(bossEntity.getId());
     }
@@ -125,7 +134,7 @@ namespace ecs::systems {
             if (!atr) {
                 continue;
             }
-            if (atr->_ennemy_type == ecs::component::Attributes::EnnemyType::Boss) {
+            if (atr->_secondary_type == ecs::component::Attributes::SecondaryType::Boss) {
                 return true;
             }
         }
@@ -160,7 +169,7 @@ namespace ecs::systems {
         float distance =
             std::sqrt(std::pow(projectilePos._x - playerPos._x, 2) + std::pow(projectilePos._y - playerPos._y, 2));
 
-        if (distance <= PROJECTILE_CLOSE) {
+        if (distance <= _projectileClose) {
             auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
 
             destroyables[idx]->_state = component::Destroyable::DestroyState::WAITING;
@@ -171,15 +180,15 @@ namespace ecs::systems {
         int targetY = playerPos._y;
 
         if (projectilePos._x < targetX) {
-            projectilePos._x += BOSS_PROJECTILE_SPEED;
+            projectilePos._x += _bossProjectileSpeed;
         } else if (projectilePos._x > targetX) {
-            projectilePos._x -= BOSS_PROJECTILE_SPEED;
+            projectilePos._x -= _bossProjectileSpeed;
         }
 
         if (projectilePos._y < targetY) {
-            projectilePos._y += BOSS_PROJECTILE_SPEED;
+            projectilePos._y += _bossProjectileSpeed;
         } else if (projectilePos._y > targetY) {
-            projectilePos._y -= BOSS_PROJECTILE_SPEED;
+            projectilePos._y -= _bossProjectileSpeed;
         }
     }
 } // namespace ecs::systems
