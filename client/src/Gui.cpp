@@ -10,6 +10,7 @@
 #include <spdlog/spdlog.h>
 #include "Gui.hpp"
 #include "ComponentFactory.hpp"
+#include "Gui.hpp"
 #include "RegistryWrapper.hpp"
 
 namespace rtype::client {
