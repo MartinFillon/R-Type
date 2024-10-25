@@ -11,49 +11,53 @@
 #include "Components/Position.hpp"
 #include "ZipperIterator.hpp"
 
-void ecs::systems::CinematicsSystem::operator()(
-    std::shared_ptr<Registry> &r,
-    std::shared_ptr<IContext> ctx,
-    ComponentFactory &factory
-)
-{
-    auto &attributes = r->get_components<ecs::component::Attributes>();
-    auto &cinematics = r->get_components<ecs::component::Cinematic>();
-    auto &animPositions = r->get_components<ecs::component::Position>();
+namespace ecs::systems {
+    void CinematicsSystem::operator()(
+        std::shared_ptr<Registry> &r,
+        std::shared_ptr<IContext> ctx,
+        ComponentFactory &factory
+    )
+    {
+        auto &attributes = r->get_components<ecs::component::Attributes>();
+        auto &cinematics = r->get_components<ecs::component::Cinematic>();
+        auto &animPositions = r->get_components<ecs::component::Position>();
 
-    for (auto &&[cine] : custom_zip(cinematics)) {
-        if (!cine) {
-            continue;
-        }
-
-        if (cine->_state != true) {
-            continue;
-        }
-
-        for (auto &&[atr, animPos] : custom_zip(attributes, animPositions)) {
-            if (!atr || !animPos) {
+        for (auto &&[cine] : custom_zip(cinematics)) {
+            if (!cine) {
                 continue;
             }
 
-            if (atr->_entity_type != cine->_atr._entity_type && atr->_secondary_type != cine->_atr._secondary_type) {
+            if (cine->_state != true) {
                 continue;
             }
 
-            if (animPos->_x < cine->_end._x) {
-                animPos->_x += cine->_speed;
-            } else if (animPos->_x > cine->_end._x) {
-                animPos->_x -= cine->_speed;
-            }
+            for (auto &&[atr, animPos] : custom_zip(attributes, animPositions)) {
+                if (!atr || !animPos) {
+                    continue;
+                }
 
-            if (animPos->_y < cine->_end._y) {
-                animPos->_y += cine->_speed;
-            } else if (animPos->_y > cine->_end._y) {
-                animPos->_y -= cine->_speed;
-            }
+                if (atr->_entity_type != cine->_atr._entity_type &&
+                    atr->_secondary_type != cine->_atr._secondary_type) {
+                    continue;
+                }
 
-            if (animPos->_x == cine->_end._x && animPos->_y == cine->_end._y) {
-                cine->_state = false;
+                if (animPos->_x < cine->_end._x) {
+                    animPos->_x += cine->_speed;
+                } else if (animPos->_x > cine->_end._x) {
+                    animPos->_x -= cine->_speed;
+                }
+
+                if (animPos->_y < cine->_end._y) {
+                    animPos->_y += cine->_speed;
+                } else if (animPos->_y > cine->_end._y) {
+                    animPos->_y -= cine->_speed;
+                }
+
+                if (animPos->_x == cine->_end._x && animPos->_y == cine->_end._y) {
+                    cine->_state = false;
+                }
             }
         }
     }
-}
+
+} // namespace ecs::systems

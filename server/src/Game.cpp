@@ -163,29 +163,26 @@ namespace rtype::server {
 
     void Game::setupDestroy()
     {
-        _r->add_system(ecs::systems::DestroySystem());
+        _r->add_system<ecs::systems::DestroySystem>();
     }
 
     void Game::setupCollisons()
     {
-        _r->add_system(ecs::systems::CollisionsSystem());
-        _r->add_system(ecs::systems::GunFireSystem());
-        _r->add_system(ecs::systems::InvincibilitySystem());
+        _r->add_system<ecs::systems::CollisionsSystem>();
+        _r->add_system<ecs::systems::GunFireSystem>();
+        _r->add_system<ecs::systems::InvincibilitySystem>();
     }
 
     void Game::setupBosses()
     {
-        _r->add_system(ecs::systems::BossSystems());
+        _r->add_system<ecs::systems::BossSystems>();
     }
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
 
-        std::ifstream f("config/systems/basic_random_ennemies.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem(config));
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()
