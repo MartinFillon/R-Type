@@ -11,7 +11,6 @@
 
 #include "TCPCommunication.hpp"
 #include "asio/buffer.hpp"
-#include "asio/read.hpp"
 #include "asio/error_code.hpp"
 
 rtype::client::TCPCommunication::TCPCommunication(): _ioContext(), _socket(_ioContext) {}

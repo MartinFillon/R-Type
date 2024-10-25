@@ -48,12 +48,13 @@ namespace rtype::server {
             bool isReady() const
             {
                 return _ready;
-            }
+            };
+
+            void writeToClient(const std::string &message);
 
         private:
 
             void readClient();
-            void writeToClient(const std::string &message);
 
             unsigned int _id;
             bool _ready;

@@ -10,6 +10,7 @@
 #include "Context.hpp"
 #include "Server.hpp"
 #include <cstdlib>
+#include <string>
 
 rtype::server::Lobby::Lobby(const std::string &name): _name(name), _running(false)
 {
@@ -23,9 +24,12 @@ bool rtype::server::Lobby::start(std::shared_ptr<ecs::IContext> &context)
         }
     }
 
+    static int portUdp = 1234;
     (void)context;
 
-    static int portUdp = 1234;
+    for (auto &client: _clients) {
+        client.get().writeToClient("UDP:" + std::to_string(portUdp));
+    }
 
     _server = std::make_shared<Server>(portUdp);
     portUdp++;
@@ -56,3 +60,14 @@ bool rtype::server::Lobby::unassign(TCPConnection &client)
 
     return false;
 };
+
+int rtype::server::Lobby::getNumberReady()
+{
+    int count = 0;
+    for (auto &client: _clients) {
+        if (client.get().isReady() == true) {
+            count += 1;
+        }
+    }
+    return count;
+}

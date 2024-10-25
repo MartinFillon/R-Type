@@ -16,9 +16,8 @@
 #include <cstdlib>
 #include <string>
 #include "TCPCommunication.hpp"
-#include "asio/write.hpp"
 
-rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window)
+rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false)
 {
 
 }
@@ -30,13 +29,15 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
 
     while (_running && _window.isOpen()) {
 
-        event();
         update();
         display();
+        event();
 
     }
 
-    return EXIT_SUCCESS;
+    std::cout << "PORT: " << _port << std::endl;
+
+    return _port;
 }
 
 void rtype::client::LobbyMenu::setup()
@@ -109,6 +110,7 @@ void rtype::client::LobbyMenu::event()
                     _server.get()->send("QUIT " + _lobbies[i].name + "\n");
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby.clear();
+                        _ready = false;
                     }
                     continue;
                 }
@@ -117,8 +119,40 @@ void rtype::client::LobbyMenu::event()
                     _server.get()->send("JOIN " + _lobbies[i].name + "\n");
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby = _lobbies[i].name;
+                        _ready = false;
                     }
                     continue;
+                }
+
+                if (!_lobby.empty() && _lobbies[i].buttonReady.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                    if (!_ready) {
+                        _server.get()->send("READY\n");
+                        if (_server.get()->read().find("200") != std::string::npos) {
+                            _ready = true;
+                        }
+                        continue;
+                    }
+
+                    if (_ready) {
+                        _server.get()->send("UNREADY\n");
+                        if (_server.get()->read().find("200") != std::string::npos) {
+                            _ready = false;
+                        }
+                        continue;
+                    }
+                }
+
+                if (_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                    _server.get()->send("START\n");
+                    std::cout << "SEND START\n";
+                    std::string response = _server.get()->read();
+                    std::cout << "[" << response << "]\n";
+                    if (response.find("UDP") != std::string::npos) {
+                        _running = false;
+                        _port = std::stoi(response.substr(response.find(':') + 1));
+                        std::cout << "running false with port :" << _port << "\n";
+                    }
+                    return;
                 }
             }
 
@@ -148,10 +182,9 @@ void rtype::client::LobbyMenu::updateLobbies()
         std::string name = lobby.substr(0, lobby.find(':'));
         std::string running = lobby.substr(lobby.find(':') + 1, 1);
         std::string nbPlayers = lobby.substr(lobby.find(':') + 3, 1);
+        std::string ready = lobby.substr(lobby.find(':') + 5, 1);
 
-        std::cout << "NAME: [" << name << "]\n";
-
-        struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running), sf::RectangleShape(), sf::RectangleShape()};
+        struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running), std::stoi(ready), sf::RectangleShape(), sf::RectangleShape(), sf::RectangleShape(), sf::RectangleShape()};
 
         _lobbies.push_back(newLobby);
 
@@ -186,11 +219,23 @@ void rtype::client::LobbyMenu::displayLobbies()
         _lobbies[i].rectangle.setSize({600, 80});
         _lobbies[i].rectangle.setPosition({600, 240 + (float)i * 140});
 
+        _lobbies[i].start.setFillColor(sf::Color::Black);
+        _lobbies[i].start.setOutlineColor(sf::Color::Green);
+        _lobbies[i].start.setOutlineThickness(2);
+        _lobbies[i].start.setSize({160, 80});
+        _lobbies[i].start.setPosition({420, 240 + (float)i * 140});
+
         _lobbies[i].join.setFillColor(sf::Color::Black);
         _lobbies[i].join.setOutlineColor(_lobby.empty() ? sf::Color::Green : sf::Color::Red);
         _lobbies[i].join.setOutlineThickness(2);
         _lobbies[i].join.setSize({130, 80});
         _lobbies[i].join.setPosition({1240, 240 + (float)i * 140});
+
+        _lobbies[i].buttonReady.setFillColor(sf::Color::Black);
+        _lobbies[i].buttonReady.setOutlineColor(_ready ? sf::Color::Green : sf::Color::Red);
+        _lobbies[i].buttonReady.setOutlineThickness(2);
+        _lobbies[i].buttonReady.setSize({160, 80});
+        _lobbies[i].buttonReady.setPosition({1400, 240 + (float)i * 140});
 
         sf::Text text;
 
@@ -199,6 +244,13 @@ void rtype::client::LobbyMenu::displayLobbies()
         text.setFillColor(sf::Color::White);
         text.setCharacterSize(42);
 
+        sf::Text textStart;
+
+        textStart.setPosition({430, 250 + (float)i * 140});
+        textStart.setString("START");
+        textStart.setFillColor(sf::Color::Green);
+        textStart.setCharacterSize(42);
+
         sf::Text textJoin;
 
         textJoin.setPosition({1260 - (float)!_lobby.empty() * 5, 250 + (float)i * 140});
@@ -206,11 +258,18 @@ void rtype::client::LobbyMenu::displayLobbies()
         textJoin.setFillColor(_lobby.empty() ? sf::Color::Green: sf::Color::Red);
         textJoin.setCharacterSize(42);
 
+        sf::Text textReady;
+
+        textReady.setPosition({1412, 250 + (float)i * 140});
+        textReady.setString("READY");
+        textReady.setFillColor(_ready ? sf::Color::Green: sf::Color::Red);
+        textReady.setCharacterSize(42);
+
         sf::Text nbPlayers;
 
         nbPlayers.setPosition({1090, 255 + (float)i * 140});
         nbPlayers.setString(std::to_string(_lobbies[i].nbPlayers) + " / 4");
-        nbPlayers.setFillColor(_lobbies[i].nbPlayers < 4 ? sf::Color::Green : sf::Color::Red);
+        nbPlayers.setFillColor(_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers ? sf::Color::Green : sf::Color::White);
         nbPlayers.setCharacterSize(42);
 
         sf::Font font;
@@ -219,6 +278,8 @@ void rtype::client::LobbyMenu::displayLobbies()
         text.setFont(font);
         nbPlayers.setFont(font);
         textJoin.setFont(font);
+        textReady.setFont(font);
+        textStart.setFont(font);
 
         _window.draw(_lobbies[i].rectangle);
         _window.draw(text);
@@ -232,6 +293,13 @@ void rtype::client::LobbyMenu::displayLobbies()
         if (_lobby == _lobbies[i].name) {
             _window.draw(_lobbies[i].join);
             _window.draw(textJoin);
+            _window.draw(_lobbies[i].buttonReady);
+            _window.draw(textReady);
+        }
+
+        if (_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers) {
+            _window.draw(_lobbies[i].start);
+            _window.draw(textStart);
         }
 
     }

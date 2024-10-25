@@ -26,8 +26,11 @@ namespace rtype::client {
         std::string name;
         int nbPlayers;
         int running;
+        int ready;
         sf::RectangleShape rectangle;
+        sf::RectangleShape buttonReady;
         sf::RectangleShape join;
+        sf::RectangleShape start;
     };
 
     class LobbyMenu {
@@ -59,6 +62,9 @@ namespace rtype::client {
             std::vector<Lobby> _lobbies;
 
             std::string _lobby;
+            bool _ready;
+
+            int _port;
 
             std::shared_ptr<TCPCommunication> _server;
 

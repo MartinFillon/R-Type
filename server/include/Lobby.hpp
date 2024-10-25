@@ -48,6 +48,8 @@ namespace rtype::server {
                 return _running;
             };
 
+            int getNumberReady();
+
         private:
 
             std::string _name;

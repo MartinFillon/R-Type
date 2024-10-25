@@ -7,7 +7,9 @@
 
 #include "Gui.hpp"
 
+#include <iostream>
 #include <memory>
+#include <string>
 #include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
 #include "TCPCommunication.hpp"
@@ -37,7 +39,7 @@ namespace rtype::client {
 
         int UDPport = _lobby.launchLobby(_tcpCommunication);
 
-        if (_network.setup(ip, port) == ERROR) {
+        if (_network.setup(ip, std::to_string(1234)) == ERROR) {
             return ERROR;
         }
 

@@ -58,11 +58,10 @@ void rtype::server::TCPConnection::readClient()
         if (message.find("QUIT") != std::string::npos) {
             quitLobby(message.substr(5));
         }
-        if (message.find("READY") != std::string::npos) {
-            ready();
-        }
         if (message.find("UNREADY") != std::string::npos) {
             unready();
+        } else if (message.find("READY") != std::string::npos) {
+            ready();
         }
         if (message.find("START") != std::string::npos) {
             startLobby();
@@ -102,7 +101,7 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 void rtype::server::TCPConnection::dumpLobbies()
 {
     for (auto &lobby: _lobbies) {
-        asio::write(_socket, asio::buffer(lobby.getName() + ":" + std::to_string(lobby.isRunning()) + ":" + std::to_string(lobby.getNumberConnections()) + "\n"));
+        asio::write(_socket, asio::buffer(lobby.getName() + ":" + std::to_string(lobby.isRunning()) + ":" + std::to_string(lobby.getNumberConnections()) + ":" + std::to_string(lobby.getNumberReady()) + "\n"));
     }
     asio::write(_socket, asio::buffer("200\n"));
 }
@@ -156,36 +155,36 @@ bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 bool rtype::server::TCPConnection::ready()
 {
     if (_lobby.empty()) {
-        writeToClient("You are not in a lobby.");
+        writeToClient("400: You are not in a lobby.");
         return false;
     }
 
     if (_ready) {
-        writeToClient("Already ready.");
+        writeToClient("400: Already ready.");
         return false;
     }
 
     _ready = true;
 
-    writeToClient("Ready!");
+    writeToClient("200: Ready!");
     return true;
 }
 
 bool rtype::server::TCPConnection::unready()
 {
     if (_lobby.empty()) {
-        writeToClient("You are not in a lobby.");
+        writeToClient("400: You are not in a lobby.");
         return false;
     }
 
     if (!_ready) {
-        writeToClient("You are not ready.");
+        writeToClient("400: You are not ready.");
         return false;
     }
 
     _ready = false;
 
-    writeToClient("Not ready!");
+    writeToClient("200: Not ready!");
     return true;
 }
 
