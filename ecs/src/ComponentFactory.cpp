@@ -5,7 +5,6 @@
 ** ComponentFactory
 */
 
-#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -15,9 +14,9 @@
 #include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
+#include "SystemsManager.hpp"
 #include "nlohmann/detail/value_t.hpp"
 #include "nlohmann/json_fwd.hpp"
-#include "SystemsManager.hpp"
 
 namespace ecs {
     ComponentFactory::ComponentFactory()
@@ -64,7 +63,7 @@ namespace ecs {
         r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-             createComponent(r, e, c, config["components"][c]);
+            createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }
@@ -84,7 +83,7 @@ namespace ecs {
         r->_entities.addEntity(e.getId());
 
         for (auto &c : config["active"]) {
-             createComponent(r, e, c, config["components"][c]);
+            createComponent(r, e, c, config["components"][c]);
         }
         return e;
     }

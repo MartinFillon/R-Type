@@ -5,15 +5,15 @@
 ** Game file
 */
 
+#include "Game.hpp"
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <exception>
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
-#include "Game.hpp"
 #include "Protocol.hpp"
 #include "RegistryWrapper.hpp"
 #include "Systems/DestroySystem.hpp"
@@ -41,7 +41,7 @@ namespace rtype::client {
             _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_2);
             _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
             _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
-            _registry->getClientRegistry()->add_system(ecs::systems::ParalaxSystem());
+            _registry->getClientRegistry()->add_system<ecs::systems::ParalaxSystem>();
         } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
             spdlog::error("Error on setup Background {}", error.what());
         }

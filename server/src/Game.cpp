@@ -188,10 +188,7 @@ namespace rtype::server {
 
     void Game::setupBosses()
     {
-        std::ifstream f("config/systems/boss_system.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BossSystems(config));
+        _r->add_system<ecs::systems::BossSystems>("config/systems/boss_system.json");
     }
 
     void Game::setupBasicEnnemies()
