@@ -8,11 +8,14 @@
 #ifndef TEXTUREMANAGER_HPP_
 #define TEXTUREMANAGER_HPP_
 
+#define ERROR_TEXTURE_NOT_FOUND(texture) "Texture [" + texture + "] not found"
+
 #include <filesystem>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <string>
 #include <unordered_map>
+
 
 namespace ecs {
     template <typename Texture>
@@ -38,11 +41,23 @@ namespace ecs {
             }
         }
 
+        class TextureManagerException {
+            public:
+                TextureManagerException(const std::string &error): _error(error) {}
+                ~TextureManagerException() = default;
+
+                const char *what() const noexcept {
+                    return _error.c_str();
+                }
+            private:
+                std::string _error;
+        };
+
         std::shared_ptr<Texture> getTexture(const std::string &pathToImage)
         {
             if (_textures.find(pathToImage) == _textures.end()) {
                 spdlog::warn("Texture not found on: ({})", pathToImage);
-                return nullptr;
+                throw TextureManagerException(ERROR_TEXTURE_NOT_FOUND(pathToImage));
             } else {
                 return _textures[pathToImage];
             }

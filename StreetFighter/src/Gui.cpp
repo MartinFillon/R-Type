@@ -108,13 +108,17 @@ void street_fighter::Gui::display()
         if (!pos || !anim || !spri || !draw || !size || !draw->_drawable) {
             continue;
         }
-        auto texture = _textureManager.getTexture(spri->_pathToSprite);
-        sf::Sprite sprite;
-        sprite.setPosition(pos->_x, pos->_y);
-        sprite.setTexture(*texture);
-        sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-        sprite.setScale(size->_width, size->_height);
-        _window.draw(sprite);
+        try {            
+            auto texture = _textureManager.getTexture(spri->_pathToSprite);
+            sf::Sprite sprite;
+            sprite.setPosition(pos->_x, pos->_y);
+            sprite.setTexture(*texture);
+            sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
+            sprite.setScale(size->_width, size->_height);
+            _window.draw(sprite);
+        } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
+                spdlog::error("Could not display {}", error.what());
+        }
     }
 }
 
