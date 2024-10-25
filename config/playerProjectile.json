@@ -2,34 +2,41 @@
   "$schema": "../schema/entity.json",
   "name": "projectile",
   "active": [
+    "attributes",
     "position",
     "drawable",
     "controllable",
     "sprite",
     "animations",
     "size",
-    "life"
+    "life",
+    "destroyable"
   ],
   "components": {
+    "attributes": {
+      "entityType": "weapon",
+      "ennemyType": "none"
+    },
     "life": 1,
     "position": {
       "x": 0,
       "y": 0
+    },
+    "destroyable": {
+      "animate": false
     },
     "drawable": true,
     "controllable": {
       "controllable": true,
       "speed": 5
     },
-    "sprite": "r-typesheetGun.gif",
+    "sprite": "assets/sprites/r-typesheetGun.gif",
     "animations": {
       "width": 18,
       "height": 12,
       "x": 0,
       "y": 0,
-      "rotation": 0,
-      "type": "weapon",
-      "objectType": "none"
+      "rotation": 0
     },
     "size": {
       "width": 3,

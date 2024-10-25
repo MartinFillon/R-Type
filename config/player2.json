@@ -2,6 +2,7 @@
   "$schema": "../schema/entity.json",
   "name": "player",
   "active": [
+    "attributes",
     "position",
     "drawable",
     "controllable",
@@ -13,12 +14,17 @@
     "invincibility"
   ],
   "components": {
+    "attributes": {
+      "entityType": "player"
+    },
     "life": 3,
     "position": {
         "x": 100,
         "y": 100
     },
-    "destroyable": false,
+    "destroyable": {
+      "animate": true
+    },
     "drawable": true,
     "controllable": {
         "controllable": true,
@@ -30,9 +36,7 @@
         "height": 20,
         "x": 65,
         "y": 36,
-        "rotation": 0,
-        "type": "player",
-        "objectType": "none"
+        "rotation": 0
     },
     "size": {
         "width": 3,

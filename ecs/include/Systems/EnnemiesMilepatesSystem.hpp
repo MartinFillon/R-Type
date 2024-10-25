@@ -13,7 +13,7 @@
 
 #define MILESPATES_SPEED 3.5
 #define MILESPATES_SPEED_ANIMATION 0.01
-#define MILESPATES_SPRITE "r-typesheet8.gif"
+#define MILESPATES_SPRITE "assets/sprites/r-typesheet8.gif"
 
 #define HEIGHT_MIN 0
 #define HEIGHT_MAX 400

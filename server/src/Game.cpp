@@ -11,6 +11,7 @@
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
@@ -104,6 +105,12 @@ namespace rtype::server {
     {
         const int player_entity_id = _players_entities_ids[player_place];
 
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
+            return;
+        }
+
         auto &position = _r->register_if_not_exist<ecs::component::Position>()[player_entity_id];
         auto &controllable = _r->register_if_not_exist<ecs::component::Controllable>()[player_entity_id];
 
@@ -123,18 +130,27 @@ namespace rtype::server {
 
     void Game::makePlayerShoot(int player_place)
     {
+        const int player_entity_id = _players_entities_ids[player_place];
+
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE)
+            return;
+
         auto &positions = _r->register_if_not_exist<ecs::component::Position>();
-        auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
+        auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
+
         int i = 0;
         ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
         _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
 
-        for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
-            if (!pos || !anim) {
+        for (auto &&[pos, atr] : ecs::custom_zip(positions, attributes)) {
+            if (!pos || !atr) {
                 i += 1;
                 continue;
             }
-            if (anim->_object == ecs::component::Object::Weapon && anim->_type == ecs::component::Type::None) {
+            if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                atr->_ennemy_type == ecs::component::Attributes::EnnemyType::None) {
                 break;
             }
             i += 1;
@@ -165,7 +181,11 @@ namespace rtype::server {
     void Game::setupBasicEnnemies()
     {
         _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+
+        std::ifstream f("config/systems/basic_random_ennemies.json");
+        nlohmann::json config = nlohmann::json::parse(f);
+
+        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem(config));
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

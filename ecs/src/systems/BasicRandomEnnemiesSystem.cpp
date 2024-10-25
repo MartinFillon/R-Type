@@ -6,6 +6,7 @@
 */
 
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
+#include <Components/Attributes.hpp>
 #include <fstream>
 #include <memory>
 #include <random>
@@ -67,22 +68,24 @@ namespace ecs::systems {
         }
         _clock.restart();
 
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
         auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
 
-        for (auto &&[anim, pos, ctrl] : ecs::custom_zip(animations, positions, controllable)) {
-            if (!anim || !pos || !ctrl || anim->_type != ecs::component::Type::Basic) {
+        for (auto &&[atr, anim, pos, ctrl] : ecs::custom_zip(attributes, animations, positions, controllable)) {
+            if (!atr || !anim || !pos || !ctrl || atr->_ennemy_type != ecs::component::Attributes::EnnemyType::Basic) {
                 continue;
             }
 
-            if (anim->_object == ecs::component::Object::Weapon && anim->_clock.getMiliSeconds() > 5) {
+            if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                anim->_clock.getMiliSeconds() > 5) {
                 pos->_x -= ctrl->_speed;
                 anim->_clock.restart();
                 continue;
             }
 
-            if (anim->_object != ecs::component::Object::Ennemies) {
+            if (atr->_entity_type != ecs::component::Attributes::EntityType::Ennemy) {
                 continue;
             }
 
@@ -100,7 +103,7 @@ namespace ecs::systems {
             }
 
             if (anim->_clock.getSeconds() > _basicEnnemiesSpeed) {
-                shootRandomly(r, *pos, ctx);
+                shootRandomly(r, *pos, ctx, factory);
             }
         }
     }
@@ -108,30 +111,16 @@ namespace ecs::systems {
     void BasicRandomEnnemiesSystem::createNewProjectile(
         std::shared_ptr<Registry> &r,
         const ecs::component::Position &ennemiesPos,
-        std::shared_ptr<IContext> &ctx
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
     )
     {
-        Entity newProjectile = r->spawn_entity();
-        r->_entities.addEntity(newProjectile);
-        auto &positions = r->register_if_not_exist<ecs::component::Position>();
-        auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
-        auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
-        auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
-        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
-        auto &sizes = r->register_if_not_exist<ecs::component::Size>();
-        auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
-        auto &life = r->register_if_not_exist<ecs::component::Life>();
+        Entity newProjectile = factory.createEntity(r, CONFIG_ENNEMIES);
 
-        life[newProjectile.getId()] = ecs::component::Life{1};
+        auto &positions = r->register_if_not_exist<ecs::component::Position>();
+
         positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + _centeredShoot};
-        drawables[newProjectile.getId()] = ecs::component::Drawable{true};
-        controllables[newProjectile.getId()] = ecs::component::Controllable{true, _basicEnnemiesProjectileSpeed};
-        sprites[newProjectile.getId()] = ecs::component::Sprite{ENNEMIES_WEAPON_SPRITE};
-        destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
-        animations[newProjectile.getId()] = ecs::component::Animations{
-            ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Basic
-        };
-        sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
+
         if (ctx) {
             ctx->createProjectile(newProjectile.getId(), rtype::protocol::BULLET);
         }
@@ -162,10 +151,10 @@ namespace ecs::systems {
     int BasicRandomEnnemiesSystem::nbOfBasicEnnemies(std::shared_ptr<Registry> &r)
     {
         int nbOfEnnemies = 0;
-        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
-        for (std::size_t i = 0; i < animations.size(); ++i) {
-            if (animations[i] && animations[i]->_type == ecs::component::Type::Basic) {
+        for (std::size_t i = 0; i < attributes.size(); ++i) {
+            if (attributes[i] && attributes[i]->_ennemy_type == ecs::component::Attributes::EnnemyType::Basic) {
                 nbOfEnnemies += 1;
             }
         }
@@ -176,7 +165,8 @@ namespace ecs::systems {
     void BasicRandomEnnemiesSystem::shootRandomly(
         std::shared_ptr<Registry> &r,
         ecs::component::Position &enemyPos,
-        std::shared_ptr<IContext> &ctx
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
     )
     {
         std::random_device randomDevice;
@@ -184,7 +174,7 @@ namespace ecs::systems {
         std::uniform_int_distribution<int> shootChance(0, 100);
 
         if (shootChance(randomEngine) < 1) {
-            createNewProjectile(r, enemyPos, ctx);
+            createNewProjectile(r, enemyPos, ctx, factory);
         }
     }
 

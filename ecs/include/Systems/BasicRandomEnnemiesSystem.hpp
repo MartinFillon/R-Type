@@ -18,7 +18,8 @@ namespace ecs {
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,
                 const ecs::component::Position &ennemiesPos,
-                std::shared_ptr<IContext> &ctx
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
             );
             void createNewEnnemies(
                 std::shared_ptr<Registry> &r,
@@ -29,7 +30,8 @@ namespace ecs {
             void shootRandomly(
                 std::shared_ptr<Registry> &r,
                 ecs::component::Position &enemyPos,
-                std::shared_ptr<IContext> &ctx
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
             );
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;

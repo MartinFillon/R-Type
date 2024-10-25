@@ -11,7 +11,7 @@
     "value_spawn_ennemies": {
       "type": "number"
     },
-    "basic_pos_swawn_x": {
+    "basic_pos_spawn_x": {
       "type": "number"
     },
     "max_spawn_x": {
@@ -49,7 +49,7 @@
     "ennemies_tick",
     "max_random_ennemies",
     "value_spawn_ennemies",
-    "basic_pos_swawn_x",
+    "basic_pos_spawn_x",
     "max_spawn_x",
     "shooting_elapsed_time",
     "basic_ennemies_animation_speed",

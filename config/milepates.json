@@ -2,6 +2,7 @@
   "$schema": "../schema/entity.json",
   "name": "milepates",
   "active": [
+    "attributes",
     "position",
     "drawable",
     "controllable",
@@ -12,12 +13,18 @@
     "destroyable"
   ],
   "components": {
+    "attributes": {
+      "entityType": "ennemy",
+      "ennemyType": "milepates"
+    },
     "life": 1,
     "position": {
       "x": 1944.0,
       "y": 80.0
     },
-    "destroyable": false,
+    "destroyable": {
+      "animate": true
+    },
     "drawable": true,
     "controllable": {
       "controllable": false,
@@ -29,9 +36,7 @@
       "height": 30,
       "x": 0,
       "y": 0,
-      "rotation": 0,
-      "type": "ennemies",
-      "objectType": "milepates"
+      "rotation": 0
     },
     "size": {
       "width": 2.8,
