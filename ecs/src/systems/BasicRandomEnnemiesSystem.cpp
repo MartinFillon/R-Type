@@ -130,39 +130,6 @@ namespace ecs::systems {
             ctx->createProjectile(newProjectile.getId(), rtype::protocol::BULLET);
         }
     }
-}
-
-void ecs::systems::BasicRandomEnnemiesSystem::createNewProjectile(
-    std::shared_ptr<Registry> &r,
-    const ecs::component::Position &ennemiesPos,
-    std::shared_ptr<IContext> &ctx
-)
-{
-    Entity newProjectile = r->spawn_entity();
-    r->_entities.addEntity(newProjectile);
-    auto &positions = r->register_if_not_exist<ecs::component::Position>();
-    auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
-    auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
-    auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
-    auto &animations = r->register_if_not_exist<ecs::component::Animations>();
-    auto &sizes = r->register_if_not_exist<ecs::component::Size>();
-    auto &destroyable = r->register_if_not_exist<ecs::component::Destroyable>();
-    auto &life = r->register_if_not_exist<ecs::component::Life>();
-
-    life[newProjectile.getId()] = ecs::component::Life{1};
-    positions[newProjectile.getId()] = ecs::component::Position{ennemiesPos._x, ennemiesPos._y + CENTERED_SHOOT};
-    drawables[newProjectile.getId()] = ecs::component::Drawable{true};
-    controllables[newProjectile.getId()] = ecs::component::Controllable{true, BASIC_ENNEMIES_PROJECTILE_SPEED};
-    sprites[newProjectile.getId()] = ecs::component::Sprite{ENNEMIES_WEAPON_SPRITE};
-    destroyable[newProjectile.getId()] = ecs::component::Destroyable{false};
-    animations[newProjectile.getId()] = ecs::component::Animations{
-        ecs::Clock(), 20, 18, 0, 0, 0, ecs::component::Object::Weapon, ecs::component::Type::Basic
-    };
-    sizes[newProjectile.getId()] = ecs::component::Size{3, 3};
-    if (ctx) {
-        ctx->createProjectile(newProjectile.getId(), rtype::protocol::BULLET);
-    }
-}
 
 void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
     std::shared_ptr<Registry> &r,
