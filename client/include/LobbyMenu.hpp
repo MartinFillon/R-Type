@@ -27,6 +27,7 @@ namespace rtype::client {
         int nbPlayers;
         int running;
         sf::RectangleShape rectangle;
+        sf::RectangleShape join;
     };
 
     class LobbyMenu {
@@ -56,6 +57,8 @@ namespace rtype::client {
 
             sf::RenderWindow &_window;
             std::vector<Lobby> _lobbies;
+
+            std::string _lobby;
 
             std::shared_ptr<TCPCommunication> _server;
 

@@ -104,8 +104,26 @@ void rtype::client::LobbyMenu::event()
                 _createActivate = false;
             }
 
+            for (int i = 0; i < _lobbies.size(); i++) {
+                if (!_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                    _server.get()->send("QUIT " + _lobbies[i].name + "\n");
+                    if (_server.get()->read().find("200") != std::string::npos) {
+                        _lobby.clear();
+                    }
+                    continue;
+                }
+
+                if (_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                    _server.get()->send("JOIN " + _lobbies[i].name + "\n");
+                    if (_server.get()->read().find("200") != std::string::npos) {
+                        _lobby = _lobbies[i].name;
+                    }
+                    continue;
+                }
+            }
+
         }
-        if (_createActivate && event.type == sf::Event::TextEntered) {
+        if (_createActivate && event.type == sf::Event::TextEntered && _lobby.empty()) {
             createNewLobby(event);
         }
     }
@@ -131,7 +149,9 @@ void rtype::client::LobbyMenu::updateLobbies()
         std::string running = lobby.substr(lobby.find(':') + 1, 1);
         std::string nbPlayers = lobby.substr(lobby.find(':') + 3, 1);
 
-        struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running), sf::RectangleShape()};
+        std::cout << "NAME: [" << name << "]\n";
+
+        struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running), sf::RectangleShape(), sf::RectangleShape()};
 
         _lobbies.push_back(newLobby);
 
@@ -166,12 +186,25 @@ void rtype::client::LobbyMenu::displayLobbies()
         _lobbies[i].rectangle.setSize({600, 80});
         _lobbies[i].rectangle.setPosition({600, 240 + (float)i * 140});
 
+        _lobbies[i].join.setFillColor(sf::Color::Black);
+        _lobbies[i].join.setOutlineColor(_lobby.empty() ? sf::Color::Green : sf::Color::Red);
+        _lobbies[i].join.setOutlineThickness(2);
+        _lobbies[i].join.setSize({130, 80});
+        _lobbies[i].join.setPosition({1240, 240 + (float)i * 140});
+
         sf::Text text;
 
         text.setPosition({620, 250 + (float)i * 140});
         text.setString(_lobbies[i].name);
         text.setFillColor(sf::Color::White);
         text.setCharacterSize(42);
+
+        sf::Text textJoin;
+
+        textJoin.setPosition({1260 - (float)!_lobby.empty() * 5, 250 + (float)i * 140});
+        textJoin.setString(_lobby.empty() ? "JOIN" : "QUIT");
+        textJoin.setFillColor(_lobby.empty() ? sf::Color::Green: sf::Color::Red);
+        textJoin.setCharacterSize(42);
 
         sf::Text nbPlayers;
 
@@ -185,10 +218,21 @@ void rtype::client::LobbyMenu::displayLobbies()
         font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
         text.setFont(font);
         nbPlayers.setFont(font);
+        textJoin.setFont(font);
 
         _window.draw(_lobbies[i].rectangle);
         _window.draw(text);
         _window.draw(nbPlayers);
+
+        if (_lobby.empty() && _lobbies[i].nbPlayers != 4 && _lobbies[i].running == false) {
+            _window.draw(_lobbies[i].join);
+            _window.draw(textJoin);
+        }
+
+        if (_lobby == _lobbies[i].name) {
+            _window.draw(_lobbies[i].join);
+            _window.draw(textJoin);
+        }
 
     }
 
@@ -210,7 +254,9 @@ void rtype::client::LobbyMenu::displayLobbies()
     font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
     text.setFont(font);
 
-    _window.draw(_lobbyCreate);
-    _window.draw(text);
+    if (_lobbies.size() != 4 && _lobby.empty()) {
+        _window.draw(_lobbyCreate);
+        _window.draw(text);
+    }
 
 }

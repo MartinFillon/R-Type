@@ -48,6 +48,9 @@ std::string rtype::client::TCPCommunication::read()
     std::istream is(&_buffer);
     std::string line;
     std::getline(is, line);
+    if (line[0] == '\0') {
+        line.erase(0, 1);
+    }
     return line;
 }
 

@@ -110,46 +110,46 @@ void rtype::server::TCPConnection::dumpLobbies()
 bool rtype::server::TCPConnection::joinLobby(const std::string &name)
 {
     if (!_lobby.empty()) {
-        writeToClient("No lobbby.");
+        writeToClient("400: No lobbby.");
         return false;
     }
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
             if (!lobby.assign(*this)) {
-                writeToClient("Lobby is full.");
+                writeToClient("400: Lobby is full.");
                 return false;
             }
-            writeToClient("Join successfully.");
+            writeToClient("200: Join successfully.");
             setLobby(name);
             _ready = false;
             return true;
         }
     }
-    writeToClient("Lobby not found.");
+    writeToClient("400: Lobby not found.");
     return false;
 }
 
 bool rtype::server::TCPConnection::quitLobby(const std::string &name)
 {
     if (_lobby.empty()) {
-        writeToClient("You're not in this lobby");
+        writeToClient("400: You're not in this lobby");
         return false;
     }
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
             if (!lobby.unassign(*this)) {
-                writeToClient("You're not in this lobby.");
+                writeToClient("400: You're not in this lobby.");
                 return false;
             }
-            writeToClient("You quit lobby: " + name);
+            writeToClient("200: You quit lobby: " + name);
             setLobby("");
             _ready = false;
             return true;
         }
     }
-    writeToClient("Lobby not found.");
+    writeToClient("400: Lobby not found.");
     return false;
 }
 
