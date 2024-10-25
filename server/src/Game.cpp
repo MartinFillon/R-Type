@@ -98,7 +98,7 @@ namespace rtype::server {
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        try {            
+        try {
             ecs::Entity e = _cf.createEntity(_r, file);
 
             _players_entities_ids[player_place] = e.getId();
@@ -176,14 +176,14 @@ namespace rtype::server {
 
     void Game::setupDestroy()
     {
-        _r->add_system(ecs::systems::DestroySystem());
+        _r->add_system<ecs::systems::DestroySystem>();
     }
 
     void Game::setupCollisons()
     {
-        _r->add_system(ecs::systems::CollisionsSystem());
-        _r->add_system(ecs::systems::GunFireSystem());
-        _r->add_system(ecs::systems::InvincibilitySystem());
+        _r->add_system<ecs::systems::CollisionsSystem>();
+        _r->add_system<ecs::systems::GunFireSystem>();
+        _r->add_system<ecs::systems::InvincibilitySystem>();
     }
 
     void Game::setupBosses()
@@ -196,12 +196,9 @@ namespace rtype::server {
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
 
-        std::ifstream f("config/systems/basic_random_ennemies.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem(config));
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

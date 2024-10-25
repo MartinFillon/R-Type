@@ -21,7 +21,16 @@
 #include "TextureManager.hpp"
 
 namespace rtype::client {
-    Game::Game(sf::RenderWindow &window, Network &network) : _window(window), _textureManager([this](std::string path){sf::Texture texture; texture.loadFromFile(path); return std::make_shared<sf::Texture>(texture); }, PATH_TO_ASSETS), _network(network)
+    Game::Game(sf::RenderWindow &window, Network &network)
+        : _window(window), _textureManager(
+                               [this](std::string path) {
+                                   sf::Texture texture;
+                                   texture.loadFromFile(path);
+                                   return std::make_shared<sf::Texture>(texture);
+                               },
+                               PATH_TO_ASSETS
+                           ),
+          _network(network)
     {
     }
 
@@ -60,7 +69,7 @@ namespace rtype::client {
 
     int Game::run()
     {
-        _registry->getServerRegistry()->add_system(ecs::systems::DestroySystem());
+        _registry->getServerRegistry()->add_system<ecs::systems::DestroySystem>();
         setupBackground();
         setupSound();
         while (_window.isOpen()) {

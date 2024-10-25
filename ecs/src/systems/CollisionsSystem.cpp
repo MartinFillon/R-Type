@@ -5,8 +5,8 @@
 ** Collision system file
 */
 
-#include "Systems/CollisionsSystem.hpp"
 #include <memory>
+
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
@@ -16,6 +16,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
+#include "Systems/CollisionsSystem.hpp"
 
 namespace ecs {
     namespace systems {
@@ -48,8 +49,8 @@ namespace ecs {
                 double i_width = animation[i]->_width * (size[i] ? size[i]->_width : 1.0);
                 double i_height = animation[i]->_height * (size[i] ? size[i]->_height : 1.0);
 
-                if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
-                    (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
+                if ((position[i]->_x > _width_max_limit || position[i]->_x < _width_min_limit) ||
+                    (position[i]->_y > _height_max_limit || position[i]->_y < _height_min_limit)) {
                     destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
                     continue;
                 }
@@ -64,8 +65,8 @@ namespace ecs {
                     double j_width = animation[j]->_width * (size[j] ? size[j]->_width : 1.0);
                     double j_height = animation[j]->_height * (size[j] ? size[j]->_height : 1.0);
 
-                    if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
-                        (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
+                    if ((position[j]->_x > _width_max_limit || position[j]->_x < _width_min_limit) ||
+                        (position[j]->_y > _height_max_limit || position[j]->_y < _height_min_limit)) {
                         destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
                         continue;
                     }

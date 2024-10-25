@@ -37,6 +37,12 @@ namespace ecs::systems {
             __systems.push_back(std::make_shared<T>(j));
         }
 
+        template <typename T>
+        void AddSystem()
+        {
+            __systems.push_back(std::make_shared<T>());
+        }
+
         void AddSystem(std::shared_ptr<ISystems> &system);
         void AddSystem(ISystems *system);
 

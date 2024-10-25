@@ -52,13 +52,10 @@ street_fighter::Game::Game()
         _factory.createEntity(_r, "StreetFighter/config/firstCinematic.json");
         _factory.createEntity(_r, "StreetFighter/config/Background.json");
         _factory.createEntity(_r, "StreetFighter/config/Ken.json");
-        _r->add_system(ecs::systems::CinematicsSystem());
-        _r->add_system(ecs::systems::GravitableMouvementSystem());
+        _r->add_system<ecs::systems::CinematicsSystem>();
+        _r->add_system<ecs::systems::GravitableMouvementSystem>();
 
-        std::ifstream f("config/systems/basic_mouvement_system.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BasicMouvementSystem(config));
+        _r->add_system<ecs::systems::BasicMouvementSystem>();
 
         _r->add_system(ecs::systems::PunchSystem());
         _r->add_system(ecs::systems::KickSystem());
