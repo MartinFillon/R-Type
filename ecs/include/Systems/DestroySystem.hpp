@@ -20,6 +20,7 @@ namespace ecs {
     namespace systems {
         class DestroySystem : public ISystems {
           public:
+            DestroySystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 

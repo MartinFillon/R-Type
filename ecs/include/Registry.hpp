@@ -9,10 +9,8 @@
 #define REGISTRY_HPP_
 
 #include <any>
-#include <functional>
 #include <memory>
 #include <typeindex>
-#include <vector>
 #include <unordered_map>
 
 #include "Entity.hpp"

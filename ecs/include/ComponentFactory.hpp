@@ -9,25 +9,6 @@
 #define COMPONENTFACTORY_HPP_
 
 #include <exception>
-#define CONFIG_BACKGROUND_0 "./config/background/background.json"
-#define CONFIG_BACKGROUND_2 "./config/background/background_2.json"
-#define CONFIG_BACKGROUND_3 "./config/background/background_3.json"
-#define CONFIG_BACKGROUND_4 "./config/background/background_4.json"
-
-#define CONFIG_PLAYER_0 "./config/player0.json"
-#define CONFIG_PLAYER_1 "./config/player1.json"
-#define CONFIG_PLAYER_2 "./config/player2.json"
-#define CONFIG_PLAYER_3 "./config/player3.json"
-
-#define CONFIG_ENNEMIES "./config/ennemies.json"
-#define CONFIG_MILEPATES "./config/milepates.json"
-#define CONFIG_BOSS "./config/boss.json"
-#define CONFIG_PROJECTILE "./config/projectile.json"
-#define CONFIG_PLAYER_PROJECTILE "./config/playerProjectile.json"
-
-#define ERROR_FILE_NOT_FOUND(file) "File not found on: [" + file + "]"
-#define ERROR_PARSING_ERROR(file) "Parsing Error on : [" + file + "]"
-
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>

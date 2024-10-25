@@ -18,15 +18,16 @@ namespace ecs {
     namespace systems {
         class CollisionsSystem : public ISystems {
           public:
+            CollisionsSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
           private:
             void sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i);
-            int _width_max_limit;
-            int _height_max_limit;
-            int _width_min_limit;
-            int _height_min_limit;
+            int _width_max_limit = WIDTH_MAX_LIMIT;
+            int _height_max_limit = HEIGHT_MAX_LIMIT;
+            int _width_min_limit = WIDTH_MIN_LIMIT;
+            int _height_min_limit = HEIGHT_MIN_LIMIT;
         };
     }; // namespace systems
 }; // namespace ecs
