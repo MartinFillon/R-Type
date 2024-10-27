@@ -32,8 +32,8 @@
           "controllable": true,
           "speed": 1.2
       },
-      "sprite": "poc_raylib/assets/NewSub.png",
-      "model": "poc_raylib/assets/Sub.obj",
+      "sprite": "poc_raylib/assets/Sprites/NewSub.png",
+      "model": "poc_raylib/assets/Model/Sub.obj",
       "animations": {
           "width": 33,
           "height": 20,
