@@ -23,6 +23,7 @@ add_library(
   src/systems/CinematicsSystem.cpp
   src/systems/BasicMouvementSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
+  src/systems/ThirdDMouvementSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
   src/systems/InvincibilitySystem.cpp

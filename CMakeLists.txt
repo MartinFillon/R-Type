@@ -12,6 +12,7 @@ add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(protocol)
 add_subdirectory(StreetFighter)
+add_subdirectory(poc_raylib)
 
 if(UNIX)
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)

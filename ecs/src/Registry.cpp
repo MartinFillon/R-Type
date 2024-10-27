@@ -5,8 +5,8 @@
 ** Registry
 */
 
-#include "Registry.hpp"
 #include <memory>
+#include "Registry.hpp"
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
