@@ -13,6 +13,7 @@ namespace ecs {
     namespace component {
         enum Key {
             NoneKey,
+            Jump,
             Up,
             Down,
             Right,
