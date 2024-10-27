@@ -111,28 +111,28 @@ namespace poc {
                 continue;
             }
 
-            if (attr->_entity_type != ecs::component::Attributes::EntityType::Player) {
-                continue;
-            }
+            if (attr->_entity_type == ecs::component::Attributes::EntityType::Player) {
 
-            if (IsKeyDown(KEY_Z)) {
-                key->_value = ecs::component::Key::Up;
-            }
+                if (IsKeyDown(KEY_Z)) {
+                    key->_value = ecs::component::Key::Up;
+                }
 
-            if (IsKeyDown(KEY_Q)) {
-                key->_value = ecs::component::Key::Left;
-            }
+                if (IsKeyDown(KEY_Q)) {
+                    key->_value = ecs::component::Key::Left;
+                }
 
-            if (IsKeyDown(KEY_S)) {
-                key->_value = ecs::component::Key::Down;
-            }
+                if (IsKeyDown(KEY_S)) {
+                    key->_value = ecs::component::Key::Down;
+                }
 
-            if (IsKeyDown(KEY_D)) {
-                key->_value = ecs::component::Key::Right;
-            }
+                if (IsKeyDown(KEY_D)) {
+                    key->_value = ecs::component::Key::Right;
+                }
 
-            if (IsKeyDown(KEY_SPACE)) {
-                key->_value = ecs::component::Key::Jump;
+                if (IsKeyDown(KEY_SPACE)) {
+                    key->_value = ecs::component::Key::Jump;
+                }
+
             }
         }
 
