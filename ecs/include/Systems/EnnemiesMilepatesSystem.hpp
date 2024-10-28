@@ -29,7 +29,7 @@ namespace ecs {
     namespace systems {
         class EnnemiesMilepatesSystem : public ISystems {
           public:
-            EnnemiesMilepatesSystem() = default;
+            EnnemiesMilepatesSystem() {};
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 

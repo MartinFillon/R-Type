@@ -14,6 +14,7 @@
 #include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
+#include <spdlog/spdlog.h>
 
 void ecs::systems::DestroySystem::operator()(
     std::shared_ptr<Registry> &r,
@@ -42,6 +43,7 @@ void ecs::systems::DestroySystem::operator()(
 
         if (!destroyable->_animate) {
             destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+
             r->erase(attribute->_identifyer);
 
             if (ctx) {
@@ -54,6 +56,7 @@ void ecs::systems::DestroySystem::operator()(
         if (destroyable->_animate) {
             if (!animation || !sprite) {
                 destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+
                 r->erase(attribute->_identifyer);
 
                 if (ctx) {
@@ -74,6 +77,7 @@ void ecs::systems::DestroySystem::operator()(
 
             if (animation->_x > 315) {
                 destroyable->_state = ecs::component::Destroyable::DestroyState::DESTROYED;
+
                 r->erase(attribute->_identifyer);
 
                 if (ctx) {
