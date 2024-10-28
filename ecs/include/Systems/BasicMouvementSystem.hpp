@@ -9,13 +9,12 @@
 #define BASICMOUVEMENTSYSTEM_HPP_
 
 #include "ISystems.hpp"
-#include "nlohmann/json_fwd.hpp"
 
 namespace ecs {
     namespace systems {
         class BasicMouvementSystem : public ISystems {
           public:
-            BasicMouvementSystem(const nlohmann::json &config);
+            BasicMouvementSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };

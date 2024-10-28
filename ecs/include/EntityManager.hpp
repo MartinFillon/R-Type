@@ -11,9 +11,8 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include "Defs.hpp"
 #include "Entity.hpp"
-
-#define ENTITY_MANAGER_ERROR_OUT_OF_RANGE "Out of range"
 
 namespace ecs {
     class EntityManager {

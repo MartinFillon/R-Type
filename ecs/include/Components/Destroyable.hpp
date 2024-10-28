@@ -11,12 +11,7 @@
 namespace ecs {
     namespace component {
         struct Destroyable {
-            enum DestroyState {
-                ALIVE,
-                WAITING,
-                DESTROYING,
-                DESTROYED
-            };
+            enum DestroyState { ALIVE, WAITING, DESTROYING, DESTROYED };
 
             DestroyState _state;
             bool _animate;

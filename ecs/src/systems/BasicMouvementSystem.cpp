@@ -16,8 +16,6 @@
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {
-    BasicMouvementSystem::BasicMouvementSystem(const nlohmann::json &config) {}
-
     void BasicMouvementSystem::operator()(
         std::shared_ptr<Registry> &r,
         std::shared_ptr<IContext> ctx,

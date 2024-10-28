@@ -8,7 +8,6 @@
 #ifndef CINEMATIC_HPP_
 #define CINEMATIC_HPP_
 
-#include "Components/Animations.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Position.hpp"
 

@@ -6,14 +6,14 @@
 */
 
 #include "Systems/DestroySystem.hpp"
+#include <iostream>
 #include <memory>
 #include "ComponentFactory.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Sprite.hpp"
-#include "Components/Attributes.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
-#include <iostream>
 
 void ecs::systems::DestroySystem::operator()(
     std::shared_ptr<Registry> &r,

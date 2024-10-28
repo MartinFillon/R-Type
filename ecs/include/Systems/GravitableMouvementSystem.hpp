@@ -21,6 +21,7 @@ namespace ecs {
     namespace systems {
         class GravitableMouvementSystem : public ISystems {
           public:
+            GravitableMouvementSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };
