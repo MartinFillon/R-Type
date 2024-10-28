@@ -35,6 +35,10 @@
             "speed": 3
         },
         "sprite": "StreetFighter/assets/Ken.png",
+        "attributes": {
+            "entityType": "player",
+            "secondaryType": "first"
+        },
         "animations": {
             "width": 60,
             "height": 80,

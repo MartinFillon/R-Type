@@ -7,16 +7,31 @@
       "drawable",
       "controllable",
       "sprite",
-      "animations",
       "size",
       "destroyable",
       "life",
+      "gravitable",
       "invincibility",
-      "model"
+      "model",
+      "key",
+      "rotates"
     ],
     "components": {
+      "key": "up",
       "attributes": {
-        "entityType": "player"
+        "entityType": "player",
+        "secondaryType": "first"
+      },
+      "gravitable": {
+        "value": true,
+        "gravityFall": 1,
+        "is_jumping": false,
+        "is_falling": false
+      },
+      "rotates": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
       },
       "life": 3,
       "position3d": {
@@ -30,17 +45,10 @@
       "drawable": true,
       "controllable": {
           "controllable": true,
-          "speed": 1.2
+          "speed": 1.1
       },
       "sprite": "poc_raylib/assets/Sprites/NewSub.png",
       "model": "poc_raylib/assets/Model/Sub.obj",
-      "animations": {
-          "width": 33,
-          "height": 20,
-          "x": 65,
-          "y": 0,
-          "rotation": 0
-      },
       "size": {
           "width": 3,
           "height": 3

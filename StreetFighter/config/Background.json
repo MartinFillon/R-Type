@@ -1,6 +1,6 @@
 {
     "name": "background",
-    "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life"],
+    "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life", "attributes"],
     "components": {
       "position": {
         "x": 0,
@@ -14,9 +14,11 @@
         "height": 1080,
         "x": 110,
         "y": 0,
-        "rotation": 0,
-        "type": "background",
-        "objectType": "none"
+        "rotation": 0
+      },
+      "attributes": {
+        "entityType": "background",
+        "secondaryType": "none"
       },
       "parallax": {
         "active": true,

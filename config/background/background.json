@@ -13,7 +13,8 @@
   ],
   "components": {
     "attributes": {
-      "entityType": "background"
+      "entityType": "background",
+      "secondaryType": "none"
     },
     "position": {
       "x": 0,
