@@ -34,14 +34,7 @@ extern "C" void register_component(
         {"second", ecs::component::Attributes::SecondaryType::Second},
     };
 
-    if (entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Ennemy ||
-        entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Weapon) {
-        attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ennemies_types[component["ennemyType"]]
-        };
-    } else {
-        attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ecs::component::Attributes::SecondaryType::None
-        };
-    }
+    attributes[entity.getId()] = ecs::component::Attributes{
+        entities_types[component["entityType"]], ennemies_types[component["secondaryType"]]
+    };
 }
