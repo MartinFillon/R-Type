@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2024
-** R-Type
-** File description:
-** GravitableThirdDSystem
-*/
-
 #include "Systems/GravitableThirdDSystem.hpp"
 #include "Components/Gravitable.hpp"
 #include "Components/KeyPressed.hpp"
@@ -31,7 +24,7 @@ void ecs::systems::GravitableThirdDSystem::operator()(
         }
 
         if (gravit->_isJumping && pos->_y < targetY) {
-            pos->_y += (gravit->_gravityFall);
+            pos->_y += gravit->_gravityFall;
         }
 
         if (gravit->_isJumping && pos->_y >= targetY) {
@@ -39,12 +32,28 @@ void ecs::systems::GravitableThirdDSystem::operator()(
             gravit->_isFalling = true;
         }
 
-        if (gravit->_isFalling && pos->_y >= initialY) {
-            pos->_y -= (gravit->_gravityFall + gravit->_gravityFall);
+        if (gravit->_isFalling) {
+            pos->_y -= gravit->_gravityFall;
+
+            bool onPlatform = false;
+
+            for (size_t i = 0; i < positions.size(); ++i) {
+                if (pos->_y <= positions[i]->_y + 1.0 && pos->_y >= positions[i]->_y) {
+                    pos->_y = positions[i]->_y + 1.0;
+                    gravit->_isFalling = false;
+                    gravit->_isJumping = false;
+                    key->_value = ecs::component::Key::NoneKey;
+                    onPlatform = true;
+                    break;
+                }
+            }
+
+            if (!onPlatform && pos->_y > initialY) {
+                pos->_y -= gravit->_gravityFall;
+            }
         }
 
         if (gravit->_isFalling && pos->_y <= initialY) {
-            pos->_y = INITIAL_Y;
             pos->_y = initialY;
             gravit->_isFalling = false;
             key->_value = ecs::component::Key::NoneKey;
