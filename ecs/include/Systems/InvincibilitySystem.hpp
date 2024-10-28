@@ -15,6 +15,7 @@ namespace ecs {
     namespace systems {
         class InvincibilitySystem : public ISystems {
           public:
+            InvincibilitySystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };

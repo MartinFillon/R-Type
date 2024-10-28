@@ -19,6 +19,7 @@ namespace ecs {
     namespace systems {
         class GunFireSystem : public ISystems {
           public:
+            GunFireSystem() = default;
             bool _wasKeyPressed = false;
 
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)

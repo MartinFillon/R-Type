@@ -9,10 +9,9 @@
 
 #include <fstream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-
-#include <nlohmann/json.hpp>
 
 #include "IContext.hpp"
 #include "Systems/ISystems.hpp"

@@ -5,12 +5,15 @@
 ** Game file
 */
 
+#include "Game.hpp"
+#include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <exception>
+#include <iostream>
 #include <memory>
-
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
-#include "Game.hpp"
 #include "Protocol.hpp"
 #include "RegistryWrapper.hpp"
 #include "Systems/DestroySystem.hpp"
@@ -33,22 +36,30 @@ namespace rtype::client {
 
     void Game::setupBackground()
     {
-        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_0);
-        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_2);
-        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
-        _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
-        _registry->getClientRegistry()->add_system<ecs::systems::ParalaxSystem>();
+        try {
+            _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_0);
+            _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_2);
+            _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_3);
+            _cf->createEntity(_registry->getClientRegistry(), CONFIG_BACKGROUND_4);
+            _registry->getClientRegistry()->add_system<ecs::systems::ParalaxSystem>();
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            spdlog::error("Error on setup Background {}", error.what());
+        }
     }
 
     void Game::setupSound()
     {
-        _gameShotSoundBuffer.loadFromFile(SHOOT_SOUND);
-        _gameMusicBuffer.loadFromFile(GAME_MUSIC);
+        try {
+            _gameShotSoundBuffer.loadFromFile(SHOOT_SOUND);
+            _gameMusicBuffer.loadFromFile(GAME_MUSIC);
 
-        _shotSound.setBuffer(_gameShotSoundBuffer);
-        _gameSound.setBuffer(_gameMusicBuffer);
+            _shotSound.setBuffer(_gameShotSoundBuffer);
+            _gameSound.setBuffer(_gameMusicBuffer);
 
-        _gameSound.setLoop(true);
+            _gameSound.setLoop(true);
+        } catch (const std::exception &e) {
+            spdlog::error("Error on setup Sound {}", e.what());
+        }
     }
 
     void Game::setRegistry(std::shared_ptr<RegistryWrapper> &registry)

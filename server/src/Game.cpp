@@ -6,7 +6,10 @@
 */
 
 #include <cstddef>
+#include <filesystem>
+#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "ComponentFactory.hpp"
@@ -31,6 +34,7 @@
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/InvincibilitySystem.hpp"
 #include "ZipperIterator.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace rtype::server {
 
@@ -95,11 +99,16 @@ namespace rtype::server {
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        ecs::Entity e = _cf.createEntity(_r, file);
+        try {
+            ecs::Entity e = _cf.createEntity(_r, file);
 
-        _players_entities_ids[player_place] = e.getId();
+            _players_entities_ids[player_place] = e.getId();
 
-        return e;
+            return e;
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
+        return ecs::Entity(_r->_entities.size());
     }
 
     void Game::movePlayer(const int player_place, const int dir)
@@ -142,8 +151,12 @@ namespace rtype::server {
         auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
 
         int i = 0;
-        ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
-        _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        try {
+            ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
+            _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
 
         for (auto &&[pos, atr] : ecs::custom_zip(positions, attributes)) {
             if (!pos || !atr) {
@@ -175,14 +188,14 @@ namespace rtype::server {
 
     void Game::setupBosses()
     {
-        _r->add_system<ecs::systems::BossSystems>("./config/systems/boss_system.json");
+        _r->add_system<ecs::systems::BossSystems>("config/systems/boss_system.json");
     }
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>("./config/systems/milepates_system.json");
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
 
-        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("./config/systems/basic_random_ennemies.json");
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

@@ -44,6 +44,5 @@ extern "C" void register_component(
         value = ecs::component::Key::Kick;
     }
 
-
     components[entity.getId()] = {value};
 }

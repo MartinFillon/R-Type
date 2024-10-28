@@ -7,10 +7,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <iostream>
 #include "Components/Life.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
-#include <iostream>
 
 extern "C" void register_component(
     std::shared_ptr<ecs::Registry> &registry,

@@ -15,7 +15,7 @@ namespace ecs {
     namespace systems {
         class CinematicsSystem : public ISystems {
           public:
-            CinematicsSystem() {};
+            CinematicsSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };
