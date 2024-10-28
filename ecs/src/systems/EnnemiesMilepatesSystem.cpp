@@ -18,6 +18,8 @@
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {
+    EnnemiesMilepatesSystem::EnnemiesMilepatesSystem(const nlohmann::json &config) {}
+
     void EnnemiesMilepatesSystem::operator()(
         std::shared_ptr<Registry> &r,
         std::shared_ptr<IContext> ctx,

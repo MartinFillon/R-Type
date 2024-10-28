@@ -175,14 +175,14 @@ namespace rtype::server {
 
     void Game::setupBosses()
     {
-        _r->add_system<ecs::systems::BossSystems>();
+        _r->add_system<ecs::systems::BossSystems>("./config/systems/boss_system.json");
     }
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>("./config/systems/milepates_system.json");
 
-        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("./config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()
