@@ -40,14 +40,7 @@ extern "C" LIB_EXPORT void register_component(
         {"second", ecs::component::Attributes::SecondaryType::Second},
     };
 
-    if (entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Ennemy ||
-        entities_types[component["entityType"]] == ecs::component::Attributes::EntityType::Weapon) {
-        attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ennemies_types[component["ennemyType"]], entity.getId()
-        };
-    } else {
-        attributes[entity.getId()] = ecs::component::Attributes{
-            entities_types[component["entityType"]], ecs::component::Attributes::SecondaryType::None, entity.getId()
-        };
-    }
+    attributes[entity.getId()] = ecs::component::Attributes{
+        entities_types[component["entityType"]], ennemies_types[component["secondaryType"]], entity.getId()
+    };
 }
