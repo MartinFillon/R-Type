@@ -11,6 +11,12 @@
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
+#define ROTATION_LEFT -90
+#define ROTATION_RIGHT 90
+#define ROTATION_PADDING 45
+#define ROTATION_FRONT 0
+#define ROTATION_BACK -180
+
 #define PATH_TO_POC_ASSETS_MODEL "poc_raylib/assets/Model/"
 #define PATH_TO_POC_ASSETS_SPRITES "poc_raylib/assets/Sprites/"
 
