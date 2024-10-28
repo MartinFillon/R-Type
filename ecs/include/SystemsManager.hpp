@@ -33,13 +33,17 @@ namespace ecs::systems {
             std::ifstream file(path);
             const nlohmann::json j = nlohmann::json::parse(file);
 
-            __systems.push_back(std::make_shared<T>(j));
+            std::shared_ptr<ISystems> system = std::make_shared<T>(j);
+
+            AddSystem(system);
         }
 
         template <typename T>
         void AddSystem()
         {
-            __systems.push_back(std::make_shared<T>());
+            std::shared_ptr<ISystems> system = std::make_shared<T>();
+
+            AddSystem(system);
         }
 
         void AddSystem(std::shared_ptr<ISystems> &system);
