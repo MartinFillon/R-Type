@@ -33,6 +33,7 @@ namespace poc {
             int run();
 
             void draw();
+            void drawShapes();
 
             void handleMouvement();
 
