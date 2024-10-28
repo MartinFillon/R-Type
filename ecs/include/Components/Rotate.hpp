@@ -11,9 +11,9 @@
 namespace ecs {
     namespace component {
         struct Rotate {
-            int pitch;
-            int yaw;
-            int roll;
+            int _pitch;
+            int _yaw;
+            int _roll;
         };
     }; // namespace component
 }; // namespace ecs

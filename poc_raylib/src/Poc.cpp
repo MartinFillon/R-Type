@@ -50,6 +50,7 @@ namespace poc {
         _r->register_if_not_exist<ecs::component::Animations>();
         _r->register_if_not_exist<ecs::component::Gravitable>();
         _r->register_if_not_exist<ecs::component::Destroyable>();
+        _r->register_if_not_exist<ecs::component::Rotate>();
 
 
         _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/player.json"));
@@ -103,7 +104,7 @@ namespace poc {
                 continue;
             }
 
-            model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD*rot->pitch, DEG2RAD*rot->yaw, DEG2RAD*rot->roll });
+            model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD*rot->_pitch, DEG2RAD*rot->_yaw, DEG2RAD*rot->_roll });
 
             SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);
             BeginDrawing();
@@ -125,6 +126,7 @@ namespace poc {
     void Poc::handleMouvement()
     {
         auto &keys = _r->get_components<ecs::component::KeyPressed>();
+        auto &rotation = _r->get_components<ecs::component::Rotate>();
 
         if (IsKeyDown(KEY_LEFT_CONTROL)) {
             _camera.position.y -= 1;
@@ -136,18 +138,32 @@ namespace poc {
 
         if (IsKeyDown(KEY_W)) {
             keys[findPlayerIndex()]->_value = ecs::component::Key::Up;
+            if (rotation[findPlayerIndex()]->_yaw < ROTATION_FRONT) {
+                rotation[findPlayerIndex()]->_yaw += ROTATION_PADDING;
+            } else if (rotation[findPlayerIndex()]->_yaw > ROTATION_FRONT) {
+                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            }
         }
 
         if (IsKeyDown(KEY_A)) {
             keys[findPlayerIndex()]->_value = ecs::component::Key::Left;
+            if (rotation[findPlayerIndex()]->_yaw != ROTATION_RIGHT) {
+                rotation[findPlayerIndex()]->_yaw += ROTATION_PADDING;
+            }
         }
 
         if (IsKeyDown(KEY_S)) {
             keys[findPlayerIndex()]->_value = ecs::component::Key::Down;
+            if (rotation[findPlayerIndex()]->_yaw > ROTATION_BACK) {
+                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            }
         }
 
         if (IsKeyDown(KEY_D)) {
             keys[findPlayerIndex()]->_value = ecs::component::Key::Right;
+            if (rotation[findPlayerIndex()]->_yaw != ROTATION_LEFT) {
+                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            }
         }
 
         if (IsKeyDown(KEY_SPACE)) {

@@ -14,7 +14,7 @@
       "invincibility",
       "model",
       "key",
-      "rotates"
+      "rotate"
     ],
     "components": {
       "key": "up",
@@ -28,7 +28,7 @@
         "is_jumping": false,
         "is_falling": false
       },
-      "rotates": {
+      "rotate": {
         "pitch": 0,
         "yaw": 0,
         "roll": 0

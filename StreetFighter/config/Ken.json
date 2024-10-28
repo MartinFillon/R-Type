@@ -14,7 +14,7 @@
       "attributes"
     ],
     "components": {
-        "key_pressed": "none",
+        "key_pressed": "up",
         "gravitable": {
             "value": true,
             "gravityFall": 2,
