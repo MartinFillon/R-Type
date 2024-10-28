@@ -16,14 +16,14 @@ namespace rtype::server {
         : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
     {
         spdlog::info("New client [{}] connected", _id);
-    };
+    }
 
     void Client::send(const ecs::IPacket &packet)
     {
         if (packet.isValid()) {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
         }
-        usleep(100);
+        usleep(200);
     }
 
     void Client::disconnect()
