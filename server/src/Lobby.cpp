@@ -12,11 +12,11 @@
 #include <cstdlib>
 #include <string>
 
-rtype::server::Lobby::Lobby(const std::string &name): _name(name), _running(false)
+rtype::server::Lobby::Lobby(const std::string &name, int port): _name(name), _running(false), _port(port)
 {
 }
 
-bool rtype::server::Lobby::start(std::shared_ptr<ecs::IContext> &context)
+bool rtype::server::Lobby::start()
 {
     for (auto &client: _clients) {
         if (!client.get().isReady()) {
@@ -24,18 +24,17 @@ bool rtype::server::Lobby::start(std::shared_ptr<ecs::IContext> &context)
         }
     }
 
-    static int portUdp = 1234;
-    (void)context;
+    _server = std::make_shared<Server>(_port);
+    _running = true;
+
+    std::shared_ptr<ecs::IContext> context = std::make_shared<rtype::server::Context>(_server);
 
     for (auto &client: _clients) {
-        client.get().writeToClient("UDP:" + std::to_string(portUdp));
+        client.get().writeToClient("UDP:" + std::to_string(_port));
+        client.get().setConnected(false);
     }
 
-    _server = std::make_shared<Server>(portUdp);
-    portUdp++;
-    std::shared_ptr<ecs::IContext> vraiContext = std::make_shared<rtype::server::Context>(_server);
-    _running = true;
-    return _server->run(vraiContext);
+    return _server->run(context);
 }
 
 bool rtype::server::Lobby::assign(TCPConnection &client)

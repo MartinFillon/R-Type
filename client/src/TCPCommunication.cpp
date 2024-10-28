@@ -13,7 +13,7 @@
 #include "asio/buffer.hpp"
 #include "asio/error_code.hpp"
 
-rtype::client::TCPCommunication::TCPCommunication(): _ioContext(), _socket(_ioContext) {}
+rtype::client::TCPCommunication::TCPCommunication(): _port(0), _ioContext(), _socket(_ioContext) {}
 
 int rtype::client::TCPCommunication::setup(const std::string &host, const std::string &port)
 {
@@ -49,6 +49,9 @@ std::string rtype::client::TCPCommunication::read()
     std::getline(is, line);
     if (line[0] == '\0') {
         line.erase(0, 1);
+    }
+    if (line.find("UDP") != std::string::npos) {
+        _port = std::stoi(line.substr(line.find(':') + 1));
     }
     return line;
 }

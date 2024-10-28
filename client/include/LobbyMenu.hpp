@@ -45,6 +45,7 @@ namespace rtype::client {
 
             void setup();
             void setupBackground();
+            void setupLoadingGame();
 
             void display();
             void displayLobbies();
@@ -55,6 +56,8 @@ namespace rtype::client {
             void update();
             void updateBackground();
             void updateLobbies();
+
+            void loadingGame();
 
             bool _running;
 
@@ -67,6 +70,14 @@ namespace rtype::client {
             int _port;
 
             std::shared_ptr<TCPCommunication> _server;
+
+            /* LOADIN GAME */
+            bool _loading;
+            float _loadingValue;
+            int _loadingStop;
+            sf::RectangleShape _loadingRectangle;
+            sf::RectangleShape _loadingPourcent;
+            sf::Text _loadingText;
 
             /* CREATE LOBBY BUTTON */
 

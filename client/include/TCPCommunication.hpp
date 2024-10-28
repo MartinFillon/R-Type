@@ -29,7 +29,14 @@ namespace rtype::client {
             void send(const std::string &data);
             std::string read();
 
+            int getPort() const
+            {
+                return _port;
+            }
+
         private:
+
+            int _port;
 
             asio::io_context _ioContext;
             asio::ip::tcp::socket _socket;

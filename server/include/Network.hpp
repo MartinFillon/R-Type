@@ -16,19 +16,20 @@
     #include "TCPConnection.hpp"
 
     #define NETWORK_START(x) "Server started at port " << x << "."
+    #define DEFAULT_UDP_PORT 1234
 
 namespace rtype::server {
 
     using TCP = asio::ip::tcp;
 
-    class Network : public ecs::INetwork {
+    class Network {
 
         public:
 
             Network(int port);
 
             void broadcast(const ecs::IPacket &packet) {(void)packet;};
-            int run(std::shared_ptr<ecs::IContext> &context);
+            int run();
             unsigned int generateClientId(const TCP::endpoint &endpoint);
 
         private:
@@ -40,6 +41,8 @@ namespace rtype::server {
     
             int _port;
             bool _running;
+
+            int _udpPort;
 
             std::vector<Lobby> _lobbies;
 

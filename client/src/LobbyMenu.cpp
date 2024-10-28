@@ -6,8 +6,8 @@
 */
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <iostream>
 
 #include "LobbyMenu.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -15,9 +15,12 @@
 #include <SFML/Window/Window.hpp>
 #include <cstdlib>
 #include <string>
+#include <unistd.h>
 #include "TCPCommunication.hpp"
 
-rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false)
+#include <iostream>
+
+rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true)
 {
 
 }
@@ -27,7 +30,7 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
     _server = std::move(server);
     setup();
 
-    while (_running && _window.isOpen()) {
+    while (_running && _window.isOpen() && _server->getPort() == 0) {
 
         update();
         display();
@@ -35,7 +38,15 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
 
     }
 
-    std::cout << "PORT: " << _port << std::endl;
+    setupLoadingGame();
+
+    while (_window.isOpen() && _loading) {
+        loadingGame();
+    }
+
+    if (_server->getPort()) {
+        return _server->getPort();
+    }
 
     return _port;
 }
@@ -43,6 +54,65 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
 void rtype::client::LobbyMenu::setup()
 {
     setupBackground();
+}
+
+void rtype::client::LobbyMenu::setupLoadingGame()
+{
+    _loadingRectangle.setFillColor(sf::Color::Black);
+    _loadingRectangle.setOutlineColor(sf::Color::White);
+    _loadingRectangle.setOutlineThickness(2);
+    _loadingRectangle.setSize({600, 80});
+    _loadingRectangle.setPosition({600, 480});
+
+    _loadingPourcent.setFillColor(sf::Color::Green);
+    _loadingPourcent.setSize({600, 80});
+    _loadingPourcent.setPosition({600, 480});
+
+    _loadingText.setPosition({600, 420});
+    _loadingText.setString("Loading " + std::to_string(_loadingValue) + "%");
+    _loadingText.setFillColor(sf::Color::White);
+    _loadingText.setCharacterSize(42);
+
+    _loadingStop = 1;
+}
+
+void rtype::client::LobbyMenu::loadingGame()
+{
+    _window.clear();
+
+    updateBackground();
+
+    if (_loadingValue >= 100) {
+        _loading = false;
+        return;
+    }
+
+    if (_loadingValue >= 42.0 && _loadingStop) {
+        _loadingStop += 1;
+        if (_loadingStop == 1000) {
+            _loadingStop = 0;
+        }
+    }
+
+    if (_loadingStop == 1 || _loadingStop == 0) {
+        _loadingValue += 0.08;
+    }
+    
+    sf::Font font;
+
+    _window.draw(_backgroundSprite, &_shader);
+
+    font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
+    _loadingText.setFont(font);
+
+    _loadingPourcent.setSize({_loadingValue * 6, 80});
+    _loadingText.setString("Loading " + std::to_string((int)_loadingValue) + "%");
+
+    _window.draw(_loadingRectangle);
+    _window.draw(_loadingPourcent);
+    _window.draw(_loadingText);
+
+    _window.display();
 }
 
 void rtype::client::LobbyMenu::setupBackground()
@@ -115,7 +185,7 @@ void rtype::client::LobbyMenu::event()
                     continue;
                 }
 
-                if (_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
                     _server.get()->send("JOIN " + _lobbies[i].name + "\n");
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby = _lobbies[i].name;
@@ -142,15 +212,12 @@ void rtype::client::LobbyMenu::event()
                     }
                 }
 
-                if (_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (_lobbies[i].name == _lobby && _lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains(mouse.x, mouse.y)) {
                     _server.get()->send("START\n");
-                    std::cout << "SEND START\n";
                     std::string response = _server.get()->read();
-                    std::cout << "[" << response << "]\n";
                     if (response.find("UDP") != std::string::npos) {
                         _running = false;
                         _port = std::stoi(response.substr(response.find(':') + 1));
-                        std::cout << "running false with port :" << _port << "\n";
                     }
                     return;
                 }
@@ -177,7 +244,7 @@ void rtype::client::LobbyMenu::updateLobbies()
 
     _lobbies.clear();
 
-    while (lobby.find("200") == std::string::npos) {
+    while (lobby.find("200") == std::string::npos && lobby.find("UDP") == std::string::npos) {
 
         std::string name = lobby.substr(0, lobby.find(':'));
         std::string running = lobby.substr(lobby.find(':') + 1, 1);
@@ -285,19 +352,19 @@ void rtype::client::LobbyMenu::displayLobbies()
         _window.draw(text);
         _window.draw(nbPlayers);
 
-        if (_lobby.empty() && _lobbies[i].nbPlayers != 4 && _lobbies[i].running == false) {
+        if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].nbPlayers != 4 && _lobbies[i].running == false) {
             _window.draw(_lobbies[i].join);
             _window.draw(textJoin);
         }
 
-        if (_lobby == _lobbies[i].name) {
+        if (!_lobbies[i].running && _lobby == _lobbies[i].name) {
             _window.draw(_lobbies[i].join);
             _window.draw(textJoin);
             _window.draw(_lobbies[i].buttonReady);
             _window.draw(textReady);
         }
 
-        if (_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers) {
+        if (_lobbies[i].name == _lobby && !_lobbies[i].running && _lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers) {
             _window.draw(_lobbies[i].start);
             _window.draw(textStart);
         }

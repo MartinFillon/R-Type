@@ -26,9 +26,9 @@ namespace rtype::server {
 
         public:
 
-            TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies);
+            TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port);
 
-            void start(std::shared_ptr<ecs::IContext> &context);
+            void start();
 
             void setLobby(const std::string &lobby);
 
@@ -50,19 +50,26 @@ namespace rtype::server {
                 return _ready;
             };
 
+            void setConnected(bool connected)
+            {
+                _connected = connected;
+            };
+
             void writeToClient(const std::string &message);
 
         private:
 
             void readClient();
 
+            bool _connected;
+
             unsigned int _id;
             bool _ready;
 
+            int _port;
+
             std::string _lobby;
             std::vector<Lobby> &_lobbies;
-
-            std::shared_ptr<ecs::IContext> _gameContext;
 
             TCP::socket _socket;
             std::string _data;

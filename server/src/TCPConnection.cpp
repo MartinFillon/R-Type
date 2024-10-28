@@ -18,13 +18,12 @@
 
 #include "TCPConnection.hpp"
 
-rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies): _socket(std::move(socket)), _id(id), _ready(false), _lobbies(lobbies)
+rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port): _socket(std::move(socket)), _connected(true), _id(id), _ready(false), _port(port), _lobbies(lobbies)
 {
 }
 
-void rtype::server::TCPConnection::start(std::shared_ptr<ecs::IContext> &context)
+void rtype::server::TCPConnection::start()
 {
-    _gameContext = std::move(context);
     readClient();
 }
 
@@ -35,7 +34,7 @@ void rtype::server::TCPConnection::setLobby(const std::string &lobby)
 
 void rtype::server::TCPConnection::readClient()
 {
-    while (true) {
+    while (_connected) {
 
         asio::error_code error;
         size_t length = asio::read_until(_socket, asio::dynamic_buffer(_data), '\n', error);
@@ -75,25 +74,25 @@ void rtype::server::TCPConnection::readClient()
 bool rtype::server::TCPConnection::createLobby(const std::string &name)
 {
     if (_lobbies.size() == MAX_LOBBIES) {
-        writeToClient("Too many lobbies created.");
+        writeToClient("400: Too many lobbies created.");
         return false;
     }
 
     if (name.find(':') != std::string::npos) {
-        writeToClient("No ':' on the name please.");
+        writeToClient("400: No ':' on the name please.");
         return false;
     }
 
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == name) {
-            writeToClient("Name already used.");
+            writeToClient("400: Name already used.");
             return false;
         }
     }
 
-    _lobbies.push_back(Lobby(name));
+    _lobbies.push_back(Lobby(name, _port));
 
-    writeToClient("Lobby: " + name + " created!");
+    writeToClient("200: Lobby: " + name + " created!");
 
     return true;
 }
@@ -192,8 +191,8 @@ bool rtype::server::TCPConnection::startLobby()
 {
     for (auto &lobby: _lobbies) {
         if (lobby.getName() == _lobby) {
-            if (!lobby.start(_gameContext)) {
-                writeToClient("All clients are not ready.");
+            if (!lobby.start()) {
+                writeToClient("400: All clients are not ready.");
                 return false;
             }
             return true;
@@ -201,7 +200,7 @@ bool rtype::server::TCPConnection::startLobby()
 
     }
 
-    writeToClient("You are not in a lobby.");
+    writeToClient("400: You are not in a lobby.");
     return false;
 }
 

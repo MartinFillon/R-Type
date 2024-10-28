@@ -27,9 +27,9 @@ namespace rtype::server {
 
         public:
 
-            Lobby(const std::string &name);
+            Lobby(const std::string &name, int port);
 
-            bool start(std::shared_ptr<ecs::IContext> &context);
+            bool start();
             bool assign(TCPConnection &client);
             bool unassign(TCPConnection &client);
 

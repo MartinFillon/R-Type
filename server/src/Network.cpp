@@ -12,13 +12,12 @@
 
 #include "Network.hpp"
 
-rtype::server::Network::Network(int port): _port(port), _running(true), _context(), _acceptor(_context, TCP::endpoint(TCP::v4(), port))
+rtype::server::Network::Network(int port): _port(port), _running(true), _udpPort(DEFAULT_UDP_PORT), _context(), _acceptor(_context, TCP::endpoint(TCP::v4(), port))
 {
 }
 
-int rtype::server::Network::run(std::shared_ptr<ecs::IContext> &context)
+int rtype::server::Network::run()
 {
-    _gameContext = std::move(context);
     return start();
 }
 
@@ -49,6 +48,10 @@ void rtype::server::Network::acceptConnection()
         TCP::socket socket = _acceptor.accept();
         _threads.push_back(std::thread(&Network::runClient, this, std::move(socket)));
     }
+
+    for (auto &thread: _threads) {
+        thread.join();
+    }
 }
 
 void rtype::server::Network::runClient(TCP::socket socket)
@@ -61,9 +64,7 @@ void rtype::server::Network::runClient(TCP::socket socket)
 
     index += 1;
 
-    std::cout << "NEW client: " << id << "\n";
+    TCPConnection client(std::move(socket), id, _lobbies, _udpPort++);
 
-    TCPConnection client(std::move(socket), id, _lobbies);
-
-    client.start(_gameContext);
+    client.start();
 }

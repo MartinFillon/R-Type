@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <unistd.h>
 #include "ComponentFactory.hpp"
 #include "RegistryWrapper.hpp"
 #include "TCPCommunication.hpp"
@@ -39,7 +40,7 @@ namespace rtype::client {
 
         int UDPport = _lobby.launchLobby(_tcpCommunication);
 
-        if (_network.setup(ip, std::to_string(1234)) == ERROR) {
+        if (_network.setup(ip, std::to_string(UDPport)) == ERROR) {
             return ERROR;
         }
 
