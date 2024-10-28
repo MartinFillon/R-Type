@@ -10,7 +10,8 @@
       "destroyable",
       "life",
       "gravitable",
-      "key_pressed"
+      "key_pressed",
+      "attributes"
     ],
     "components": {
         "key_pressed": "none",
@@ -32,14 +33,16 @@
             "speed": 3
         },
         "sprite": "StreetFighter/assets/Ken.png",
+        "attributes": {
+            "entityType": "player",
+            "secondaryType": "first"
+        },
         "animations": {
             "width": 60,
             "height": 80,
             "x": 0,
             "y": 80,
-            "rotation": 0,
-            "type": "player",
-            "objectType": "first"
+            "rotation": 0
         },
         "size": {
             "width": 6,
