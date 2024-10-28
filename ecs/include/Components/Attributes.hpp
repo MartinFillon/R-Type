@@ -19,6 +19,7 @@ namespace ecs {
                 Player,
                 Weapon,
                 Ennemy,
+                Rectangle
             };
 
             enum class SecondaryType { None, Basic, Milespates, Boss, First, Second };

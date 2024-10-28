@@ -24,6 +24,7 @@ extern "C" void register_component(
         {"weapon", ecs::component::Attributes::EntityType::Weapon},
         {"ennemy", ecs::component::Attributes::EntityType::Ennemy},
         {"background", ecs::component::Attributes::EntityType::Background},
+        {"rectangle", ecs::component::Attributes::EntityType::Rectangle},
     };
     std::unordered_map<std::string, ecs::component::Attributes::SecondaryType> ennemies_types = {
         {"none", ecs::component::Attributes::SecondaryType::None},
