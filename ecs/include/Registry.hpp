@@ -80,7 +80,7 @@ namespace ecs {
         }
 
       private:
-        std::shared_ptr<systems::SystemsManager> _systemsManager;
+        std::shared_ptr<systems::SystemsManager> _systemsManager = std::make_shared<systems::SystemsManager>();
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };
