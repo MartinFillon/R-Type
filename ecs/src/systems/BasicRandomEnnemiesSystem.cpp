@@ -66,6 +66,7 @@ namespace ecs::systems {
         if (_clock.getMiliSeconds() < _ennemiesTick) {
             return;
         }
+        spdlog::debug("amount of basic ennemies: {}", nbOfBasicEnnemies(r));
         if (nbOfBasicEnnemies(r) < _maxNbOfEnnemies) {
             createNewEnnemies(r, ctx, factory);
             return;
@@ -162,8 +163,9 @@ void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
         int nbOfEnnemies = 0;
         auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
 
-        for (std::size_t i = 0; i < attributes.size(); ++i) {
-            if (attributes[i] && attributes[i]->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
+        for (auto &&[attribute] : ecs::custom_zip(attributes)) {
+            if (attribute && attribute->_entity_type == ecs::component::Attributes::EntityType::Ennemy &&
+                attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
                 nbOfEnnemies += 1;
             }
         }

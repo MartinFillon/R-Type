@@ -23,7 +23,6 @@ namespace ecs {
                 override;
 
           private:
-            void sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i);
             int _width_max_limit = WIDTH_MAX_LIMIT;
             int _height_max_limit = HEIGHT_MAX_LIMIT;
             int _width_min_limit = WIDTH_MIN_LIMIT;

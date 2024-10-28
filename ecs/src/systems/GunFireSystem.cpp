@@ -36,10 +36,10 @@ namespace ecs {
         auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
         ecs::component::Position playerPos = {0, 0};
 
-        for (std::size_t i = 0; i < positions.size(); ++i) {
-            if (attributes[i] && attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Player) {
-                playerPos._x = positions[i]->_x + 100;
-                playerPos._y = positions[i]->_y + 10;
+        for (auto &&[attribute, position] : ecs::custom_zip(attributes, positions)) {
+            if (attribute && attribute->_entity_type == ecs::component::Attributes::EntityType::Player) {
+                playerPos._x = position->_x + 100;
+                playerPos._y = position->_y + 10;
                 break;
             }
         }

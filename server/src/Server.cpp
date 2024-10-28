@@ -23,6 +23,7 @@
 #include "Protocol.hpp"
 #include "Server.hpp"
 #include "Utils.hpp"
+#include "ZipperIterator.hpp"
 
 namespace rtype::server {
     Server::Server(int port)
@@ -269,30 +270,39 @@ namespace rtype::server {
             ecs::Entity e = _game.createPlayer(id);
 
             auto r = _game.getRegistry();
-            auto &positions = r->register_if_not_exist<ecs::component::Position>();
             auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
+            auto &positions = r->register_if_not_exist<ecs::component::Position>();
             auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
             auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
             auto &sizes = r->register_if_not_exist<ecs::component::Size>();
 
-            for (std::size_t i = 0; i < r->_entities.size(); ++i) {
-                if (!positions[i] || !attributes[i] || !drawables[i] || !sprites[i] || !sizes[i]) {
+            for (auto &&[attribute, position, drawable, sprite, size] :
+                 ecs::custom_zip(attributes, positions, drawables, sprites, sizes)) {
+                if (!position || !attribute || !drawable || !sprite || !size) {
                     continue;
                 }
 
-                if (attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Ennemy) {
-                    auto arguments = ecs::utils::intToBytes(i);
+                if (attribute->_entity_type == ecs::component::Attributes::EntityType::Ennemy) {
+                    auto arguments = ecs::utils::intToBytes(attribute->_identifyer);
 
-                    arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
+                    }
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::MILESPATES));
+                    }
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Boss) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::BOSS));
+                    }
                     sendToClient(client_id, protocol::Packet(protocol::NEW_OBJECT, arguments));
                 }
 
-                if (attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Player) {
-                    auto arguments = ecs::utils::intToBytes(i);
+                if (attribute->_entity_type == ecs::component::Attributes::EntityType::Player) {
+                    auto arguments = ecs::utils::intToBytes(attribute->_identifyer);
 
-                    arguments.push_back(
-                        static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getPlaceByPlayerEntityId(i)))
-                    );
+                    arguments.push_back(static_cast<uint8_t>(
+                        static_cast<protocol::ObjectTypes>(_game.getPlaceByPlayerEntityId(attribute->_identifyer))
+                    ));
 
                     sendToClient(client_id, protocol::Packet(protocol::NEW_PLAYER, arguments));
                 }

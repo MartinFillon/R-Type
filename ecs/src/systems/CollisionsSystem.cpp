@@ -5,8 +5,8 @@
 ** Collision system file
 */
 
+#include "Systems/CollisionsSystem.hpp"
 #include <memory>
-
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
@@ -16,7 +16,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
-#include "Systems/CollisionsSystem.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -49,39 +49,27 @@ namespace ecs {
                 double i_width = animation[i]->_width * (size[i] ? size[i]->_width : 1.0);
                 double i_height = animation[i]->_height * (size[i] ? size[i]->_height : 1.0);
 
-                if ((position[i]->_x > _width_max_limit || position[i]->_x < _width_min_limit) ||
-                    (position[i]->_y > _height_max_limit || position[i]->_y < _height_min_limit)) {
+                if ((position[i]->_x > WIDTH_MAX_LIMIT || position[i]->_x < WIDTH_MIN_LIMIT) ||
+                    (position[i]->_y > HEIGHT_MAX_LIMIT || position[i]->_y < HEIGHT_MIN_LIMIT)) {
                     destroyable[i]->_state = component::Destroyable::DestroyState::WAITING;
                     continue;
                 }
 
                 for (std::size_t j = i + 1; j < position.size(); ++j) {
-                    if (!attribut[i] || !position[j] || !size[j] || !destroyable[j] ||
+                    if (!attribut[j] || !position[j] || !size[j] || !destroyable[j] ||
                         destroyable[j]->_state != ecs::component::Destroyable::DestroyState::ALIVE || !life[j] ||
-                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type) {
+                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type ||
+                        ((attribut[i]->_entity_type == attribut[j]->_entity_type) &&
+                         (attribut[i]->_secondary_type == attribut[j]->_secondary_type))) {
                         continue;
                     }
 
                     double j_width = animation[j]->_width * (size[j] ? size[j]->_width : 1.0);
                     double j_height = animation[j]->_height * (size[j] ? size[j]->_height : 1.0);
 
-                    if ((position[j]->_x > _width_max_limit || position[j]->_x < _width_min_limit) ||
-                        (position[j]->_y > _height_max_limit || position[j]->_y < _height_min_limit)) {
+                    if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
+                        (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
                         destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
-                        continue;
-                    }
-
-                    if ((attribut[i]->_secondary_type == component::Attributes::SecondaryType::Milespates &&
-                         destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) ||
-                        (destroyable[j]->_state == component::Destroyable::DestroyState::ALIVE &&
-                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Milespates)) {
-                        continue;
-                    }
-
-                    if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon ||
-                         attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) &&
-                        (attribut[j]->_secondary_type != component::Attributes::SecondaryType::None &&
-                         attribut[i]->_secondary_type != component::Attributes::SecondaryType::None)) {
                         continue;
                     }
 

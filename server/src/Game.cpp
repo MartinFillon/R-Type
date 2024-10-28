@@ -67,6 +67,7 @@ namespace rtype::server {
         if (_ctx == nullptr) {
             _ctx = ctx;
         }
+        auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = _r->register_if_not_exist<ecs::component::Position>();
         auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
 
@@ -75,13 +76,13 @@ namespace rtype::server {
             _systemClock.restart();
         }
 
-        for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
-            if (!positions[entity_id] || !animations[entity_id]) {
+        for (auto &&[attribute, position, animation] : ecs::custom_zip(attributes, positions, animations)) {
+            if (!position || !animation) {
                 continue;
             }
             if (are_any_clients_connected) {
-                preparePosition(positions[entity_id], entity_id);
-                _ctx->animationObject(entity_id, animations[entity_id].value());
+                preparePosition(position, attribute->_identifyer);
+                _ctx->animationObject(attribute->_identifyer, animation.value());
             }
         }
     }
@@ -170,7 +171,6 @@ namespace rtype::server {
         }
 
         positions[i] = positions[_players_entities_ids[player_place]];
-        _ctx->createProjectile(i, rtype::protocol::ObjectTypes::PLAYER_BULLET);
         _ctx->moveObject(i, positions[i]->_x, positions[i]->_y);
     }
 
