@@ -8,7 +8,7 @@
 #include <exception>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
+
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
