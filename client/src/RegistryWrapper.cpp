@@ -37,8 +37,6 @@ namespace rtype::client {
         _client->register_component<ecs::component::Animations>();
     }
 
-    RegistryWrapper::~RegistryWrapper() {}
-
     static void drawRegistry(
         sf::RenderWindow &window,
         ecs::TextureManager<sf::Texture> &textureManager,

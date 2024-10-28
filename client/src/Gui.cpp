@@ -5,10 +5,11 @@
 ** Gui
 */
 
-#include <memory>
-#include <iostream>
-#include <spdlog/spdlog.h>
 #include "Gui.hpp"
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Gui.hpp"
 #include "RegistryWrapper.hpp"

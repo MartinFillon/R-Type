@@ -8,6 +8,7 @@
 #pragma once
 
 #include <dlfcn.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
 namespace ecs {

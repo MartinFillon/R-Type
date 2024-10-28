@@ -55,15 +55,18 @@ namespace ecs {
         ~ComponentFactory();
 
         class ComponentFactoryException {
-            public:
-              ComponentFactoryException(const std::string &error): _what(error) {}
-              ~ComponentFactoryException() = default;
+          public:
+            ComponentFactoryException(const std::string &error) : _what(error) {}
 
-              const char *what() const noexcept {
+            ~ComponentFactoryException() = default;
+
+            const char *what() const noexcept
+            {
                 return _what.c_str();
-              }
-            private:
-              std::string _what;
+            }
+
+          private:
+            std::string _what;
         };
 
         void registerComponent(std::string &name, std::string &path);

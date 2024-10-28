@@ -41,7 +41,10 @@ namespace ecs {
         _validator.set_root_schema(_schema);
     }
 
-    ComponentFactory::~ComponentFactory() {}
+    ComponentFactory::~ComponentFactory()
+    {
+        spdlog::debug("ComponentFactory destroyed");
+    }
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
