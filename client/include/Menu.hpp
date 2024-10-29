@@ -74,13 +74,13 @@ namespace rtype::client {
         void menuCloseWindow(sf::Event &event);
         void menuEnterToPlay();
         void menuTextEntered(sf::Event &event);
-        void menuShaderParams(sf::Shader &para);
+        void menuShaderParams();
 
-        int menuLoadShader();
         void launchMusic();
 
         void menuDrawtitles();
-        void menuDraw(sf::Shader &para);
+        void menuDraw();
+        void menuEvent();
 
         std::string menuButtonPressed();
         std::string launchMenu();

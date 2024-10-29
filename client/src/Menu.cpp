@@ -6,11 +6,12 @@
 */
 
 #include "Menu.hpp"
+#include <unistd.h>
 
 namespace rtype::client {
     Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
     {
-        setupMenu();
+
     }
 
     void Menu::setupMenu()
@@ -24,6 +25,7 @@ namespace rtype::client {
         setupMenuTitle();
         setupIpButton();
         setupRenderFont();
+        setupMenuMusic();
     }
 
     void Menu::setupBackground()
@@ -35,6 +37,17 @@ namespace rtype::client {
         _bgScaleX = static_cast<float>(_win.getSize().x) / _backgroundTexture.getSize().x;
         _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
         _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
+
+        _para.loadFromMemory(
+            "uniform float offset;"
+            "void main() {"
+            "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
+            "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+            "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
+            "    gl_FrontColor = gl_Color;"
+            "}",
+            sf::Shader::Vertex
+        );
     }
 
     void Menu::setupMenuFont()
@@ -163,10 +176,10 @@ namespace rtype::client {
         }
     }
 
-    void Menu::menuShaderParams(sf::Shader &para)
+    void Menu::menuShaderParams()
     {
         _bgOffset += _menuClock.restart().asSeconds() / PARA_SPEED;
-        para.setUniform(OFFSET, _bgOffset);
+        _para.setUniform(OFFSET, _bgOffset);
     }
 
     void Menu::menuDrawtitles()
@@ -176,10 +189,10 @@ namespace rtype::client {
         }
     }
 
-    void Menu::menuDraw(sf::Shader &para)
+    void Menu::menuDraw()
     {
         _win.clear();
-        _win.draw(_backgroundSprite, &para);
+        _win.draw(_backgroundSprite, &_para);
         menuDrawtitles();
         _win.draw(_ipRect);
         _win.draw(_menuDisplayInput);
@@ -193,31 +206,11 @@ namespace rtype::client {
         }
     }
 
-    int Menu::menuLoadShader()
+    void Menu::menuEvent()
     {
-        if (!_para.loadFromMemory(
-                "uniform float offset;"
-                "void main() {"
-                "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
-                "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
-                "    gl_FrontColor = gl_Color;"
-                "}",
-                sf::Shader::Vertex
-            )) {
-            return EXIT_FAILURE;
-        }
-        return EXIT_SUCCESS;
-    }
+        sf::Event event;
 
-    std::string Menu::launchMenu()
-    {
-        setupMenuMusic();
-        menuLoadShader();
-
-        while (_isMenuOpen && _win.isOpen()) {
-            sf::Event event;
-            while (_win.pollEvent(event) && _isMenuOpen) {
+        while (_win.pollEvent(event) && _isMenuOpen) {
 
                 launchMusic();
                 menuCloseWindow(event);
@@ -231,9 +224,16 @@ namespace rtype::client {
 
                 menuEnterToPlay();
             }
+    }
 
-            menuShaderParams(_para);
-            menuDraw(_para);
+    std::string Menu::launchMenu()
+    {
+        setupMenu();
+
+        while (_isMenuOpen && _win.isOpen()) {
+            menuShaderParams();
+            menuDraw();
+            menuEvent();
         }
         _menuMusic.stop();
         return _menuClientInput;
