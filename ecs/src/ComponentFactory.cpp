@@ -32,14 +32,13 @@ namespace ecs {
                     registerComponent(name, path);
                 }
             }
+            std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
+
+            _schema = nlohmann::json::parse(s);
+            _validator.set_root_schema(_schema);
         } catch (const std::filesystem::filesystem_error &error) {
             spdlog::error("Error on searching path: {}", error.what());
         }
-
-        std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
-
-        _schema = nlohmann::json::parse(s);
-        _validator.set_root_schema(_schema);
     }
 
     ComponentFactory::~ComponentFactory()
