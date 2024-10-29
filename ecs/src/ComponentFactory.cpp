@@ -15,6 +15,7 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 #include "SystemsManager.hpp"
+#include "dylib.hpp"
 #include "nlohmann/detail/value_t.hpp"
 #include "nlohmann/json_fwd.hpp"
 
@@ -48,7 +49,7 @@ namespace ecs {
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
-        components[name] = std::make_shared<ComponentLoader>(path, "register_component");
+        components[name] = std::make_shared<ComponentLoader>(path, dylib::no_filename_decorations);
     }
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
@@ -99,7 +100,11 @@ namespace ecs {
     )
     {
         if (components.find(component) != components.end()) {
-            components[component]->call(r, e, node);
+            components[component]
+                ->get_function<
+                    void(std::shared_ptr<Registry> &, Entity &, const nlohmann::json &)>("register_component")(
+                    r, e, node
+                );
         } else {
             spdlog::warn("Cannot find: {}", component);
         }
