@@ -35,8 +35,8 @@ namespace rtype::client {
             return QUIT_PRESS;
         }
 
-        if (_network.setup(ip, port) == ERROR) {
-            return ERROR;
+        if (_network.setup(ip, port) == R_ERROR) {
+            return R_ERROR;
         }
 
         _game.setRegistry(_registry);

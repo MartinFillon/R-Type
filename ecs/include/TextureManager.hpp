@@ -36,7 +36,7 @@ namespace ecs {
                     std::string path(entry.path().generic_string().c_str());
                     _textures[path] = f(path);
                 }
-            } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+            } catch (const std::filesystem::filesystem_error &error) {
                 spdlog::error("Error on searching path: {}", error.what());
             }
         }

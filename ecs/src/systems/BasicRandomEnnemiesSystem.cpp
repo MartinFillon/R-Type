@@ -5,13 +5,10 @@
 ** BasicRandomEnnemiesSystem
 */
 
-#include <memory>
-#include <random>
-#include <iostream>
-#include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include "Systems/BasicRandomEnnemiesSystem.hpp"
 #include <Components/Attributes.hpp>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <random>
 #include <spdlog/spdlog.h>
@@ -132,31 +129,31 @@ namespace ecs::systems {
         }
     }
 
-void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
-    std::shared_ptr<Registry> &r,
-    std::shared_ptr<IContext> &ctx,
-    ComponentFactory &factory
-)
-{
-    std::random_device randomPosition;
-    std::default_random_engine randomEngine(randomPosition());
-    std::uniform_int_distribution<int> uniformDistForY(100, 800);
-    std::uniform_int_distribution<int> uniformDistForX(0, 500);
-    int randomPosY = uniformDistForY(randomEngine);
-    int randomPosX = uniformDistForY(randomEngine);
+    void ecs::systems::BasicRandomEnnemiesSystem::createNewEnnemies(
+        std::shared_ptr<Registry> &r,
+        std::shared_ptr<IContext> &ctx,
+        ComponentFactory &factory
+    )
+    {
+        std::random_device randomPosition;
+        std::default_random_engine randomEngine(randomPosition());
+        std::uniform_int_distribution<int> uniformDistForY(100, 800);
+        std::uniform_int_distribution<int> uniformDistForX(0, 500);
+        int randomPosY = uniformDistForY(randomEngine);
+        int randomPosX = uniformDistForY(randomEngine);
 
-    try {
-        Entity newEnnemies = factory.createEntity(r, _enemmiesConfigFile);
-        auto &positions = r->register_if_not_exist<ecs::component::Position>();
-        positions[newEnnemies.getId()] = ecs::component::Position{_basicPosSpawnX + randomPosX, randomPosY, false};
+        try {
+            Entity newEnnemies = factory.createEntity(r, _enemmiesConfigFile);
+            auto &positions = r->register_if_not_exist<ecs::component::Position>();
+            positions[newEnnemies.getId()] = ecs::component::Position{_basicPosSpawnX + randomPosX, randomPosY, false};
 
-        if (ctx) {
-            ctx->createEnemy(newEnnemies.getId());
+            if (ctx) {
+                ctx->createEnemy(newEnnemies.getId());
+            }
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
         }
-    } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
-        std::cerr << error.what() << std::endl;
     }
-}
 
     int BasicRandomEnnemiesSystem::nbOfBasicEnnemies(std::shared_ptr<Registry> &r)
     {

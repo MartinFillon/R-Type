@@ -8,8 +8,6 @@
 #define PROJECTILE_SPEED 3
 #define PROJECTIL_TICK 2.5
 
-#include <SFML/Window/Keyboard.hpp>
-
 #include "Clock.hpp"
 
 #include "ISystems.hpp"

@@ -32,7 +32,7 @@ namespace ecs {
                     registerComponent(name, path);
                 }
             }
-        } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+        } catch (const std::filesystem::filesystem_error &error) {
             spdlog::error("Error on searching path: {}", error.what());
         }
 
@@ -56,7 +56,7 @@ namespace ecs {
     {
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
-            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+            throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
         }
 
         nlohmann::json config = nlohmann::json::parse(f);
@@ -76,7 +76,7 @@ namespace ecs {
     {
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
-            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+            throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
         }
 
         nlohmann::json config = nlohmann::json::parse(f);
