@@ -28,7 +28,11 @@ namespace ecs {
             for (const auto &entry : std::filesystem::directory_iterator(path)) {
                 if (entry.is_regular_file()) {
                     std::string path = entry.path().string();
+#ifdef _WIN32
+                    std::string name = entry.path().stem().string();
+#else
                     std::string name = entry.path().stem().string().substr(3);
+#endif
                     registerComponent(name, path);
                 }
             }
@@ -48,6 +52,7 @@ namespace ecs {
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
+        spdlog::info("Registering component: {}", name);
         components[name] = std::make_shared<ComponentLoader>(path, dylib::no_filename_decorations);
     }
 
