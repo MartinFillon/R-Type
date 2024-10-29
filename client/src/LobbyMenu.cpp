@@ -16,9 +16,9 @@
 #include <cstdlib>
 #include <string>
 #include <unistd.h>
+#include "Menu.hpp"
 #include "TCPCommunication.hpp"
 
-#include <iostream>
 
 rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true)
 {
@@ -30,17 +30,14 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
     _server = std::move(server);
     setup();
 
-    while (_running && _window.isOpen() && _server->getPort() == 0) {
-
+    while (_running && _window.isOpen() && !_server->getPort()) {
         update();
         display();
         event();
-
     }
-
     setupLoadingGame();
 
-    while (_window.isOpen() && _loading) {
+    while (_running && _window.isOpen() && _loading) {
         loadingGame();
     }
 
@@ -60,53 +57,52 @@ void rtype::client::LobbyMenu::setupLoadingGame()
 {
     _loadingRectangle.setFillColor(sf::Color::Black);
     _loadingRectangle.setOutlineColor(sf::Color::White);
-    _loadingRectangle.setOutlineThickness(2);
-    _loadingRectangle.setSize({600, 80});
-    _loadingRectangle.setPosition({600, 480});
+    _loadingRectangle.setOutlineThickness(RECT_THICKNESS);
+    _loadingRectangle.setSize({LOADING_RECT_SIZE_X, LOADING_RECT_SIZE_Y});
+    _loadingRectangle.setPosition({LOADING_RECT_POS_X, LOADING_RECT_POS_Y});
 
     _loadingPourcent.setFillColor(sf::Color::Green);
-    _loadingPourcent.setSize({600, 80});
-    _loadingPourcent.setPosition({600, 480});
+    _loadingPourcent.setSize({PERCENT_RECT_SIZE_X, PERCENT_RECT_SIZE_Y});
+    _loadingPourcent.setPosition({PERCENT_RECT_POS_X, PERCENT_RECT_POS_Y});
 
-    _loadingText.setPosition({600, 420});
-    _loadingText.setString("Loading " + std::to_string(_loadingValue) + "%");
+    _loadingText.setPosition({LOADING_TEXT_POS_X, LOADING_TEXT_POS_Y});
+    _loadingText.setString(LOADING_TITLE(std::to_string(_loadingValue)));
     _loadingText.setFillColor(sf::Color::White);
-    _loadingText.setCharacterSize(42);
+    _loadingText.setCharacterSize(TEXT_SIZE);
 
-    _loadingStop = 1;
+    _loadingStop = STOP_START_VALIUE;
 }
 
 void rtype::client::LobbyMenu::loadingGame()
 {
     _window.clear();
-
     updateBackground();
 
-    if (_loadingValue >= 100) {
+    if (_loadingValue >= MAX_LOADING_VALUE) {
         _loading = false;
         return;
     }
 
-    if (_loadingValue >= 42.0 && _loadingStop) {
-        _loadingStop += 1;
-        if (_loadingStop == 1000) {
-            _loadingStop = 0;
+    if (_loadingValue >= FUN_STOP && _loadingStop) {
+        _loadingStop++;
+        if (_loadingStop == LOADING_STOP) {
+            _loadingStop = RESET_STOP;
         }
     }
 
-    if (_loadingStop == 1 || _loadingStop == 0) {
-        _loadingValue += 0.08;
+    if (_loadingStop == TIME_STOP or !_loadingStop) {
+        _loadingValue += LOADING_LOAD_VALUE;
     }
-    
+
     sf::Font font;
 
     _window.draw(_backgroundSprite, &_shader);
 
-    font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
+    font.loadFromFile(FONT_PATH);
     _loadingText.setFont(font);
 
-    _loadingPourcent.setSize({_loadingValue * 6, 80});
-    _loadingText.setString("Loading " + std::to_string((int)_loadingValue) + "%");
+    _loadingPourcent.setSize({_loadingValue * PERCENT_SIZE_ADAPT, PERCENT_RECT_SIZE_Y});
+    _loadingText.setString(LOADING_TITLE(std::to_string((int)_loadingValue)));
 
     _window.draw(_loadingRectangle);
     _window.draw(_loadingPourcent);
@@ -141,16 +137,16 @@ void rtype::client::LobbyMenu::createNewLobby(sf::Event &event)
 {
     char _inputChar;
 
-    if (event.text.unicode < 128) {
+    if (event.text.unicode < ASCII_LIM) {
         _inputChar = static_cast<char>(event.text.unicode);
-        if (_inputChar == 8 && !_newLobbyName.empty()) {
+        if (_inputChar == DEL_BUTTON && !_newLobbyName.empty()) {
             _newLobbyName.pop_back();
-        } else if (_inputChar > 31 && _inputChar < 128) {
+        } else if (_inputChar > NON_ASCII_CHAR && _inputChar < ASCII_LIM) {
             _newLobbyName += _inputChar;
         }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_newLobbyName.empty()) {
-        _server.get()->send("CREATE " + _newLobbyName + "\n");
+        _server.get()->send(CREATE_CMD(_newLobbyName));
         _server.get()->read();
         _newLobbyName.clear();
     }
@@ -164,6 +160,7 @@ void rtype::client::LobbyMenu::event()
 
         if (event.type == sf::Event::Closed) {
             _window.close();
+            _running = false;
         }
 
         if (event.type == sf::Event::MouseButtonPressed) {
@@ -177,7 +174,7 @@ void rtype::client::LobbyMenu::event()
 
             for (int i = 0; i < _lobbies.size(); i++) {
                 if (!_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
-                    _server.get()->send("QUIT " + _lobbies[i].name + "\n");
+                    _server.get()->send(QUIT_CMD(_lobbies[i].name));
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby.clear();
                         _ready = false;
@@ -186,7 +183,7 @@ void rtype::client::LobbyMenu::event()
                 }
 
                 if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
-                    _server.get()->send("JOIN " + _lobbies[i].name + "\n");
+                    _server.get()->send(JOIN_CMD(_lobbies[i].name));
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby = _lobbies[i].name;
                         _ready = false;
@@ -196,7 +193,7 @@ void rtype::client::LobbyMenu::event()
 
                 if (!_lobby.empty() && _lobbies[i].buttonReady.getGlobalBounds().contains(mouse.x, mouse.y)) {
                     if (!_ready) {
-                        _server.get()->send("READY\n");
+                        _server.get()->send(READY_CMD);
                         if (_server.get()->read().find("200") != std::string::npos) {
                             _ready = true;
                         }
@@ -204,7 +201,7 @@ void rtype::client::LobbyMenu::event()
                     }
 
                     if (_ready) {
-                        _server.get()->send("UNREADY\n");
+                        _server.get()->send(UNREADY_CMD);
                         if (_server.get()->read().find("200") != std::string::npos) {
                             _ready = false;
                         }
@@ -213,11 +210,11 @@ void rtype::client::LobbyMenu::event()
                 }
 
                 if (_lobbies[i].name == _lobby && _lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains(mouse.x, mouse.y)) {
-                    _server.get()->send("START\n");
+                    _server.get()->send(START_CMD);
                     std::string response = _server.get()->read();
-                    if (response.find("UDP") != std::string::npos) {
+                    if (response.find(NETWORK_METHOD_GAME) != std::string::npos) {
                         _running = false;
-                        _port = std::stoi(response.substr(response.find(':') + 1));
+                        _port = std::stoi(response.substr(response.find(TOKEN_PARSE_NETWORK) + 1));
                     }
                     return;
                 }
@@ -238,18 +235,18 @@ void rtype::client::LobbyMenu::update()
 
 void rtype::client::LobbyMenu::updateLobbies()
 {
-    _server.get()->send("LIST\n");
+    _server.get()->send(LIST_CMD);
 
     std::string lobby = _server.get()->read();
 
     _lobbies.clear();
 
-    while (lobby.find("200") == std::string::npos && lobby.find("UDP") == std::string::npos) {
+    while (lobby.find("200") == std::string::npos && lobby.find(NETWORK_METHOD_GAME) == std::string::npos) {
 
-        std::string name = lobby.substr(0, lobby.find(':'));
-        std::string running = lobby.substr(lobby.find(':') + 1, 1);
-        std::string nbPlayers = lobby.substr(lobby.find(':') + 3, 1);
-        std::string ready = lobby.substr(lobby.find(':') + 5, 1);
+        std::string name = lobby.substr(0, lobby.find(TOKEN_PARSE_NETWORK));
+        std::string running = lobby.substr(lobby.find(TOKEN_PARSE_NETWORK) + 1, 1);
+        std::string nbPlayers = lobby.substr(lobby.find(TOKEN_PARSE_NETWORK) + 3, 1);
+        std::string ready = lobby.substr(lobby.find(TOKEN_PARSE_NETWORK) + 5, 1);
 
         struct Lobby newLobby = { name, std::stoi(nbPlayers), std::stoi(running), std::stoi(ready), sf::RectangleShape(), sf::RectangleShape(), sf::RectangleShape(), sf::RectangleShape()};
 
@@ -282,66 +279,66 @@ void rtype::client::LobbyMenu::displayLobbies()
 
         _lobbies[i].rectangle.setFillColor(sf::Color::Black);
         _lobbies[i].rectangle.setOutlineColor(sf::Color::White);
-        _lobbies[i].rectangle.setOutlineThickness(2);
-        _lobbies[i].rectangle.setSize({600, 80});
-        _lobbies[i].rectangle.setPosition({600, 240 + (float)i * 140});
+        _lobbies[i].rectangle.setOutlineThickness(RECT_THICKNESS);
+        _lobbies[i].rectangle.setSize({LOBBY_RECT_SIZE_X, LOBBY_RECT_SIZE_Y});
+        _lobbies[i].rectangle.setPosition({LOBBY_RECT_POS_X, LOBBY_RECT_POS_Y(float(i))});
 
         _lobbies[i].start.setFillColor(sf::Color::Black);
         _lobbies[i].start.setOutlineColor(sf::Color::Green);
-        _lobbies[i].start.setOutlineThickness(2);
-        _lobbies[i].start.setSize({160, 80});
-        _lobbies[i].start.setPosition({400, 240 + (float)i * 140});
+        _lobbies[i].start.setOutlineThickness(RECT_THICKNESS);
+        _lobbies[i].start.setSize({START_BUTTON_SIZE_X, START_BUTTON_SIZE_Y});
+        _lobbies[i].start.setPosition({START_BUTTON_POS_X, START_BUTTON_POS_Y((float)i)});
 
         _lobbies[i].join.setFillColor(sf::Color::Black);
         _lobbies[i].join.setOutlineColor(_lobby.empty() ? sf::Color::Green : sf::Color::Red);
-        _lobbies[i].join.setOutlineThickness(2);
-        _lobbies[i].join.setSize({130, 80});
-        _lobbies[i].join.setPosition({1240, 240 + (float)i * 140});
+        _lobbies[i].join.setOutlineThickness(RECT_THICKNESS);
+        _lobbies[i].join.setSize({JOIN_BUTTON_SIZE_X, JOIN_BUTTON_SIZE_Y});
+        _lobbies[i].join.setPosition({JOIN_BUTTON_POS_X, JOIN_BUTTON_POS_Y(float(i))});
 
         _lobbies[i].buttonReady.setFillColor(sf::Color::Black);
         _lobbies[i].buttonReady.setOutlineColor(_ready ? sf::Color::Green : sf::Color::Red);
-        _lobbies[i].buttonReady.setOutlineThickness(2);
-        _lobbies[i].buttonReady.setSize({160, 80});
-        _lobbies[i].buttonReady.setPosition({1407, 240 + (float)i * 140});
+        _lobbies[i].buttonReady.setOutlineThickness(RECT_THICKNESS);
+        _lobbies[i].buttonReady.setSize({READY_BUTTON_SIZE_X, READY_BUTTON_SIZE_Y});
+        _lobbies[i].buttonReady.setPosition({READY_BUTTON_POS_X, READY_BUTTON_POS_Y(float(i))});
 
         sf::Text text;
 
-        text.setPosition({620, 250 + (float)i * 140});
+        text.setPosition({LOBBY_NAME_POS_X, LOBBY_NAME_POS_Y((float)i)});
         text.setString(_lobbies[i].name);
         text.setFillColor(sf::Color::White);
-        text.setCharacterSize(42);
+        text.setCharacterSize(TEXT_SIZE);
 
         sf::Text textStart;
 
-        textStart.setPosition({417, 250 + (float)i * 140});
-        textStart.setString("START");
+        textStart.setPosition({TEXT_START_POS_X, TEXT_START_POS_y((float)i)});
+        textStart.setString(START_TITLE);
         textStart.setFillColor(sf::Color::Green);
-        textStart.setCharacterSize(42);
+        textStart.setCharacterSize(TEXT_SIZE);
 
         sf::Text textJoin;
 
-        textJoin.setPosition({1260 - (float)!_lobby.empty() * 5, 250 + (float)i * 140});
-        textJoin.setString(_lobby.empty() ? "JOIN" : "QUIT");
+        textJoin.setPosition({TEXT_JOIN_POS_X((float)!_lobby.empty()), TEXT_JOIN_POS_Y(float(i))});
+        textJoin.setString(_lobby.empty() ? JOIN_TITLE : QUIT_TITLE);
         textJoin.setFillColor(_lobby.empty() ? sf::Color::Green: sf::Color::Red);
-        textJoin.setCharacterSize(42);
+        textJoin.setCharacterSize(TEXT_SIZE);
 
         sf::Text textReady;
 
-        textReady.setPosition({1422, 250 + (float)i * 140});
-        textReady.setString("READY");
+        textReady.setPosition({TEXT_READY_POS_X, TEXT_READY_POS_Y(float(i))});
+        textReady.setString(READY_TITLE);
         textReady.setFillColor(_ready ? sf::Color::Green: sf::Color::Red);
-        textReady.setCharacterSize(42);
+        textReady.setCharacterSize(TEXT_SIZE);
 
         sf::Text nbPlayers;
 
-        nbPlayers.setPosition({1090, 255 + (float)i * 140});
-        nbPlayers.setString(std::to_string(_lobbies[i].nbPlayers) + " / 4");
+        nbPlayers.setPosition({TEXT_NB_P_POS_X, TEXT_JOIN_POS_Y(float(i))});
+        nbPlayers.setString(std::to_string(_lobbies[i].nbPlayers) + LOBBY_MAX_PLAYERS);
         nbPlayers.setFillColor(_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers ? sf::Color::Green : sf::Color::White);
-        nbPlayers.setCharacterSize(42);
+        nbPlayers.setCharacterSize(TEXT_SIZE);
 
         sf::Font font;
 
-        font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
+        font.loadFromFile(FONT_PATH);
         text.setFont(font);
         nbPlayers.setFont(font);
         textJoin.setFont(font);
@@ -352,7 +349,7 @@ void rtype::client::LobbyMenu::displayLobbies()
         _window.draw(text);
         _window.draw(nbPlayers);
 
-        if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].nbPlayers != 4 && _lobbies[i].running == false) {
+        if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].nbPlayers != MAX_LOBBIES && _lobbies[i].running == false) {
             _window.draw(_lobbies[i].join);
             _window.draw(textJoin);
         }
@@ -373,23 +370,23 @@ void rtype::client::LobbyMenu::displayLobbies()
 
     _lobbyCreate.setFillColor(sf::Color::Black);
     _lobbyCreate.setOutlineColor(_createActivate ? sf::Color::Blue : sf::Color::White);
-    _lobbyCreate.setOutlineThickness(_createActivate ? 3 : 2);
-    _lobbyCreate.setSize({600, 80});
-    _lobbyCreate.setPosition({600, 240 + (float)i * 140});
+    _lobbyCreate.setOutlineThickness(_createActivate ? RECT_THICKNESS + 1 : RECT_THICKNESS);
+    _lobbyCreate.setSize({LOBBY_RECT_SIZE_X, LOBBY_RECT_SIZE_Y});
+    _lobbyCreate.setPosition({LOBBY_RECT_POS_X, LOBBY_RECT_POS_Y(float(i))});
 
     sf::Text text;
 
-    text.setPosition({620, 250 + (float)i * 140});
-    text.setString("Create lobby: " + _newLobbyName);
+    text.setPosition({LOBBY_NAME_POS_X, TEXT_START_POS_y(float(i))});
+    text.setString(CREATE_TITLE(_newLobbyName));
     text.setFillColor(sf::Color::White);
-    text.setCharacterSize(42);
+    text.setCharacterSize(TEXT_SIZE);
 
     sf::Font font;
 
-    font.loadFromFile("./assets/fonts/OpenSans-Semibold.ttf");
+    font.loadFromFile(FONT_PATH);
     text.setFont(font);
 
-    if (_lobbies.size() != 4 && _lobby.empty()) {
+    if (_lobbies.size() != MAX_LOBBIES && _lobby.empty()) {
         _window.draw(_lobbyCreate);
         _window.draw(text);
     }
