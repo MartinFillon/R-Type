@@ -28,11 +28,12 @@ namespace ecs {
             for (const auto &entry : std::filesystem::directory_iterator(path)) {
                 if (entry.is_regular_file()) {
                     std::string path = entry.path().string();
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
                     std::string name = entry.path().stem().string();
 #else
                     std::string name = entry.path().stem().string().substr(3);
 #endif
+                    spdlog::warn("file {}", path);
                     registerComponent(name, path);
                 }
             }
@@ -58,6 +59,7 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
+        spdlog::warn("Creating with file: {}", file);
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
             throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
@@ -104,11 +106,15 @@ namespace ecs {
     )
     {
         if (components.find(component) != components.end()) {
-            components[component]
-                ->get_function<
-                    void(std::shared_ptr<Registry> &, Entity &, const nlohmann::json &)>("register_component")(
-                    r, e, node
-                );
+            try {
+                auto f = components[component]
+                             ->get_function<void(std::shared_ptr<Registry> &, Entity &, const nlohmann::json &)>(
+                                 "register_component"
+                             );
+                f(r, e, node);
+            } catch (const std::exception &e) {
+                spdlog::error("Function not found for component {}", component);
+            }
         } else {
             spdlog::warn("Cannot find: {}", component);
         }

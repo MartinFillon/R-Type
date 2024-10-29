@@ -193,6 +193,7 @@ namespace rtype::server {
     void Server::processGame(std::shared_ptr<ecs::IContext> ctx)
     {
         while (_running) {
+            std::lock_guard<std::mutex> lock(_mutex);
             _game.update(_clients.size() > 0, ctx);
 
             _clock.restart();

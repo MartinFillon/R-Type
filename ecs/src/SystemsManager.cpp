@@ -9,6 +9,7 @@
 #include <nlohmann/json.hpp>
 #include <nlohmann/json-schema.hpp>
 
+#include <spdlog/spdlog.h>
 #include "Registry.hpp"
 #include "SystemsManager.hpp"
 
