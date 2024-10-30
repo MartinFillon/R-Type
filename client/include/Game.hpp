@@ -66,11 +66,11 @@ namespace rtype::client {
     };
 
     static std::map<sf::Keyboard::Key, unsigned char> moves = {
-        {sf::Keyboard::Up, protocol::Direction::UP},
-        {sf::Keyboard::Down, protocol::Direction::DOWN},
-        {sf::Keyboard::Left, protocol::Direction::LEFT},
-        {sf::Keyboard::Right, protocol::Direction::RIGHT},
-        {sf::Keyboard::Space, protocol::Direction::Space}
+        {sf::Keyboard::Key::Up, protocol::Direction::UP},
+        {sf::Keyboard::Key::Down, protocol::Direction::DOWN},
+        {sf::Keyboard::Key::Left, protocol::Direction::LEFT},
+        {sf::Keyboard::Key::Right, protocol::Direction::RIGHT},
+        {sf::Keyboard::Key::Space, protocol::Direction::Space}
     };
 }; // namespace rtype::client
 #endif /* !GAME_HPP_ */

@@ -15,6 +15,7 @@
 #include "Entity.hpp"
 #include "Registry.hpp"
 #include "SystemsManager.hpp"
+#include "dylib.hpp"
 #include "nlohmann/detail/value_t.hpp"
 #include "nlohmann/json_fwd.hpp"
 
@@ -27,18 +28,22 @@ namespace ecs {
             for (const auto &entry : std::filesystem::directory_iterator(path)) {
                 if (entry.is_regular_file()) {
                     std::string path = entry.path().string();
+#if defined(_WIN32) || defined(_WIN64)
+                    std::string name = entry.path().stem().string();
+#else
                     std::string name = entry.path().stem().string().substr(3);
+#endif
+                    spdlog::warn("file {}", path);
                     registerComponent(name, path);
                 }
             }
-        } catch (const std::filesystem::__cxx11::filesystem_error &error) {
+            std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
+
+            _schema = nlohmann::json::parse(s);
+            _validator.set_root_schema(_schema);
+        } catch (const std::filesystem::filesystem_error &error) {
             spdlog::error("Error on searching path: {}", error.what());
         }
-
-        std::ifstream s(std::filesystem::current_path() / "schema" / "entity.json");
-
-        _schema = nlohmann::json::parse(s);
-        _validator.set_root_schema(_schema);
     }
 
     ComponentFactory::~ComponentFactory()
@@ -48,14 +53,16 @@ namespace ecs {
 
     void ComponentFactory::registerComponent(std::string &name, std::string &path)
     {
-        components[name] = std::make_shared<ComponentLoader>(path, "register_component");
+        spdlog::info("Registering component: {}", name);
+        components[name] = std::make_shared<ComponentLoader>(path, dylib::no_filename_decorations);
     }
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
+        spdlog::warn("Creating with file: {}", file);
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
-            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+            throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
         }
 
         nlohmann::json config = nlohmann::json::parse(f);
@@ -75,7 +82,7 @@ namespace ecs {
     {
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
-            throw ComponentFactoryException(ERROR_FILE_NOT_FOUND(file));
+            throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
         }
 
         nlohmann::json config = nlohmann::json::parse(f);
@@ -99,7 +106,15 @@ namespace ecs {
     )
     {
         if (components.find(component) != components.end()) {
-            components[component]->call(r, e, node);
+            try {
+                auto f = components[component]
+                             ->get_function<void(std::shared_ptr<Registry> &, Entity &, const nlohmann::json &)>(
+                                 "register_component"
+                             );
+                f(r, e, node);
+            } catch (const std::exception &e) {
+                spdlog::error("Function not found for component {}", component);
+            }
         } else {
             spdlog::warn("Cannot find: {}", component);
         }

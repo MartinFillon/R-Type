@@ -179,7 +179,7 @@ namespace rtype::client {
 
         } catch (const std::exception &e) {
             spdlog::error("{}", e.what());
-            return ERROR;
+            return R_ERROR;
         }
 
         return SUCCESS;

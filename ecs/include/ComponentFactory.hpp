@@ -8,14 +8,15 @@
 #ifndef COMPONENTFACTORY_HPP_
 #define COMPONENTFACTORY_HPP_
 
+#include <dylib.hpp>
 #include <exception>
+#include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <nlohmann/json-schema.hpp>
 #include <unordered_map>
 
-#include "DlLoader.hpp"
 #include "Entity.hpp"
 #include "SystemsManager.hpp"
 
@@ -49,7 +50,7 @@ namespace ecs {
             std::string _error;
         };
 
-        using ComponentLoader = DlLoader<void, std::shared_ptr<Registry> &, Entity &, const nlohmann::json &>;
+        using ComponentLoader = dylib;
 
         ComponentFactory();
         ~ComponentFactory();

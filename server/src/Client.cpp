@@ -23,7 +23,7 @@ namespace rtype::server {
         if (packet.isValid()) {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
         }
-        usleep(100);
+        //usleep(100);
     }
 
     void Client::disconnect()

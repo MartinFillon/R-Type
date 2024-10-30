@@ -71,5 +71,5 @@
 #define WIDTH_MIN_LIMIT -300
 #define HEIGHT_MIN_LIMIT -300
 
-#define ERROR_FILE_NOT_FOUND(file) "File not found on: [" + file + "]"
+#define R_ERROR_FILE_NOT_FOUND(file) "File not found on: [" + file + "]"
 #define ERROR_PARSING_ERROR(file) "Parsing Error on : [" + file + "]"

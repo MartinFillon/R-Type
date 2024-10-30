@@ -10,7 +10,6 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <exception>
-#include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
@@ -22,16 +21,13 @@
 
 namespace rtype::client {
     Game::Game(sf::RenderWindow &window, Network &network)
-        : _window(window), _textureManager(
-                               [this](std::string path) {
-                                   sf::Texture texture;
-                                   texture.loadFromFile(path);
-                                   return std::make_shared<sf::Texture>(texture);
-                               },
-                               PATH_TO_ASSETS
-                           ),
+        : _gameShotSoundBuffer(SHOOT_SOUND), _gameMusicBuffer(GAME_MUSIC), _window(window),
+          _gameSound(_gameMusicBuffer), _shotSound(_gameShotSoundBuffer),
+          _textureManager([this](std::string path) { return std::make_shared<sf::Texture>(path); }, PATH_TO_ASSETS),
           _network(network)
     {
+        _gameSound.pause();
+        _shotSound.pause();
     }
 
     void Game::setupBackground()
@@ -50,13 +46,7 @@ namespace rtype::client {
     void Game::setupSound()
     {
         try {
-            _gameShotSoundBuffer.loadFromFile(SHOOT_SOUND);
-            _gameMusicBuffer.loadFromFile(GAME_MUSIC);
-
-            _shotSound.setBuffer(_gameShotSoundBuffer);
-            _gameSound.setBuffer(_gameMusicBuffer);
-
-            _gameSound.setLoop(true);
+            _gameSound.setLooping(true);
         } catch (const std::exception &e) {
             spdlog::error("Error on setup Sound {}", e.what());
         }
@@ -91,29 +81,29 @@ namespace rtype::client {
 
     void Game::event()
     {
-        sf::Event event;
-
-        while (_window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+        while (const std::optional event = _window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
                 _window.close();
             }
             launchMusic();
-        }
-        if (event.key.code == sf::Keyboard::X) {
-            _shotSound.play();
-            _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::UP});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+            if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {
+                if (key->scancode == sf::Keyboard::Scancode::X) {
+                    _shotSound.play();
+                    _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
+                }
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::UP});
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+            }
         }
     }
 

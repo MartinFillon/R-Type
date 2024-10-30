@@ -6,6 +6,8 @@
 */
 
 #include "Menu.hpp"
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 namespace rtype::client {
     Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
@@ -28,95 +30,94 @@ namespace rtype::client {
 
     void Menu::setupBackground()
     {
-        _backgroundTexture.loadFromFile(BG_PATH);
+        (void)_backgroundTexture.loadFromFile(BG_PATH);
         _backgroundTexture.setRepeated(true);
-        _backgroundSprite.setTexture(_backgroundTexture);
-        _backgroundSprite.setPosition(BG_POS_X, BG_POS_Y);
         _bgScaleX = static_cast<float>(_win.getSize().x) / _backgroundTexture.getSize().x;
         _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
-        _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
     }
 
     void Menu::setupMenuFont()
     {
-        _fontTitle.loadFromFile(TITLE_FONT);
-        _fontText.loadFromFile(TEXT_FONT);
+        (void)_fontTitle.openFromFile(TITLE_FONT);
+        (void)_fontText.openFromFile(TEXT_FONT);
     }
 
     void Menu::setupMenuInputRect()
     {
         _ipRect = sf::RectangleShape(sf::Vector2f(RECT_SIZE_Y, RECT_SIZE_X));
         _ipRect.setFillColor(sf::Color::White);
-        _ipRect.setPosition(LEFT_MARGE, IP_RECT_POS_X);
+        _ipRect.setPosition({LEFT_MARGE, IP_RECT_POS_X});
     }
 
-    void Menu::setupPlayButton()
+    sf::Text Menu::setupPlayButton()
     {
-        _menutitle[0].setString(BUTTON_PLAY);
-        _menutitle[0].setFont(_fontTitle);
-        _menutitle[0].setPosition(LEFT_MARGE, PLAY_POS_X);
+        sf::Text playButton(_fontTitle, BUTTON_PLAY);
+        playButton.setPosition({LEFT_MARGE, PLAY_POS_X});
+
+        return playButton;
     }
 
-    void Menu::setupOptionsButton()
+    sf::Text Menu::setupOptionsButton()
     {
-        _menutitle[1].setString(BUTTON_OPTIONS);
-        _menutitle[1].setFont(_fontTitle);
-        _menutitle[1].setPosition(LEFT_MARGE, OPTIONS_POS_X);
+        sf::Text optionsButton(_fontTitle, BUTTON_OPTIONS);
+        optionsButton.setPosition({LEFT_MARGE, OPTIONS_POS_X});
+
+        return optionsButton;
     }
 
-    void Menu::setupQuitButton()
+    sf::Text Menu::setupQuitButton()
     {
-        _menutitle[2].setString(BUTTON_QUIT);
-        _menutitle[2].setFont(_fontTitle);
-        _menutitle[2].setPosition(LEFT_MARGE, QUIT_POS_X);
+        sf::Text quitButton(_fontTitle, BUTTON_QUIT);
+        quitButton.setPosition({LEFT_MARGE, QUIT_POS_X});
+
+        return quitButton;
     }
 
-    void Menu::setupMenuTitle()
+    sf::Text Menu::setupMenuTitle()
     {
-        _menutitle[3].setString(MENU_TITLE);
-        _menutitle[3].setFont(_fontTitle);
-        _menutitle[3].setPosition(TITLE_POS_Y, TITLE_POS_X);
-        _menutitle[3].setCharacterSize(FONT_SIZE_TITLE);
+        sf::Text menuTitle(_fontTitle, MENU_TITLE, FONT_SIZE_TITLE);
+
+        menuTitle.setPosition({TITLE_POS_Y, TITLE_POS_X});
+
+        return menuTitle;
     }
 
-    void Menu::setupIpButton()
+    sf::Text Menu::setupIpButton()
 
     {
-        _menutitle[4].setString(BUTTON_IP);
-        _menutitle[4].setFont(_fontText);
-        _menutitle[4].setPosition(LEFT_MARGE, IP_POS_X);
-        _menutitle[4].setCharacterSize(FONT_SIZE_IP);
+        sf::Text ipButton(_fontText, BUTTON_IP, FONT_SIZE_IP);
+
+        ipButton.setPosition({LEFT_MARGE, IP_POS_X});
+        return ipButton;
     }
 
-    void Menu::setupRenderFont()
+    sf::Text Menu::setupRenderFont()
     {
-        _menuDisplayInput.setFont(_fontText);
-        _menuDisplayInput.setPosition(LEFT_MARGE, TEXT_POS_X);
-        _menuDisplayInput.setCharacterSize(FONT_SIZE_INPUT);
+        auto _menuDisplayInput = sf::Text(_fontText, _menuClientInput, FONT_SIZE_INPUT);
+        _menuDisplayInput.setPosition({LEFT_MARGE, TEXT_POS_X});
         _menuDisplayInput.setFillColor(sf::Color::Black);
+
+        return _menuDisplayInput;
     }
 
     void Menu::setupMenuMusic()
     {
-        _bufferMenuMusic.loadFromFile(MENU_MUSIC);
+        (void)_bufferMenuMusic.loadFromFile(MENU_MUSIC);
         _menuMusic.setBuffer(_bufferMenuMusic);
-        _menuMusic.setLoop(true);
-    }
-
-    void Menu::menuCloseWindow(sf::Event &event)
-    {
-        if (event.type == sf::Event::Closed) {
-            _win.close();
-            _isMenuOpen = false;
-        }
+        _menuMusic.setLooping(true);
     }
 
     std::string Menu::menuButtonPressed()
     {
         sf::Vector2i mousePos = sf::Mouse::getPosition(_win);
+        sf::Text _menutitle[5] = {
+            setupPlayButton(), setupOptionsButton(), setupQuitButton(), setupIpButton(), setupMenuTitle()
+        };
 
         for (int i = 0; i < NB_TITLES; i++) {
-            if (_menutitle[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            if (_menutitle[i].getGlobalBounds().contains(
+                    {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)}
+                )) {
                 switch (i) {
                     case CASE_PLAY:
                         _isMenuOpen = false;
@@ -132,7 +133,7 @@ namespace rtype::client {
                 }
             }
         }
-        if (_ipRect.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+        if (_ipRect.getGlobalBounds().contains({static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)})) {
             _isWritting = true;
             _ipRect.setOutlineThickness(BORDER_RECT_PRESS);
             _ipRect.setOutlineColor(sf::Color::Blue);
@@ -145,21 +146,20 @@ namespace rtype::client {
 
     void Menu::menuEnterToPlay()
     {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_menuClientInput.empty()) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) && !_menuClientInput.empty()) {
             _isMenuOpen = false;
         }
     }
 
-    void Menu::menuTextEntered(sf::Event &event)
+    void Menu::menuTextEntered(sf::Event::TextEntered const *event)
     {
-        if (event.text.unicode < ASCII_LIM) {
-            _inputChar = static_cast<char>(event.text.unicode);
+        if (event->unicode < ASCII_LIM) {
+            _inputChar = static_cast<char>(event->unicode);
             if (_inputChar == DEL_BUTTON && !_menuClientInput.empty()) {
                 _menuClientInput.pop_back();
             } else if (_inputChar > NON_ASCII_CHAR && _inputChar < ASCII_LIM) {
                 _menuClientInput += _inputChar;
             }
-            _menuDisplayInput.setString(_menuClientInput);
         }
     }
 
@@ -171,6 +171,10 @@ namespace rtype::client {
 
     void Menu::menuDrawtitles()
     {
+        sf::Text _menutitle[5] = {
+            setupPlayButton(), setupOptionsButton(), setupQuitButton(), setupIpButton(), setupMenuTitle()
+        };
+
         for (int i = 0; i < NB_TITLES; i++) {
             _win.draw(_menutitle[i]);
         }
@@ -178,6 +182,11 @@ namespace rtype::client {
 
     void Menu::menuDraw(sf::Shader &para)
     {
+        sf::Sprite _backgroundSprite(_backgroundTexture);
+        auto _menuDisplayInput = setupRenderFont();
+
+        _backgroundSprite.setPosition({BG_POS_X, BG_POS_Y});
+        _backgroundSprite.setScale({_bgScaleX, _bgScaleY});
         _win.clear();
         _win.draw(_backgroundSprite, &para);
         menuDrawtitles();
@@ -203,7 +212,7 @@ namespace rtype::client {
                 "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
                 "    gl_FrontColor = gl_Color;"
                 "}",
-                sf::Shader::Vertex
+                sf::Shader::Type::Vertex
             )) {
             return EXIT_FAILURE;
         }
@@ -216,17 +225,20 @@ namespace rtype::client {
         menuLoadShader();
 
         while (_isMenuOpen && _win.isOpen()) {
-            sf::Event event;
-            while (_win.pollEvent(event) && _isMenuOpen) {
+            while (const std::optional event = _win.pollEvent()) {
 
                 launchMusic();
-                menuCloseWindow(event);
+                if (event->is<sf::Event::Closed>()) {
+                    _isMenuOpen = false;
+                    break;
+                }
 
-                if (event.type == sf::Event::MouseButtonPressed) {
+                if (event->is<sf::Event::MouseButtonPressed>()) {
                     _menuClientInput = menuButtonPressed();
                 }
-                if (_isWritting && event.type == sf::Event::TextEntered) {
-                    menuTextEntered(event);
+                const auto *t = event->getIf<sf::Event::TextEntered>();
+                if (_isWritting && t) {
+                    menuTextEntered(t);
                 }
 
                 menuEnterToPlay();

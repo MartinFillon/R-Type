@@ -9,8 +9,10 @@
 #define MENU_HPP_
 
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #define TITLE_FONT "./assets/fonts/ARCADE_I.ttf"
 #define TEXT_FONT "./assets/fonts/OpenSans-Semibold.ttf"
@@ -63,17 +65,16 @@ namespace rtype::client {
         void setupBackground();
         void setupMenuFont();
         void setupMenuInputRect();
-        void setupPlayButton();
-        void setupOptionsButton();
-        void setupQuitButton();
-        void setupMenuTitle();
-        void setupIpButton();
-        void setupRenderFont();
+        sf::Text setupPlayButton();
+        sf::Text setupOptionsButton();
+        sf::Text setupQuitButton();
+        sf::Text setupMenuTitle();
+        sf::Text setupIpButton();
+        sf::Text setupRenderFont();
         void setupMenuMusic();
 
-        void menuCloseWindow(sf::Event &event);
         void menuEnterToPlay();
-        void menuTextEntered(sf::Event &event);
+        void menuTextEntered(sf::Event::TextEntered const *event);
         void menuShaderParams(sf::Shader &para);
 
         int menuLoadShader();
@@ -87,18 +88,16 @@ namespace rtype::client {
 
       private:
         sf::RenderWindow &_win;
-        sf::SoundBuffer _bufferMenuMusic;
-        sf::Sound _menuMusic;
+        sf::SoundBuffer _bufferMenuMusic = sf::SoundBuffer(MENU_MUSIC);
+        sf::Sound _menuMusic = sf::Sound(_bufferMenuMusic);
 
         // font //
-        sf::Font _fontTitle;
-        sf::Font _fontText;
-        sf::Text _menutitle[5];
+        sf::Font _fontTitle = sf::Font(TITLE_FONT);
+        sf::Font _fontText = sf::Font(TEXT_FONT);
 
         // Log part
 
         sf::RectangleShape _ipRect;
-        sf::Text _menuDisplayInput;
         std::string _menuClientInput;
         char _inputChar;
 
@@ -113,7 +112,6 @@ namespace rtype::client {
 
         sf::Clock _menuClock;
         sf::Texture _backgroundTexture;
-        sf::Sprite _backgroundSprite;
         sf::Shader _para;
         float _bgScaleX;
         float _bgScaleY;

@@ -58,15 +58,14 @@ namespace rtype::client {
             if (sprite->_pathToSprite.empty()) {
                 continue;
             }
-            sf::Sprite _sprite;
 
-            _sprite.setPosition(position->_x, position->_y);
-            _sprite.setScale(size->_width, size->_height);
             try {
                 auto texture = textureManager.getTexture(sprite->_pathToSprite);
-                _sprite.setTexture(*texture);
-                _sprite.setTextureRect(sf::IntRect(animation->_x, animation->_y, animation->_width, animation->_height)
+                sf::Sprite _sprite(
+                    *texture, sf::IntRect({animation->_x, animation->_y}, {animation->_width, animation->_height})
                 );
+                _sprite.setScale({static_cast<float>(size->_width), static_cast<float>(size->_height)});
+                _sprite.setPosition({static_cast<float>(position->_x), static_cast<float>(position->_y)});
                 window.draw(_sprite);
             } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
                 spdlog::error("Could not display {}", error.what());

@@ -19,7 +19,7 @@
 
 #define GAME_NAME "R-Type"
 
-#define ERROR 84
+#define R_ERROR 84
 #define SUCCESS 0
 #define QUIT_PRESS 0
 

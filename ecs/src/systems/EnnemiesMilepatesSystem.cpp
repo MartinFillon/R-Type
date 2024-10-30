@@ -5,8 +5,9 @@
 ** EnnemiesMilepatesSystem
 */
 
-#include <memory>
+#include "Systems/EnnemiesMilepatesSystem.hpp"
 #include <iostream>
+#include <memory>
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
@@ -14,7 +15,6 @@
 #include "Components/Position.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
-#include "Systems/EnnemiesMilepatesSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {

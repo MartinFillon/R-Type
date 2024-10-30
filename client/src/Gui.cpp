@@ -6,8 +6,6 @@
 */
 
 #include "Gui.hpp"
-#include <exception>
-#include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
@@ -16,7 +14,8 @@
 
 namespace rtype::client {
     Gui::Gui()
-        : _window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), GAME_NAME), _network(), _menu(_window), _game(_window, _network)
+        : _window(sf::VideoMode({WIN_WIDTH, WIN_HEIGHT}), GAME_NAME), _network(), _menu(_window),
+          _game(_window, _network)
     {
         try {
             _registry = std::make_shared<RegistryWrapper>();
@@ -36,8 +35,8 @@ namespace rtype::client {
             return QUIT_PRESS;
         }
 
-        if (_network.setup(ip, port) == ERROR) {
-            return ERROR;
+        if (_network.setup(ip, port) == R_ERROR) {
+            return R_ERROR;
         }
 
         _game.setRegistry(_registry);
