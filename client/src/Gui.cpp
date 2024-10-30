@@ -24,13 +24,15 @@ namespace rtype::client {
         _cf = std::make_shared<ecs::ComponentFactory>();
     }
 
-    int Gui::run()
+    int Gui::handleConnection()
     {
+        _quitPress = 0;
         std::string address = _menu.launchMenu();
         std::string ip = address.substr(0, address.find(':'));
         std::string port = address.substr(address.find(':') + 1);
 
         if (ip.empty() || port.empty()) {
+            _quitPress += 1;
             return QUIT_PRESS;
         }
 
@@ -40,7 +42,26 @@ namespace rtype::client {
 
         int UDPport = _lobby.launchLobby(_tcpCommunication);
 
+        if (UDPport == QUIT_PRESS) {
+            _quitPress += 1;
+            return SUCCESS;
+        }
+
         if (_network.setup(ip, std::to_string(UDPport)) == ERROR) {
+            return ERROR;
+        }
+        return SUCCESS;
+    }
+
+    int Gui::run()
+    {
+        int ret_value = handleConnection();
+
+        if (_quitPress) {
+            return SUCCESS;
+        }
+
+        if (ret_value) {
             return ERROR;
         }
 

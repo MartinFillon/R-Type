@@ -19,8 +19,7 @@
 #include "Menu.hpp"
 #include "TCPCommunication.hpp"
 
-
-rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true)
+rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true), _createActivate(false)
 {
 
 }
@@ -31,6 +30,9 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
     setup();
 
     while (_running && _window.isOpen() && !_server->getPort()) {
+        if (!_running) {
+            return _port;
+        }
         update();
         display();
         event();
@@ -159,15 +161,16 @@ void rtype::client::LobbyMenu::event()
     while (_window.pollEvent(event)) {
 
         if (event.type == sf::Event::Closed) {
-            _window.close();
             _running = false;
+            _window.close();
+            return;
         }
 
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2i mouse = sf::Mouse::getPosition(_window);
 
             if (_lobbyCreate.getGlobalBounds().contains(mouse.x, mouse.y)) {
-                _createActivate = !_createActivate;
+                _createActivate = true;
             } else {
                 _createActivate = false;
             }
