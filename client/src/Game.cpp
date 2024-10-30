@@ -83,17 +83,11 @@ namespace rtype::client {
             _shotSound.play();
             _network.send(protocol::Operations::EVENT, {protocol::Events::SHOOT});
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::UP});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+
+        for (auto &move: moves) {
+            if (sf::Keyboard::isKeyPressed(move.first)) {
+                _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, move.second });
+            }
         }
     }
 
