@@ -10,6 +10,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <iostream>
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
@@ -20,6 +21,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/Life.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"

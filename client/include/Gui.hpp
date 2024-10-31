@@ -13,9 +13,11 @@
 
 #include "ComponentFactory.hpp"
 #include "Game.hpp"
+#include "LobbyMenu.hpp"
 #include "Menu.hpp"
 #include "Network.hpp"
 #include "RegistryWrapper.hpp"
+#include "TCPCommunication.hpp"
 
 #define GAME_NAME "R-Type"
 
@@ -37,11 +39,17 @@ namespace rtype::client {
         int run();
 
       private:
-        sf::RenderWindow _window;
+	  	int handleConnection();
+
+		int _quitPress;
+
+		sf::RenderWindow _window;
 
         Network _network;
+        std::shared_ptr<TCPCommunication> _tcpCommunication;
 
         Menu _menu;
+        LobbyMenu _lobby;
         Game _game;
 
         std::shared_ptr<RegistryWrapper> _registry;

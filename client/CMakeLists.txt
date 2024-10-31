@@ -12,7 +12,9 @@ add_executable(
   src/Network.cpp
   src/Menu.cpp
   src/Game.cpp
-  src/RegistryWrapper.cpp)
+  src/RegistryWrapper.cpp
+  src/TCPCommunication.cpp
+  src/LobbyMenu.cpp)
 target_link_libraries(r-type_client sfml-audio sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
 target_include_directories(r-type_client PUBLIC ../ecs/include include

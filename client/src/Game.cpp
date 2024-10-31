@@ -94,17 +94,10 @@ namespace rtype::client {
                 }
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::UP});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::DOWN});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::LEFT});
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-            _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, protocol::Direction::RIGHT});
+        for (auto &move: moves) {
+            if (sf::Keyboard::isKeyPressed(move.first)) {
+                _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, move.second });
+            }
         }
     }
 

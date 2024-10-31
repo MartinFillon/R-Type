@@ -16,7 +16,7 @@ namespace rtype::server {
         : _id(client_id), _running(true), _server(server), _socket(socket), _endpoint(endpoint)
     {
         spdlog::info("New client [{}] connected", _id);
-    };
+    }
 
     void Client::send(const ecs::IPacket &packet)
     {
@@ -24,7 +24,7 @@ namespace rtype::server {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
         }
         ecs::Clock clock;
-        while (clock.getMicroSeconds() < 1000)
+        while (clock.getMicroSeconds() < 200)
             ;
     }
 
