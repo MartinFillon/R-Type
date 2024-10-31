@@ -131,7 +131,6 @@ namespace rtype::client {
 
             void setup();
             void setupBackground();
-            void setupLoadingGame();
 
             void display();
             void displayLobbies();

@@ -7,7 +7,6 @@
 
 #include "Gui.hpp"
 
-#include <iostream>
 #include <memory>
 #include <string>
 #include <unistd.h>

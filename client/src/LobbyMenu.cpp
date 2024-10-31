@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include "Menu.hpp"
 #include "TCPCommunication.hpp"
+#include <iostream>
 
 rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true), _createActivate(false)
 {
@@ -39,9 +40,8 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
         display();
         event();
     }
-    setupLoadingGame();
 
-    while (_running && _window.isOpen() && _loading) {
+    while (!_running && _window.isOpen() && _loading) {
         loadingGame();
     }
 
@@ -55,9 +55,10 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
 void rtype::client::LobbyMenu::setup()
 {
     setupBackground();
+    _loadingStop = STOP_START_VALIUE;
 }
 
-void rtype::client::LobbyMenu::setupLoadingGame()
+void rtype::client::LobbyMenu::loadingGame()
 {
     _loadingRectangle.setFillColor(sf::Color::Black);
     _loadingRectangle.setOutlineColor(sf::Color::White);
@@ -68,14 +69,7 @@ void rtype::client::LobbyMenu::setupLoadingGame()
     _loadingPourcent.setFillColor(sf::Color::Green);
     _loadingPourcent.setSize({PERCENT_RECT_SIZE_X, PERCENT_RECT_SIZE_Y});
     _loadingPourcent.setPosition({PERCENT_RECT_POS_X, PERCENT_RECT_POS_Y});
-    
 
-
-    _loadingStop = STOP_START_VALIUE;
-}
-
-void rtype::client::LobbyMenu::loadingGame()
-{
     _window.clear();
     updateBackground();
 
