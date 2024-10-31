@@ -26,9 +26,9 @@ namespace rtype::client {
           _textureManager([this](std::string path) { return std::make_shared<sf::Texture>(path); }, PATH_TO_ASSETS),
           _network(network)
     {
-        _moves.clear();
         _gameSound.pause();
         _shotSound.pause();
+        _moves = {};
     }
 
     void Game::setupBackground()

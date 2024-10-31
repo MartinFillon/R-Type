@@ -45,10 +45,10 @@ namespace rtype::client {
         int run();
 
         void setKeys(std::vector<sf::Keyboard::Key> keys) {
-          _moves[keys[0]] = protocol::Direction::UP;
-          _moves[keys[1]] = protocol::Direction::DOWN;
-          _moves[keys[2]] = protocol::Direction::RIGHT;
-          _moves[keys[3]] = protocol::Direction::LEFT;
+          _moves.insert({keys[0], protocol::Direction::UP});
+          _moves.insert({keys[1], protocol::Direction::DOWN});
+          _moves.insert({keys[2], protocol::Direction::RIGHT});
+          _moves.insert({keys[3], protocol::Direction::LEFT});
         }
 
       private:

@@ -52,7 +52,6 @@ namespace rtype::client {
             _quitPress += 1;
             return SUCCESS;
         }
-
         if (_network.setup(ip, std::to_string(UDPport)) == ERROR) {
             return ERROR;
         }
@@ -70,7 +69,6 @@ namespace rtype::client {
         if (ret_value) {
             return ERROR;
         }
-        _lobby.getKeys().clear();
         _game.setKeys(_lobby.getKeys());
         spdlog::debug("Network setup done");
         _game.setRegistry(_registry);
