@@ -40,6 +40,7 @@ extern "C" LIB_EXPORT void register_component(
         {"first", ecs::component::Attributes::SecondaryType::First},
         {"second", ecs::component::Attributes::SecondaryType::Second},
         {"killable", ecs::component::Attributes::SecondaryType::Killable},
+        {"finish", ecs::component::Attributes::SecondaryType::Finsih}
     };
 
     attributes[entity.getId()] = ecs::component::Attributes{

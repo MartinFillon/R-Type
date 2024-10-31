@@ -25,7 +25,7 @@ namespace ecs {
                 Sphere
             };
 
-            enum class SecondaryType { None, Basic, Milespates, Boss, First, Second, Killable };
+            enum class SecondaryType { None, Basic, Milespates, Boss, First, Second, Killable, Finsih };
 
             EntityType _entity_type;
             SecondaryType _secondary_type;
