@@ -14,7 +14,7 @@
       "attributes"
     ],
     "components": {
-        "key_pressed": "none",
+        "key_pressed": "up",
         "gravitable": {
             "value": true,
             "gravityFall": 2,
@@ -35,6 +35,10 @@
             "speed": 3
         },
         "sprite": "StreetFighter/assets/Ken.png",
+        "attributes": {
+            "entityType": "player",
+            "secondaryType": "first"
+        },
         "animations": {
             "width": 60,
             "height": 80,

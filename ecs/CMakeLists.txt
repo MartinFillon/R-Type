@@ -22,8 +22,11 @@ add_library(
   src/systems/PunchSystem.cpp
   src/systems/KickSystem.cpp
   src/systems/CinematicsSystem.cpp
+  src/systems/ColisionThirdDimension.cpp
+  src/systems/GravitableThirdDSystem.cpp
   src/systems/BasicMouvementSystem.cpp
   src/systems/EnnemiesMilepatesSystem.cpp
+  src/systems/ThirdDMouvementSystem.cpp
   src/systems/ParallaxSystem.cpp
   src/systems/GunFireSystem.cpp
   src/systems/InvincibilitySystem.cpp
