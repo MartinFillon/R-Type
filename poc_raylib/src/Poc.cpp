@@ -10,6 +10,7 @@
 #include <raylib.h>
 #include <string>
 #include <iostream>
+
 #include "Poc.hpp"
 #include "Components/Animations.hpp"
 #include "Components/Attributes.hpp"
@@ -19,11 +20,13 @@
 #include "Components/Gravitable.hpp"
 #include "Components/KeyPressed.hpp"
 #include "Components/Model.hpp"
+#include "Components/Planes.hpp"
 #include "Components/Position3D.hpp"
 #include "Components/RectangleShape.hpp"
 #include "Components/Rotate.hpp"
 #include "Components/Sprite.hpp"
 #include "Registry.hpp"
+#include "Systems/ColisionThirdDimension.hpp"
 #include "Systems/GravitableThirdDSystem.hpp"
 #include "Systems/ThirdDMouvementSystem.hpp"
 #include "ZipperIterator.hpp"
@@ -59,11 +62,18 @@ namespace poc {
         try {
             _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/player.json"));
             _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/platform.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/secondPlatform.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/thirdPlatform.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/fourthPlatform.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/fivePlatform.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/plane.json"));
+            _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/finishPlatform.json"));
         } catch (const ecs::ComponentFactory::ComponentNotCreated &e) {
             std::cerr << e.what() << std::endl;
         }
         _r->add_system(ecs::systems::ThirdDMouvementSystem("config/systems/basic_mouvement_system.json"));
         _r->add_system(ecs::systems::GravitableThirdDSystem());
+        _r->add_system(ecs::systems::ColisionThirdDimension());
     }
 
     Poc::~Poc() {
@@ -91,35 +101,33 @@ namespace poc {
         return i;
     }
 
-    void Poc::drawShapes()
+    int Poc::drawShapes()
     {
         auto &positions = _r->get_components<ecs::component::Position3D>();
         auto &rectangles = _r->get_components<ecs::component::RectangleShape>();
         auto &colors = _r->get_components<ecs::component::Color>();
         auto &attributes = _r->get_components<ecs::component::Attributes>();
 
-        for (auto &&[pos, rect, color, attr]:
-            ecs::custom_zip(positions, rectangles, colors, attributes)) {
-            if (!pos || !rect || !color) {
-                continue;
+        for (auto &&[pos, rect, color, attr] : ecs::custom_zip(positions, rectangles, colors, attributes)) {
+            if (attr->_entity_type == ecs::component::Attributes::EntityType::Rectangle) {
+                Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y), static_cast<float>(pos->_z)};
+                DrawCube(modelPos, rect->_width, rect->_height, rect->_length, Color{color->_r, color->_g, color->_b, color->_a});
+                DrawCubeWires(modelPos, rect->_width, rect->_height, rect->_length, MAROON);
             }
-            if (attr->_entity_type != ecs::component::Attributes::EntityType::Rectangle) {
-                continue;
-            }
-            BeginDrawing();
-            BeginMode3D(_camera);
-
-            Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y), static_cast<float>(pos->_z)};
-            DrawCube(modelPos, rect->_width, rect->_height, rect->_height, Color{color->_r, color->_g, color->_b, color->_a} );
-            DrawCubeWires(modelPos, rect->_width, rect->_height, rect->_height, MAROON);
-
-            EndMode3D();
-            EndDrawing();
         }
 
+        auto &planes = _r->get_components<ecs::component::Planes>();
+        for (auto &&[pos, color, attr, plane] : ecs::custom_zip(positions, colors, attributes, planes)) {
+            if (attr->_entity_type == ecs::component::Attributes::EntityType::Planes) {
+                Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y), static_cast<float>(pos->_z)};
+                DrawPlane(modelPos, Vector2{(float)plane->_width, (float)plane->_lenght}, Color{color->_r, color->_g, color->_b, color->_a});
+            }
+        }
+
+        return EXIT_SUCCESS;
     }
 
-    void Poc::draw()
+    int Poc::draw()
     {
         auto &attributes = _r->get_components<ecs::component::Attributes>();
         auto &positions = _r->get_components<ecs::component::Position3D>();
@@ -132,7 +140,8 @@ namespace poc {
             if (!pos || !spri || !mod || !rot) {
                 continue;
             }
-            if (attr->_entity_type == ecs::component::Attributes::EntityType::Rectangle) {
+            if (attr->_entity_type == ecs::component::Attributes::EntityType::Rectangle ||
+                attr->_entity_type == ecs::component::Attributes::EntityType::Planes) {
                 continue;
             }
             Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y), static_cast<float>(pos->_z)};
@@ -146,25 +155,21 @@ namespace poc {
             model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD*rot->_pitch, DEG2RAD*rot->_yaw, DEG2RAD*rot->_roll });
 
             SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);
-            BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            BeginMode3D(_camera);
             DrawModelEx(model, modelPos, (Vector3){ 0.0f, 0.0f, 90.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
             DrawGrid(100, 1.0f);
 
-            EndMode3D();
-            EndDrawing();
             UnloadModel(model);
             UnloadTexture(texture);
         }
+
+        return EXIT_SUCCESS;
     }
 
-    void Poc::handleMouvement()
+    int Poc::handleMouvement()
     {
         auto &keys = _r->get_components<ecs::component::KeyPressed>();
         auto &rotation = _r->get_components<ecs::component::Rotate>();
+        std::size_t playerIndex = findPlayerIndex();
 
         if (IsKeyDown(KEY_LEFT_CONTROL)) {
             _camera.position.y -= 1;
@@ -175,78 +180,102 @@ namespace poc {
         }
 
         if (IsKeyDown(KEY_W)) {
-            keys[findPlayerIndex()]->_value = ecs::component::Key::Up;
-            if (rotation[findPlayerIndex()]->_yaw < ROTATION_FRONT) {
-                rotation[findPlayerIndex()]->_yaw += ROTATION_PADDING;
-            } else if (rotation[findPlayerIndex()]->_yaw > ROTATION_FRONT) {
-                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            keys[playerIndex]->_value = ecs::component::Key::Up;
+            if (rotation[playerIndex]->_yaw < ROTATION_FRONT) {
+                rotation[playerIndex]->_yaw += ROTATION_PADDING;
+                return EXIT_FAILURE;
+            } else if (rotation[playerIndex]->_yaw > ROTATION_FRONT) {
+                rotation[playerIndex]->_yaw -= ROTATION_PADDING;
+                return EXIT_FAILURE;
+            }
+            if (rotation[playerIndex]->_yaw == ROTATION_FRONT) {
+                return EXIT_SUCCESS;
             }
         }
 
         if (IsKeyDown(KEY_A)) {
-            keys[findPlayerIndex()]->_value = ecs::component::Key::Left;
-            if (rotation[findPlayerIndex()]->_yaw != ROTATION_RIGHT) {
-                rotation[findPlayerIndex()]->_yaw += ROTATION_PADDING;
+            keys[playerIndex]->_value = ecs::component::Key::Left;
+            if (rotation[playerIndex]->_yaw != ROTATION_RIGHT) {
+                rotation[playerIndex]->_yaw += ROTATION_PADDING;
+                return EXIT_FAILURE;
+            } else if (rotation[playerIndex]->_yaw == ROTATION_RIGHT) {
+                return EXIT_SUCCESS;
             }
         }
 
         if (IsKeyDown(KEY_S)) {
-            keys[findPlayerIndex()]->_value = ecs::component::Key::Down;
-            if (rotation[findPlayerIndex()]->_yaw > ROTATION_BACK) {
-                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            keys[playerIndex]->_value = ecs::component::Key::Down;
+            if (rotation[playerIndex]->_yaw > ROTATION_BACK) {
+                rotation[playerIndex]->_yaw -= ROTATION_PADDING;
+                return EXIT_FAILURE;
+            } else if (rotation[playerIndex]->_yaw == ROTATION_BACK) {
+                return EXIT_SUCCESS;
             }
         }
 
         if (IsKeyDown(KEY_D)) {
-            keys[findPlayerIndex()]->_value = ecs::component::Key::Right;
-            if (rotation[findPlayerIndex()]->_yaw != ROTATION_LEFT) {
-                rotation[findPlayerIndex()]->_yaw -= ROTATION_PADDING;
+            keys[playerIndex]->_value = ecs::component::Key::Right;
+            if (rotation[playerIndex]->_yaw != ROTATION_LEFT) {
+                rotation[playerIndex]->_yaw -= ROTATION_PADDING;
+                return EXIT_FAILURE;
+            } else if (rotation[playerIndex]->_yaw == ROTATION_LEFT) {
+                return EXIT_SUCCESS;
             }
         }
 
         if (IsKeyDown(KEY_SPACE)) {
-            keys[findPlayerIndex()]->_value = ecs::component::Key::Jump;
+            keys[playerIndex]->_value = ecs::component::Key::Jump;
         }
 
+        return EXIT_SUCCESS;
     }
 
-int Poc::run()
-{
-    auto &keys = _r->get_components<ecs::component::KeyPressed>();
+    int Poc::run()
+    {
+        auto &keys = _r->get_components<ecs::component::KeyPressed>();
 
-    while (!WindowShouldClose()) {
-        auto &positions = _r->get_components<ecs::component::Position3D>();
-        auto &rotates = _r->get_components<ecs::component::Rotate>();
-        auto playerIndex = findPlayerIndex();
+        while (!WindowShouldClose()) {
+            auto &positions = _r->get_components<ecs::component::Position3D>();
+            auto &rotates = _r->get_components<ecs::component::Rotate>();
+            std::size_t playerIndex = findPlayerIndex();
 
-        if (playerIndex < positions.size() && positions[playerIndex] && playerIndex < rotates.size() && rotates[playerIndex]) {
-            const float cameraDistance = 10.0f;
-            const float cameraHeight = 5.0f;
+            if (playerIndex < positions.size() && positions[playerIndex] && playerIndex < rotates.size() && rotates[playerIndex]) {
+                float cameraDistance = 10.0f;
+                float cameraHeight = 5.0f;
 
-            Vector3 playerPosition = {
-                static_cast<float>(positions[playerIndex]->_x),
-                static_cast<float>(positions[playerIndex]->_y),
-                static_cast<float>(positions[playerIndex]->_z)
-            };
+                Vector3 playerPosition = {
+                    static_cast<float>(positions[playerIndex]->_x),
+                    static_cast<float>(positions[playerIndex]->_y),
+                    static_cast<float>(positions[playerIndex]->_z)
+                };
 
-            float yaw = DEG2RAD * rotates[playerIndex]->_yaw;
-            _camera.position = {
-                playerPosition.x - cameraDistance * sin(yaw),
-                playerPosition.y + cameraHeight,
-                playerPosition.z - cameraDistance * cos(yaw)
-            };
+                float yaw = DEG2RAD * rotates[playerIndex]->_yaw;
+                _camera.position = {
+                    playerPosition.x - cameraDistance * sin(yaw),
+                    playerPosition.y + cameraHeight,
+                    playerPosition.z - cameraDistance * cos(yaw)
+                };
 
-            _camera.target = playerPosition;
+                _camera.target = playerPosition;
+            }
+
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
+            BeginMode3D(_camera);
+
+            drawShapes();
+            draw();
+
+            EndMode3D();
+            EndDrawing();
+
+            if (!handleMouvement()) {
+                _r->run_systems(_cf, nullptr);
+            }
+            keys[findPlayerIndex()]->_value = ecs::component::Key::NoneKey;
         }
 
-        handleMouvement();
-        draw();
-        drawShapes();
-        _r->run_systems(_cf, nullptr);
-        keys[findPlayerIndex()]->_value = ecs::component::Key::NoneKey;
+        return EXIT_SUCCESS;
     }
-
-    return EXIT_SUCCESS;
-}
 
 }

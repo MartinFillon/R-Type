@@ -32,10 +32,10 @@ namespace poc {
             ~Poc();
             int run();
 
-            void draw();
-            void drawShapes();
+            int draw();
+            int drawShapes();
 
-            void handleMouvement();
+            int handleMouvement();
 
             std::size_t findPlayerIndex();
 

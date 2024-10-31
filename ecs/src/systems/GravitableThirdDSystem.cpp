@@ -5,7 +5,6 @@
 ** GravitableThirdDSystem
 */
 
-#include <iostream>
 #include "Systems/GravitableThirdDSystem.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Gravitable.hpp"
@@ -70,6 +69,10 @@ void ecs::systems::GravitableThirdDSystem::operator()(
     bool onPlatform = false;
 
     for (auto &&[pos, gravit, key, attr] : custom_zip(positions, gravitables, keys, attributes)) {
+
+            if (attr->_entity_type != ecs::component::Attributes::EntityType::Player) {
+                initialY = 0;
+            }
 
         if (key->_value == ecs::component::Key::Jump && !gravit->_isJumping && !gravit->_isFalling) {
             gravit->_isJumping = true;

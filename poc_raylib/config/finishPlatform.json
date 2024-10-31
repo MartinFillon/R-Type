@@ -1,0 +1,35 @@
+{
+    "$schema": "../../schema/entity.json",
+    "name": "platform",
+    "active": [
+        "attributes",
+        "color",
+        "rectangle",
+        "position3d",
+        "key"
+      ],
+    "components": {
+      "attributes": {
+        "entityType": "rectangle",
+        "secondaryType": "finish"
+      },
+      "color": {
+        "r": 0,
+        "g": 255,
+        "b": 0,
+        "a": 255
+      },
+      "rectangle": {
+        "height": 3,
+        "width": 10,
+        "lenght": 5
+      },
+      "position3d": {
+        "x": -10,
+        "y": 0,
+        "z": -8
+      },
+      "key": "none"
+    }
+  }
+    
