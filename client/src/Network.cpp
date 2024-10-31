@@ -125,6 +125,8 @@ namespace rtype::client {
                 }
             } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
                 spdlog::error("Create entity error on :{}", error.what());
+            } catch (const std::exception &e) {
+                spdlog::critical("{}", e.what());
             }
         }};
 

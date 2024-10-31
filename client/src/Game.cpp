@@ -62,6 +62,7 @@ namespace rtype::client {
         _registry->getServerRegistry()->add_system<ecs::systems::DestroySystem>();
         setupBackground();
         setupSound();
+        spdlog::debug("Game is running");
         while (_window.isOpen()) {
             event();
             display();

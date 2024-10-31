@@ -6,7 +6,6 @@
 */
 
 #include <cstddef>
-#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <ostream>
@@ -34,7 +33,6 @@
 #include "Systems/GunFireSystem.hpp"
 #include "Systems/InvincibilitySystem.hpp"
 #include "ZipperIterator.hpp"
-#include "nlohmann/json_fwd.hpp"
 
 namespace rtype::server {
 
@@ -113,7 +111,7 @@ namespace rtype::server {
 
     void Game::movePlayer(const int player_place, const int dir)
     {
-        if (_systemClock.getSeconds() < FRAME_PER_SECONDS(20)) {
+        if (_systemClock.getSeconds() < FRAME_PER_SECONDS(10)) {
             return;
         }
         const int player_entity_id = _players_entities_ids[player_place];

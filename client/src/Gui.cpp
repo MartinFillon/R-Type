@@ -38,14 +38,16 @@ namespace rtype::client {
         if (_network.setup(ip, port) == R_ERROR) {
             return R_ERROR;
         }
-
+        spdlog::debug("Network setup done");
         _game.setRegistry(_registry);
         _game.setFactory(_cf);
         _network.setRegistry(_registry->getServerRegistry());
         _network.setFactory(_cf);
 
+        spdlog::debug("Game setup done");
         std::thread network = std::thread(&client::Network::run, std::ref(_network));
 
+        spdlog::debug("Network thread started");
         _game.run();
 
         network.join();

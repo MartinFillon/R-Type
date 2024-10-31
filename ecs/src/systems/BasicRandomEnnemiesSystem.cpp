@@ -63,7 +63,6 @@ namespace ecs::systems {
         if (_clock.getMiliSeconds() < _ennemiesTick) {
             return;
         }
-        spdlog::debug("amount of basic ennemies: {}", nbOfBasicEnnemies(r));
         if (nbOfBasicEnnemies(r) < _maxNbOfEnnemies) {
             createNewEnnemies(r, ctx, factory);
             return;
