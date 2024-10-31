@@ -15,7 +15,7 @@
   "components": {
     "attributes": {
       "entityType": "weapon",
-      "ennemyType": "basic"
+      "secondaryType": "basic"
     },
     "life": 1,
     "position": {
