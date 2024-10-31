@@ -16,7 +16,7 @@
 #include "Protocol.hpp"
 #include "Registry.hpp"
 
-#define ERROR 84
+#define R_ERROR 84
 #define SUCCESS 0
 
 #define DATA_MAX_SIZE 1024

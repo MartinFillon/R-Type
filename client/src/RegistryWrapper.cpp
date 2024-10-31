@@ -10,6 +10,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Position.hpp"
@@ -36,8 +37,6 @@ namespace rtype::client {
         _client->register_component<ecs::component::Animations>();
     }
 
-    RegistryWrapper::~RegistryWrapper() {}
-
     static void drawRegistry(
         sf::RenderWindow &window,
         ecs::TextureManager<sf::Texture> &textureManager,
@@ -50,22 +49,27 @@ namespace rtype::client {
         auto &positions = registry->register_if_not_exist<ecs::component::Position>();
         auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
 
-        for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-            if (!draw || !anim || !spri || !si || !pos) {
+        for (auto &&[drawable, animation, sprite, size, position] :
+             ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+            if (!drawable || !animation || !sprite || !size || !position) {
                 continue;
             }
 
-            if (spri->_pathToSprite.empty()) {
+            if (sprite->_pathToSprite.empty()) {
                 continue;
             }
-            sf::Sprite sprite;
 
-            sprite.setPosition(pos->_x, pos->_y);
-            sprite.setScale(si->_width, si->_height);
-            auto texture = textureManager.getTexture(spri->_pathToSprite);
-            sprite.setTexture(*texture);
-            sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-            window.draw(sprite);
+            try {
+                auto texture = textureManager.getTexture(sprite->_pathToSprite);
+                sf::Sprite _sprite(
+                    *texture, sf::IntRect({animation->_x, animation->_y}, {animation->_width, animation->_height})
+                );
+                _sprite.setScale({static_cast<float>(size->_width), static_cast<float>(size->_height)});
+                _sprite.setPosition({static_cast<float>(position->_x), static_cast<float>(position->_y)});
+                window.draw(_sprite);
+            } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
+                spdlog::error("Could not display {}", error.what());
+            }
         }
     }
 

@@ -16,6 +16,7 @@
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Registry.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -55,9 +56,11 @@ namespace ecs {
                 }
 
                 for (std::size_t j = i + 1; j < position.size(); ++j) {
-                    if (!attribut[i] || !position[j] || !size[j] || !destroyable[j] ||
+                    if (!attribut[j] || !position[j] || !size[j] || !destroyable[j] ||
                         destroyable[j]->_state != ecs::component::Destroyable::DestroyState::ALIVE || !life[j] ||
-                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type) {
+                        i == j || attribut[i]->_entity_type == attribut[j]->_entity_type ||
+                        ((attribut[i]->_entity_type == attribut[j]->_entity_type) &&
+                         (attribut[i]->_secondary_type == attribut[j]->_secondary_type))) {
                         continue;
                     }
 
@@ -67,20 +70,6 @@ namespace ecs {
                     if ((position[j]->_x > WIDTH_MAX_LIMIT || position[j]->_x < WIDTH_MIN_LIMIT) ||
                         (position[j]->_y > HEIGHT_MAX_LIMIT || position[j]->_y < HEIGHT_MIN_LIMIT)) {
                         destroyable[j]->_state = component::Destroyable::DestroyState::WAITING;
-                        continue;
-                    }
-
-                    if ((attribut[i]->_secondary_type == component::Attributes::SecondaryType::Milespates &&
-                         destroyable[i]->_state != component::Destroyable::DestroyState::ALIVE) ||
-                        (destroyable[j]->_state == component::Destroyable::DestroyState::ALIVE &&
-                         attribut[j]->_secondary_type == component::Attributes::SecondaryType::Milespates)) {
-                        continue;
-                    }
-
-                    if ((attribut[i]->_entity_type == component::Attributes::EntityType::Weapon ||
-                         attribut[j]->_entity_type == component::Attributes::EntityType::Weapon) &&
-                        (attribut[j]->_secondary_type != component::Attributes::SecondaryType::None &&
-                         attribut[i]->_secondary_type != component::Attributes::SecondaryType::None)) {
                         continue;
                     }
 

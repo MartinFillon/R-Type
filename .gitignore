@@ -24,3 +24,4 @@ install_manifest.txt
 street-fighter
 *.so
 poc-raylib-3d
+*.exe

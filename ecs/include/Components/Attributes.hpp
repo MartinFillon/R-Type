@@ -28,6 +28,7 @@ namespace ecs {
 
             EntityType _entity_type;
             SecondaryType _secondary_type;
+            std::size_t _identifyer;
         };
     }; // namespace component
 }; // namespace ecs

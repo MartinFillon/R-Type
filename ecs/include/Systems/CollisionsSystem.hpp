@@ -9,13 +9,8 @@
 #define COLLISIONSSYSTEM_HPP_
 
 #include <memory>
+
 #include "IContext.hpp"
-#define WIDTH_MAX_LIMIT 2700
-#define HEIGHT_MAX_LIMIT 2500
-
-#define WIDTH_MIN_LIMIT -300
-#define HEIGHT_MIN_LIMIT -300
-
 #include "Registry.hpp"
 #include "Systems/ISystems.hpp"
 
@@ -23,11 +18,15 @@ namespace ecs {
     namespace systems {
         class CollisionsSystem : public ISystems {
           public:
+            CollisionsSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
           private:
-            void sendDestroyedObject(std::shared_ptr<IContext> &ctx, std::size_t i);
+            int _width_max_limit = WIDTH_MAX_LIMIT;
+            int _height_max_limit = HEIGHT_MAX_LIMIT;
+            int _width_min_limit = WIDTH_MIN_LIMIT;
+            int _height_min_limit = HEIGHT_MIN_LIMIT;
         };
     }; // namespace systems
 }; // namespace ecs

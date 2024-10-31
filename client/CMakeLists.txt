@@ -12,7 +12,9 @@ add_executable(
   src/Network.cpp
   src/Menu.cpp
   src/Game.cpp
-  src/RegistryWrapper.cpp)
+  src/RegistryWrapper.cpp
+  src/TCPCommunication.cpp
+  src/LobbyMenu.cpp)
 target_link_libraries(r-type_client sfml-audio sfml-graphics)
 target_link_directories(r-type_client PUBLIC ../ecs/include)
 target_include_directories(r-type_client PUBLIC ../ecs/include include
@@ -35,14 +37,3 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ..)
 
-if(WIN32)
-  add_custom_command(
-    TARGET r-type_client
-    COMMENT "Copy OpenAL DLL"
-    PRE_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy
-      ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll
-      $<TARGET_FILE_DIR:ecs>
-    VERBATIM)
-endif()

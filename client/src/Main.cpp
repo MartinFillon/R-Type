@@ -9,6 +9,8 @@
 
 #include "Gui.hpp"
 
+// #include "TCPCommunication.hpp"
+
 int main()
 {
     spdlog::cfg::load_env_levels();

@@ -6,7 +6,9 @@
 */
 
 #include <cstddef>
+#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "ComponentFactory.hpp"
@@ -15,6 +17,7 @@
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
+#include "Components/Life.hpp"
 #include "Components/Position.hpp"
 #include "Components/Size.hpp"
 #include "Components/Sprite.hpp"
@@ -63,6 +66,7 @@ namespace rtype::server {
         if (_ctx == nullptr) {
             _ctx = ctx;
         }
+        auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = _r->register_if_not_exist<ecs::component::Position>();
         auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
 
@@ -71,13 +75,13 @@ namespace rtype::server {
             _systemClock.restart();
         }
 
-        for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
-            if (!positions[entity_id] || !animations[entity_id]) {
+        for (auto &&[attribute, position, animation] : ecs::custom_zip(attributes, positions, animations)) {
+            if (!position || !animation) {
                 continue;
             }
             if (are_any_clients_connected) {
-                preparePosition(positions[entity_id], entity_id);
-                _ctx->animationObject(entity_id, animations[entity_id].value());
+                preparePosition(position, attribute->_identifyer);
+                _ctx->animationObject(attribute->_identifyer, animation.value());
             }
         }
     }
@@ -94,15 +98,23 @@ namespace rtype::server {
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        ecs::Entity e = _cf.createEntity(_r, file);
+        try {
+            ecs::Entity e = _cf.createEntity(_r, file);
 
-        _players_entities_ids[player_place] = e.getId();
+            _players_entities_ids[player_place] = e.getId();
 
-        return e;
+            return e;
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
+        return ecs::Entity(_r->_entities.size());
     }
 
     void Game::movePlayer(const int player_place, const int dir)
     {
+        if (_systemClock.getSeconds() < FRAME_PER_SECONDS(10)) {
+            return;
+        }
         const int player_entity_id = _players_entities_ids[player_place];
 
         auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
@@ -141,8 +153,12 @@ namespace rtype::server {
         auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
 
         int i = 0;
-        ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
-        _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        try {
+            ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
+            _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
 
         for (auto &&[pos, atr] : ecs::custom_zip(positions, attributes)) {
             if (!pos || !atr) {
@@ -157,38 +173,31 @@ namespace rtype::server {
         }
 
         positions[i] = positions[_players_entities_ids[player_place]];
-        _ctx->createProjectile(i, rtype::protocol::ObjectTypes::PLAYER_BULLET);
         _ctx->moveObject(i, positions[i]->_x, positions[i]->_y);
     }
 
     void Game::setupDestroy()
     {
-        _r->add_system(ecs::systems::DestroySystem());
+        _r->add_system<ecs::systems::DestroySystem>();
     }
 
     void Game::setupCollisons()
     {
-        _r->add_system(ecs::systems::CollisionsSystem());
-        _r->add_system(ecs::systems::GunFireSystem());
-        _r->add_system(ecs::systems::InvincibilitySystem());
+        _r->add_system<ecs::systems::CollisionsSystem>();
+        _r->add_system<ecs::systems::GunFireSystem>();
+        _r->add_system<ecs::systems::InvincibilitySystem>();
     }
 
     void Game::setupBosses()
     {
-        std::ifstream f("config/systems/boss_system.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BossSystems(config));
+        _r->add_system<ecs::systems::BossSystems>("config/systems/boss_system.json");
     }
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
 
-        std::ifstream f("config/systems/basic_random_ennemies.json");
-        nlohmann::json config = nlohmann::json::parse(f);
-
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem(config));
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

@@ -14,6 +14,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <cstdlib>
+#include <spdlog/spdlog.h>
 
 #include "Components/Animations.hpp"
 #include "Components/Drawable.hpp"
@@ -27,20 +28,15 @@
 
 street_fighter::Gui::Gui()
     : _game(), _textureManager(
-                   [this](std::string path) {
-                       sf::Texture texture;
-                       texture.loadFromFile(path);
-                       return std::make_shared<sf::Texture>(texture);
-                   },
+                   [this](std::string path) { return std::make_shared<sf::Texture>(path); },
                    PATH_TO_STREET_FIGHTER_ASSETS
                ),
-      _window(sf::VideoMode(1920, 1080), SECOND_GAME_NAME)
+      _window(sf::VideoMode({1920, 1080}), SECOND_GAME_NAME)
 {
 }
 
 int street_fighter::Gui::handleEvents()
 {
-    sf::Event event;
     auto &keys = _game._r->get_components<ecs::component::KeyPressed>();
     auto &anim = _game._r->get_components<ecs::component::Animations>();
     auto &pos = _game._r->get_components<ecs::component::Position>();
@@ -48,56 +44,58 @@ int street_fighter::Gui::handleEvents()
     if (_game.getIsCinematic()) {
         return EXIT_SUCCESS;
     }
-    while (_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+    while (const std::optional event = _window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
             _window.close();
         }
 
-        if (event.key.code == sf::Keyboard::Up) {
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Up;
-            anim[_game.findPlayerIndex().getId()]->_width = JUMP_ANIMATION_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = JUMP_ANIMATION_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = JUMP_ANIMATION_X;
-            anim[_game.findPlayerIndex().getId()]->_y = JUMP_ANIMATION_Y;
-            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-        }
-
-        if (event.key.code == sf::Keyboard::Down) {
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
-            anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_X;
-            anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
-            anim[_game.findPlayerIndex().getId()]->_width = SIT_ANIMATION_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = SIT_ANIMATION_HEIGHT;
-            pos[_game.findPlayerIndex().getId()]->_y = SIT_POSITION_Y;
-        }
-
-        if (event.key.code == sf::Keyboard::Left) {
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
-            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-        }
-
-        if (event.key.code == sf::Keyboard::Right) {
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
-            pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-        }
-
-        if (event.key.code == sf::Keyboard::X) {
-            if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
+        if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {
+            if (key->scancode == sf::Keyboard::Scancode::Up) {
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Up;
+                anim[_game.findPlayerIndex().getId()]->_width = JUMP_ANIMATION_WIDTH;
+                anim[_game.findPlayerIndex().getId()]->_height = JUMP_ANIMATION_HEIGHT;
+                anim[_game.findPlayerIndex().getId()]->_x = JUMP_ANIMATION_X;
+                anim[_game.findPlayerIndex().getId()]->_y = JUMP_ANIMATION_Y;
                 pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
             }
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
-            anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
-            anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
-        }
 
-        if (event.key.code == sf::Keyboard::W) {
-            keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Kick;
-            anim[_game.findPlayerIndex().getId()]->_width = KICK_ANIMATION_WIDTH;
-            anim[_game.findPlayerIndex().getId()]->_height = KICK_ANIMATION_HEIGHT;
-            anim[_game.findPlayerIndex().getId()]->_x = KICK_ANIMATION_X;
-            anim[_game.findPlayerIndex().getId()]->_y = KICK_ANIMATION_Y;
+            if (key->scancode == sf::Keyboard::Scancode::Down) {
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
+                anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_X;
+                anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
+                anim[_game.findPlayerIndex().getId()]->_width = SIT_ANIMATION_WIDTH;
+                anim[_game.findPlayerIndex().getId()]->_height = SIT_ANIMATION_HEIGHT;
+                pos[_game.findPlayerIndex().getId()]->_y = SIT_POSITION_Y;
+            }
+
+            if (key->scancode == sf::Keyboard::Scancode::Left) {
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
+                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
+            }
+
+            if (key->scancode == sf::Keyboard::Scancode::Right) {
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
+                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
+            }
+
+            if (key->scancode == sf::Keyboard::Scancode::X) {
+                if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
+                    pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
+                }
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
+                anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
+                anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
+                anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
+                anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
+            }
+
+            if (key->scancode == sf::Keyboard::Scancode::W) {
+                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Kick;
+                anim[_game.findPlayerIndex().getId()]->_width = KICK_ANIMATION_WIDTH;
+                anim[_game.findPlayerIndex().getId()]->_height = KICK_ANIMATION_HEIGHT;
+                anim[_game.findPlayerIndex().getId()]->_x = KICK_ANIMATION_X;
+                anim[_game.findPlayerIndex().getId()]->_y = KICK_ANIMATION_Y;
+            }
         }
     }
 
@@ -120,13 +118,16 @@ void street_fighter::Gui::display()
         if (!pos || !anim || !spri || !draw || !size || !draw->_drawable) {
             continue;
         }
-        auto texture = _textureManager.getTexture(spri->_pathToSprite);
-        sf::Sprite sprite;
-        sprite.setPosition(pos->_x, pos->_y);
-        sprite.setTexture(*texture);
-        sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-        sprite.setScale(size->_width, size->_height);
-        _window.draw(sprite);
+        try {
+            auto texture = _textureManager.getTexture(spri->_pathToSprite);
+            sf::Sprite sprite(*texture, sf::IntRect({(anim->_x), (anim->_y)}, {(anim->_height), (anim->_width)}));
+            sprite.setPosition({static_cast<float>(pos->_x), static_cast<float>(pos->_y)});
+            sprite.setTexture(*texture);
+            sprite.setScale({static_cast<float>(size->_height), static_cast<float>(size->_width)});
+            _window.draw(sprite);
+        } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
+            spdlog::error("Could not display {}", error.what());
+        }
     }
 }
 

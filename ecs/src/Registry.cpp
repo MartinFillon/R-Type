@@ -50,7 +50,5 @@ void ecs::Registry::run_systems(ecs::ComponentFactory &f, std::shared_ptr<IConte
 {
     std::shared_ptr<Registry> r = this->shared_from_this();
 
-    for (auto &system : _systems) {
-        system(r, ctx, f);
-    }
+    _systemsManager->runSystems(r, ctx, f);
 }
