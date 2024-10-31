@@ -20,7 +20,7 @@
 namespace rtype::client {
     Gui::Gui()
         : _window(sf::VideoMode({WIN_WIDTH, WIN_HEIGHT}), GAME_NAME), _network(), _menu(_window),
-          _game(_window, _network)
+          _game(_window, _network), _lobby(_window)
     {
         try {
             _tcpCommunication = std::make_shared<TCPCommunication>();

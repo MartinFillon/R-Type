@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include "LobbyMenu.hpp"
 
 namespace rtype::client {
     Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
@@ -38,7 +39,7 @@ namespace rtype::client {
         _bgScaleY = static_cast<float>(_win.getSize().y) / _backgroundTexture.getSize().y;
         //_backgroundSprite.setScale(_bgScaleX, _bgScaleY);
 
-        _para.loadFromMemory(
+        (void)_para.loadFromMemory(
             "uniform float offset;"
             "void main() {"
             "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
@@ -46,7 +47,7 @@ namespace rtype::client {
             "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
             "    gl_FrontColor = gl_Color;"
             "}",
-            sf::Shader::Vertex
+            sf::Shader::Type::Vertex
         );
     }
 
@@ -216,10 +217,9 @@ namespace rtype::client {
         }
     }
 
-    std::string Menu::launchMenu()
+    /*std::string Menu::launchMenu()
     {
         setupMenuMusic();
-        menuLoadShader();
 
         while (_isMenuOpen && _win.isOpen()) {
             while (const std::optional event = _win.pollEvent()) {
@@ -240,7 +240,7 @@ namespace rtype::client {
 
                 menuEnterToPlay();
             }
-    }
+    }*/
 
     std::string Menu::launchMenu()
     {
@@ -249,8 +249,23 @@ namespace rtype::client {
         while (_isMenuOpen && _win.isOpen()) {
             menuShaderParams();
             menuDraw();
-            menuEvent();
-        }
+            while (const std::optional event = _win.pollEvent()) {
+                launchMusic();
+                if (event->is<sf::Event::Closed>()) {
+                    _isMenuOpen = false;
+                    break;
+                }
+
+                if (event->is<sf::Event::MouseButtonPressed>()) {
+                    _menuClientInput = menuButtonPressed();
+                }
+                const auto *t = event->getIf<sf::Event::TextEntered>();
+                if (_isWritting && t) {
+                    menuTextEntered(t);
+                }
+
+                menuEnterToPlay();
+            }        }
         _menuMusic.stop();
         return _menuClientInput;
     }

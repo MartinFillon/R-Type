@@ -11,6 +11,8 @@
 
 #include "LobbyMenu.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Window.hpp>
 #include <cstdlib>
@@ -66,11 +68,8 @@ void rtype::client::LobbyMenu::setupLoadingGame()
     _loadingPourcent.setFillColor(sf::Color::Green);
     _loadingPourcent.setSize({PERCENT_RECT_SIZE_X, PERCENT_RECT_SIZE_Y});
     _loadingPourcent.setPosition({PERCENT_RECT_POS_X, PERCENT_RECT_POS_Y});
+    
 
-    _loadingText.setPosition({LOADING_TEXT_POS_X, LOADING_TEXT_POS_Y});
-    _loadingText.setString(LOADING_TITLE(std::to_string(_loadingValue)));
-    _loadingText.setFillColor(sf::Color::White);
-    _loadingText.setCharacterSize(TEXT_SIZE);
 
     _loadingStop = STOP_START_VALIUE;
 }
@@ -96,13 +95,24 @@ void rtype::client::LobbyMenu::loadingGame()
         _loadingValue += LOADING_LOAD_VALUE;
     }
 
-    sf::Font font;
+    sf::Sprite _backgroundSprite(_backgroundTexture);
+
+    _backgroundSprite.setTexture(_backgroundTexture);
+    _backgroundSprite.setPosition({BG_POS_X, BG_POS_Y});
+    _bgScaleX = static_cast<float>(_window.getSize().x) / _backgroundTexture.getSize().x;
+    _bgScaleY = static_cast<float>(_window.getSize().y) / _backgroundTexture.getSize().y;
+    _backgroundSprite.setScale({_bgScaleX, _bgScaleY});
 
     _window.draw(_backgroundSprite, &_shader);
 
-    font.loadFromFile(FONT_PATH);
-    _loadingText.setFont(font);
+    sf::Font font;
+    (void)font.openFromFile(FONT_PATH);
+    sf::Text _loadingText(font);
 
+    _loadingText.setPosition({LOADING_TEXT_POS_X, LOADING_TEXT_POS_Y});
+    _loadingText.setString(LOADING_TITLE(std::to_string(_loadingValue)));
+    _loadingText.setFillColor(sf::Color::White);
+    _loadingText.setCharacterSize(TEXT_SIZE);
     _loadingPourcent.setSize({_loadingValue * PERCENT_SIZE_ADAPT, PERCENT_RECT_SIZE_Y});
     _loadingText.setString(LOADING_TITLE(std::to_string((int)_loadingValue)));
 
@@ -115,15 +125,10 @@ void rtype::client::LobbyMenu::loadingGame()
 
 void rtype::client::LobbyMenu::setupBackground()
 {
-    _backgroundTexture.loadFromFile(BG_PATH);
+    (void)_backgroundTexture.loadFromFile(BG_PATH);
     _backgroundTexture.setRepeated(true);
-    _backgroundSprite.setTexture(_backgroundTexture);
-    _backgroundSprite.setPosition(BG_POS_X, BG_POS_Y);
-    _bgScaleX = static_cast<float>(_window.getSize().x) / _backgroundTexture.getSize().x;
-    _bgScaleY = static_cast<float>(_window.getSize().y) / _backgroundTexture.getSize().y;
-    _backgroundSprite.setScale(_bgScaleX, _bgScaleY);
 
-    _shader.loadFromMemory(
+    (void)_shader.loadFromMemory(
         "uniform float offset;"
         "void main() {"
         "    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;"
@@ -131,23 +136,23 @@ void rtype::client::LobbyMenu::setupBackground()
         "    gl_TexCoord[0].x = gl_TexCoord[0].x + offset;"
         "    gl_FrontColor = gl_Color;"
         "}",
-        sf::Shader::Vertex
+        sf::Shader::Type::Vertex
     );
 }
 
-void rtype::client::LobbyMenu::createNewLobby(sf::Event &event)
+void rtype::client::LobbyMenu::createNewLobby(const sf::Event::TextEntered *event)
 {
     char _inputChar;
 
-    if (event.text.unicode < ASCII_LIM) {
-        _inputChar = static_cast<char>(event.text.unicode);
+    if (event->unicode < ASCII_LIM) {
+        _inputChar = static_cast<char>(event->unicode);
         if (_inputChar == DEL_BUTTON && !_newLobbyName.empty()) {
             _newLobbyName.pop_back();
         } else if (_inputChar > NON_ASCII_CHAR && _inputChar < ASCII_LIM) {
             _newLobbyName += _inputChar;
         }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_newLobbyName.empty()) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) && !_newLobbyName.empty()) {
         _server.get()->send(CREATE_CMD(_newLobbyName));
         _server.get()->read();
         _newLobbyName.clear();
@@ -156,27 +161,25 @@ void rtype::client::LobbyMenu::createNewLobby(sf::Event &event)
 
 void rtype::client::LobbyMenu::event()
 {
-    sf::Event event;
+    while (const std::optional event = _window.pollEvent()) {
 
-    while (_window.pollEvent(event)) {
-
-        if (event.type == sf::Event::Closed) {
+        if (event->is<sf::Event::Closed>()) {
             _running = false;
             _window.close();
             return;
         }
 
-        if (event.type == sf::Event::MouseButtonPressed) {
+        if (const auto *ev = event->getIf<sf::Event::MouseButtonPressed>()) {
             sf::Vector2i mouse = sf::Mouse::getPosition(_window);
 
-            if (_lobbyCreate.getGlobalBounds().contains(mouse.x, mouse.y)) {
+            if (_lobbyCreate.getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
                 _createActivate = true;
             } else {
                 _createActivate = false;
             }
 
             for (int i = 0; i < _lobbies.size(); i++) {
-                if (!_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (!_lobby.empty() && _lobbies[i].join.getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
                     _server.get()->send(QUIT_CMD(_lobbies[i].name));
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby.clear();
@@ -185,7 +188,7 @@ void rtype::client::LobbyMenu::event()
                     continue;
                 }
 
-                if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].join.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (!_lobbies[i].running && _lobby.empty() && _lobbies[i].join.getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
                     _server.get()->send(JOIN_CMD(_lobbies[i].name));
                     if (_server.get()->read().find("200") != std::string::npos) {
                         _lobby = _lobbies[i].name;
@@ -194,7 +197,7 @@ void rtype::client::LobbyMenu::event()
                     continue;
                 }
 
-                if (!_lobby.empty() && _lobbies[i].buttonReady.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (!_lobby.empty() && _lobbies[i].buttonReady.getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
                     if (!_ready) {
                         _server.get()->send(READY_CMD);
                         if (_server.get()->read().find("200") != std::string::npos) {
@@ -212,7 +215,8 @@ void rtype::client::LobbyMenu::event()
                     }
                 }
 
-                if (_lobbies[i].name == _lobby && _lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains(mouse.x, mouse.y)) {
+                if (_lobbies[i].name == _lobby && _lobbies[i].nbPlayers == _lobbies[i].ready 
+                && _lobbies[i].nbPlayers && _lobbies[i].start.getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
                     _server.get()->send(START_CMD);
                     std::string response = _server.get()->read();
                     if (response.find(NETWORK_METHOD_GAME) != std::string::npos) {
@@ -224,8 +228,9 @@ void rtype::client::LobbyMenu::event()
             }
 
         }
-        if (_createActivate && event.type == sf::Event::TextEntered && _lobby.empty()) {
-            createNewLobby(event);
+        const auto *ev = event->getIf<sf::Event::TextEntered>();
+        if (_createActivate && (ev) && _lobby.empty()) {
+            createNewLobby(ev);
         }
     }
 }
@@ -269,6 +274,13 @@ void rtype::client::LobbyMenu::updateBackground()
 void rtype::client::LobbyMenu::display()
 {
     _window.clear();
+    sf::Sprite _backgroundSprite(_backgroundTexture);
+
+    _backgroundSprite.setTexture(_backgroundTexture);
+    _backgroundSprite.setPosition({BG_POS_X, BG_POS_Y});
+    _bgScaleX = static_cast<float>(_window.getSize().x) / _backgroundTexture.getSize().x;
+    _bgScaleY = static_cast<float>(_window.getSize().y) / _backgroundTexture.getSize().y;
+    _backgroundSprite.setScale({_bgScaleX, _bgScaleY});
     _window.draw(_backgroundSprite, &_shader);
     displayLobbies();
     _window.display();
@@ -276,6 +288,9 @@ void rtype::client::LobbyMenu::display()
 
 void rtype::client::LobbyMenu::displayLobbies()
 {
+    sf::Font font;
+
+    (void)font.openFromFile(FONT_PATH);
     int i = 0;
 
     for (i = 0; i < _lobbies.size(); i++) {
@@ -304,49 +319,40 @@ void rtype::client::LobbyMenu::displayLobbies()
         _lobbies[i].buttonReady.setSize({READY_BUTTON_SIZE_X, READY_BUTTON_SIZE_Y});
         _lobbies[i].buttonReady.setPosition({READY_BUTTON_POS_X, READY_BUTTON_POS_Y(float(i))});
 
-        sf::Text text;
+        sf::Text text(font);
 
         text.setPosition({LOBBY_NAME_POS_X, LOBBY_NAME_POS_Y((float)i)});
         text.setString(_lobbies[i].name);
         text.setFillColor(sf::Color::White);
         text.setCharacterSize(TEXT_SIZE);
 
-        sf::Text textStart;
+        sf::Text textStart(font);
 
         textStart.setPosition({TEXT_START_POS_X, TEXT_START_POS_y((float)i)});
         textStart.setString(START_TITLE);
         textStart.setFillColor(sf::Color::Green);
         textStart.setCharacterSize(TEXT_SIZE);
 
-        sf::Text textJoin;
+        sf::Text textJoin(font);
 
         textJoin.setPosition({TEXT_JOIN_POS_X((float)!_lobby.empty()), TEXT_JOIN_POS_Y(float(i))});
         textJoin.setString(_lobby.empty() ? JOIN_TITLE : QUIT_TITLE);
         textJoin.setFillColor(_lobby.empty() ? sf::Color::Green: sf::Color::Red);
         textJoin.setCharacterSize(TEXT_SIZE);
 
-        sf::Text textReady;
+        sf::Text textReady(font);
 
         textReady.setPosition({TEXT_READY_POS_X, TEXT_READY_POS_Y(float(i))});
         textReady.setString(READY_TITLE);
         textReady.setFillColor(_ready ? sf::Color::Green: sf::Color::Red);
         textReady.setCharacterSize(TEXT_SIZE);
 
-        sf::Text nbPlayers;
+        sf::Text nbPlayers(font);
 
         nbPlayers.setPosition({TEXT_NB_P_POS_X, TEXT_JOIN_POS_Y(float(i))});
         nbPlayers.setString(std::to_string(_lobbies[i].nbPlayers) + LOBBY_MAX_PLAYERS);
         nbPlayers.setFillColor(_lobbies[i].nbPlayers == _lobbies[i].ready && _lobbies[i].nbPlayers ? sf::Color::Green : sf::Color::White);
         nbPlayers.setCharacterSize(TEXT_SIZE);
-
-        sf::Font font;
-
-        font.loadFromFile(FONT_PATH);
-        text.setFont(font);
-        nbPlayers.setFont(font);
-        textJoin.setFont(font);
-        textReady.setFont(font);
-        textStart.setFont(font);
 
         _window.draw(_lobbies[i].rectangle);
         _window.draw(text);
@@ -376,18 +382,12 @@ void rtype::client::LobbyMenu::displayLobbies()
     _lobbyCreate.setOutlineThickness(_createActivate ? RECT_THICKNESS + 1 : RECT_THICKNESS);
     _lobbyCreate.setSize({LOBBY_RECT_SIZE_X, LOBBY_RECT_SIZE_Y});
     _lobbyCreate.setPosition({LOBBY_RECT_POS_X, LOBBY_RECT_POS_Y(float(i))});
-
-    sf::Text text;
+    sf::Text text(font);
 
     text.setPosition({LOBBY_NAME_POS_X, TEXT_START_POS_y(float(i))});
     text.setString(CREATE_TITLE(_newLobbyName));
     text.setFillColor(sf::Color::White);
     text.setCharacterSize(TEXT_SIZE);
-
-    sf::Font font;
-
-    font.loadFromFile(FONT_PATH);
-    text.setFont(font);
 
     if (_lobbies.size() != MAX_LOBBIES && _lobby.empty()) {
         _window.draw(_lobbyCreate);

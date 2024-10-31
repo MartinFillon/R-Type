@@ -137,7 +137,7 @@ namespace rtype::client {
             void displayLobbies();
 
             void event();
-            void createNewLobby(sf::Event &event);
+            void createNewLobby(const sf::Event::TextEntered *event);
 
             void update();
             void updateBackground();
@@ -163,7 +163,7 @@ namespace rtype::client {
             int _loadingStop;
             sf::RectangleShape _loadingRectangle;
             sf::RectangleShape _loadingPourcent;
-            sf::Text _loadingText;
+            //sf::Text _loadingText;
 
             /* CREATE LOBBY BUTTON */
 
@@ -175,7 +175,7 @@ namespace rtype::client {
 
             sf::Shader _shader;
             sf::Clock _backgroundClock;
-            sf::Sprite _backgroundSprite;
+            //sf::Sprite _backgroundSprite;
             sf::Texture _backgroundTexture;
 
             float _bgScaleX;
