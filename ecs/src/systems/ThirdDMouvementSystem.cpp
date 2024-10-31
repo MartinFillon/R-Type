@@ -26,17 +26,15 @@ bool ecs::systems::ThirdDMouvementSystem::checkCollision(std::shared_ptr<Registr
 
     for (size_t i = 0; i < rectanglePositions.size(); ++i) {
         if (attributes[i]->_entity_type == ecs::component::Attributes::EntityType::Rectangle) {
-            float rectMinX = rectanglePositions[i]->_x - rectangleShapes[i]->_width / 2.0f;
-            float rectMaxX = rectanglePositions[i]->_x + rectangleShapes[i]->_width / 2.0f;
-            float rectMinZ = rectanglePositions[i]->_z - rectangleShapes[i]->_length / 2.0f;
-            float rectMaxZ = rectanglePositions[i]->_z + rectangleShapes[i]->_length / 2.0f;
-            float rectMinY = rectanglePositions[i]->_y - rectangleShapes[i]->_height / 2.0f;
-            float rectMaxY = rectanglePositions[i]->_y + rectangleShapes[i]->_height / 2.0f;
+            float rectMinX = rectanglePositions[i]->_x - rectangleShapes[i]->_length / 2.0f;
+            float rectMaxX = rectanglePositions[i]->_x + rectangleShapes[i]->_length / 2.0f;
+            float rectMinZ = rectanglePositions[i]->_z - rectangleShapes[i]->_width / 2.0f;
+            float rectMaxZ = rectanglePositions[i]->_z + rectangleShapes[i]->_width / 2.0f;
 
             if ((pos._x < rectMaxX && pos._x > rectMinX) &&
                 (pos._z < rectMaxZ && pos._z > rectMinZ) &&
-                (pos._y < rectMaxZ && pos._z > rectMinZ) &&
-                pos._y <= rectanglePositions[i]->_y + rectangleShapes[i]->_height) {
+                (pos._z < rectMaxZ && pos._z > rectMinZ) &&
+                pos._y < rectanglePositions[i]->_y + rectangleShapes[i]->_height) {
                 return true;
             }
         }
