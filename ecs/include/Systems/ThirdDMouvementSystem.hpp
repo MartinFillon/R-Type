@@ -16,6 +16,7 @@ namespace ecs {
     namespace systems {
         class ThirdDMouvementSystem : public ISystems {
           public:
+            ThirdDMouvementSystem() = default;
             ThirdDMouvementSystem(const nlohmann::json &config);
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
