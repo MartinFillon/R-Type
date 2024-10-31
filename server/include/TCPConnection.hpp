@@ -6,15 +6,15 @@
 */
 
 #ifndef TCPCONNECTION_HPP_
-    #define TCPCONNECTION_HPP_
+#define TCPCONNECTION_HPP_
 
-    #include <asio.hpp>
+#include <asio.hpp>
 #include <functional>
 
-    #include "Lobby.hpp"
+#include "Lobby.hpp"
 #include <unordered_map>
 
-    #define MAX_LOBBIES 4
+#define MAX_LOBBIES 4
 
 namespace rtype::server {
 
@@ -24,58 +24,56 @@ namespace rtype::server {
 
     class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
 
-        public:
+      public:
+        TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port);
 
-            TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port);
+        void start();
 
-            void start();
+        void setLobby(const std::string &lobby);
 
-            void setLobby(const std::string &lobby);
+        bool createLobby(const std::string &name);
+        bool joinLobby(const std::string &name);
+        bool quitLobby(const std::string &name);
+        bool startLobby();
+        bool ready();
+        bool unready();
 
-            bool createLobby(const std::string &name);
-            bool joinLobby(const std::string &name);
-            bool quitLobby(const std::string &name);
-            bool startLobby();
-            bool ready();
-            bool unready();
+        void dumpLobbies();
 
-            void dumpLobbies();
-            unsigned int getId() const
-            {
-                return _id;
-            };
+        unsigned int getId() const
+        {
+            return _id;
+        };
 
-            bool isReady() const
-            {
-                return _ready;
-            };
+        bool isReady() const
+        {
+            return _ready;
+        };
 
-            void setConnected(bool connected)
-            {
-                _connected = connected;
-            };
+        void setConnected(bool connected)
+        {
+            _connected = connected;
+        };
 
-            void writeToClient(const std::string &message);
+        void writeToClient(const std::string &message);
 
-        private:
+      private:
+        void readClient();
 
-            void readClient();
+        bool _connected;
 
-            bool _connected;
+        unsigned int _id;
+        bool _ready;
 
-            unsigned int _id;
-            bool _ready;
+        int _port;
 
-            int _port;
+        std::string _lobby;
+        std::vector<Lobby> &_lobbies;
 
-            std::string _lobby;
-            std::vector<Lobby> &_lobbies;
-
-            TCP::socket _socket;
-            std::string _data;
-
+        TCP::socket _socket;
+        std::string _data;
     };
 
-};
+}; // namespace rtype::server
 
 #endif /* !TCPCONNECTION_HPP_ */

@@ -94,9 +94,9 @@ namespace rtype::client {
                 }
             }
         }
-        for (auto &move: moves) {
+        for (auto &move : moves) {
             if (sf::Keyboard::isKeyPressed(move.first)) {
-                _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, move.second });
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, move.second});
             }
         }
     }

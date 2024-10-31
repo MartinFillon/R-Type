@@ -13,7 +13,7 @@
 #include "asio/buffer.hpp"
 #include "asio/error_code.hpp"
 
-rtype::client::TCPCommunication::TCPCommunication(): _port(0), _ioContext(), _socket(_ioContext) {}
+rtype::client::TCPCommunication::TCPCommunication() : _port(0), _ioContext(), _socket(_ioContext) {}
 
 int rtype::client::TCPCommunication::setup(const std::string &host, const std::string &port)
 {

@@ -18,7 +18,8 @@
 
 #include "TCPConnection.hpp"
 
-rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port): _socket(std::move(socket)), _connected(true), _id(id), _ready(false), _port(port), _lobbies(lobbies)
+rtype::server::TCPConnection::TCPConnection(TCP::socket socket, unsigned int id, std::vector<Lobby> &lobbies, int port)
+    : _socket(std::move(socket)), _connected(true), _id(id), _ready(false), _port(port), _lobbies(lobbies)
 {
 }
 
@@ -67,7 +68,6 @@ void rtype::server::TCPConnection::readClient()
         }
 
         _data.clear();
-
     }
 }
 
@@ -83,7 +83,7 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
         return false;
     }
 
-    for (auto &lobby: _lobbies) {
+    for (auto &lobby : _lobbies) {
         if (lobby.getName() == name) {
             writeToClient("400: Name already used.");
             return false;
@@ -99,8 +99,14 @@ bool rtype::server::TCPConnection::createLobby(const std::string &name)
 
 void rtype::server::TCPConnection::dumpLobbies()
 {
-    for (auto &lobby: _lobbies) {
-        asio::write(_socket, asio::buffer(lobby.getName() + ":" + std::to_string(lobby.isRunning()) + ":" + std::to_string(lobby.getNumberConnections()) + ":" + std::to_string(lobby.getNumberReady()) + "\n"));
+    for (auto &lobby : _lobbies) {
+        asio::write(
+            _socket,
+            asio::buffer(
+                lobby.getName() + ":" + std::to_string(lobby.isRunning()) + ":" +
+                std::to_string(lobby.getNumberConnections()) + ":" + std::to_string(lobby.getNumberReady()) + "\n"
+            )
+        );
     }
     asio::write(_socket, asio::buffer("200\n"));
 }
@@ -112,7 +118,7 @@ bool rtype::server::TCPConnection::joinLobby(const std::string &name)
         return false;
     }
 
-    for (auto &lobby: _lobbies) {
+    for (auto &lobby : _lobbies) {
         if (lobby.getName() == name) {
             if (!lobby.assign(*this)) {
                 writeToClient("400: Lobby is full.");
@@ -135,7 +141,7 @@ bool rtype::server::TCPConnection::quitLobby(const std::string &name)
         return false;
     }
 
-    for (auto &lobby: _lobbies) {
+    for (auto &lobby : _lobbies) {
         if (lobby.getName() == name) {
             if (!lobby.unassign(*this)) {
                 writeToClient("400: You're not in this lobby.");
@@ -189,7 +195,7 @@ bool rtype::server::TCPConnection::unready()
 
 bool rtype::server::TCPConnection::startLobby()
 {
-    for (auto &lobby: _lobbies) {
+    for (auto &lobby : _lobbies) {
         if (lobby.getName() == _lobby) {
             if (!lobby.start()) {
                 writeToClient("400: All clients are not ready.");
@@ -197,7 +203,6 @@ bool rtype::server::TCPConnection::startLobby()
             }
             return true;
         }
-
     }
 
     writeToClient("400: You are not in a lobby.");

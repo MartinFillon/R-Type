@@ -9,9 +9,9 @@
 
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <unistd.h>
-#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Gui.hpp"
 #include "RegistryWrapper.hpp"

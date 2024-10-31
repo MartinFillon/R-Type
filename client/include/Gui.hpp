@@ -39,11 +39,11 @@ namespace rtype::client {
         int run();
 
       private:
-	  	int handleConnection();
+        int handleConnection();
 
-		int _quitPress;
+        int _quitPress;
 
-		sf::RenderWindow _window;
+        sf::RenderWindow _window;
 
         Network _network;
         std::shared_ptr<TCPCommunication> _tcpCommunication;
