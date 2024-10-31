@@ -32,6 +32,7 @@ namespace rtype::client {
 
       public:
         Gui();
+        ~Gui() = default;
 
         int run();
 

@@ -33,7 +33,6 @@ namespace ecs {
 #else
                     std::string name = entry.path().stem().string().substr(3);
 #endif
-                    spdlog::warn("file {}", path);
                     registerComponent(name, path);
                 }
             }
@@ -59,7 +58,6 @@ namespace ecs {
 
     Entity ComponentFactory::createEntity(std::shared_ptr<Registry> r, const std::string &file)
     {
-        spdlog::warn("Creating with file: {}", file);
         std::ifstream f(file);
         if (!std::filesystem::exists(file)) {
             throw ComponentFactoryException(R_ERROR_FILE_NOT_FOUND(file));
