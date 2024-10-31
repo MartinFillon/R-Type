@@ -5,13 +5,11 @@
 ** Main
 */
 
-#include "Game.hpp"
 #include "Gui.hpp"
 
 int main()
 {
-    street_fighter::Game game;
-    street_fighter::Gui gui(game);
+    street_fighter::Gui gui;
 
     return gui.run();
 }

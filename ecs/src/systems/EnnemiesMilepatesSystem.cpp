@@ -5,14 +5,16 @@
 ** EnnemiesMilepatesSystem
 */
 
+#include "Systems/EnnemiesMilepatesSystem.hpp"
+#include <iostream>
 #include <memory>
-
 #include "ComponentFactory.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
+#include "Components/Destroyable.hpp"
 #include "Components/Position.hpp"
 #include "IContext.hpp"
 #include "Registry.hpp"
-#include "Systems/EnnemiesMilepatesSystem.hpp"
 #include "ZipperIterator.hpp"
 
 namespace ecs::systems {
@@ -22,9 +24,11 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
         auto &animations = r->register_if_not_exist<ecs::component::Animations>();
-        auto &controllable = r->register_if_not_exist<ecs::component::Controllable>();
+        auto &controllables = r->register_if_not_exist<ecs::component::Controllable>();
+        auto &destroyables = r->register_if_not_exist<ecs::component::Destroyable>();
 
         if (countMilepates(r) == 0) {
             createMilepates(r, ctx, factory);
@@ -33,9 +37,11 @@ namespace ecs::systems {
 
         int i = 0;
 
-        for (auto &&[pos, anim, control] : custom_zip(positions, animations, controllable)) {
-            if (!pos || !anim || !control || anim->_object == ecs::component::InDestroy ||
-                anim->_type != ecs::component::Type::Milespates) {
+        for (auto &&[atr, pos, anim, control, destroyable] :
+             custom_zip(attributes, positions, animations, controllables, destroyables)) {
+            if (!atr || !pos || !anim || !control ||
+                destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE ||
+                atr->_secondary_type != ecs::component::Attributes::SecondaryType::Milespates) {
                 continue;
             }
 
@@ -92,9 +98,13 @@ namespace ecs::systems {
         int lastY = 80;
 
         for (std::size_t i = 0; i < NB_ENNEMIES; ++i) {
-            milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
-            r->_entities.addEntity(milespates[i].getId());
-            ctx->createMilespates(milespates[i].getId());
+            try {
+                milespates.push_back(factory.createEntity(r, CONFIG_MILEPATES));
+                r->_entities.addEntity(milespates[i].getId());
+                ctx->createMilespates(milespates[i].getId());
+            } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+                std::cerr << error.what() << std::endl;
+            }
         }
 
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
@@ -106,15 +116,15 @@ namespace ecs::systems {
 
     int EnnemiesMilepatesSystem::countMilepates(std::shared_ptr<Registry> &r)
     {
-        auto &animations = r->register_if_not_exist<ecs::component::Animations>();
+        auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
         int nbMilespates = 0;
 
-        for (auto &&[anim] : ecs::custom_zip(animations)) {
-            if (!anim) {
+        for (auto &&[atr] : ecs::custom_zip(attributes)) {
+            if (!atr) {
                 continue;
             }
 
-            if (anim->_type == ecs::component::Type::Milespates) {
+            if (atr->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates) {
                 nbMilespates += 1;
             }
         }

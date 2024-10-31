@@ -13,7 +13,7 @@
 
 #define MILESPATES_SPEED 3.5
 #define MILESPATES_SPEED_ANIMATION 0.01
-#define MILESPATES_SPRITE "r-typesheet8.gif"
+#define MILESPATES_SPRITE "assets/sprites/r-typesheet8.gif"
 
 #define HEIGHT_MIN 0
 #define HEIGHT_MAX 400
@@ -29,6 +29,7 @@ namespace ecs {
     namespace systems {
         class EnnemiesMilepatesSystem : public ISystems {
           public:
+            EnnemiesMilepatesSystem() {};
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 

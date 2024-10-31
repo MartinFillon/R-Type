@@ -19,7 +19,9 @@
 #include "RegistryWrapper.hpp"
 #include "TCPCommunication.hpp"
 
-#define ERROR 84
+#define GAME_NAME "R-Type"
+
+#define R_ERROR 84
 #define SUCCESS 0
 #define QUIT_PRESS 0
 
@@ -32,6 +34,7 @@ namespace rtype::client {
 
       public:
         Gui();
+        ~Gui() = default;
 
         int run();
 

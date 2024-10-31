@@ -8,8 +8,6 @@
 #define PROJECTILE_SPEED 3
 #define PROJECTIL_TICK 2.5
 
-#include <SFML/Window/Keyboard.hpp>
-
 #include "Clock.hpp"
 
 #include "ISystems.hpp"
@@ -19,6 +17,7 @@ namespace ecs {
     namespace systems {
         class GunFireSystem : public ISystems {
           public:
+            GunFireSystem() = default;
             bool _wasKeyPressed = false;
 
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)

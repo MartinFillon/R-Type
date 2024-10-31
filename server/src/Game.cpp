@@ -6,12 +6,15 @@
 */
 
 #include <cstddef>
+#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <iostream>
 
 #include "ComponentFactory.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Drawable.hpp"
@@ -64,6 +67,7 @@ namespace rtype::server {
         if (_ctx == nullptr) {
             _ctx = ctx;
         }
+        auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
         auto &positions = _r->register_if_not_exist<ecs::component::Position>();
         auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
 
@@ -72,13 +76,13 @@ namespace rtype::server {
             _systemClock.restart();
         }
 
-        for (std::size_t entity_id = 0; entity_id < positions.size(); entity_id++) {
-            if (!positions[entity_id] || !animations[entity_id]) {
+        for (auto &&[attribute, position, animation] : ecs::custom_zip(attributes, positions, animations)) {
+            if (!position || !animation) {
                 continue;
             }
             if (are_any_clients_connected) {
-                preparePosition(positions[entity_id], entity_id);
-                _ctx->animationObject(entity_id, animations[entity_id].value());
+                preparePosition(position, attribute->_identifyer);
+                _ctx->animationObject(attribute->_identifyer, animation.value());
             }
         }
     }
@@ -95,16 +99,30 @@ namespace rtype::server {
         file.append(std::to_string(player_place));
         file.append(".json");
 
-        ecs::Entity e = _cf.createEntity(_r, file);
+        try {
+            ecs::Entity e = _cf.createEntity(_r, file);
 
-        _players_entities_ids[player_place] = e.getId();
+            _players_entities_ids[player_place] = e.getId();
 
-        return e;
+            return e;
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
+        return ecs::Entity(_r->_entities.size());
     }
 
     void Game::movePlayer(const int player_place, const int dir)
     {
+        if (_systemClock.getSeconds() < FRAME_PER_SECONDS(10)) {
+            return;
+        }
         const int player_entity_id = _players_entities_ids[player_place];
+
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
+            return;
+        }
 
         auto &position = _r->register_if_not_exist<ecs::component::Position>()[player_entity_id];
         auto &controllable = _r->register_if_not_exist<ecs::component::Controllable>()[player_entity_id];
@@ -125,49 +143,62 @@ namespace rtype::server {
 
     void Game::makePlayerShoot(int player_place)
     {
-        auto &positions = _r->register_if_not_exist<ecs::component::Position>();
-        auto &animations = _r->register_if_not_exist<ecs::component::Animations>();
-        int i = 0;
-        ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
-        _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        const int player_entity_id = _players_entities_ids[player_place];
 
-        for (auto &&[pos, anim] : ecs::custom_zip(positions, animations)) {
-            if (!pos || !anim) {
+        auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
+
+        if (!destroyable || destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE)
+            return;
+
+        auto &positions = _r->register_if_not_exist<ecs::component::Position>();
+        auto &attributes = _r->register_if_not_exist<ecs::component::Attributes>();
+
+        int i = 0;
+        try {
+            ecs::Entity e = _cf.createEntity(_r, CONFIG_PLAYER_PROJECTILE);
+            _ctx->createProjectile(e.getId(), rtype::protocol::ObjectTypes::PLAYER_BULLET);
+        } catch (const ecs::ComponentFactory::ComponentFactoryException &error) {
+            std::cerr << error.what() << std::endl;
+        }
+
+        for (auto &&[pos, atr] : ecs::custom_zip(positions, attributes)) {
+            if (!pos || !atr) {
                 i += 1;
                 continue;
             }
-            if (anim->_object == ecs::component::Object::Weapon && anim->_type == ecs::component::Type::None) {
+            if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
+                atr->_secondary_type == ecs::component::Attributes::SecondaryType::None) {
                 break;
             }
             i += 1;
         }
 
         positions[i] = positions[_players_entities_ids[player_place]];
-        _ctx->createProjectile(i, rtype::protocol::ObjectTypes::PLAYER_BULLET);
         _ctx->moveObject(i, positions[i]->_x, positions[i]->_y);
     }
 
     void Game::setupDestroy()
     {
-        _r->add_system(ecs::systems::DestroySystem());
+        _r->add_system<ecs::systems::DestroySystem>();
     }
 
     void Game::setupCollisons()
     {
-        _r->add_system(ecs::systems::CollisionsSystem());
-        _r->add_system(ecs::systems::GunFireSystem());
-        _r->add_system(ecs::systems::InvincibilitySystem());
+        _r->add_system<ecs::systems::CollisionsSystem>();
+        _r->add_system<ecs::systems::GunFireSystem>();
+        _r->add_system<ecs::systems::InvincibilitySystem>();
     }
 
     void Game::setupBosses()
     {
-        _r->add_system(ecs::systems::BossSystems());
+        _r->add_system<ecs::systems::BossSystems>("config/systems/boss_system.json");
     }
 
     void Game::setupBasicEnnemies()
     {
-        _r->add_system(ecs::systems::EnnemiesMilepatesSystem());
-        _r->add_system(ecs::systems::BasicRandomEnnemiesSystem());
+        _r->add_system<ecs::systems::EnnemiesMilepatesSystem>();
+
+        _r->add_system<ecs::systems::BasicRandomEnnemiesSystem>("config/systems/basic_random_ennemies.json");
     }
 
     std::shared_ptr<ecs::Registry> Game::getRegistry()

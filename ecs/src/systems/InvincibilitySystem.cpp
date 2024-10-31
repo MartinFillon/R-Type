@@ -6,7 +6,10 @@
 */
 
 #include "Systems/InvincibilitySystem.hpp"
-#include <iostream>
+#include "Components/Destroyable.hpp"
+#include "Components/Invincibility.hpp"
+#include "SystemsManager.hpp"
+#include "ZipperIterator.hpp"
 
 namespace ecs {
     namespace systems {
@@ -16,20 +19,25 @@ namespace ecs {
             ComponentFactory &factory
         )
         {
-            auto &invincibility = r->register_if_not_exist<component::Invincibility>();
+            auto &invincibilities = r->register_if_not_exist<component::Invincibility>();
+            auto &destroyables = r->register_if_not_exist<component::Destroyable>();
 
-            for (std::size_t i = 0; i < invincibility.size(); ++i) {
-                if (!invincibility[i].has_value()) {
+            for (auto &&[invincibility, destroyable] : ecs::custom_zip(invincibilities, destroyables)) {
+                if (!invincibility.has_value()) {
                     continue;
                 }
-                if (!invincibility[i]->_invincible) {
+                if (!invincibility->_invincible) {
                     continue;
                 }
-                if (invincibility[i]->_clock.getMiliSeconds() < invincibility[i]->_time_in_ms) {
+                if (!destroyable || !destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
+                    invincibility->_invincible = false;
+                    continue;
+                }
+                if (invincibility->_clock.getMiliSeconds() < invincibility->_time_in_ms) {
                     continue;
                 }
 
-                invincibility[i]->_invincible = false;
+                invincibility->_invincible = false;
             }
         }
 

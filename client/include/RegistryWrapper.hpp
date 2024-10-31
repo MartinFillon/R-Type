@@ -18,7 +18,7 @@ namespace rtype::client {
     class RegistryWrapper {
       public:
         RegistryWrapper();
-        ~RegistryWrapper();
+        ~RegistryWrapper() = default;
 
         void draw(sf::RenderWindow &, ecs::TextureManager<sf::Texture> &);
 

@@ -1,25 +1,17 @@
+/*
+** EPITECH PROJECT, 2024
+** rtype
+** File description:
+** BasicRandomEnnemiesSystem
+*/
+
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
 #include "ComponentFactory.hpp"
 #include "Components/Position.hpp"
+#include "Defs.hpp"
 #include "IContext.hpp"
-#define ENNEMIES_TICK 2
-
-#define MAX_RANDOM_ENNEMIES 4
-#define VALUE_SPAWN_ENNEMIES 2
-
-#define BASIC_POS_SPAWN_X 1944
-#define MAX_SPAWN_X 2500
-
-#define SHOOTING_ELAPSED_TIME 0.2
-
-#define BASIC_ENNEMIES_ANIMATON_SPEED 0.24
-#define BASIC_ENNEMIES_SPEED 1.8
-#define BASIC_ENNEMIES_PROJECTILE_SPEED 10
-#define BASIC_PROJECTILE_SPEED_TICK 0.3
-#define CENTERED_SHOOT 15
-#define BASIC_ENNEMIES_SPEED_TICK 8
 
 #include "Clock.hpp"
 #include "ISystems.hpp"
@@ -29,10 +21,13 @@ namespace ecs {
     namespace systems {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
+            BasicRandomEnnemiesSystem(const nlohmann::json &j);
+
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,
                 const ecs::component::Position &ennemiesPos,
-                std::shared_ptr<IContext> &ctx
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
             );
             void createNewEnnemies(
                 std::shared_ptr<Registry> &r,
@@ -43,7 +38,8 @@ namespace ecs {
             void shootRandomly(
                 std::shared_ptr<Registry> &r,
                 ecs::component::Position &enemyPos,
-                std::shared_ptr<IContext> &ctx
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
             );
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
@@ -51,6 +47,20 @@ namespace ecs {
           private:
             Clock _clock;
             Clock _shootingClock;
+            int _maxNbOfEnnemies = MAX_RANDOM_ENNEMIES;
+            int _ennemiesTick = ENNEMIES_TICK;
+            int _valueSpawnEnnemies = VALUE_SPAWN_ENNEMIES;
+            int _basicPosSpawnX = BASIC_POS_SPAWN_X;
+            int _maxSpawnX = MAX_SPAWN_X;
+            double _shootingElapsedTime = SHOOTING_ELAPSED_TIME;
+            double _basicEnnemiesAnimationSpeed = BASIC_ENNEMIES_ANIMATON_SPEED;
+            double _basicEnnemiesSpeed = BASIC_ENNEMIES_SPEED;
+            double _basicEnnemiesProjectileSpeed = BASIC_ENNEMIES_PROJECTILE_SPEED;
+            double _basicProjectileSpeedTick = BASIC_PROJECTILE_SPEED_TICK;
+            int _centeredShoot = CENTERED_SHOOT;
+            int _basicEnnemiesSpeedTick = BASIC_ENNEMIES_SPEED_TICK;
+            std::string _enemmiesConfigFile = CONFIG_ENNEMIES;
+            std::string _projectileConfigFile = CONFIG_PROJECTILE;
         };
     }; // namespace systems
 }; // namespace ecs

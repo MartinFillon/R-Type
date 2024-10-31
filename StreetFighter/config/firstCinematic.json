@@ -1,0 +1,21 @@
+{
+    "name": "firstCinematic",
+    "active": [
+        "cinematic",
+        "attributes"
+    ],
+    "components": {
+        "cinematic": {
+            "xStart": -20,
+            "yStart": 500,
+            "xEnd": 500,
+            "yEnd": 500,
+            "state": true,
+            "speed": 1
+        },
+        "attributes": {
+            "entityType": "player",
+            "ennemyType": "first"
+        }
+    }
+}

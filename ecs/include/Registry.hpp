@@ -9,19 +9,19 @@
 #define REGISTRY_HPP_
 
 #include <any>
-#include <functional>
 #include <memory>
 #include <typeindex>
-#include <vector>
 #include <unordered_map>
 
-#include "ComponentFactory.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"
 #include "SparseArray.hpp"
+#include "SystemsManager.hpp"
 
 namespace ecs {
+    class ComponentFactory;
+
     class Registry : public std::enable_shared_from_this<Registry> {
       public:
         template <class Component>
@@ -52,10 +52,16 @@ namespace ecs {
             return std::any_cast<SparseArray<Component> &>(_componentsArrays[type]);
         }
 
-        template <typename Function>
-        void add_system(Function &&f)
+        template <typename System>
+        void add_system(std::string file)
         {
-            _systems.push_back(f);
+            _systemsManager->AddSystem<System>(file);
+        }
+
+        template <typename System>
+        void add_system()
+        {
+            _systemsManager->AddSystem<System>();
         }
 
         Entity spawn_entity();
@@ -68,15 +74,13 @@ namespace ecs {
 
         Registry(Registry &r)
         {
-            _systems = r._systems;
+            _systemsManager = r._systemsManager;
             _componentsArrays = r._componentsArrays;
             _entityCount = r._entityCount;
         }
 
       private:
-        std::vector<
-            std::function<void(std::shared_ptr<Registry> &, std::shared_ptr<ecs::IContext>, ComponentFactory &r)>>
-            _systems;
+        std::shared_ptr<systems::SystemsManager> _systemsManager = std::make_shared<systems::SystemsManager>();
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
     };

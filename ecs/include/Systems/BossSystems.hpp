@@ -8,23 +8,13 @@
 #ifndef BOSSSYSTEMS_HPP_
 #define BOSSSYSTEMS_HPP_
 
-#include "Components/Position.hpp"
-#define BOSS_LIFE(x) 100 * x
-#define BOSS_SPEED 5
-#define BOSS_SPAWN_TIME 60
-#define BOSS_PROJECTILE_SPEED 5
-#define MOVING_PROJECTILE_SPEED 0.01
-#define BOSS_PROJECTILE_SPAWN_TIME 3
-#define BOSS_SHOOTING_ELAPSED_TIME 0.5
-
-#define PROJECTILE_CLOSE 200
-#define PROJECTILE_PADDING 100
-
 #include <array>
 #include <cmath>
 #include <functional>
 
 #include "Clock.hpp"
+#include "Components/Position.hpp"
+#include "Defs.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -32,15 +22,23 @@ namespace ecs {
     namespace systems {
         class BossSystems : public ISystems {
           public:
+            BossSystems() = default;
+            BossSystems(const nlohmann::json &config);
+
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,
                 const ecs::component::Position &bossPos,
-                std::shared_ptr<IContext> ctx
+                std::shared_ptr<IContext> ctx,
+                ComponentFactory &factory
             );
-            void createFirstBoss(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx);
+            void createFirstBoss(
+                std::shared_ptr<Registry> &r,
+                std::shared_ptr<IContext> ctx,
+                ComponentFactory &factory
+            );
             bool isABoss(std::shared_ptr<Registry> &r);
             void moveProjectileTowardsPlayer(
                 std::shared_ptr<Registry> &r,
@@ -54,9 +52,27 @@ namespace ecs {
             ecs::Clock _shootingClock;
             ecs::Clock _projectileClock;
             std::size_t times = 0;
-            std::array<std::function<void(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx)>, 1> _bosses{
-                {[this](std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx) { createFirstBoss(r, ctx); }},
-            };
+            std::array<
+                std::function<
+                    void(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)>,
+                1>
+                _bosses{
+                    {[this](std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory) {
+                        createFirstBoss(r, ctx, factory);
+                    }},
+                };
+            int _bossLife = 100;
+            int _bossSpeed = BOSS_SPEED;
+            int _bossProjectileSpeed = BOSS_PROJECTILE_SPEED;
+            double _movingProjectileSpeed = MOVING_PROJECTILE_SPEED;
+            int _bossProjectileSpawnTime = BOSS_PROJECTILE_SPAWN_TIME;
+            double _bossShootingElapsedTime = BOSS_SHOOTING_ELAPSED_TIME;
+            int _projectileClose = PROJECTILE_CLOSE;
+            int _projectilePadding = PROJECTILE_PADDING;
+            int _bossSpawnTime = BOSS_SPAWN_TIME;
+            int _bossMaxX = 1920;
+            std::string _bossConfig = CONFIG_BOSS;
+            std::string _projectileConfig = CONFIG_PROJECTILE;
         };
     } // namespace systems
 } // namespace ecs

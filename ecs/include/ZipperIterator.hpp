@@ -71,7 +71,7 @@ namespace ecs {
       private:
         std::size_t min_size() const
         {
-            return std::apply([](const auto &...arrays) { return std::min({arrays.size()...}); }, _arrays);
+            return std::apply([](const auto &...arrays) { return (std::min)({arrays.size()...}); }, _arrays);
         }
 
         std::tuple<Arrays &...> _arrays;

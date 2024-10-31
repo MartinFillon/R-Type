@@ -5,10 +5,10 @@
 ** Client
 */
 
-#include <iostream>
 #include <spdlog/spdlog.h>
 
 #include "Client.hpp"
+#include "Clock.hpp"
 #include "Server.hpp"
 
 namespace rtype::server {
@@ -23,7 +23,9 @@ namespace rtype::server {
         if (packet.isValid()) {
             _socket.send_to(asio::buffer(packet.toMessage()), _endpoint);
         }
-        usleep(200);
+        ecs::Clock clock;
+        while (clock.getMicroSeconds() < 200)
+            ;
     }
 
     void Client::disconnect()
