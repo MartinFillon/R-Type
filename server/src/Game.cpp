@@ -113,6 +113,9 @@ namespace rtype::server {
 
     void Game::movePlayer(const int player_place, const int dir)
     {
+        if (_systemClock.getSeconds() < FRAME_PER_SECONDS(20)) {
+            return;
+        }
         const int player_entity_id = _players_entities_ids[player_place];
 
         auto &destroyable = _r->register_if_not_exist<ecs::component::Destroyable>()[player_entity_id];
