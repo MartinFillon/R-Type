@@ -10,6 +10,7 @@
 #include <nlohmann/json-schema.hpp>
 
 #include <spdlog/spdlog.h>
+#include <thread>
 #include "Registry.hpp"
 #include "SystemsManager.hpp"
 
@@ -26,8 +27,18 @@ namespace ecs::systems {
 
     void SystemsManager::runSystems(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> &ctx, ComponentFactory &f)
     {
+        std::vector<std::thread> threads;
+
         for (auto &system : __systems) {
-            system->operator()(r, ctx, f);
+            threads.emplace_back([system, &r, &ctx, &f]() {
+                system->operator()(r, ctx, f);
+            });
+        }
+
+        for (auto &thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
         }
     }
 
