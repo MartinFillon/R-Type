@@ -8,13 +8,13 @@
 #include "Systems/DestroySystem.hpp"
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "ComponentFactory.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "ZipperIterator.hpp"
-#include <spdlog/spdlog.h>
 
 void ecs::systems::DestroySystem::operator()(
     std::shared_ptr<Registry> &r,

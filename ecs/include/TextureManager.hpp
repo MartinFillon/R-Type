@@ -16,7 +16,6 @@
 #include <string>
 #include <unordered_map>
 
-
 namespace ecs {
     template <typename Texture>
     class TextureManager {
@@ -42,15 +41,18 @@ namespace ecs {
         }
 
         class TextureManagerException {
-            public:
-                TextureManagerException(const std::string &error): _error(error) {}
-                ~TextureManagerException() = default;
+          public:
+            TextureManagerException(const std::string &error) : _error(error) {}
 
-                const char *what() const noexcept {
-                    return _error.c_str();
-                }
-            private:
-                std::string _error;
+            ~TextureManagerException() = default;
+
+            const char *what() const noexcept
+            {
+                return _error.c_str();
+            }
+
+          private:
+            std::string _error;
         };
 
         std::shared_ptr<Texture> getTexture(const std::string &pathToImage)

@@ -6,10 +6,10 @@
 */
 
 #include <cstdint>
-#include <string>
 #include <memory>
 #include <optional>
 #include <spdlog/spdlog.h>
+#include <string>
 #include <vector>
 
 #include "Components/Attributes.hpp"

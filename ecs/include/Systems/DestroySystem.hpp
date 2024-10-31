@@ -11,7 +11,7 @@
 #define DESTROY_SPRITE "assets/sprites/r-typesheet-explosion.gif"
 
 #define DESTROY_ANIMATION 0.1
-#define DESTROY_TICK 20/60
+#define DESTROY_TICK 20 / 60
 
 #include "ISystems.hpp"
 #include "Registry.hpp"
