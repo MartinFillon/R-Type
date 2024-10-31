@@ -1,0 +1,55 @@
+{
+    "name": "ken",
+    "active": [
+      "position",
+      "drawable",
+      "controllable",
+      "sprite",
+      "animations",
+      "size",
+      "destroyable",
+      "life",
+      "gravitable",
+      "key_pressed",
+      "attributes"
+    ],
+    "components": {
+        "key_pressed": "none",
+        "gravitable": {
+            "value": true,
+            "gravityFall": 2,
+            "is_jumping": false,
+            "is_falling": false
+        },
+        "life": 100,
+        "position": {
+            "x": -20,
+            "y": 500
+        },
+        "destroyable": {
+            "animate": true
+        },
+        "drawable": true,
+        "controllable": {
+            "controllable": true,
+            "speed": 3
+        },
+        "sprite": "StreetFighter/assets/Ken.png",
+        "animations": {
+            "width": 60,
+            "height": 80,
+            "x": 0,
+            "y": 80,
+            "rotation": 0
+        },
+        "attributes": {
+            "entityType": "player",
+            "ennemyType": "first"
+        },      
+        "size": {
+            "width": 6,
+            "height": 6
+        }
+    }
+}
+  

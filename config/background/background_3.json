@@ -1,14 +1,27 @@
 {
+  "$schema": "../../schema/entity.json",
   "name": "background_3",
-  "active": ["position", "drawable", "sprite", "animations", "parallax", "size", "life"],
+  "active": [
+    "attributes",
+    "position",
+    "drawable",
+    "sprite",
+    "animations",
+    "parallax",
+    "size",
+    "life"
+  ],
   "components": {
+    "attributes": {
+      "entityType": "background"
+    },
     "position": {
       "x": 0,
       "y": 0
     },
     "life": 1,
     "drawable": true,
-    "sprite": "Background/background_4.png",
+    "sprite": "assets/sprites/Background/background_4.png",
     "animations": {
       "width": 1920,
       "height": 1080,

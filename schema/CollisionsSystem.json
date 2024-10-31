@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "width_max_limit": { "type": "number" },
+    "height_max_limit": { "type": "number" },
+    "width_min_limit": { "type": "number" },
+    "height_min_limit": { "type": "number" }
+  },
+  "required": [
+    "width_max_limit",
+    "height_max_limit",
+    "width_min_limit",
+    "height_min_limit"
+  ]
+}

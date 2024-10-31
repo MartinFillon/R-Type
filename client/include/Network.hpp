@@ -11,11 +11,12 @@
 #include <asio.hpp>
 #include <memory>
 
+#include "ComponentFactory.hpp"
 #include "Packet.hpp"
 #include "Protocol.hpp"
 #include "Registry.hpp"
 
-#define ERROR 84
+#define R_ERROR 84
 #define SUCCESS 0
 
 #define DATA_MAX_SIZE 1024
@@ -39,6 +40,11 @@ namespace rtype::client {
 
         void setRegistry(std::shared_ptr<ecs::Registry> registry);
 
+        void setFactory(std::shared_ptr<ecs::ComponentFactory> &factory)
+        {
+            _cf = factory;
+        }
+
         int setup(const std::string &host, const std::string &port);
 
         int run();
@@ -58,10 +64,12 @@ namespace rtype::client {
         ecs::Clock _keepaliveClock;
 
         std::shared_ptr<ecs::Registry> _registry;
+        std::shared_ptr<ecs::ComponentFactory> _cf;
         std::size_t _id;
         std::unordered_map<
             protocol::Operations,
-            std::function<void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &)>>
+            std::function<
+                void(std::shared_ptr<ecs::Registry> &, const protocol::Packet &, std::shared_ptr<ecs::ComponentFactory> &)>>
             _updateRegistryFunctions;
     };
 

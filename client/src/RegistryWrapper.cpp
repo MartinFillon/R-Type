@@ -8,7 +8,14 @@
 #include "RegistryWrapper.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
+#include "ComponentFactory.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Position.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Registry.hpp"
 #include "TextureManager.hpp"
 #include "ZipperIterator.hpp"
@@ -30,51 +37,52 @@ namespace rtype::client {
         _client->register_component<ecs::component::Animations>();
     }
 
-    RegistryWrapper::~RegistryWrapper() {}
-
     static void drawRegistry(
         sf::RenderWindow &window,
-        TextureManager &textureManager,
+        ecs::TextureManager<sf::Texture> &textureManager,
         std::shared_ptr<ecs::Registry> &registry
     )
     {
-        auto &sizes = registry->get_components<ecs::component::Size>();
-        auto &sprites = registry->get_components<ecs::component::Sprite>();
-        auto &drawables = registry->get_components<ecs::component::Drawable>();
-        auto &positions = registry->get_components<ecs::component::Position>();
-        auto &animations = registry->get_components<ecs::component::Animations>();
+        auto &sizes = registry->register_if_not_exist<ecs::component::Size>();
+        auto &sprites = registry->register_if_not_exist<ecs::component::Sprite>();
+        auto &drawables = registry->register_if_not_exist<ecs::component::Drawable>();
+        auto &positions = registry->register_if_not_exist<ecs::component::Position>();
+        auto &animations = registry->register_if_not_exist<ecs::component::Animations>();
 
-        for (auto &&[draw, anim, spri, si, pos] : ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
-
-            if (!draw || !anim || !spri || !si || !pos) {
+        for (auto &&[drawable, animation, sprite, size, position] :
+             ecs::custom_zip(drawables, animations, sprites, sizes, positions)) {
+            if (!drawable || !animation || !sprite || !size || !position) {
                 continue;
             }
 
-            if (spri->_pathToSprite.empty()) {
+            if (sprite->_pathToSprite.empty()) {
                 continue;
             }
 
-            sf::Sprite sprite;
-
-            sprite.setPosition(pos->_x, pos->_y);
-            sprite.setScale(si->_width, si->_height);
-            auto texture = textureManager.getTexture(spri->_pathToSprite);
-            sprite.setTexture(texture);
-            sprite.setTextureRect(sf::IntRect(anim->_x, anim->_y, anim->_width, anim->_height));
-            window.draw(sprite);
+            try {
+                auto texture = textureManager.getTexture(sprite->_pathToSprite);
+                sf::Sprite _sprite(
+                    *texture, sf::IntRect({animation->_x, animation->_y}, {animation->_width, animation->_height})
+                );
+                _sprite.setScale({static_cast<float>(size->_width), static_cast<float>(size->_height)});
+                _sprite.setPosition({static_cast<float>(position->_x), static_cast<float>(position->_y)});
+                window.draw(_sprite);
+            } catch (const ecs::TextureManager<sf::Texture>::TextureManagerException &error) {
+                spdlog::error("Could not display {}", error.what());
+            }
         }
     }
 
-    void RegistryWrapper::draw(sf::RenderWindow &window, TextureManager &textureManager)
+    void RegistryWrapper::draw(sf::RenderWindow &window, ecs::TextureManager<sf::Texture> &textureManager)
     {
         drawRegistry(window, textureManager, _client);
         drawRegistry(window, textureManager, _server);
     }
 
-    void RegistryWrapper::run_systems(std::shared_ptr<ecs::IContext> ctx)
+    void RegistryWrapper::run_systems(ecs::ComponentFactory &f, std::shared_ptr<ecs::IContext> ctx)
     {
-        _client->run_systems(ctx);
-        _server->run_systems(ctx);
+        _client->run_systems(f, ctx);
+        _server->run_systems(f, ctx);
     }
 
 } // namespace rtype::client

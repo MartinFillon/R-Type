@@ -9,20 +9,22 @@
 #define MENU_HPP_
 
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Text.hpp>
 
-#define TITLE_FONT "fonts/ARCADE_I.ttf"
-#define TEXT_FONT "fonts/OpenSans-Semibold.ttf"
+#define TITLE_FONT "./assets/fonts/ARCADE_I.ttf"
+#define TEXT_FONT "./assets/fonts/OpenSans-Semibold.ttf"
 #define BUTTON_PLAY "Play"
 #define BUTTON_IP "Enter IP Adress !"
 #define BUTTON_QUIT "Quit"
 #define BUTTON_OPTIONS "Options"
 #define MENU_TITLE "R-Type by MR.PET"
-#define BG_PATH "sprites/Background/background_2.png"
+// #define BG_PATH "assets/sprites/Background/background_2.png"
 #define OFFSET "offset"
 #define EMPTY_ADRESS "empty adress"
-#define MENU_MUSIC "musics/menuMusic.ogg"
+#define MENU_MUSIC "./assets/musics/menuMusic.ogg"
 #define BG_POS_X 0
 #define BG_POS_Y 0
 #define NB_TITLES 5
@@ -63,42 +65,39 @@ namespace rtype::client {
         void setupBackground();
         void setupMenuFont();
         void setupMenuInputRect();
-        void setupPlayButton();
-        void setupOptionsButton();
-        void setupQuitButton();
-        void setupMenuTitle();
-        void setupIpButton();
-        void setupRenderFont();
+        sf::Text setupPlayButton();
+        sf::Text setupOptionsButton();
+        sf::Text setupQuitButton();
+        sf::Text setupMenuTitle();
+        sf::Text setupIpButton();
+        sf::Text setupRenderFont();
         void setupMenuMusic();
 
-        void menuCloseWindow(sf::Event &event);
         void menuEnterToPlay();
-        void menuTextEntered(sf::Event &event);
-        void menuShaderParams(sf::Shader &para);
+        void menuTextEntered(sf::Event::TextEntered const *event);
+        void menuShaderParams();
 
-        int menuLoadShader();
         void launchMusic();
 
         void menuDrawtitles();
-        void menuDraw(sf::Shader &para);
+        void menuDraw();
+        void menuEvent();
 
         std::string menuButtonPressed();
         std::string launchMenu();
 
       private:
         sf::RenderWindow &_win;
-        sf::SoundBuffer _bufferMenuMusic;
-        sf::Sound _menuMusic;
+        sf::SoundBuffer _bufferMenuMusic = sf::SoundBuffer(MENU_MUSIC);
+        sf::Sound _menuMusic = sf::Sound(_bufferMenuMusic);
 
         // font //
-        sf::Font _fontTitle;
-        sf::Font _fontText;
-        sf::Text _menutitle[5];
+        sf::Font _fontTitle = sf::Font(TITLE_FONT);
+        sf::Font _fontText = sf::Font(TEXT_FONT);
 
         // Log part
 
         sf::RectangleShape _ipRect;
-        sf::Text _menuDisplayInput;
         std::string _menuClientInput;
         char _inputChar;
 
@@ -113,7 +112,6 @@ namespace rtype::client {
 
         sf::Clock _menuClock;
         sf::Texture _backgroundTexture;
-        sf::Sprite _backgroundSprite;
         sf::Shader _para;
         float _bgScaleX;
         float _bgScaleY;

@@ -9,11 +9,10 @@
 #define ICONTEXT_HPP_
 
 #include <memory>
+
 #include "Components/Animations.hpp"
 #include "INetwork.hpp"
 #include "Protocol.hpp"
-
-#define GAME_NAME "R-Type"
 
 namespace ecs {
     class IContext {

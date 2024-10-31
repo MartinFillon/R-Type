@@ -8,11 +8,12 @@
 #ifndef ENNEMIESMILESPATESSYSTEM_HPP_
 #define ENNEMIESMILESPATESSYSTEM_HPP_
 
+#include "ComponentFactory.hpp"
 #define NB_ENNEMIES 4
 
 #define MILESPATES_SPEED 3.5
 #define MILESPATES_SPEED_ANIMATION 0.01
-#define MILESPATES_SPRITE "r-typesheet8.gif"
+#define MILESPATES_SPRITE "assets/sprites/r-typesheet8.gif"
 
 #define HEIGHT_MIN 0
 #define HEIGHT_MAX 400
@@ -28,10 +29,16 @@ namespace ecs {
     namespace systems {
         class EnnemiesMilepatesSystem : public ISystems {
           public:
-            void operator()(Registry &, std::shared_ptr<IContext> ctx) override;
+            EnnemiesMilepatesSystem() {};
+            void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
+                override;
 
-            void createMilepates(Registry &r, std::shared_ptr<IContext> &ctx);
-            int countMilepates(Registry &r);
+            void createMilepates(
+                std::shared_ptr<Registry> &r,
+                std::shared_ptr<IContext> &ctx,
+                ComponentFactory &factory
+            );
+            int countMilepates(std::shared_ptr<Registry> &r);
             std::deque<std::pair<int, int>> positionHistory;
         };
     }; // namespace systems

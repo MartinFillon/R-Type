@@ -8,10 +8,8 @@
 #ifndef CLOCK_HPP_
 #define CLOCK_HPP_
 
-#define SECONDS_TO_MILISECONDS 1000
-#define SECONDS_TO_MICROSECONDS 1000000
-
 #include <chrono>
+#include "Defs.hpp"
 
 namespace ecs {
 

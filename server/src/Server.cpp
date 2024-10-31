@@ -6,12 +6,16 @@
 */
 
 #include <cstdint>
-#include <iostream>
 #include <memory>
 #include <optional>
+#include <spdlog/spdlog.h>
+#include <string>
 #include <vector>
 
-#include "Components/Animations.hpp"
+#include "Components/Attributes.hpp"
+#include "Components/Drawable.hpp"
+#include "Components/Size.hpp"
+#include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "Game.hpp"
 #include "IContext.hpp"
@@ -19,6 +23,7 @@
 #include "Protocol.hpp"
 #include "Server.hpp"
 #include "Utils.hpp"
+#include "ZipperIterator.hpp"
 
 namespace rtype::server {
     Server::Server(int port)
@@ -40,7 +45,7 @@ namespace rtype::server {
 
     void Server::start(std::shared_ptr<ecs::IContext> &ctx)
     {
-        std::cout << SERVER_START(_port) << std::endl;
+        spdlog::info("Server started at port {}...", _port);
 
         std::thread context([&]() { _context.run(); });
 
@@ -58,7 +63,7 @@ namespace rtype::server {
         _running = false;
         _socket.close();
 
-        std::cout << SERVER_STOP << std::endl;
+        spdlog::info("Server stoped...");
     }
 
     void Server::broadcast(const ecs::IPacket &packet)
@@ -88,8 +93,6 @@ namespace rtype::server {
     void Server::handleMessage(const unsigned int client_id, const Message &message)
     {
         protocol::Packet packet(message);
-
-        std::cout << MESSAGE_RECEIVED(client_id) << std::endl;
 
         processAction(client_id, packet);
     }
@@ -190,6 +193,7 @@ namespace rtype::server {
     void Server::processGame(std::shared_ptr<ecs::IContext> ctx)
     {
         while (_running) {
+            // std::lock_guard<std::mutex> lock(_mutex);
             _game.update(_clients.size() > 0, ctx);
 
             _clock.restart();
@@ -236,7 +240,7 @@ namespace rtype::server {
     void Server::processAction(const unsigned int client_id, const ecs::IPacket &packet)
     {
         if (!packet.isValid()) {
-            std::cout << INVALID_PACKET(client_id) << std::endl;
+            spdlog::warn("Invalid packet from client [{}]", client_id);
             return;
         }
 
@@ -267,29 +271,39 @@ namespace rtype::server {
             ecs::Entity e = _game.createPlayer(id);
 
             auto r = _game.getRegistry();
-            auto &positions = r->get_components<ecs::component::Position>();
-            auto &animations = r->get_components<ecs::component::Animations>();
-            auto &drawables = r->get_components<ecs::component::Drawable>();
-            auto &sprites = r->get_components<ecs::component::Sprite>();
-            auto &sizes = r->get_components<ecs::component::Size>();
+            auto &attributes = r->register_if_not_exist<ecs::component::Attributes>();
+            auto &positions = r->register_if_not_exist<ecs::component::Position>();
+            auto &drawables = r->register_if_not_exist<ecs::component::Drawable>();
+            auto &sprites = r->register_if_not_exist<ecs::component::Sprite>();
+            auto &sizes = r->register_if_not_exist<ecs::component::Size>();
 
-            for (std::size_t i = 0; i < r->_entities.size(); ++i) {
-                if (!positions[i] || !animations[i] || !drawables[i] || !sprites[i] || !sizes[i]) {
+            for (auto &&[attribute, position, drawable, sprite, size] :
+                 ecs::custom_zip(attributes, positions, drawables, sprites, sizes)) {
+                if (!position || !attribute || !drawable || !sprite || !size) {
                     continue;
                 }
 
-                if (animations[i]->_object == ecs::component::Object::Ennemies) {
-                    auto arguments = ecs::utils::intToBytes(i);
+                if (attribute->_entity_type == ecs::component::Attributes::EntityType::Ennemy) {
+                    auto arguments = ecs::utils::intToBytes(attribute->_identifyer);
 
-                    arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Basic) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::ENEMY));
+                    }
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Milespates) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::MILESPATES));
+                    }
+                    if (attribute->_secondary_type == ecs::component::Attributes::SecondaryType::Boss) {
+                        arguments.push_back(static_cast<uint8_t>(protocol::ObjectTypes::BOSS));
+                    }
                     sendToClient(client_id, protocol::Packet(protocol::NEW_OBJECT, arguments));
                 }
 
-                if (animations[i]->_object == ecs::component::Object::Player) {
-                    auto arguments = ecs::utils::intToBytes(i);
+                if (attribute->_entity_type == ecs::component::Attributes::EntityType::Player) {
+                    auto arguments = ecs::utils::intToBytes(attribute->_identifyer);
 
-                    arguments.push_back(static_cast<uint8_t>(static_cast<protocol::ObjectTypes>(_game.getEntityById(i)))
-                    );
+                    arguments.push_back(static_cast<uint8_t>(
+                        static_cast<protocol::ObjectTypes>(_game.getPlaceByPlayerEntityId(attribute->_identifyer))
+                    ));
 
                     sendToClient(client_id, protocol::Packet(protocol::NEW_PLAYER, arguments));
                 }
@@ -314,7 +328,7 @@ namespace rtype::server {
             return;
         }
 
-        std::cout << VALID_PACKET(client_id) << std::endl;
+        spdlog::debug("Valid packet from client [{}]", client_id);
     }
 
     void Server::handleEvents(const unsigned int client_id, const ecs::IPacket &packet)
