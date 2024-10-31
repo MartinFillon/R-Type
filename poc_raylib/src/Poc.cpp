@@ -71,9 +71,9 @@ namespace poc {
         } catch (const ecs::ComponentFactory::ComponentNotCreated &e) {
             std::cerr << e.what() << std::endl;
         }
-        _r->add_system(ecs::systems::ThirdDMouvementSystem("config/systems/basic_mouvement_system.json"));
-        _r->add_system(ecs::systems::GravitableThirdDSystem());
-        _r->add_system(ecs::systems::ColisionThirdDimension());
+        _r->add_system<ecs::systems::ThirdDMouvementSystem>();
+        _r->add_system<ecs::systems::GravitableThirdDSystem>();
+        _r->add_system<ecs::systems::ColisionThirdDimension>();
     }
 
     Poc::~Poc() {

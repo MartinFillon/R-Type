@@ -18,6 +18,7 @@ namespace ecs {
     namespace systems {
         class GravitableThirdDSystem : public ISystems {
             public:
+                GravitableThirdDSystem() = default;
                 void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                     override;
             private:

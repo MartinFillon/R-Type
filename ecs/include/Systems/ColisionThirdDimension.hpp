@@ -15,6 +15,7 @@ namespace ecs {
     namespace systems {
         class ColisionThirdDimension : public ISystems {
           public:
+            ColisionThirdDimension() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
