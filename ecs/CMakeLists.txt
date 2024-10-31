@@ -5,15 +5,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 find_package(Json REQUIRED)
 find_package(SpdLog REQUIRED)
 find_package(JsonSchemaValidator REQUIRED)
-
-include(FetchContent)
-
-FetchContent_Declare(
-  dylib
-  GIT_REPOSITORY "https://github.com/martin-olivier/dylib"
-  GIT_TAG "v2.2.1")
-
-FetchContent_MakeAvailable(dylib)
+find_package(Dylib REQUIRED)
 
 add_subdirectory(components)
 
@@ -45,7 +37,7 @@ target_link_libraries(ecs PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(ecs PUBLIC nlohmann_json_schema_validator)
 target_link_libraries(ecs PUBLIC dylib)
 
-option(ENABLE_TESTS "Build tests along with the library" ON)
+option(ENABLE_TESTS "Build tests along with the library" OFF)
 
 if(ENABLE_TESTS AND UNIX)
   find_package(Criterion REQUIRED)
