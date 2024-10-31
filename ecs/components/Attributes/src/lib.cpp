@@ -6,7 +6,6 @@
 */
 
 #include <nlohmann/json.hpp>
-
 #include "Components/Attributes.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
@@ -31,6 +30,7 @@ extern "C" LIB_EXPORT void register_component(
         {"ennemy", ecs::component::Attributes::EntityType::Ennemy},
         {"background", ecs::component::Attributes::EntityType::Background},
         {"rectangle", ecs::component::Attributes::EntityType::Rectangle},
+        {"planes", ecs::component::Attributes::EntityType::Planes},
     };
     std::unordered_map<std::string, ecs::component::Attributes::SecondaryType> ennemies_types = {
         {"none", ecs::component::Attributes::SecondaryType::None},
@@ -39,6 +39,7 @@ extern "C" LIB_EXPORT void register_component(
         {"boss", ecs::component::Attributes::SecondaryType::Boss},
         {"first", ecs::component::Attributes::SecondaryType::First},
         {"second", ecs::component::Attributes::SecondaryType::Second},
+        {"killable", ecs::component::Attributes::SecondaryType::Killable},
     };
 
     attributes[entity.getId()] = ecs::component::Attributes{
