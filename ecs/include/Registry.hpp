@@ -70,19 +70,23 @@ namespace ecs {
 
         EntityManager _entities;
 
-        Registry() {}
+        Registry(): _debugMode(false) {}
+
+        Registry(bool debugMode): _debugMode(debugMode) {}
 
         Registry(Registry &r)
         {
             _systemsManager = r._systemsManager;
             _componentsArrays = r._componentsArrays;
             _entityCount = r._entityCount;
+            _debugMode = r._debugMode;
         }
 
       private:
         std::shared_ptr<systems::SystemsManager> _systemsManager = std::make_shared<systems::SystemsManager>();
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
+        bool _debugMode;
     };
 } // namespace ecs
 

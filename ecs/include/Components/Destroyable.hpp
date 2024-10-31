@@ -8,6 +8,8 @@
 #ifndef DESTROYABLE_HPP_
 #define DESTROYABLE_HPP_
 
+#include <string>
+
 namespace ecs {
     namespace component {
         struct Destroyable {
@@ -15,6 +17,7 @@ namespace ecs {
 
             DestroyState _state;
             bool _animate;
+            std::string _name = "Destroyable";
         };
     }; // namespace component
 }; // namespace ecs

@@ -12,7 +12,9 @@
 #define END_OF_KICK_ANIMATION 280
 #define WIDTH_KICK_PADDING 5
 #define WIDTH_ADD_PADDING 2
+#define KICK_SYSTEM_NAME "Kick system"
 
+#include <string>
 #include "ISystems.hpp"
 
 namespace ecs {
@@ -20,6 +22,11 @@ namespace ecs {
         class KickSystem : public ISystems {
           public:
             KickSystem() = default;
+
+            std::string getName() const override {
+                return KICK_SYSTEM_NAME;
+            }
+
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };

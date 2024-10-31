@@ -14,6 +14,8 @@
 #define GRAVITY_DOWN_PADDING *4
 #define MAX_Y (INITIAL_Y - 300)
 
+#define GRAVITABLE_MOUVEMENT_SYSTEM "Gravitable Mouvement system"
+
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -22,6 +24,12 @@ namespace ecs {
         class GravitableMouvementSystem : public ISystems {
           public:
             GravitableMouvementSystem() = default;
+
+            std::string getName() const override {
+                return GRAVITABLE_MOUVEMENT_SYSTEM;
+            }
+
+
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
         };

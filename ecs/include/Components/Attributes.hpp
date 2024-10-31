@@ -8,6 +8,7 @@
 #ifndef ATTRIBUTES_HPP_
 #define ATTRIBUTES_HPP_
 
+#include <string>
 namespace ecs {
     namespace component {
 
@@ -26,6 +27,7 @@ namespace ecs {
             EntityType _entity_type;
             SecondaryType _secondary_type;
             std::size_t _identifyer;
+            std::string _name = "Attributes";
         };
     }; // namespace component
 }; // namespace ecs

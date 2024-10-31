@@ -19,6 +19,7 @@ namespace ecs {
             Attributes _atr;
             bool _state;
             int _speed;
+            std::string _name = "Cinematic";
         };
     }; // namespace component
 }; // namespace ecs

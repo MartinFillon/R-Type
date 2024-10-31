@@ -8,6 +8,8 @@
 #ifndef BASICRANDOMENNEMIESSYSTEM_HPP_
 #define BASICRANDOMENNEMIESSYSTEM_HPP_
 
+#define BASIC_RANDOM_ENNEMIES_SYSTEM "Basic random ennemies system"
+
 #include "ComponentFactory.hpp"
 #include "Components/Position.hpp"
 #include "Defs.hpp"
@@ -22,6 +24,10 @@ namespace ecs {
         class BasicRandomEnnemiesSystem : public ISystems {
           public:
             BasicRandomEnnemiesSystem(const nlohmann::json &j);
+
+            std::string getName() const override {
+                return BASIC_RANDOM_ENNEMIES_SYSTEM;
+            }
 
             void createNewProjectile(
                 std::shared_ptr<Registry> &r,

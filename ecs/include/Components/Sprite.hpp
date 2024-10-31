@@ -14,6 +14,7 @@ namespace ecs {
     namespace component {
         struct Sprite {
             std::string _pathToSprite;
+            std::string _name = "Sprite";
         };
     }; // namespace component
 }; // namespace ecs

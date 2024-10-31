@@ -8,6 +8,7 @@
 #ifndef KEYPRESSED_HPP_
 #define KEYPRESSED_HPP_
 
+#include <string>
 namespace ecs {
     namespace component {
         enum Key {
@@ -128,6 +129,7 @@ namespace ecs {
 
         struct KeyPressed {
             Key _value;
+            std::string _name = "Key Pressed";
         };
     }; // namespace component
 }; // namespace ecs

@@ -7,6 +7,7 @@
 #define PROJECTILE_SPEED_ANIMATION 0.1
 #define PROJECTILE_SPEED 3
 #define PROJECTIL_TICK 2.5
+#define GUN_FIRE_SYSTEM_NAME "Gun Fire System"
 
 #include "Clock.hpp"
 
@@ -19,6 +20,10 @@ namespace ecs {
           public:
             GunFireSystem() = default;
             bool _wasKeyPressed = false;
+
+            std::string getName() const override {
+                return GUN_FIRE_SYSTEM_NAME;
+            }
 
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;

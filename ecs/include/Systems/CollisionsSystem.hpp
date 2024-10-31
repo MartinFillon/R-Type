@@ -8,6 +8,8 @@
 #ifndef COLLISIONSSYSTEM_HPP_
 #define COLLISIONSSYSTEM_HPP_
 
+#define COLLISIONS_SYSTEM "Collisions system"
+
 #include <memory>
 
 #include "IContext.hpp"
@@ -21,6 +23,10 @@ namespace ecs {
             CollisionsSystem() = default;
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
+
+            std::string getName() const override {
+                return COLLISIONS_SYSTEM;
+            }
 
           private:
             int _width_max_limit = WIDTH_MAX_LIMIT;

@@ -8,6 +8,8 @@
 #ifndef BOSSSYSTEMS_HPP_
 #define BOSSSYSTEMS_HPP_
 
+#define BOSS_SYSTEM "Boss systems"
+
 #include <array>
 #include <cmath>
 #include <functional>
@@ -24,6 +26,10 @@ namespace ecs {
           public:
             BossSystems() = default;
             BossSystems(const nlohmann::json &config);
+
+            std::string getName() const override {
+                return BOSS_SYSTEM;
+            }
 
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;

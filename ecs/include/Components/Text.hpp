@@ -14,6 +14,7 @@ namespace ecs {
     namespace component {
         struct Text {
             std::string _string;
+            std::string _name = "Text";
         };
     }; // namespace component
 }; // namespace ecs

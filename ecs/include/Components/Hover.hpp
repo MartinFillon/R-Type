@@ -8,10 +8,12 @@
 #ifndef HOVER_HPP_
 #define HOVER_HPP_
 
+#include <string>
 namespace ecs {
     namespace component {
         struct Hover {
             bool _value;
+            std::string _name = "Hover";
         };
     }; // namespace component
 }; // namespace ecs

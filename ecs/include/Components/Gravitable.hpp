@@ -8,6 +8,7 @@
 #ifndef GRAVITABLE_HPP_
 #define GRAVITABLE_HPP_
 
+#include <string>
 namespace ecs {
     namespace component {
         struct Gravitable {
@@ -15,6 +16,7 @@ namespace ecs {
             int _gravityFall;
             bool _isJumping;
             bool _isFalling;
+            std::string _name = "Gravitable";
         };
     }; // namespace component
 }; // namespace ecs

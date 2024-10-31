@@ -8,6 +8,7 @@
 #ifndef ANIMATIONS_HPP_
 #define ANIMATIONS_HPP_
 
+#include <string>
 #include "Clock.hpp"
 
 namespace ecs {
@@ -20,6 +21,7 @@ namespace ecs {
             int _x;
             int _y;
             int _rotation;
+            std::string _name = "Animations";
         };
     }; // namespace component
 }; // namespace ecs

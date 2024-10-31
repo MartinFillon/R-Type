@@ -8,6 +8,7 @@
 #ifndef INVINCIBILITY_HPP_
 #define INVINCIBILITY_HPP_
 
+#include <string>
 #include "Clock.hpp"
 
 namespace ecs {
@@ -16,6 +17,7 @@ namespace ecs {
             bool _invincible;
             int _time_in_ms;
             ecs::Clock _clock;
+            std::string _name = "Invincibility";
         };
     }; // namespace component
 }; // namespace ecs

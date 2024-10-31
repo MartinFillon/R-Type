@@ -14,6 +14,7 @@ namespace ecs {
     namespace component {
         struct SoundEffect {
             std::string _pathToSound;
+            std::string _name = "SoundEffect";
         };
     }; // namespace component
 }; // namespace ecs

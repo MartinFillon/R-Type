@@ -18,6 +18,7 @@ namespace ecs {
     namespace systems {
         class ISystems {
           public:
+            virtual std::string getName() const = 0;
             virtual void operator()(
                 std::shared_ptr<Registry> &r,
                 std::shared_ptr<IContext> ctx,

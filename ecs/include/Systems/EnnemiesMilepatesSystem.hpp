@@ -8,12 +8,12 @@
 #ifndef ENNEMIESMILESPATESSYSTEM_HPP_
 #define ENNEMIESMILESPATESSYSTEM_HPP_
 
-#include "ComponentFactory.hpp"
 #define NB_ENNEMIES 4
 
 #define MILESPATES_SPEED 3.5
 #define MILESPATES_SPEED_ANIMATION 0.01
 #define MILESPATES_SPRITE "assets/sprites/r-typesheet8.gif"
+#define ENNEMIES_MILEPATES_MOUVEMENT_SYSTEM "Ennemies Milepates system"
 
 #define HEIGHT_MIN 0
 #define HEIGHT_MAX 400
@@ -22,6 +22,7 @@
 #define FOLLOW_DISTANCE 70
 
 #include <deque>
+#include "ComponentFactory.hpp"
 #include "ISystems.hpp"
 #include "Registry.hpp"
 
@@ -30,6 +31,11 @@ namespace ecs {
         class EnnemiesMilepatesSystem : public ISystems {
           public:
             EnnemiesMilepatesSystem() {};
+
+            std::string getName() const override {
+                return ENNEMIES_MILEPATES_MOUVEMENT_SYSTEM;
+            }
+
             void operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, ComponentFactory &factory)
                 override;
 
