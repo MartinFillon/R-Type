@@ -5,7 +5,8 @@
     "attributes",
     "color",
     "rectangle",
-    "position3d"
+    "position3d",
+    "gravitable"
 	],
   "components": {
     "attributes": {
@@ -13,10 +14,16 @@
       "secondaryType": "none"
     },
     "color": {
-      "r": 255,
+      "r": 0,
       "g": 0,
-      "b": 0,
+      "b": 255,
       "a": 255
+    },
+    "gravitable": {
+      "value": true,
+      "gravityFall": 1,
+      "is_jumping": false,
+      "is_falling": true
     },
     "rectangle": {
       "height": 3,
