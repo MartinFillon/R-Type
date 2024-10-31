@@ -9,6 +9,8 @@
 #define KEYPRESSED_HPP_
 
 #include <string>
+#include "IComponent.hpp"
+
 namespace ecs {
     namespace component {
         enum Key {
@@ -128,9 +130,14 @@ namespace ecs {
             Quote = Apostrophe     //!< \deprecated Use Apostrophe instead
         };
 
-        struct KeyPressed {
+        struct KeyPressed : public IComponent {
+            KeyPressed(Key key): _value(key) {}
+            KeyPressed(): _value(NoneKey) {}
             Key _value;
             std::string _name = "Key Pressed";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

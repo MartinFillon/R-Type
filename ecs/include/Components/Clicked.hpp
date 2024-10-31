@@ -9,12 +9,18 @@
 #define CLICKED_HPP_
 
 #include <string>
+#include "IComponent.hpp"
 
 namespace ecs {
     namespace component {
-        struct Clicked {
+        struct Clicked : public IComponent {
+            Clicked(bool value): _value(value) {}
+            Clicked() = default;
             bool _value;
             std::string _name = "Clicked";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

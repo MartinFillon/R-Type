@@ -9,13 +9,19 @@
 #define SIZE_HPP_
 
 #include <string>
+#include "Components/IComponent.hpp"
 
 namespace ecs {
     namespace component {
-        struct Size {
+        struct Size : public IComponent {
+            Size(double width, double height): _width(width), _height(height) {}
+            Size() = default;
             double _width;
             double _height;
             std::string _name = "Size";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

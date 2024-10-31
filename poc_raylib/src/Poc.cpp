@@ -33,7 +33,7 @@
 #include "raymath.h"
 
 namespace poc {
-    Poc::Poc(int fps): _r(std::make_shared<ecs::Registry>())
+    Poc::Poc(int fps): _r(std::make_shared<ecs::Registry>(true))
     {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "RaylibPoc 3D");
 

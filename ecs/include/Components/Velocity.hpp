@@ -9,13 +9,19 @@
 #define VELOCITY_HPP_
 
 #include <string>
+#include "Components/IComponent.hpp"
 
 namespace ecs {
     namespace component {
-        struct Velocity {
+        struct Velocity : public IComponent {
+            Velocity(double vx, double vy): _vx(vx), _vy(vy) {}
+            Velocity() = default;
             double _vx;
             double _vy;
             std::string _name = "Velocity";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

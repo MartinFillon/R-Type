@@ -9,12 +9,19 @@
 #define CONTROLLABLE_HPP_
 
 #include <string>
+#include "IComponent.hpp"
+
 namespace ecs {
     namespace component {
-        struct Controllable {
+        struct Controllable : public IComponent {
+            Controllable(bool controllable, double speed): _controllable(controllable), _speed(speed) {}
+            Controllable() = default;
             bool _controllable;
             double _speed;
             std::string _name = "Controllable";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

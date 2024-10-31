@@ -9,12 +9,18 @@
 #define DRAWABLE_HPP_
 
 #include <string>
+#include "IComponent.hpp"
 
 namespace ecs {
     namespace component {
-        struct Drawable {
+        struct Drawable : public IComponent {
+            Drawable(bool drawable): _drawable(drawable) {}
+            Drawable() = default;
             bool _drawable;
             std::string _name = "Drawable";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs

@@ -8,13 +8,23 @@
 #ifndef POSITION3D_HPP_
 #define POSITION3D_HPP_
 
+#include <string>
+#include "IComponent.hpp"
+
 namespace ecs {
     namespace component {
-        struct Position3D {
+        struct Position3D : public IComponent {
+            Position3D(int x, int y, int z, bool changeDirection): _x(x), _y(y), _z(z), _changeDirection(changeDirection) {}
+            Position3D(int x, int y, int z): _x(x), _y(y), _z(z), _changeDirection(false) {}
+            Position3D() = default;
             int _x;
             int _y;
             int _z;
             bool _changeDirection;
+            std::string _name = "Position3D";
+            std::string getName() const {
+                return _name;
+            }
         };
     }; // namespace component
 }; // namespace ecs
