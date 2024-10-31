@@ -14,13 +14,13 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Window.hpp>
 #include <cstdlib>
 #include <string>
 #include <unistd.h>
 #include "Menu.hpp"
 #include "TCPCommunication.hpp"
-#include <iostream>
 
 rtype::client::LobbyMenu::LobbyMenu(sf::RenderWindow &window): _running(true), _window(window), _ready(false), _loading(true), _createActivate(false)
 {
@@ -45,6 +45,10 @@ int rtype::client::LobbyMenu::launchLobby(std::shared_ptr<TCPCommunication> serv
         loadingGame();
     }
 
+    for (size_t i = 0; i < MAX_KEY_BIDING; i++) {
+        _keys.push_back(static_cast<sf::Keyboard::Key>(_charKeys[i] - 'A'));
+    }
+
     if (_server->getPort()) {
         return _server->getPort();
     }
@@ -56,6 +60,20 @@ void rtype::client::LobbyMenu::setup()
 {
     setupBackground();
     _loadingStop = STOP_START_VALIUE;
+    for (size_t i = 0; i < MAX_KEY_BIDING; i++) {
+        sf::RectangleShape rectangle;
+
+        rectangle.setFillColor(sf::Color::Black);
+        rectangle.setOutlineColor(sf::Color::White);
+        rectangle.setOutlineThickness(RECT_THICKNESS);
+        rectangle.setSize({80, 80});
+        rectangle.setPosition({ 200, 240 + (float)i * 140});
+
+        _rectangleKeys.push_back(rectangle);
+        _boolKeys.push_back(false);
+    }
+
+    _charKeys = {'Z', 'S', 'D', 'Q'};
 }
 
 void rtype::client::LobbyMenu::loadingGame()
@@ -219,12 +237,41 @@ void rtype::client::LobbyMenu::event()
                     }
                     return;
                 }
+
+            }
+
+            for (size_t i = 0; i < _rectangleKeys.size(); i++) {
+                if (_rectangleKeys[i].getGlobalBounds().contains({static_cast<float>(mouse.x), static_cast<float>(mouse.y)})) {
+                    _boolKeys[i] = true;
+                    _rectangleKeys[i].setOutlineColor(sf::Color::Blue);
+                    _rectangleKeys[i].setOutlineThickness(RECT_THICKNESS + 1);
+                } else {
+                    _boolKeys[i] = false;
+                    _rectangleKeys[i].setOutlineColor(sf::Color::White);
+                    _rectangleKeys[i].setOutlineThickness(RECT_THICKNESS);
+                }
             }
 
         }
         const auto *ev = event->getIf<sf::Event::TextEntered>();
         if (_createActivate && (ev) && _lobby.empty()) {
             createNewLobby(ev);
+        }
+        for (size_t i = 0; i < _rectangleKeys.size(); i++) {
+
+            if (ev && _boolKeys[i]) {
+                if (ev->unicode >= 'a' && ev->unicode <= 'z') {
+                    bool already = false;
+                    for (size_t j = 0; j < _charKeys[j]; j++) {
+                        if (_charKeys[j] == static_cast<char>(ev->unicode - ' ')) {
+                            already = true;
+                        }
+                    }
+                    if (!already) {
+                        _charKeys[i] = static_cast<char>(ev->unicode - ' ');
+                    }
+                }
+            }
         }
     }
 }
@@ -270,12 +317,38 @@ void rtype::client::LobbyMenu::display()
     _window.clear();
     sf::Sprite _backgroundSprite(_backgroundTexture);
 
+     sf::Font font;
+
+    (void)font.openFromFile(FONT_PATH);
+
+   std::vector<std::string> directions = {"       UP", "DOWN", "RIGHT", "   LEFT"};
+
     _backgroundSprite.setTexture(_backgroundTexture);
     _backgroundSprite.setPosition({BG_POS_X, BG_POS_Y});
     _bgScaleX = static_cast<float>(_window.getSize().x) / _backgroundTexture.getSize().x;
     _bgScaleY = static_cast<float>(_window.getSize().y) / _backgroundTexture.getSize().y;
     _backgroundSprite.setScale({_bgScaleX, _bgScaleY});
     _window.draw(_backgroundSprite, &_shader);
+
+    for (size_t i = 0; i < _rectangleKeys.size(); i++) {
+        _window.draw(_rectangleKeys[i]);
+
+        sf::Text text(font);
+        text.setCharacterSize(48);
+        text.setPosition({225, 248 + (float)i * 140});
+        text.setString(_charKeys[i]);
+        text.setFillColor(sf::Color::White);
+
+        sf::Text direction(font);
+        direction.setCharacterSize(36);
+        direction.setPosition({60 - (float)2 * (i == 1), 255 + (float)i * 140});
+        direction.setString(directions[i]);
+        direction.setFillColor(sf::Color::White);
+
+        _window.draw(text);
+        _window.draw(direction);
+    }
+
     displayLobbies();
     _window.display();
 }

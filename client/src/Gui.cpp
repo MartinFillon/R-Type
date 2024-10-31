@@ -70,6 +70,8 @@ namespace rtype::client {
         if (ret_value) {
             return ERROR;
         }
+        _lobby.getKeys().clear();
+        _game.setKeys(_lobby.getKeys());
         spdlog::debug("Network setup done");
         _game.setRegistry(_registry);
         _game.setFactory(_cf);
