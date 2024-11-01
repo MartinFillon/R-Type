@@ -36,7 +36,9 @@ namespace ecs {
         {
             auto type = std::type_index(typeid(SparseArray<Component>));
             auto componentPtr = std::make_shared<Component>();
-            _componentList.push_back(componentPtr);
+            if (_componentList.find(type) == _componentList.end()) {
+                _componentList[type] = componentPtr;
+            }
 
             if (_componentsArrays.find(type) == _componentsArrays.end()) {
                 _componentsArrays[type] = SparseArray<Component>();
@@ -58,7 +60,9 @@ namespace ecs {
             std::type_index type = std::type_index(typeid(SparseArray<Component>));
 
             auto componentPtr = std::make_shared<Component>();
-            _componentList.push_back(componentPtr);
+            if (_componentList.find(type) == _componentList.end()) {
+                _componentList[type] = componentPtr;
+            }
 
             if (_componentsArrays.find(type) == _componentsArrays.end()) {
                 return register_component<Component>();
@@ -81,7 +85,7 @@ namespace ecs {
         std::vector<std::string> get_all_component_names() const
         {
             std::vector<std::string> componentNames;
-            for (const auto &component : _componentList) {
+            for (const auto &[_, component] : _componentList) {
                 componentNames.push_back(component->getName());
             }
             return componentNames;
@@ -111,8 +115,7 @@ namespace ecs {
         std::unordered_map<std::type_index, std::any> _componentsArrays;
         std::size_t _entityCount = 0;
         bool _debugMode;
-        // fait une pair de typeIndex pour éviter la duplication et tu fera double check avant de push_back my g
-        std::vector<std::shared_ptr<component::IComponent>> _componentList;
+        std::unordered_map<std::type_index, std::shared_ptr<component::IComponent>> _componentList;
     };
 } // namespace ecs
 

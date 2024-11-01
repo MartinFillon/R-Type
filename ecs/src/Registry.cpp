@@ -69,20 +69,14 @@ void ecs::Registry::run_systems(ecs::ComponentFactory &f, std::shared_ptr<IConte
             stream << "| " << i << "    ";
             temp = i;
         }
-
+        stream << "\n";
         for (std::size_t idx = 0; idx < _entityCount; ++idx) {
             stream << "|     " << idx << "    ";
-            std::string tempTwo;
-            for (const auto &component : _componentList) {
-                if (tempTwo == component->getName()) {
-                    continue;
-                }
+            for (const auto &[_, component] : _componentList) {
                 stream << "| " << component->getName() << "    ";
-                tempTwo = component->getName();
             }
             stream << "\n";
         }
         stream.close();
-        exit(1);
     }
 }
