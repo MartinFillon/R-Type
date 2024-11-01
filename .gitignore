@@ -23,5 +23,6 @@ vgcore.*
 install_manifest.txt
 street-fighter
 *.so
+poc-raylib-3d
 *.exe
 poc-raylib-3d
