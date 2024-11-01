@@ -8,6 +8,7 @@
 #ifndef VELOCITY_HPP_
 #define VELOCITY_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -21,6 +22,13 @@ namespace ecs {
             std::string _name = "Velocity";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                
+                stream << "Vx: " << _vx << " Vy:" << _vy;
+
+                return stream.str();
             }
         };
     }; // namespace component

@@ -21,6 +21,9 @@ namespace ecs {
             std::string getName() const {
                 return _name;
             }
+            std::string getInfo() const {
+                return std::string("State: " + std::string(_drawable ? "true" : "false"));
+            }
         };
     }; // namespace component
 }; // namespace ecs

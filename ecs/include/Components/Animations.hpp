@@ -8,6 +8,7 @@
 #ifndef ANIMATIONS_HPP_
 #define ANIMATIONS_HPP_
 
+#include <sstream>
 #include <string>
 #include "Clock.hpp"
 #include "IComponent.hpp"
@@ -27,6 +28,13 @@ namespace ecs {
             std::string _name = "Animations";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "w: " << _width << " h: " << _height << " x: " << _x << " y: " << _y << " rotation: " <<  _rotation;
+
+                return stream.str();
             }
         };
     }; // namespace component

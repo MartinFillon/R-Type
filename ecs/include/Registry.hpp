@@ -14,12 +14,7 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "Components/Attributes.hpp"
-#include "Components/Cinematic.hpp"
-#include "Components/Color.hpp"
-#include "Components/Controllable.hpp"
 #include "Components/IComponent.hpp"
-#include "Components/Velocity.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "IContext.hpp"

@@ -8,6 +8,7 @@
 #ifndef SIZE_HPP_
 #define SIZE_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -21,6 +22,13 @@ namespace ecs {
             std::string _name = "Size";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "Width: " << _width << " Height: " << _height;
+
+                return stream.str();
             }
         };
     }; // namespace component

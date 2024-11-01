@@ -8,6 +8,7 @@
 #ifndef RECTANGLESHAPE_HPP_
 #define RECTANGLESHAPE_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -22,6 +23,15 @@ namespace ecs {
             std::string _name = "Rectangle Shape";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                
+                stream << "Height: " << _height;
+                stream << " Width: " << _width;
+                stream << " Lenght: " << _length;
+
+                return stream.str();
             }
         };
     }; // namespace component

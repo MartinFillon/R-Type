@@ -8,6 +8,7 @@
 #ifndef ROTATE_HPP_
 #define ROTATE_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -22,6 +23,15 @@ namespace ecs {
             std::string _name = "Rotate";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                
+                stream << "Pitch: " << _pitch;
+                stream << " Yaw: " << _yaw;
+                stream << " Roll: " << _roll;
+
+                return stream.str();
             }
         };
     }; // namespace component

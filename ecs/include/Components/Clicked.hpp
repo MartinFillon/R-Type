@@ -21,6 +21,9 @@ namespace ecs {
             std::string getName() const {
                 return _name;
             }
+            std::string getInfo() const {
+                return _value ? "On" : "Off";
+            }
         };
     }; // namespace component
 }; // namespace ecs

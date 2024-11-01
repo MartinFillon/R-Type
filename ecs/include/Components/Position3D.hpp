@@ -8,6 +8,7 @@
 #ifndef POSITION3D_HPP_
 #define POSITION3D_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -24,6 +25,16 @@ namespace ecs {
             std::string _name = "Position3D";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                
+                stream << "x: " << _x;
+                stream << " y: " << _y;
+                stream << " z: " << _z;
+                stream << " changing: " << std::string(_changeDirection ? "true": "false");
+
+                return stream.str();
             }
         };
     }; // namespace component

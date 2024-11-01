@@ -8,6 +8,7 @@
 #ifndef PLANES_HPP_
 #define PLANES_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -21,6 +22,13 @@ namespace ecs {
             std::string _name = "Planes";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "Lenght: " << _lenght << " Width: " << _width;
+
+                return stream.str();
             }
         };
     }; // namespace component

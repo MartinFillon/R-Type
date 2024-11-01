@@ -8,6 +8,7 @@
 #ifndef POSITION_HPP_
 #define POSITION_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -23,6 +24,15 @@ namespace ecs {
             std::string _name = "Position";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                
+                stream << "x: " << _x;
+                stream << " y: " << _y;
+                stream << " changing: " << std::string(_changeDirection ? "true": "false");
+
+                return stream.str();
             }
         };
     }; // namespace component

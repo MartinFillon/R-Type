@@ -8,6 +8,7 @@
 #ifndef CONTROLLABLE_HPP_
 #define CONTROLLABLE_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -21,6 +22,14 @@ namespace ecs {
             std::string _name = "Controllable";
             std::string getName() const {
                 return _name;
+            }
+
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "Controllable: " << std::string(_controllable ? "true" : "false") << " speed: " << _speed;
+
+                return stream.str();
             }
         };
     }; // namespace component

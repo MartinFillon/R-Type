@@ -8,6 +8,7 @@
 #ifndef INVINCIBILITY_HPP_
 #define INVINCIBILITY_HPP_
 
+#include <sstream>
 #include <string>
 #include "Clock.hpp"
 #include "IComponent.hpp"
@@ -23,6 +24,13 @@ namespace ecs {
             std::string _name = "Invincibility";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "Invincible: " << std::string(_invincible ? "true": "false") << " time: " <<  _time_in_ms;
+
+                return stream.str();
             }
         };
     }; // namespace component

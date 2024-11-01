@@ -8,6 +8,7 @@
 #ifndef SOUNDEFFECT_HPP_
 #define SOUNDEFFECT_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -20,6 +21,13 @@ namespace ecs {
             std::string _name = "SoundEffect";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << _pathToSound;
+
+                return stream.str();
             }
         };
     }; // namespace component

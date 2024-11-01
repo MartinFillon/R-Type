@@ -8,6 +8,7 @@
 #ifndef SPRITE_HPP_
 #define SPRITE_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -20,6 +21,13 @@ namespace ecs {
             std::string _name = "Sprite";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << _pathToSprite;
+
+                return stream.str();
             }
         };
     }; // namespace component

@@ -8,6 +8,7 @@
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -23,6 +24,13 @@ namespace ecs {
             std::string _name = "Color";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "r: " << (int)_r << " g: " << (int)_g << " b: " << (int)_b << " a: " << (int)_a;
+
+                return stream.str();
             }
         };
     }; // namespace component

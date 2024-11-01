@@ -8,8 +8,10 @@
 #ifndef DESTROYABLE_HPP_
 #define DESTROYABLE_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
+#include <unordered_map>
 
 namespace ecs {
     namespace component {
@@ -23,7 +25,19 @@ namespace ecs {
             std::string getName() const {
                 return _name;
             }
+            std::string getInfo() const {
+                std::ostringstream stream;
+                std::unordered_map<DestroyState, std::string> state = {
+                    {ALIVE, "Alive"},
+                    {WAITING, "Waiting"},
+                    {DESTROYING, "Destroying"},
+                    {DESTROYED, "Destroyed"}
+                };
 
+                stream << "Animate: " << std::string(_animate ? "true" : "false") << " State: " << state[_state];
+
+                return stream.str();
+            }
         };
     }; // namespace component
 }; // namespace ecs

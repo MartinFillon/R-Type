@@ -8,6 +8,7 @@
 #ifndef GRAVITABLE_HPP_
 #define GRAVITABLE_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -23,6 +24,14 @@ namespace ecs {
             std::string _name = "Gravitable";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "Value: " + std::string(_value ? "true" : "false") << " Gravity Fall: " << _gravityFall;
+                stream << " is Jumping: " << std::string(_isJumping ? "true": "false") << " is Falling: " << std::string(_isFalling ? "true": "false");
+
+                return stream.str();
             }
         };
     }; // namespace component

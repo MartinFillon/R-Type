@@ -8,6 +8,7 @@
 #ifndef MODEL_HPP_
 #define MODEL_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -20,6 +21,13 @@ namespace ecs {
             std::string _name = "Model";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << _pathToModel;
+
+                return stream.str();
             }
         };
     }; // namespace component

@@ -8,6 +8,7 @@
 #ifndef PARALAX_HPP_
 #define PARALAX_HPP_
 
+#include <sstream>
 #include <string>
 #include "IComponent.hpp"
 
@@ -22,6 +23,15 @@ namespace ecs {
             std::string _name = "Parallax";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << "State: " << std::string(_value ? "true": "false");
+                stream << " Speed: " << _speed;
+                stream << " Multiplicator: " << _multiplicator;
+
+                return stream.str();
             }
         };
     }; // namespace component

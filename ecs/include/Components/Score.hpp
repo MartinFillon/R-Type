@@ -8,6 +8,7 @@
 #ifndef SCORE_HPP_
 #define SCORE_HPP_
 
+#include <sstream>
 #include <string>
 #include "Components/IComponent.hpp"
 
@@ -20,6 +21,13 @@ namespace ecs {
             std::string _name = "Score";
             std::string getName() const {
                 return _name;
+            }
+            std::string getInfo() const {
+                std::ostringstream stream;
+
+                stream << _score;
+
+                return stream.str();
             }
         };
     }; // namespace component
