@@ -44,6 +44,6 @@ extern "C" LIB_EXPORT void register_component(
     };
 
     attributes[entity.getId()] = ecs::component::Attributes{
-        entities_types[component["entityType"]], ennemies_types[component["secondaryType"]]
+        entities_types[component["entityType"]], ennemies_types[component["secondaryType"]], entity.getId()
     };
 }
