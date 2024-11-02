@@ -6,6 +6,7 @@
 */
 
 #include "Systems/BasicMouvementSystem.hpp"
+#include "Components/Cinematic.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Destroyable.hpp"
 #include "Components/Gravitable.hpp"
@@ -23,21 +24,39 @@ namespace ecs::systems {
     )
     {
         auto &positions = r->get_components<ecs::component::Position>();
-        auto &animations = r->get_components<ecs::component::Animations>();
-        auto &gravitables = r->get_components<ecs::component::Gravitable>();
         auto &keys = r->get_components<ecs::component::KeyPressed>();
         auto &controllables = r->get_components<ecs::component::Controllable>();
+        auto &cinematics = r->get_components<ecs::component::Cinematic>();
+        auto &gravitables = r->get_components<ecs::component::Gravitable>();
         auto &destroyables = r->get_components<ecs::component::Destroyable>();
 
-        for (auto &&[pos, anim, grav, key, ctrl, destroyable] :
-             custom_zip(positions, animations, gravitables, keys, controllables, destroyables)) {
-            if (!pos || !anim || !grav || !key || !ctrl || !destroyable ||
+        for (auto &&[pos, key, ctrl, destroyable, gravit] :
+             custom_zip(positions, keys, controllables, destroyables, gravitables)) {
+            if (!pos || !key || !ctrl || !destroyable ||
                 destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE) {
                 continue;
             }
 
             if (!ctrl->_controllable) {
                 continue;
+            }
+
+            if (gravit && !gravit->_value) {
+                if (key->_value == ecs::component::Key::Up) {
+                    pos->_y -= ctrl->_speed;
+                }
+
+                if (key->_value == ecs::component::Key::Left) {
+                    pos->_y += ctrl->_speed;
+                }
+            } else if (!gravit) {
+                if (key->_value == ecs::component::Key::Up) {
+                    pos->_y -= ctrl->_speed;
+                }
+
+                if (key->_value == ecs::component::Key::Left) {
+                    pos->_y += ctrl->_speed;
+                }
             }
 
             if (key->_value == ecs::component::Key::Left) {
