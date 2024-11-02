@@ -30,9 +30,7 @@ namespace ecs::systems {
         std::vector<std::thread> threads;
 
         for (auto &system : __systems) {
-            threads.emplace_back([system, &r, &ctx, &f]() {
-                system->operator()(r, ctx, f);
-            });
+            threads.emplace_back([system, &r, &ctx, &f]() { system->operator()(r, ctx, f); });
         }
 
         for (auto &thread : threads) {

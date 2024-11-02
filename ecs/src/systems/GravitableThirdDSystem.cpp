@@ -40,9 +40,8 @@ int ecs::systems::GravitableThirdDSystem::findInitialY(std::shared_ptr<Registry>
         float rectMaxX = positions[i]->_x + rectangles[i]->_length / 2.0f;
         float rectMinZ = positions[i]->_z - rectangles[i]->_width / 2.0f;
         float rectMaxZ = positions[i]->_z + rectangles[i]->_width / 2.0f;
-        if ((pos[j]->_x < rectMaxX && pos[j]->_x > rectMinX) &&
-            (pos[j]->_z < rectMaxZ && pos[j]->_z > rectMinZ)) {
-                onPlatform = true;
+        if ((pos[j]->_x < rectMaxX && pos[j]->_x > rectMinX) && (pos[j]->_z < rectMaxZ && pos[j]->_z > rectMinZ)) {
+            onPlatform = true;
         }
         if (onPlatform) {
             initialY = positions[i]->_y + MAX_Y;
@@ -85,7 +84,8 @@ void ecs::systems::GravitableThirdDSystem::operator()(
             pos->_y += gravit->_gravityFall;
         }
 
-        if ((gravit->_isJumping && pos->_y >= targetY) || (pos->_y > initialY && !gravit->_isJumping && !gravit->_isFalling)) {
+        if ((gravit->_isJumping && pos->_y >= targetY) ||
+            (pos->_y > initialY && !gravit->_isJumping && !gravit->_isFalling)) {
             gravit->_isJumping = false;
             gravit->_isFalling = true;
         }
@@ -112,9 +112,8 @@ void ecs::systems::GravitableThirdDSystem::operator()(
                 float rectMinZ = positions[i]->_z - rectangles[i]->_width / 2.0f;
                 float rectMaxZ = positions[i]->_z + rectangles[i]->_width / 2.0f;
 
-                if ((pos->_x < rectMaxX && pos->_x > rectMinX) &&
-                    (pos->_z < rectMaxZ && pos->_z > rectMinZ)) {
-                        onPlatform = true;
+                if ((pos->_x < rectMaxX && pos->_x > rectMinX) && (pos->_z < rectMaxZ && pos->_z > rectMinZ)) {
+                    onPlatform = true;
                 }
 
                 if (onPlatform) {

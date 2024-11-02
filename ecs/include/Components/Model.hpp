@@ -18,5 +18,4 @@ namespace ecs {
     }; // namespace component
 }; // namespace ecs
 
-
 #endif /* !MODEL_HPP_ */

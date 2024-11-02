@@ -18,5 +18,4 @@ namespace ecs {
     }; // namespace component
 }; // namespace ecs
 
-
 #endif /* !RECTANGLESHAPE_HPP_ */

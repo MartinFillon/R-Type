@@ -19,6 +19,5 @@ extern "C" void register_component(
 {
     auto &components = registry->register_component<ecs::component::Planes>();
 
-    components[entity.getId()] =
-        ecs::component::Planes{component["lenght"], component["width"]};
+    components[entity.getId()] = ecs::component::Planes{component["lenght"], component["width"]};
 }

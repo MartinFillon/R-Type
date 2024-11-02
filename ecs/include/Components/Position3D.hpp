@@ -19,5 +19,4 @@ namespace ecs {
     }; // namespace component
 }; // namespace ecs
 
-
 #endif /* !POSITION3D_HPP_ */

@@ -9,21 +9,13 @@
 #define ATTRIBUTES_HPP_
 
 #include <cstddef>
+
 namespace ecs {
     namespace component {
 
         struct Attributes {
 
-            enum class EntityType {
-                None,
-                Background,
-                Player,
-                Weapon,
-                Ennemy,
-                Rectangle,
-                Planes,
-                Sphere
-            };
+            enum class EntityType { None, Background, Player, Weapon, Ennemy, Rectangle, Planes, Sphere };
 
             enum class SecondaryType { None, Basic, Milespates, Boss, First, Second, Killable, Finsih };
 

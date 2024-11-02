@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-#include "Systems/ColisionThirdDimension.hpp"
 #include "Components/Animations3D.hpp"
 #include "Components/Attributes.hpp"
+#include "Components/Planes.hpp"
 #include "Components/Position3D.hpp"
 #include "Components/RectangleShape.hpp"
-#include "Components/Planes.hpp"
+#include "Systems/ColisionThirdDimension.hpp"
 
 void ecs::systems::ColisionThirdDimension::operator()(
     std::shared_ptr<Registry> &r,
@@ -29,7 +29,7 @@ void ecs::systems::ColisionThirdDimension::operator()(
     for (std::size_t i = 0; i < position3D.size(); ++i) {
         if (!attributes[i] || !position3D[i] || !animations[i]) {
             continue;
-        }   
+        }
 
         if (attributes[i]->_entity_type != component::Attributes::EntityType::Player) {
             continue;
@@ -41,7 +41,7 @@ void ecs::systems::ColisionThirdDimension::operator()(
             }
 
             if (attributes[j]->_secondary_type == component::Attributes::SecondaryType::Killable) {
-                
+
                 int objWidth = 0;
                 int objLength = 0;
 
@@ -56,17 +56,15 @@ void ecs::systems::ColisionThirdDimension::operator()(
                 if (position3D[i]->_x >= position3D[j]->_x - objWidth &&
                     position3D[i]->_x <= position3D[j]->_x + objWidth &&
                     position3D[i]->_z >= position3D[j]->_z - objLength &&
-                    position3D[i]->_z <= position3D[j]->_z + objLength &&
-                    position3D[i]->_y == position3D[j]->_y) {
-                        position3D[i]->_x = -10;
-                        position3D[i]->_y = 5;
-                        position3D[i]->_z = 0;
+                    position3D[i]->_z <= position3D[j]->_z + objLength && position3D[i]->_y == position3D[j]->_y) {
+                    position3D[i]->_x = -10;
+                    position3D[i]->_y = 5;
+                    position3D[i]->_z = 0;
                 }
             }
 
-
             if (attributes[j]->_secondary_type == component::Attributes::SecondaryType::Finsih) {
-                
+
                 int objWidth = 0;
                 int objLength = 0;
 
@@ -82,11 +80,10 @@ void ecs::systems::ColisionThirdDimension::operator()(
                     position3D[i]->_x <= position3D[j]->_x + objWidth &&
                     position3D[i]->_z >= position3D[j]->_z - objLength &&
                     position3D[i]->_z <= position3D[j]->_z + objLength) {
-                        animations[i]->_state = true;
-                        std::cerr << "Game finished\n";
+                    animations[i]->_state = true;
+                    std::cerr << "Game finished\n";
                 }
             }
-
         }
     }
 }

@@ -9,16 +9,11 @@
 #define ANIMATIONS3D_HPP_
 
 #include <string>
+
 namespace ecs {
     namespace component {
 
-        enum AnimationType {
-            DanceAnimation,
-            DieAnimation,
-            RunAnimation,
-            WalkAnimation,
-            JumpAnimation
-        };
+        enum AnimationType { DanceAnimation, DieAnimation, RunAnimation, WalkAnimation, JumpAnimation };
 
         struct Animations3D {
             std::string _pathToFile;

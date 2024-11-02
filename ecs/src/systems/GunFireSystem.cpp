@@ -50,7 +50,7 @@ namespace ecs {
 
         for (auto &&[atr, pos, contr, anim, draw, destroyable] :
              custom_zip(attributes, positions, controllables, animations, drawables, destroyables)) {
-            
+
             if (!atr || !pos || !contr || !anim || !draw || !destroyable) {
                 continue;
             }

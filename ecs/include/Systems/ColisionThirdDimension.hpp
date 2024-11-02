@@ -25,5 +25,4 @@ namespace ecs {
     }; // namespace systems
 }; // namespace ecs
 
-
 #endif /* !COLISIONTHIRDDIMENSION_HPP_ */

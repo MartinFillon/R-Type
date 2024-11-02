@@ -13,13 +13,18 @@
 #include "Components/Position3D.hpp"
 #include "Components/RectangleShape.hpp"
 #include "IContext.hpp"
-#include "Systems/ISystems.hpp"
 #include "Registry.hpp"
+#include "Systems/ISystems.hpp"
 #include "ZipperIterator.hpp"
 
 ecs::systems::ThirdDMouvementSystem::ThirdDMouvementSystem(const nlohmann::json &config) {}
 
-bool ecs::systems::ThirdDMouvementSystem::checkCollision(std::shared_ptr<Registry> &r, ecs::component::Position3D &pos, ecs::component::Position3D previousPos) {
+bool ecs::systems::ThirdDMouvementSystem::checkCollision(
+    std::shared_ptr<Registry> &r,
+    ecs::component::Position3D &pos,
+    ecs::component::Position3D previousPos
+)
+{
     auto &attributes = r->get_components<ecs::component::Attributes>();
     auto &rectanglePositions = r->get_components<ecs::component::Position3D>();
     auto &rectangleShapes = r->get_components<ecs::component::RectangleShape>();
@@ -31,8 +36,7 @@ bool ecs::systems::ThirdDMouvementSystem::checkCollision(std::shared_ptr<Registr
             float rectMinZ = rectanglePositions[i]->_z - rectangleShapes[i]->_width / 2.0f;
             float rectMaxZ = rectanglePositions[i]->_z + rectangleShapes[i]->_width / 2.0f;
 
-            if ((pos._x < rectMaxX && pos._x > rectMinX) &&
-                (pos._z < rectMaxZ && pos._z > rectMinZ) &&
+            if ((pos._x < rectMaxX && pos._x > rectMinX) && (pos._z < rectMaxZ && pos._z > rectMinZ) &&
                 (pos._z < rectMaxZ && pos._z > rectMinZ) &&
                 pos._y < rectanglePositions[i]->_y + rectangleShapes[i]->_height) {
                 return true;
