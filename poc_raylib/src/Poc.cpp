@@ -13,6 +13,7 @@
 
 #include "Poc.hpp"
 #include "Components/Animations.hpp"
+#include "Components/Animations3D.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Color.hpp"
 #include "Components/Controllable.hpp"
@@ -58,6 +59,7 @@ namespace poc {
         _r->register_if_not_exist<ecs::component::Rotate>();
         _r->register_if_not_exist<ecs::component::RectangleShape>();
         _r->register_if_not_exist<ecs::component::Color>();
+        _r->register_if_not_exist<ecs::component::Animations3D>();
 
         try {
             _r->_entities.addEntity(_cf.createEntity(_r, "poc_raylib/config/player.json"));
@@ -131,22 +133,33 @@ namespace poc {
     {
         auto &attributes = _r->get_components<ecs::component::Attributes>();
         auto &positions = _r->get_components<ecs::component::Position3D>();
+        auto &animations = _r->get_components<ecs::component::Animations3D>();
         auto &rotates = _r->get_components<ecs::component::Rotate>();
         auto &sprites = _r->get_components<ecs::component::Sprite>();
         auto &models = _r->get_components<ecs::component::Model>();
 
-        for (auto &&[pos, spri, mod, attr, rot]:
-            ecs::custom_zip(positions, sprites, models, attributes, rotates)) {
-            if (!pos || !spri || !mod || !rot) {
+        for (auto &&[pos, spri, mod, attr, rot, anim]:
+            ecs::custom_zip(positions, sprites, models, attributes, rotates, animations)) {
+            if (!pos || !spri || !mod || !rot || !anim) {
                 continue;
             }
             if (attr->_entity_type == ecs::component::Attributes::EntityType::Rectangle ||
                 attr->_entity_type == ecs::component::Attributes::EntityType::Planes) {
                 continue;
             }
-            Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y), static_cast<float>(pos->_z)};
+            Vector3 modelPos = {static_cast<float>(pos->_x), static_cast<float>(pos->_y - 1), static_cast<float>(pos->_z)};
             Model model = LoadModel(mod->_pathToModel.c_str());
             Texture2D texture = LoadTexture(spri->_pathToSprite.c_str());
+
+            if (anim->_state) {
+                ModelAnimation *anims = LoadModelAnimations("poc_raylib/assets/Animation/Jump.glb", &anim->_animCount);
+                anim->_animFrameCounter += 5;
+                UpdateModelAnimation(model, anims[0], anim->_animFrameCounter);
+                if (anim->_animFrameCounter >= anims[0].frameCount) {
+                    anim->_animFrameCounter = 0;
+                    anim->_state = false;
+                }
+            }
 
             if (texture.id == 0) {
                 continue;
@@ -155,7 +168,7 @@ namespace poc {
             model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD*rot->_pitch, DEG2RAD*rot->_yaw, DEG2RAD*rot->_roll });
 
             SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);
-            DrawModelEx(model, modelPos, (Vector3){ 0.0f, 0.0f, 90.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+            DrawModelEx(model, modelPos, (Vector3){ 0.0f, 90.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
             DrawGrid(100, 1.0f);
 
             UnloadModel(model);
@@ -169,15 +182,8 @@ namespace poc {
     {
         auto &keys = _r->get_components<ecs::component::KeyPressed>();
         auto &rotation = _r->get_components<ecs::component::Rotate>();
+        auto &animation = _r->get_components<ecs::component::Animations3D>();
         std::size_t playerIndex = findPlayerIndex();
-
-        if (IsKeyDown(KEY_LEFT_CONTROL)) {
-            _camera.position.y -= 1;
-        }
-
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            _camera.position.y += 1;
-        }
 
         if (IsKeyDown(KEY_W)) {
             keys[playerIndex]->_value = ecs::component::Key::Up;
@@ -227,6 +233,10 @@ namespace poc {
             keys[playerIndex]->_value = ecs::component::Key::Jump;
         }
 
+        if (IsKeyDown(KEY_F)) {
+            animation[playerIndex]->_state = !animation[playerIndex]->_state;
+        }
+
         return EXIT_SUCCESS;
     }
 
@@ -241,7 +251,7 @@ namespace poc {
 
             if (playerIndex < positions.size() && positions[playerIndex] && playerIndex < rotates.size() && rotates[playerIndex]) {
                 float cameraDistance = 10.0f;
-                float cameraHeight = 5.0f;
+                float cameraHeight = 6.0f;
 
                 Vector3 playerPosition = {
                     static_cast<float>(positions[playerIndex]->_x),

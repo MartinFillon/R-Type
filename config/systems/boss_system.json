@@ -2,7 +2,7 @@
   "$schema": "../../schema/BossSystem.json",
   "boss_life": 100,
   "boss_speed": 5,
-  "boss_spawn_time": 60,
+  "boss_spawn_time": 10,
   "boss_projectile_speed": 5,
   "moving_projectile_speed": 0.01,
   "boss_projectile_spawn_time": 3,

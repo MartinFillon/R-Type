@@ -28,6 +28,9 @@ operator()(std::shared_ptr<Registry> &r, std::shared_ptr<IContext> ctx, Componen
     auto &animation = r->register_if_not_exist<ecs::component::Animations>();
 
     for (auto &&[atr, pos, para, anim] : ecs::custom_zip(attributes, positions, parallax, animation)) {
+        if (!atr || !pos || !para || !anim) {
+            continue;
+        }
         if (atr->_entity_type == ecs::component::Attributes::EntityType::Background &&
             anim->_clock.getSeconds() > (int)(1 / 60)) {
             if (pos->_x <= -SCREEN_WIDTH) {

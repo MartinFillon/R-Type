@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Systems/ColisionThirdDimension.hpp"
+#include "Components/Animations3D.hpp"
 #include "Components/Attributes.hpp"
 #include "Components/Position3D.hpp"
 #include "Components/RectangleShape.hpp"
@@ -23,9 +24,10 @@ void ecs::systems::ColisionThirdDimension::operator()(
     auto &position3D = r->register_if_not_exist<component::Position3D>();
     auto &rectangles = r->get_components<component::RectangleShape>();
     auto &planes = r->get_components<component::Planes>();
+    auto &animations = r->get_components<ecs::component::Animations3D>();
 
     for (std::size_t i = 0; i < position3D.size(); ++i) {
-        if (!attributes[i] || !position3D[i]) {
+        if (!attributes[i] || !position3D[i] || !animations[i]) {
             continue;
         }   
 
@@ -80,7 +82,7 @@ void ecs::systems::ColisionThirdDimension::operator()(
                     position3D[i]->_x <= position3D[j]->_x + objWidth &&
                     position3D[i]->_z >= position3D[j]->_z - objLength &&
                     position3D[i]->_z <= position3D[j]->_z + objLength) {
-                        
+                        animations[i]->_state = true;
                         std::cerr << "Game finished\n";
                 }
             }
