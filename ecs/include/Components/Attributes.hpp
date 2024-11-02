@@ -8,6 +8,7 @@
 #ifndef ATTRIBUTES_HPP_
 #define ATTRIBUTES_HPP_
 
+#include <cstddef>
 namespace ecs {
     namespace component {
 

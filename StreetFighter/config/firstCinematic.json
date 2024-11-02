@@ -1,8 +1,7 @@
 {
     "name": "firstCinematic",
     "active": [
-        "cinematic",
-        "attributes"
+        "cinematic"
     ],
     "components": {
         "cinematic": {
@@ -11,11 +10,9 @@
             "xEnd": 500,
             "yEnd": 500,
             "state": true,
-            "speed": 1
-        },
-        "attributes": {
-            "entityType": "player",
-            "secondaryType": "first"
+            "speed": 1,
+            "objectType": "player",
+            "type": "first"
         }
     }
 }
