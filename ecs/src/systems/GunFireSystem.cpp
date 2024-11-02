@@ -50,7 +50,11 @@ namespace ecs {
 
         for (auto &&[atr, pos, contr, anim, draw, destroyable] :
              custom_zip(attributes, positions, controllables, animations, drawables, destroyables)) {
-            if (draw && !draw->_drawable) {
+            
+            if (!atr || !pos || !contr || !anim || !draw || !destroyable) {
+                continue;
+            }
+            if (!draw->_drawable) {
                 continue;
             }
             if (pos && contr && anim && atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&

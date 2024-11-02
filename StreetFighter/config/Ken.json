@@ -10,11 +10,11 @@
       "destroyable",
       "life",
       "gravitable",
-      "key_pressed",
+      "key",
       "attributes"
     ],
     "components": {
-        "key_pressed": "up",
+        "key": "up",
         "gravitable": {
             "value": true,
             "gravityFall": 2,

@@ -54,6 +54,10 @@ void ecs::systems::ThirdDMouvementSystem::operator()(
     auto &controllables = r->get_components<ecs::component::Controllable>();
 
     for (auto &&[pos, key, ctrl] : custom_zip(positions, keys, controllables)) {
+
+        if (!pos || !key || !ctrl) {
+            continue;
+        }
         if (!ctrl->_controllable) {
             continue;
         }
