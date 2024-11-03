@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include "TCPCommunication.hpp"
 
@@ -24,6 +25,7 @@
 
 #define BG_PATH "./assets/sprites/Background/background_2.png"
 #define FONT_PATH "./assets/fonts/OpenSans-Semibold.ttf"
+
 
 #define CREATE_CMD(x) "CREATE " + x + "\n"
 #define QUIT_CMD(x) "QUIT " + x + "\n"
@@ -93,6 +95,9 @@
 #define TEXT_NB_P_POS_X 1090
 #define TEXT_NB_P_POS_Y(x) 255 + x * 140
 
+#define TEXT_NB_P_POS_X 1090
+#define TEXT_NB_P_POS_Y(x) 255 + x * 140
+
 #define LOBBY_NAME_POS_X 620
 #define TEXT_SIZE 42
 #define MAX_LOADING_VALUE 100
@@ -104,6 +109,7 @@
 #define MAX_LOBBIES 4
 #define STOP_START_VALIUE 1
 #define TIME_STOP 1
+#define MAX_KEY_BIDING 4
 
 namespace rtype::client {
 
@@ -125,10 +131,14 @@ namespace rtype::client {
 
         int launchLobby(std::shared_ptr<TCPCommunication> server);
 
+        std::vector<sf::Keyboard::Key> getKeys() const
+        {
+            return _keys;
+        }
+
       private:
         void setup();
         void setupBackground();
-        void setupLoadingGame();
 
         void display();
         void displayLobbies();
@@ -153,6 +163,14 @@ namespace rtype::client {
         int _port;
 
         std::shared_ptr<TCPCommunication> _server;
+
+        /* KEY BIDING */
+
+        std::vector<sf::RectangleShape> _rectangleKeys;
+        std::vector<bool> _boolKeys;
+        std::vector<char> _charKeys;
+
+        std::vector<sf::Keyboard::Key> _keys;
 
         /* LOADIN GAME */
         bool _loading;

@@ -29,6 +29,7 @@ namespace rtype::client {
     {
         _gameSound.pause();
         _shotSound.pause();
+        _moves = {};
     }
 
     void Game::setupBackground()
@@ -95,7 +96,7 @@ namespace rtype::client {
                 }
             }
         }
-        for (auto &move : moves) {
+        for (auto &move: _moves) {
             if (sf::Keyboard::isKeyPressed(move.first)) {
                 _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, move.second});
             }
