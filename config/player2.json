@@ -15,7 +15,8 @@
   ],
   "components": {
     "attributes": {
-      "entityType": "player"
+      "entityType": "player",
+      "secondaryType": "none"
     },
     "life": 3,
     "position": {

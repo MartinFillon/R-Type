@@ -15,7 +15,7 @@
   "components": {
     "attributes": {
       "entityType": "ennemy",
-      "ennemyType": "boss"
+      "secondaryType": "boss"
     },
     "life": 100,
     "position": {

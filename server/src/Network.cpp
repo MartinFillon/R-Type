@@ -11,7 +11,9 @@
 
 #include "Network.hpp"
 
-rtype::server::Network::Network(int port): _port(port), _running(true), _udpPort(DEFAULT_UDP_PORT), _context(), _acceptor(_context, TCP::endpoint(TCP::v4(), port))
+rtype::server::Network::Network(int port)
+    : _port(port), _running(true), _udpPort(DEFAULT_UDP_PORT), _context(),
+      _acceptor(_context, TCP::endpoint(TCP::v4(), port))
 {
 }
 
@@ -34,11 +36,11 @@ int rtype::server::Network::start()
 
 unsigned int rtype::server::Network::generateClientId(const TCP::endpoint &endpoint)
 {
-        std::hash<std::string> hashFunction;
+    std::hash<std::string> hashFunction;
 
-        std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
+    std::string id = endpoint.address().to_string() + std::to_string(endpoint.port());
 
-        return static_cast<unsigned int>(hashFunction(id));
+    return static_cast<unsigned int>(hashFunction(id));
 }
 
 void rtype::server::Network::acceptConnection()
@@ -48,7 +50,7 @@ void rtype::server::Network::acceptConnection()
         _threads.push_back(std::thread(&Network::runClient, this, std::move(socket)));
     }
 
-    for (auto &thread: _threads) {
+    for (auto &thread : _threads) {
         thread.join();
     }
 }

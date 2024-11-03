@@ -6,19 +6,17 @@
 */
 
 #include "Lobby.hpp"
-#include "IContext.hpp"
-#include "Context.hpp"
-#include "Server.hpp"
 #include <cstdlib>
 #include <string>
+#include "Context.hpp"
+#include "IContext.hpp"
+#include "Server.hpp"
 
-rtype::server::Lobby::Lobby(const std::string &name, int port): _name(name), _running(false), _port(port)
-{
-}
+rtype::server::Lobby::Lobby(const std::string &name, int port) : _name(name), _running(false), _port(port) {}
 
 bool rtype::server::Lobby::start()
 {
-    for (auto &client: _clients) {
+    for (auto &client : _clients) {
         if (!client.get().isReady()) {
             return false;
         }
@@ -29,7 +27,7 @@ bool rtype::server::Lobby::start()
 
     std::shared_ptr<ecs::IContext> context = std::make_shared<rtype::server::Context>(_server);
 
-    for (auto &client: _clients) {
+    for (auto &client : _clients) {
         client.get().writeToClient("UDP:" + std::to_string(_port));
         client.get().setConnected(false);
     }
@@ -63,7 +61,7 @@ bool rtype::server::Lobby::unassign(TCPConnection &client)
 int rtype::server::Lobby::getNumberReady()
 {
     int count = 0;
-    for (auto &client: _clients) {
+    for (auto &client : _clients) {
         if (client.get().isReady() == true) {
             count += 1;
         }

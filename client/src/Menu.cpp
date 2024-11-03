@@ -6,16 +6,13 @@
 */
 
 #include "Menu.hpp"
-#include <unistd.h>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <unistd.h>
 #include "LobbyMenu.hpp"
 
 namespace rtype::client {
-    Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true)
-    {
-
-    }
+    Menu::Menu(sf::RenderWindow &window) : _win(window), _isMenuOpen(true) {}
 
     void Menu::setupMenu()
     {
@@ -265,7 +262,8 @@ namespace rtype::client {
                 }
 
                 menuEnterToPlay();
-            }        }
+            }
+        }
         _menuMusic.stop();
         return _menuClientInput;
     }

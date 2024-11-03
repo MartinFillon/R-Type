@@ -81,7 +81,7 @@ namespace ecs::systems {
             }
 
             if (atr->_entity_type == ecs::component::Attributes::EntityType::Weapon &&
-                anim->_clock.getMiliSeconds() > 5) {
+                anim->_clock.getMiliSeconds() > _shootingElapsedTime) {
                 pos->_x -= ctrl->_speed;
                 anim->_clock.restart();
                 continue;
@@ -104,7 +104,7 @@ namespace ecs::systems {
                 pos->_x -= ctrl->_speed;
             }
 
-            if (anim->_clock.getSeconds() > _basicEnnemiesSpeed) {
+            if (anim->_clock.getSeconds() > _shootingElapsedTime) {
                 shootRandomly(r, *pos, ctx, factory);
             }
         }
@@ -117,7 +117,7 @@ namespace ecs::systems {
         ComponentFactory &factory
     )
     {
-        Entity newProjectile = factory.createEntity(r, CONFIG_ENNEMIES);
+        Entity newProjectile = factory.createEntity(r, CONFIG_PROJECTILE);
 
         auto &positions = r->register_if_not_exist<ecs::component::Position>();
 

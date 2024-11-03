@@ -6,16 +6,16 @@
 */
 
 #ifndef LOBBY_HPP_
-    #define LOBBY_HPP_
+#define LOBBY_HPP_
 
-    #include <functional>
-    #include <vector>
-    #include <map>
+#include <functional>
+#include <map>
+#include <vector>
 
-    #include "Server.hpp"
-    #include "TCPConnection.hpp"
+#include "Server.hpp"
+#include "TCPConnection.hpp"
 
-    #define LOBBY_SIZE_MAX 4
+#define LOBBY_SIZE_MAX 4
 
 namespace rtype::server {
 
@@ -25,43 +25,40 @@ namespace rtype::server {
 
         using TCP = asio::ip::tcp;
 
-        public:
+      public:
+        Lobby(const std::string &name, int port);
 
-            Lobby(const std::string &name, int port);
+        bool start();
+        bool assign(TCPConnection &client);
+        bool unassign(TCPConnection &client);
 
-            bool start();
-            bool assign(TCPConnection &client);
-            bool unassign(TCPConnection &client);
+        std::string getName() const
+        {
+            return _name;
+        };
 
-            std::string getName() const
-            {
-                return _name;
-            };
+        size_t getNumberConnections() const
+        {
+            return _clients.size();
+        };
 
-            size_t getNumberConnections() const
-            {
-                return _clients.size();
-            };
-            
-            bool isRunning() const
-            {
-                return _running;
-            };
+        bool isRunning() const
+        {
+            return _running;
+        };
 
-            int getNumberReady();
+        int getNumberReady();
 
-        private:
+      private:
+        std::string _name;
+        std::vector<std::reference_wrapper<TCPConnection>> _clients;
 
-            std::string _name;
-            std::vector<std::reference_wrapper<TCPConnection>> _clients;
+        std::shared_ptr<Server> _server;
 
-            std::shared_ptr<Server> _server;
-
-            int _port;
-            bool _running;
-
+        int _port;
+        bool _running;
     };
 
-};
+}; // namespace rtype::server
 
 #endif /* !LOBBY_HPP_ */

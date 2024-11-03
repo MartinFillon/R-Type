@@ -1,0 +1,42 @@
+{
+    "$schema": "../../schema/entity.json",
+    "name": "platform",
+    "active": [
+        "attributes",
+        "color",
+        "rectangle",
+        "position3d",
+        "gravitable",
+        "key"
+      ],
+    "components": {
+      "attributes": {
+        "entityType": "rectangle",
+        "secondaryType": "none"
+      },
+      "gravitable": {
+        "value": true,
+        "gravityFall": 1,
+        "is_jumping": false,
+        "is_falling": true
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 255,
+        "a": 255
+      },
+      "rectangle": {
+        "height": 3,
+        "width": 10,
+        "lenght": 5
+      },
+      "position3d": {
+        "x": -10,
+        "y": 0,
+        "z": 30
+      },
+      "key": "none"
+    }
+  }
+    

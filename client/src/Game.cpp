@@ -5,14 +5,15 @@
 ** Game file
 */
 
-#include "Game.hpp"
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <exception>
 #include <memory>
 #include <spdlog/spdlog.h>
+
 #include "ComponentFactory.hpp"
+#include "Game.hpp"
 #include "Protocol.hpp"
 #include "RegistryWrapper.hpp"
 #include "Systems/DestroySystem.hpp"
@@ -53,7 +54,7 @@ namespace rtype::client {
         }
     }
 
-    void Game::setRegistry(std::shared_ptr<RegistryWrapper> &registry)
+    void Game::setRegistry(RegistryWrapper *registry)
     {
         _registry = registry;
     }
@@ -97,7 +98,7 @@ namespace rtype::client {
         }
         for (auto &move: _moves) {
             if (sf::Keyboard::isKeyPressed(move.first)) {
-                _network.send(protocol::Operations::EVENT, { protocol::Events::MOVE, move.second });
+                _network.send(protocol::Operations::EVENT, {protocol::Events::MOVE, move.second});
             }
         }
     }
