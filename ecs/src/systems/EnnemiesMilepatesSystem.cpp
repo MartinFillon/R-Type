@@ -39,7 +39,7 @@ namespace ecs::systems {
 
         for (auto &&[atr, pos, anim, control, destroyable] :
              custom_zip(attributes, positions, animations, controllables, destroyables)) {
-            if (!atr || !pos || !anim || !control ||
+            if (!atr || !pos || !anim || !control || !destroyable ||
                 destroyable->_state != ecs::component::Destroyable::DestroyState::ALIVE ||
                 atr->_secondary_type != ecs::component::Attributes::SecondaryType::Milespates) {
                 continue;

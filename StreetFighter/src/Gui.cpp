@@ -13,6 +13,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <cstddef>
 #include <cstdlib>
 #include <spdlog/spdlog.h>
 
@@ -40,6 +41,8 @@ int street_fighter::Gui::handleEvents()
     auto &keys = _game._r->get_components<ecs::component::KeyPressed>();
     auto &anim = _game._r->get_components<ecs::component::Animations>();
     auto &pos = _game._r->get_components<ecs::component::Position>();
+    const std::size_t playerIndex = _game.findPlayerIndex().getId();
+
 
     if (_game.getIsCinematic()) {
         return EXIT_SUCCESS;
@@ -49,53 +52,51 @@ int street_fighter::Gui::handleEvents()
             _window.close();
         }
 
-        if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {
-            if (key->scancode == sf::Keyboard::Scancode::Up) {
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Up;
-                anim[_game.findPlayerIndex().getId()]->_width = JUMP_ANIMATION_WIDTH;
-                anim[_game.findPlayerIndex().getId()]->_height = JUMP_ANIMATION_HEIGHT;
-                anim[_game.findPlayerIndex().getId()]->_x = JUMP_ANIMATION_X;
-                anim[_game.findPlayerIndex().getId()]->_y = JUMP_ANIMATION_Y;
-                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
+            keys[playerIndex]->_value = ecs::component::Key::Up;
+            anim[playerIndex]->_width = JUMP_ANIMATION_WIDTH;
+            anim[playerIndex]->_height = JUMP_ANIMATION_HEIGHT;
+            anim[playerIndex]->_x = JUMP_ANIMATION_X;
+            anim[playerIndex]->_y = JUMP_ANIMATION_Y;
+            pos[playerIndex]->_y = NORMAL_Y_POSITION;
+        }
 
-            if (key->scancode == sf::Keyboard::Scancode::Down) {
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Down;
-                anim[_game.findPlayerIndex().getId()]->_x = SIT_ANIMATION_X;
-                anim[_game.findPlayerIndex().getId()]->_y = SIT_ANIMATION_Y;
-                anim[_game.findPlayerIndex().getId()]->_width = SIT_ANIMATION_WIDTH;
-                anim[_game.findPlayerIndex().getId()]->_height = SIT_ANIMATION_HEIGHT;
-                pos[_game.findPlayerIndex().getId()]->_y = SIT_POSITION_Y;
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
+            keys[playerIndex]->_value = ecs::component::Key::Down;
+            anim[playerIndex]->_x = SIT_ANIMATION_X;
+            anim[playerIndex]->_y = SIT_ANIMATION_Y;
+            anim[playerIndex]->_width = SIT_ANIMATION_WIDTH;
+            anim[playerIndex]->_height = SIT_ANIMATION_HEIGHT;
+            pos[playerIndex]->_y = SIT_POSITION_Y;
+        }
 
-            if (key->scancode == sf::Keyboard::Scancode::Left) {
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Left;
-                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
+            keys[playerIndex]->_value = ecs::component::Key::Left;
+            pos[playerIndex]->_y = NORMAL_Y_POSITION;
+        }
 
-            if (key->scancode == sf::Keyboard::Scancode::Right) {
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Right;
-                pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
+            keys[playerIndex]->_value = ecs::component::Key::Right;
+            pos[playerIndex]->_y = NORMAL_Y_POSITION;
+        }
 
-            if (key->scancode == sf::Keyboard::Scancode::X) {
-                if (keys[_game.findPlayerIndex().getId()]->_value != ecs::component::Key::Up) {
-                    pos[_game.findPlayerIndex().getId()]->_y = NORMAL_Y_POSITION;
-                }
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Punch;
-                anim[_game.findPlayerIndex().getId()]->_width = PUNCH_ANIMATION_WIDTH;
-                anim[_game.findPlayerIndex().getId()]->_height = PUNCH_ANIMATION_HEIGHT;
-                anim[_game.findPlayerIndex().getId()]->_x = PUNCH_ANIMATION_X;
-                anim[_game.findPlayerIndex().getId()]->_y = PUNCH_ANIMATION_Y;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::X)) {
+            if (keys[playerIndex]->_value != ecs::component::Key::Up) {
+                pos[playerIndex]->_y = NORMAL_Y_POSITION;
             }
+            keys[playerIndex]->_value = ecs::component::Key::Punch;
+            anim[playerIndex]->_width = PUNCH_ANIMATION_WIDTH;
+            anim[playerIndex]->_height = PUNCH_ANIMATION_HEIGHT;
+            anim[playerIndex]->_x = PUNCH_ANIMATION_X;
+            anim[playerIndex]->_y = PUNCH_ANIMATION_Y;
+        }
 
-            if (key->scancode == sf::Keyboard::Scancode::W) {
-                keys[_game.findPlayerIndex().getId()]->_value = ecs::component::Key::Kick;
-                anim[_game.findPlayerIndex().getId()]->_width = KICK_ANIMATION_WIDTH;
-                anim[_game.findPlayerIndex().getId()]->_height = KICK_ANIMATION_HEIGHT;
-                anim[_game.findPlayerIndex().getId()]->_x = KICK_ANIMATION_X;
-                anim[_game.findPlayerIndex().getId()]->_y = KICK_ANIMATION_Y;
-            }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
+            keys[playerIndex]->_value = ecs::component::Key::Kick;
+            anim[playerIndex]->_width = KICK_ANIMATION_WIDTH;
+            anim[playerIndex]->_height = KICK_ANIMATION_HEIGHT;
+            anim[playerIndex]->_x = KICK_ANIMATION_X;
+            anim[playerIndex]->_y = KICK_ANIMATION_Y;
         }
     }
 

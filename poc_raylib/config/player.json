@@ -1,0 +1,67 @@
+{
+    "$schema": "../../schema/entity.json",
+    "name": "player",
+    "active": [
+      "attributes",
+      "position3d",
+      "animation3d",
+      "drawable",
+      "controllable",
+      "sprite",
+      "size",
+      "destroyable",
+      "life",
+      "gravitable",
+      "invincibility",
+      "model",
+      "key",
+      "rotate"
+    ],
+    "components": {
+      "key": "up",
+      "attributes": {
+        "entityType": "player",
+        "secondaryType": "first"
+      },
+      "gravitable": {
+        "value": true,
+        "gravityFall": 1,
+        "is_jumping": false,
+        "is_falling": false
+      },
+      "rotate": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "life": 3,
+      "position3d": {
+          "x": -10,
+          "y": 3,
+          "z": 0
+      },
+      "animation3d": {
+        "path": "poc_raylib/assets/Animation/Jump.glb",
+        "state": false,
+        "type": "dance",
+        "animCount": 0,
+        "animFrameCounter": 0
+      },
+      "destroyable": {
+        "animate": true
+      },
+      "drawable": true,
+      "controllable": {
+          "controllable": true,
+          "speed": 1.1
+      },
+      "sprite": "poc_raylib/assets/Sprites/NewSub.png",
+      "model": "poc_raylib/assets/Model/Sub.glb",
+      "size": {
+          "width": 3,
+          "height": 3
+      },
+      "invincibility": 1000
+    }
+  }
+  

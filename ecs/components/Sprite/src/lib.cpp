@@ -6,7 +6,6 @@
 */
 
 #include <nlohmann/json.hpp>
-
 #include "Components/Sprite.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
@@ -24,6 +23,5 @@ extern "C" LIB_EXPORT void register_component(
 )
 {
     auto &components = registry->register_component<ecs::component::Sprite>();
-
     components[entity.getId()] = ecs::component::Sprite{component};
 }

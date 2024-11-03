@@ -33,7 +33,7 @@ namespace rtype::client {
       public:
         Game(sf::RenderWindow &window, Network &network);
 
-        void setRegistry(std::shared_ptr<RegistryWrapper> &registry);
+        void setRegistry(RegistryWrapper *registry);
 
         void setFactory(std::shared_ptr<ecs::ComponentFactory> &cf)
         {
@@ -52,7 +52,7 @@ namespace rtype::client {
         Network &_network;
 
         sf::RenderWindow &_window;
-        std::shared_ptr<RegistryWrapper> _registry;
+        RegistryWrapper *_registry;
         std::shared_ptr<ecs::ComponentFactory> _cf;
 
         ecs::Clock _clock;

@@ -52,7 +52,7 @@ namespace rtype::client {
         LobbyMenu _lobby;
         Game _game;
 
-        std::shared_ptr<RegistryWrapper> _registry;
+        RegistryWrapper *_registry;
         std::shared_ptr<ecs::ComponentFactory> _cf;
     };
 
