@@ -37,6 +37,7 @@ namespace rtype::client {
 
       public:
         Network();
+        ~Network() = default;
 
         void setRegistry(std::shared_ptr<ecs::Registry> registry);
 

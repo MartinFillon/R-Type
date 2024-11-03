@@ -9,6 +9,8 @@
 #define GAME_HPP_
 
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <iostream>
 #include "ComponentFactory.hpp"
 #define SHOOT_SOUND "assets/musics/shotSound.ogg"
 #define GAME_MUSIC "assets/musics/gameMusic-Thrut.ogg"
@@ -42,6 +44,13 @@ namespace rtype::client {
 
         int run();
 
+        void setKeys(std::vector<sf::Keyboard::Key> keys) {
+          _moves.insert({keys[0], protocol::Direction::UP});
+          _moves.insert({keys[1], protocol::Direction::DOWN});
+          _moves.insert({keys[2], protocol::Direction::RIGHT});
+          _moves.insert({keys[3], protocol::Direction::LEFT});
+        }
+
       private:
         void event();
         void display();
@@ -63,14 +72,9 @@ namespace rtype::client {
 
         sf::SoundBuffer _gameMusicBuffer;
         sf::Sound _gameSound;
+
+        std::map<sf::Keyboard::Key, unsigned char> _moves;
     };
 
-    static std::map<sf::Keyboard::Key, unsigned char> moves = {
-        {sf::Keyboard::Key::Up, protocol::Direction::UP},
-        {sf::Keyboard::Key::Down, protocol::Direction::DOWN},
-        {sf::Keyboard::Key::Left, protocol::Direction::LEFT},
-        {sf::Keyboard::Key::Right, protocol::Direction::RIGHT},
-        {sf::Keyboard::Key::Space, protocol::Direction::Space}
-    };
 }; // namespace rtype::client
 #endif /* !GAME_HPP_ */
