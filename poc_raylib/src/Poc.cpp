@@ -251,7 +251,7 @@ namespace poc {
 
             if (playerIndex < positions.size() && positions[playerIndex] && playerIndex < rotates.size() && rotates[playerIndex]) {
                 float cameraDistance = 10.0f;
-                float cameraHeight = 6.0f;
+                float cameraHeight = 4.0f;
 
                 Vector3 playerPosition = {
                     static_cast<float>(positions[playerIndex]->_x),
