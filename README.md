@@ -1,6 +1,9 @@
 # R-Type
 
-R-type is a side scroller where you control a vessel and shoot ennemies randomly appearing.
+R-Type is an Epitech project where we have to create a Game Engine, we decided then to create an ECS (Entity Component System) to recreate the R-Type game.
+So as to prove the richness of our game engine we made two POCs (Street fighter for the fight, cinamtics and gravity and one in 3D with gravity and object).
+
+Our game engine can read components in the form of .so at runtime, generate entities via .json configuration files, systems to manage cinematics, colisions, 2D/3D movement, parallax, 2D/3D gravity, animations, boss management via configuration files (and therefore levels too), 2D shooting, invincibility and punching as well as 2D kicking.
 
 ## Install
 
